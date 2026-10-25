@@ -1,0 +1,5 @@
+# Small set for proving the tools.
+k12 https://www.d65.net/
+college https://www.reed.edu/
+community https://www.ccv.edu/
+k12 https://www.stuy.edu/

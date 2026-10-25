@@ -1,0 +1,24 @@
+{
+  "chrome_for_testing": {
+    "version": "156.0.8078.47",
+    "source": "https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json",
+    "downloads": {
+      "chrome": {
+        "url": "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.47/linux64/chrome-linux64.zip",
+        "sha256": ""
+      },
+      "chrome-headless-shell": {
+        "url": "https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.47/linux64/chrome-headless-shell-linux64.zip",
+        "sha256": ""
+      }
+    }
+  },
+  "axe_core": {
+    "version": "4.14.0",
+    "license": "MPL-2.0",
+    "tarball": "https://registry.npmjs.org/axe-core/-/axe-core-4.14.0.tgz",
+    "npm_integrity": "sha512-9WTZxEjsZ7b13TH8JPmbV2z8CHbl80/2hm3XPEG4JgNdQLK81IBRXmSxHfMAOkSqQeRxT/0dwNDz2GOm3zzpcQ==",
+    "npm_shasum": "a9819d3932a8198fbe935d8cbd8afcdfecbcf31d",
+    "sha256": ""
+  }
+}

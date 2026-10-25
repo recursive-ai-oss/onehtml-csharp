@@ -1,0 +1,6 @@
+# Build output is redirected outside the repo; these guard against strays.
+bin/
+obj/
+artifacts/
+*.user
+.vs/

@@ -1,0 +1,5 @@
+@font-face { font-family: A; src: local(A); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, u+4??, U+1F600-1F64F, U+???; }
+@font-face { font-family: B; UNICODE-RANGE: U+0-10FFFF }
+@font-face { font-family: C; unicode-range: u+ 1 }
+@font-face { font-family: D; unicode-range: U+1e3, u+1e-20 }
+@font-face { font-family: E; unicode-range: U+10-2 U+ZZ

@@ -1,0 +1,12 @@
+.\31 23 { color: red }
+#\#id\.x, .a\:b, .\@c { margin: 0 }
+.\E9 t\E9 { content: "\E9\000A9 \
+ continued" }
+@media \( { x { y: z } }
+.n\
+{ a: b }
+.\ { a: b }
+t\{u { v: w }
+.ünï\63 ode, .日本語, .a\\b { color: \72 ed; background: ur\6c(x.png) }
+--\--x: \--y; --Ω: 1;
+x { y: \ 1 \; }

@@ -11,6 +11,12 @@
     <PackageReference Include="xunit.v3" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="../../testdata/css/**/*" LinkBase="testdata/css" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../fuzz/OneHtml.Fuzz/CssTarget.cs" Link="Css/CssTarget.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />
   </ItemGroup>
 </Project>

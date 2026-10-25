@@ -1,0 +1,11 @@
+<!-- a { color: red } --> b { color: blue }
+@media screen { c { color: red
+@import "unterminated;
+d { background: url(a b) ; e: f }
+g { h: "bad
+string"; i: j }
+k { l: m; } } } n { o: p }
+.q { r: s ] t; u: v ) w; x: y } z: 1; }
+@unclosed { a { b: c
+@supports (display: grid) { .u { color: red
+.v { w: url("unclosed

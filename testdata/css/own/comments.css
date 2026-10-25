@@ -1,0 +1,8 @@
+/* header */ /* two */ a /* between */ { /* before decl */ color /* after name */ : /* before value */ red /* inside */ blue /* after value */ !/**/important/**/ ; /* after semi */ }
+/**/
+@media/**/screen/**/and/**/(min-width:1px)/**/{/**/b/**/{/**/}/**/}
+/* comment containing * / and /* and // */
+c{background:url(/* not a comment */x.png)}
+d{content:"/* not a comment */"}
+--e/**/:f{}
+g{h:i/* unterminated at EOF

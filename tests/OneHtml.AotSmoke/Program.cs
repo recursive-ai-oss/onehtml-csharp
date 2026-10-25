@@ -24,4 +24,20 @@ while ((kind = tokenizer.Next()) != HtmlTokenKind.EndOfFile)
 }
 
 Console.WriteLine($"{text.Encoding.Name} {text.Confidence} tags={tags} chars={characters} lastByte={lastByte}/{page.Length} errors={tokenizer.Errors?.Count}");
-return tags == 5 && lastByte == page.Length ? 0 : 1;
+bool htmlOk = tags == 5 && lastByte == page.Length;
+
+// CSS: parse a stylesheet and walk the result.
+var sheet = RecursiveAI.OneHtml.Css.Stylesheet.Parse("@media screen { a { color: red !important } } b { c: d(e) }");
+int rules = 0;
+foreach (var rule in sheet.Rules)
+{
+    rules++;
+    foreach (var child in rule.Children)
+    {
+        rules += child.Kind == RecursiveAI.OneHtml.Css.CssNodeKind.Declaration ? 1 : 0;
+    }
+}
+
+Console.WriteLine(rules + " " + sheet.Serialize().Length + " " + sheet.ToSourceText().Length);
+bool cssOk = rules == 3 && sheet.ToSourceText() == sheet.Text;
+return htmlOk && cssOk ? 0 : 1;

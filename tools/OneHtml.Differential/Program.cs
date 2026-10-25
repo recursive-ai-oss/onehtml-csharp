@@ -3,14 +3,25 @@ using System;
 namespace RecursiveAI.OneHtml.Differential;
 
 /// <summary>
-/// Differential harness: compares our output with AngleSharp in-process, and with Chrome and axe-core
-/// driven as black boxes over the DevTools protocol. Comparisons are added as commands.
+/// Differential and corpus harness. <c>roundtrip</c> checks lossless output and robustness over a corpus;
+/// <c>angle</c> compares our trees with AngleSharp's (used in-process, as a black box). Chrome and axe-core
+/// comparisons are added as further commands.
 /// </summary>
 internal static class Program
 {
     private static int Main(string[] args)
     {
-        Console.WriteLine("OneHtml.Differential: no commands yet" + (args.Length > 0 ? " (got: " + args[0] + ")" : ""));
-        return 0;
+        Options? o = args.Length >= 2 ? Options.Parse(args) : null;
+        if (o is null || args[0] is not ("roundtrip" or "angle"))
+        {
+            Console.Error.WriteLine("usage: OneHtml.Differential <roundtrip|angle> <corpus-dir> [options]");
+            Console.Error.WriteLine(Options.Usage);
+            return 2;
+        }
+
+        int code = args[0] == "roundtrip" ? RoundTrip.Run(o) : AngleDiff.Run(o);
+        // Abandoned hung parses may still hold threads; leave regardless.
+        Environment.Exit(code);
+        return code;
     }
 }

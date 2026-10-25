@@ -16,9 +16,18 @@ internal static class Program
 {
     private static int Main(string[] args)
     {
-        if (args.Length < 1 || !Targets.All.TryGetValue(args[0], out Action<ReadOnlySpan<byte>>? target))
+        // Under a coverage-guided driver the instrumented library must not run before SharpFuzz has attached its
+        // trace buffer, so nothing may touch Targets (whose initializers call into the library) until the first input.
+        if (args.Length == 1 && args[0] != "--list")
         {
-            Console.Error.WriteLine("usage: OneHtml.Fuzz <target> [file]");
+            string name = args[0];
+            Fuzzer.LibFuzzer.Run(span => Targets.All[name](span));
+            return 0;
+        }
+
+        if (args.Length < 2 || !Targets.All.TryGetValue(args[0], out Action<ReadOnlySpan<byte>>? target))
+        {
+            Console.Error.WriteLine("usage: OneHtml.Fuzz <target> <file> | <target> --mutate <seconds> <seed-dir> | <target> (libFuzzer driver mode)");
             Console.Error.WriteLine("targets: " + string.Join(", ", Targets.All.Keys));
             return 2;
         }
@@ -28,18 +37,7 @@ internal static class Program
             return Mutate(target, int.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture), args[3]);
         }
 
-        if (args.Length > 1)
-        {
-            target(File.ReadAllBytes(args[1]));
-            return 0;
-        }
-
-        Fuzzer.OutOfProcess.Run(stream =>
-        {
-            using var buffer = new MemoryStream();
-            stream.CopyTo(buffer);
-            target(buffer.GetBuffer().AsSpan(0, (int)buffer.Length));
-        });
+        target(File.ReadAllBytes(args[1]));
         return 0;
     }
 

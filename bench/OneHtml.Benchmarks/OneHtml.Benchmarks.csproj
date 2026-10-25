@@ -9,6 +9,9 @@
     <PackageReference Include="HtmlAgilityPack" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="../../tools/OneHtml.Differential/Corpus.cs" Link="Corpus.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />
     <ProjectReference Include="../../src/OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
     <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />

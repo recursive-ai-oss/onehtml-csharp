@@ -13,7 +13,7 @@ public class DocumentTests
     private static string[] ChildNames(Node parent)
     {
         var list = new List<string>();
-        foreach (Node c in parent.Children)
+        foreach (Node c in parent.ChildNodes)
         {
             list.Add(c.LocalName);
         }

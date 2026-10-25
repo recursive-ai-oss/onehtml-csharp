@@ -12,6 +12,7 @@ internal static class Targets
     {
         ["css"] = CssTarget.Run,
         ["noop"] = static _ => { },
+        ["selectors"] = SelectorTarget.Run,
         ["tokenize"] = Tokenize,
         ["treebuilder"] = TreeBuilder,
         ["values"] = ValueTarget.Run,

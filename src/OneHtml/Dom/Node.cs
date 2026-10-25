@@ -48,7 +48,7 @@ namespace RecursiveAI.OneHtml
     /// A handle to a node of a <see cref="Document"/>: the document and an index into its columns. Copying it is
     /// cheap, and it keeps referring to the snapshot it came from. The default value is the null node.
     /// </summary>
-    public readonly struct Node : IEquatable<Node>
+    public readonly partial struct Node : IEquatable<Node>
     {
         internal Node(Document document, int index)
         {
@@ -102,9 +102,6 @@ namespace RecursiveAI.OneHtml
 
         /// <summary>True when the node has at least one child.</summary>
         public bool HasChildNodes => A.First[Index] >= 0;
-
-        /// <summary>The children in document order. Allocation-free to enumerate.</summary>
-        public NodeChildren Children => new(this);
 
         /// <summary>
         /// For an HTML <c>template</c> element, the root of its content (kind <see cref="NodeKind.DocumentFragment"/>);
@@ -174,7 +171,7 @@ namespace RecursiveAI.OneHtml
             return null;
         }
 
-        /// <summary>True when <see cref="GetAttribute"/> would find an attribute.</summary>
+        /// <summary>True when <see cref="GetAttribute(string)"/> would find an attribute.</summary>
         /// <param name="name">The attribute name.</param>
         public bool HasAttribute(string name) => GetAttribute(name) is not null;
 
@@ -235,7 +232,7 @@ namespace RecursiveAI.OneHtml
     }
 
     /// <summary>The children of a node, for <c>foreach</c>.</summary>
-    public readonly struct NodeChildren
+    public readonly struct NodeChildren : System.Collections.Generic.IEnumerable<Node>
     {
         private readonly Node _parent;
 
@@ -243,6 +240,17 @@ namespace RecursiveAI.OneHtml
 
         /// <summary>Gets the enumerator.</summary>
         public Enumerator GetEnumerator() => new(_parent);
+
+        System.Collections.Generic.IEnumerator<Node> System.Collections.Generic.IEnumerable<Node>.GetEnumerator()
+        {
+            Enumerator e = GetEnumerator();
+            while (e.MoveNext())
+            {
+                yield return e.Current;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => ((System.Collections.Generic.IEnumerable<Node>)this).GetEnumerator();
 
         /// <summary>Enumerates children by following sibling links.</summary>
         public struct Enumerator

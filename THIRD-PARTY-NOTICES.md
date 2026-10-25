@@ -94,6 +94,9 @@ unmodified and are not part of the published packages. Used in:
 
 - `testdata/wpt/`: the tree construction test files from `html/syntax/parsing/resources/` (the former html5lib-tests
   tree construction suite, which is now maintained there).
+- `testdata/wpt/selectors/`: selector tests, unmodified: `dom/nodes/` (`selectors.js`, its content page and
+  `Element-closest.html`), `css/selectors/parsing/` (24 files) and `html/semantics/selectors/pseudo-classes/` (36 files).
+  `testdata/wpt/selectors/MANIFEST.md` lists each file with its SHA-256.
 - `testdata/css/wpt/css/css-syntax/`: CSS Syntax tests (the `charset/` directory is not included).
 
 ```

@@ -53,7 +53,7 @@ while (pending.Count > 0)
 {
     RecursiveAI.OneHtml.Node node = pending.Pop();
     elements += node.IsElement ? 1 : 0;
-    foreach (RecursiveAI.OneHtml.Node child in node.Children)
+    foreach (RecursiveAI.OneHtml.Node child in node.ChildNodes)
     {
         pending.Push(child);
     }
@@ -88,4 +88,14 @@ bool bytesOk = byteRules == 2; // the @charset rule and the style rule
 Console.WriteLine($"var: {substituted.Status} [{substituted.Text}] bytes: {byteRules}");
 Console.WriteLine($"values: table={valuesOk} color={colorOk} calc={calcOk} var={varOk} shorthand={shorthandOk} media={mediaOk} supports={supportsOk} bytes={bytesOk}");
 bool valueApiOk = valuesOk && colorOk && calcOk && varOk && shorthandOk && mediaOk && supportsOk && bytesOk;
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk ? 0 : 1;
+
+// Selectors and locators: query, match, validity with a pattern, then a locator verified against its target.
+RecursiveAI.OneHtml.Document qdoc = RecursiveAI.OneHtml.Document.Parse(Encoding.UTF8.GetBytes("<ul><li>a<li class=x>b<li><a href=/x>c</a></ul><form><input pattern='[a-z]+' value='abc'><input pattern='[a-z]+' value='123'></form>"));
+var found = qdoc.Root.QuerySelectorAll("li:not(.x) > a[href], li.x:nth-child(2), input:invalid, :is(ul, ol):has(> li.x)");
+RecursiveAI.OneHtml.Node target = qdoc.Root.QuerySelector("li.x");
+var generator = new RecursiveAI.OneHtml.Locators.LocatorGenerator(qdoc);
+string locator = generator.Generate(target);
+var fingerprint = RecursiveAI.OneHtml.Locators.ElementFingerprint.Create(target);
+bool queryOk = found.Count == 4 && qdoc.Root.QuerySelector(locator).Equals(target) && fingerprint.TextHash.StartsWith("sha256:", StringComparison.Ordinal);
+Console.WriteLine($"query={found.Count} locator={locator} queryOk={queryOk}");
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk ? 0 : 1;

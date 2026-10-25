@@ -34,7 +34,7 @@ public static class DocumentInvariants
             }
 
             Node prev = default;
-            foreach (Node child in node.Children)
+            foreach (Node child in node.ChildNodes)
             {
                 if (child.Parent != node)
                 {
@@ -186,7 +186,7 @@ public static class DocumentInvariants
                 }
             }
 
-            foreach (Node child in node.Children)
+            foreach (Node child in node.ChildNodes)
             {
                 pending.Push(child);
             }

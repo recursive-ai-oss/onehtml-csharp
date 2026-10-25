@@ -16,6 +16,7 @@
   <ItemGroup>
     <Compile Include="../../fuzz/OneHtml.Fuzz/CssTarget.cs" Link="Css/CssTarget.cs" />
     <Compile Include="../../fuzz/OneHtml.Fuzz/ValueTarget.cs" Link="Css/ValueTarget.cs" />
+    <Compile Include="../../fuzz/OneHtml.Fuzz/SelectorTarget.cs" Link="Selectors/SelectorTarget.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />

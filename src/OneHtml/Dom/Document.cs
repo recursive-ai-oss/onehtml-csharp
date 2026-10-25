@@ -122,7 +122,7 @@ public sealed class FragmentContext
 /// node, and a <see cref="Node"/> handle is a document reference and an index. Text and attribute values are slices
 /// of <see cref="Source"/> where the source holds them verbatim.
 /// </remarks>
-public sealed class Document
+public sealed partial class Document
 {
     private static long s_nextId;
 

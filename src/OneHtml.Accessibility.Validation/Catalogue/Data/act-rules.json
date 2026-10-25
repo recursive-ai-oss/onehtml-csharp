@@ -1,0 +1,1732 @@
+{
+ "version": 1,
+ "source": {
+  "url": "https://github.com/w3c/wcag-act-rules/blob/a7a18b1df1e60b1001fd27e443872ef04ba24c93/wcag-mapping.json",
+  "sha256": "5d111710f92de504b978bf77fc5ac488e9230dca36a619c7ad9ef058ff07c4f5",
+  "retrieved": "2026-10-25",
+  "notes": "Status is deprecated when the rule is flagged deprecated, proposed when flagged proposed, otherwise approved. Composite rules list their input rules and no aspects of their own."
+ },
+ "rules": [
+  {
+   "id": "047fe0",
+   "name": "Document has heading for non-repeated content",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "H69"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "09o5cg",
+   "name": "Text has enhanced contrast",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.4.3",
+    "1.4.6"
+   ],
+   "techniques": [
+    "G17",
+    "G18"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "0ssw9k",
+   "name": "Scrollable content can be reached with sequential focus navigation",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "2.1.1",
+    "2.1.3"
+   ],
+   "techniques": [
+    "G202"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "0va7u6",
+   "name": "HTML images contain no text",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.4.5",
+    "1.4.9"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "1a02b0",
+   "name": "Audio and visuals of video element have transcript",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.2.1",
+    "1.2.8",
+    "1.3.1"
+   ],
+   "techniques": [
+    "G69"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "1ea59c",
+   "name": "Video element visual content has audio description",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "G173",
+    "G78",
+    "G8"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "1ec09b",
+   "name": "Video element visual content has strict accessible alternative",
+   "status": "proposed",
+   "type": "composite",
+   "criteria": [
+    "1.2.5"
+   ],
+   "techniques": [
+    "G173",
+    "G78",
+    "G8"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [],
+   "inputRules": [
+    "1ea59c",
+    "ab4d13"
+   ]
+  },
+  {
+   "id": "23a2a8",
+   "name": "Image has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1"
+   ],
+   "techniques": [
+    "G94",
+    "G95"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "24afc2",
+   "name": "Important letter spacing in style attributes is wide enough",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.4.12"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "2779a5",
+   "name": "HTML page has non-empty title",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "2.4.2"
+   ],
+   "techniques": [
+    "G88",
+    "H25"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "2eb176",
+   "name": "Audio element content has transcript",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "2ee8b8",
+   "name": "Visible label is part of accessible name",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.5.3"
+   ],
+   "techniques": [
+    "G208"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "2t702h",
+   "name": "Summary element has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "307n5z",
+   "name": "Element with presentational children has no focusable content",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "36b590",
+   "name": "Error message describes invalid form field value",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "3.3.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "3e12e1",
+   "name": "Block of repeated content is collapsible",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "SCR28"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "3ea0c8",
+   "name": "Id attribute value is unique",
+   "status": "deprecated",
+   "type": "atomic",
+   "criteria": [
+    "4.1.1"
+   ],
+   "techniques": [
+    "H93"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "46ca7f",
+   "name": "Element marked as decorative is not exposed",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "4b1c6c",
+   "name": "Iframe elements with identical accessible names have equivalent purpose",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "4c31df",
+   "name": "Audio or video element that plays automatically has a control mechanism",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "G170"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "4e8ab6",
+   "name": "Element with role attribute has required states and properties",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1",
+    "4.1.2"
+   ],
+   "techniques": [
+    "ARIA5"
+   ],
+   "otherRequirements": [
+    "aria12:requiredState"
+   ],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "59796f",
+   "name": "Image button has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1",
+    "4.1.2"
+   ],
+   "techniques": [
+    "G94",
+    "G95"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "59br37",
+   "name": "Zoomed text node is not clipped with CSS overflow",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.4.4"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "5b7ae0",
+   "name": "HTML page lang and xml:lang attributes have matching values",
+   "status": "deprecated",
+   "type": "atomic",
+   "criteria": [
+    "3.1.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "5c01ea",
+   "name": "ARIA state or property is permitted",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1",
+    "4.1.2"
+   ],
+   "techniques": [
+    "ARIA5"
+   ],
+   "otherRequirements": [
+    "aria12:state_property_processing"
+   ],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "5effbb",
+   "name": "Link in context is descriptive",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.4.4",
+    "2.4.9"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "5f99a7",
+   "name": "ARIA attribute is defined in WAI-ARIA",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1",
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "674b10",
+   "name": "Role attribute has valid value",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1",
+    "4.1.2"
+   ],
+   "techniques": [
+    "ARIA4",
+    "G108"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "6a7281",
+   "name": "ARIA state or property has valid value",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1",
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [
+    "aria12:propcharacteristic_value"
+   ],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "6cfa84",
+   "name": "Element with aria-hidden has no content in sequential focus navigation",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [
+    "using-aria:fourth"
+   ],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "73f2c2",
+   "name": "Autocomplete attribute has valid value",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.3.5"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "7677a9",
+   "name": "Device motion based changes to the content can also be created from the user interface",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.5.4"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Accessibility Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "78fd32",
+   "name": "Important line height in style attributes is wide enough",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.4.12"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "7d6734",
+   "name": "SVG element with explicit role has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "80af7b",
+   "name": "Focusable element has no keyboard trap",
+   "status": "proposed",
+   "type": "composite",
+   "criteria": [
+    "2.1.2"
+   ],
+   "techniques": [
+    "G21"
+   ],
+   "otherRequirements": [
+    "wcag-text:cc5"
+   ],
+   "inputAspects": [],
+   "inputRules": [
+    "a1b64e",
+    "ebe86a"
+   ]
+  },
+  {
+   "id": "80f0bf",
+   "name": "Audio or video element avoids automatically playing audio",
+   "status": "proposed",
+   "type": "composite",
+   "criteria": [
+    "1.4.2"
+   ],
+   "techniques": [
+    "G170",
+    "G171",
+    "G60"
+   ],
+   "otherRequirements": [
+    "wcag-text:cc5"
+   ],
+   "inputAspects": [],
+   "inputRules": [
+    "4c31df",
+    "aaa1bf"
+   ]
+  },
+  {
+   "id": "8fc3b6",
+   "name": "Object element rendering non-text content has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Accessibility Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "97a4e1",
+   "name": "Button has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "9bd38c",
+   "name": "Content has alternative for visual reference",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.3.3"
+   ],
+   "techniques": [
+    "G96"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "9e45ec",
+   "name": "Important word spacing in style attributes is wide enough",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.4.12"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "9eb3f6",
+   "name": "Image filename is accessible name for image",
+   "status": "deprecated",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1"
+   ],
+   "techniques": [
+    "G94",
+    "G95"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "a1b64e",
+   "name": "Focusable element has no keyboard trap via standard navigation",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "a25f45",
+   "name": "Headers attribute specified on a cell refers to cells in the same table element",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1"
+   ],
+   "techniques": [
+    "H43"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "aaa1bf",
+   "name": "Audio or video element that plays automatically has no audio that lasts more than 3 seconds",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "G60"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "ab4d13",
+   "name": "Video element content is media alternative for text",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "ac7dc6",
+   "name": "Video element visual-only content has description track",
+   "status": "deprecated",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "H96"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "afb423",
+   "name": "Audio element content is media alternative for text",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "afw4f7",
+   "name": "Text has minimum contrast",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.4.3",
+    "1.4.6"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "aizyf1",
+   "name": "Link is descriptive",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.4.9"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "akn7bn",
+   "name": "Iframe with interactive elements is not excluded from tab-order",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "2.1.1",
+    "2.1.3"
+   ],
+   "techniques": [
+    "G202"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "b20e66",
+   "name": "Links with identical accessible names have equivalent purpose",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.4.9"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "b33eff",
+   "name": "Orientation of the page is not restricted using CSS transforms",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.3.4"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "b40fd1",
+   "name": "Document has a landmark with non-repeated content",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "b49b2e",
+   "name": "Heading is descriptive",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.4.6"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "b4f0c3",
+   "name": "Meta viewport allows for zoom",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.4.4",
+    "1.4.10"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "b5c3f8",
+   "name": "HTML page has lang attribute",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "3.1.1"
+   ],
+   "techniques": [
+    "H57"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "bc4a75",
+   "name": "ARIA required owned elements",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "bc659a",
+   "name": "Meta element has no refresh delay",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "2.2.1",
+    "2.2.4",
+    "3.2.5"
+   ],
+   "techniques": [
+    "G110",
+    "H76"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "bf051a",
+   "name": "HTML page lang attribute has valid language tag",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "3.1.1"
+   ],
+   "techniques": [
+    "H57"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "bisz58",
+   "name": "Meta element has no refresh delay (no exception)",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "2.2.1",
+    "2.2.4",
+    "3.2.5"
+   ],
+   "techniques": [
+    "G110",
+    "H76"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "c249d5",
+   "name": "Device motion based changes to the content can be disabled",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.5.4"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Accessibility Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "c3232f",
+   "name": "Video element visual-only content has accessible alternative",
+   "status": "proposed",
+   "type": "composite",
+   "criteria": [
+    "1.2.1"
+   ],
+   "techniques": [
+    "G159",
+    "G166"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [],
+   "inputRules": [
+    "fd26cf",
+    "ee13b5",
+    "d7ba54"
+   ]
+  },
+  {
+   "id": "c487ae",
+   "name": "Link has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1",
+    "2.4.4",
+    "2.4.9",
+    "4.1.2"
+   ],
+   "techniques": [
+    "G91"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "c4a8a4",
+   "name": "HTML page title is descriptive",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "2.4.2"
+   ],
+   "techniques": [
+    "G88",
+    "H25"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "c5a4ea",
+   "name": "Video element visual content has accessible alternative",
+   "status": "proposed",
+   "type": "composite",
+   "criteria": [
+    "1.2.3",
+    "1.2.5",
+    "1.2.8"
+   ],
+   "techniques": [
+    "G173",
+    "G69",
+    "G78",
+    "G8"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [],
+   "inputRules": [
+    "1ea59c",
+    "1a02b0",
+    "ab4d13"
+   ]
+  },
+  {
+   "id": "cae760",
+   "name": "Iframe element has non-empty accessible name",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "cc0f0a",
+   "name": "Form field label is descriptive",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.4.6"
+   ],
+   "techniques": [
+    "G131"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "cf77f2",
+   "name": "Bypass Blocks of Repeated Content",
+   "status": "proposed",
+   "type": "composite",
+   "criteria": [
+    "2.4.1"
+   ],
+   "techniques": [
+    "G1",
+    "G123",
+    "G124",
+    "H69",
+    "SCR28"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [],
+   "inputRules": [
+    "047fe0",
+    "b40fd1",
+    "3e12e1",
+    "ye5d6e"
+   ]
+  },
+  {
+   "id": "d0f69e",
+   "name": "Table header cell has assigned cells",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "d7ba54",
+   "name": "Video element visual-only content has audio track alternative",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "G166"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "de46e4",
+   "name": "Element with lang attribute has valid language tag",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "3.1.2"
+   ],
+   "techniques": [
+    "H58"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "e086e5",
+   "name": "Form field has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1",
+    "2.5.3",
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "e6952f",
+   "name": "Attribute is not duplicated",
+   "status": "deprecated",
+   "type": "atomic",
+   "criteria": [
+    "4.1.1"
+   ],
+   "techniques": [
+    "H94"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Source code"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "e7aa44",
+   "name": "Audio element content has text alternative",
+   "status": "proposed",
+   "type": "composite",
+   "criteria": [
+    "1.2.1"
+   ],
+   "techniques": [
+    "G158"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [],
+   "inputRules": [
+    "2eb176",
+    "afb423"
+   ]
+  },
+  {
+   "id": "e88epe",
+   "name": "Image not in the accessibility tree is decorative",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "Accessibility Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "eac66b",
+   "name": "Video element auditory content has accessible alternative",
+   "status": "proposed",
+   "type": "composite",
+   "criteria": [
+    "1.2.2"
+   ],
+   "techniques": [
+    "G87",
+    "G93",
+    "H95"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [],
+   "inputRules": [
+    "ab4d13",
+    "f51b46"
+   ]
+  },
+  {
+   "id": "ebe86a",
+   "name": "Focusable element has no keyboard trap via non-standard navigation",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "ee13b5",
+   "name": "Video element visual-only content has transcript",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.2.1",
+    "1.3.1"
+   ],
+   "techniques": [
+    "G159"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "efbfc7",
+   "name": "Text content that changes automatically can be paused, stopped or hidden",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.2.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [
+    "wcag-text:cc5"
+   ],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "f196ce",
+   "name": "Video element visual content has description track",
+   "status": "deprecated",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "G78",
+    "H96"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "f51b46",
+   "name": "Video element auditory content has captions",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.2.1"
+   ],
+   "techniques": [
+    "G87",
+    "G93",
+    "H95"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Visual output"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "fd26cf",
+   "name": "Video element visual-only content is media alternative for text",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Audio output",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "fd3a94",
+   "name": "Links with identical accessible names and same context serve equivalent purpose",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.4.4",
+    "2.4.9"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "ff89c9",
+   "name": "ARIA required context role",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "ffbc54",
+   "name": "No keyboard shortcut uses only printable characters",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "2.1.4"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "ffd0e9",
+   "name": "Heading has non-empty accessible name",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [],
+   "otherRequirements": [
+    "aria12:namecalculation"
+   ],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "in6db8",
+   "name": "ARIA required ID references exist",
+   "status": "deprecated",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1",
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [
+    "aria12:propcharacteristic_value"
+   ],
+   "inputAspects": [
+    "DOM Tree",
+    "CSS Styling"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "kb1m8s",
+   "name": "ARIA global properties not used where prohibited",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "1.3.1"
+   ],
+   "techniques": [
+    "ARIA5"
+   ],
+   "otherRequirements": [
+    "aria12:prohibitedattributes"
+   ],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "m6b1q3",
+   "name": "Menuitem has non-empty accessible name",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "4.1.2"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "off6ek",
+   "name": "HTML element language subtag matches language",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "3.1.2"
+   ],
+   "techniques": [
+    "H58"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "Accessibility Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "oj04fd",
+   "name": "Element in sequential focus order has visible focus",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "2.4.7"
+   ],
+   "techniques": [],
+   "otherRequirements": [],
+   "inputAspects": [
+    "CSS Styling",
+    "DOM Tree"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "qt1vmo",
+   "name": "Image accessible name is descriptive",
+   "status": "approved",
+   "type": "atomic",
+   "criteria": [
+    "1.1.1"
+   ],
+   "techniques": [
+    "G94",
+    "G95"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "DOM Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "ucwvc8",
+   "name": "HTML page language subtag matches default language",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [
+    "3.1.1"
+   ],
+   "techniques": [
+    "H57"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "DOM Tree",
+    "Accessibility Tree",
+    "CSS Styling",
+    "Language"
+   ],
+   "inputRules": []
+  },
+  {
+   "id": "ye5d6e",
+   "name": "Document has an instrument to move focus to non-repeated content",
+   "status": "proposed",
+   "type": "atomic",
+   "criteria": [],
+   "techniques": [
+    "G1",
+    "G123",
+    "G124"
+   ],
+   "otherRequirements": [],
+   "inputAspects": [
+    "Accessibility Tree",
+    "CSS Styling",
+    "DOM Tree",
+    "Language"
+   ],
+   "inputRules": []
+  }
+ ]
+}

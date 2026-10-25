@@ -98,4 +98,12 @@ string locator = generator.Generate(target);
 var fingerprint = RecursiveAI.OneHtml.Locators.ElementFingerprint.Create(target);
 bool queryOk = found.Count == 4 && qdoc.Root.QuerySelector(locator).Equals(target) && fingerprint.TextHash.StartsWith("sha256:", StringComparison.Ordinal);
 Console.WriteLine($"query={found.Count} locator={locator} queryOk={queryOk}");
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk ? 0 : 1;
+// Validation catalogue: embedded reference data and profile selection.
+var contrastCriterion = RecursiveAI.OneHtml.Accessibility.Validation.Catalogue.WcagCriteria.Get("1.4.3");
+bool catalogueOk = RecursiveAI.OneHtml.Accessibility.Validation.Catalogue.ValidationProfile.Wcag20AA.Includes(contrastCriterion)
+    && !RecursiveAI.OneHtml.Accessibility.Validation.Catalogue.ValidationProfile.Wcag22AA.Includes(RecursiveAI.OneHtml.Accessibility.Validation.Catalogue.WcagCriteria.Get("4.1.1"))
+    && RecursiveAI.OneHtml.Accessibility.Validation.Catalogue.AxeRules.Find("image-alt") is not null
+    && RecursiveAI.OneHtml.Accessibility.Validation.Catalogue.ActRules.All.Count > 90;
+Console.WriteLine($"catalogue: {catalogueOk} {contrastCriterion}");
+
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk ? 0 : 1;

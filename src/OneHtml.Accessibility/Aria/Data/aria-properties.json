@@ -1,0 +1,1187 @@
+{
+ "version": 1,
+ "retrieved": "2026-10-25",
+ "properties": [
+  {
+   "name": "aria-activedescendant",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "idref",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "application",
+    "combobox",
+    "composite",
+    "group",
+    "textbox"
+   ],
+   "inheritsIntoRoles": [
+    "grid",
+    "listbox",
+    "menu",
+    "menubar",
+    "radiogroup",
+    "row",
+    "searchbox",
+    "select",
+    "spinbutton",
+    "tablist",
+    "toolbar",
+    "tree",
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-atomic",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "boolean",
+   "tokens": [
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-autocomplete",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "token",
+   "tokens": [
+    "inline",
+    "list",
+    "both",
+    "none"
+   ],
+   "default": "none",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "combobox",
+    "textbox"
+   ],
+   "inheritsIntoRoles": [
+    "searchbox"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-braillelabel",
+   "module": "aria-1.3-ed",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [
+    "caption",
+    "code",
+    "definition",
+    "deletion",
+    "emphasis",
+    "generic",
+    "insertion",
+    "mark",
+    "none",
+    "paragraph",
+    "strong",
+    "subscript",
+    "suggestion",
+    "superscript",
+    "term",
+    "time",
+    "tooltip"
+   ],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-brailleroledescription",
+   "module": "aria-1.3-ed",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [
+    "generic"
+   ],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-busy",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "boolean",
+   "tokens": [
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-checked",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "tristate",
+   "tokens": [
+    "true",
+    "false",
+    "mixed",
+    "undefined"
+   ],
+   "default": "undefined",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "checkbox",
+    "menuitemcheckbox",
+    "option",
+    "radio",
+    "switch"
+   ],
+   "inheritsIntoRoles": [
+    "menuitemradio",
+    "switch",
+    "treeitem"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-colcount",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "table"
+   ],
+   "inheritsIntoRoles": [
+    "grid",
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-colindex",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "cell",
+    "row"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "gridcell",
+    "rowheader"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-colindextext",
+   "module": "aria-1.3-ed",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "cell"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "gridcell",
+    "rowheader"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-colspan",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "cell"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "rowheader"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-controls",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "idrefList",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-current",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "token",
+   "tokens": [
+    "page",
+    "step",
+    "location",
+    "date",
+    "time",
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-describedby",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "idrefList",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-description",
+   "module": "aria-1.3-ed",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-details",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "idref",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-disabled",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "boolean",
+   "tokens": [
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "application",
+    "button",
+    "composite",
+    "gridcell",
+    "group",
+    "input",
+    "link",
+    "menuitem",
+    "scrollbar",
+    "separator",
+    "tab"
+   ],
+   "inheritsIntoRoles": [
+    "checkbox",
+    "columnheader",
+    "combobox",
+    "grid",
+    "listbox",
+    "menu",
+    "menubar",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "option",
+    "radio",
+    "radiogroup",
+    "row",
+    "rowheader",
+    "searchbox",
+    "select",
+    "slider",
+    "spinbutton",
+    "switch",
+    "tablist",
+    "textbox",
+    "toolbar",
+    "tree",
+    "treegrid",
+    "treeitem"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-dropeffect",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "tokenList",
+   "tokens": [
+    "copy",
+    "execute",
+    "link",
+    "move",
+    "none",
+    "popup"
+   ],
+   "default": "none",
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": true
+  },
+  {
+   "name": "aria-errormessage",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "idref",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "application",
+    "checkbox",
+    "combobox",
+    "gridcell",
+    "listbox",
+    "radiogroup",
+    "slider",
+    "spinbutton",
+    "textbox",
+    "tree"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "rowheader",
+    "searchbox",
+    "switch",
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-expanded",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "booleanUndefined",
+   "tokens": [
+    "true",
+    "false",
+    "undefined"
+   ],
+   "default": "undefined",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "application",
+    "button",
+    "checkbox",
+    "combobox",
+    "gridcell",
+    "link",
+    "listbox",
+    "menuitem",
+    "row",
+    "rowheader",
+    "tab",
+    "treeitem"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "rowheader",
+    "switch"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-flowto",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "idrefList",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-grabbed",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "booleanUndefined",
+   "tokens": [
+    "true",
+    "false",
+    "undefined"
+   ],
+   "default": "undefined",
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": true
+  },
+  {
+   "name": "aria-haspopup",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "token",
+   "tokens": [
+    "false",
+    "true",
+    "menu",
+    "listbox",
+    "tree",
+    "grid",
+    "dialog"
+   ],
+   "default": "false",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "application",
+    "button",
+    "combobox",
+    "gridcell",
+    "link",
+    "menuitem",
+    "slider",
+    "tab",
+    "textbox",
+    "treeitem"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "rowheader",
+    "searchbox"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-hidden",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "booleanUndefined",
+   "tokens": [
+    "true",
+    "false",
+    "undefined"
+   ],
+   "default": "undefined",
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-invalid",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "token",
+   "tokens": [
+    "grammar",
+    "false",
+    "spelling",
+    "true"
+   ],
+   "default": "false",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "application",
+    "checkbox",
+    "combobox",
+    "gridcell",
+    "listbox",
+    "radiogroup",
+    "slider",
+    "spinbutton",
+    "textbox",
+    "tree"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "rowheader",
+    "searchbox",
+    "switch",
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-keyshortcuts",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-label",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [
+    "caption",
+    "code",
+    "deletion",
+    "emphasis",
+    "generic",
+    "insertion",
+    "paragraph",
+    "presentation",
+    "strong",
+    "subscript",
+    "superscript"
+   ],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-labelledby",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "idrefList",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [
+    "caption",
+    "code",
+    "deletion",
+    "emphasis",
+    "generic",
+    "insertion",
+    "paragraph",
+    "presentation",
+    "strong",
+    "subscript",
+    "superscript"
+   ],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-level",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "heading",
+    "listitem",
+    "row"
+   ],
+   "inheritsIntoRoles": [
+    "treeitem"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-live",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "token",
+   "tokens": [
+    "assertive",
+    "off",
+    "polite"
+   ],
+   "default": "off",
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-modal",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "boolean",
+   "tokens": [
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "window"
+   ],
+   "inheritsIntoRoles": [
+    "alertdialog",
+    "dialog"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-multiline",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "boolean",
+   "tokens": [
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "textbox"
+   ],
+   "inheritsIntoRoles": [
+    "searchbox"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-multiselectable",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "boolean",
+   "tokens": [
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "grid",
+    "listbox",
+    "tablist",
+    "tree"
+   ],
+   "inheritsIntoRoles": [
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-orientation",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "token",
+   "tokens": [
+    "horizontal",
+    "undefined",
+    "vertical"
+   ],
+   "default": "undefined",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "scrollbar",
+    "select",
+    "separator",
+    "slider",
+    "tablist",
+    "toolbar"
+   ],
+   "inheritsIntoRoles": [
+    "listbox",
+    "menu",
+    "menubar",
+    "radiogroup",
+    "tree",
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-owns",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "idrefList",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-placeholder",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "textbox"
+   ],
+   "inheritsIntoRoles": [
+    "searchbox"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-posinset",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "article",
+    "listitem",
+    "menuitem",
+    "option",
+    "radio",
+    "row",
+    "tab"
+   ],
+   "inheritsIntoRoles": [
+    "menuitemcheckbox",
+    "menuitemradio",
+    "treeitem"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-pressed",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "tristate",
+   "tokens": [
+    "true",
+    "false",
+    "mixed",
+    "undefined"
+   ],
+   "default": "undefined",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "button"
+   ],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-readonly",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "boolean",
+   "tokens": [
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "checkbox",
+    "combobox",
+    "grid",
+    "gridcell",
+    "listbox",
+    "radiogroup",
+    "slider",
+    "spinbutton",
+    "textbox"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "rowheader",
+    "searchbox",
+    "switch",
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-relevant",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "tokenList",
+   "tokens": [
+    "additions",
+    "additions text",
+    "all",
+    "removals",
+    "text"
+   ],
+   "default": "additions text",
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-required",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "boolean",
+   "tokens": [
+    "true",
+    "false"
+   ],
+   "default": "false",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "checkbox",
+    "combobox",
+    "gridcell",
+    "listbox",
+    "radiogroup",
+    "spinbutton",
+    "textbox",
+    "tree"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "rowheader",
+    "searchbox",
+    "switch",
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-roledescription",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": true,
+   "globalExceptRoles": [],
+   "usedInRoles": [],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-rowcount",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "table"
+   ],
+   "inheritsIntoRoles": [
+    "grid",
+    "treegrid"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-rowindex",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "cell",
+    "row"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "gridcell",
+    "rowheader"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-rowindextext",
+   "module": "aria-1.3-ed",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "cell",
+    "row"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "gridcell",
+    "rowheader"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-rowspan",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "cell"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "rowheader"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-selected",
+   "module": "aria-1.2",
+   "isState": true,
+   "type": "booleanUndefined",
+   "tokens": [
+    "true",
+    "false",
+    "undefined"
+   ],
+   "default": "undefined",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "gridcell",
+    "option",
+    "row",
+    "tab"
+   ],
+   "inheritsIntoRoles": [
+    "columnheader",
+    "rowheader",
+    "treeitem"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-setsize",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "integer",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "article",
+    "listitem",
+    "menuitem",
+    "option",
+    "radio",
+    "row",
+    "tab"
+   ],
+   "inheritsIntoRoles": [
+    "menuitemcheckbox",
+    "menuitemradio",
+    "treeitem"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-sort",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "token",
+   "tokens": [
+    "ascending",
+    "descending",
+    "none",
+    "other"
+   ],
+   "default": "none",
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "columnheader",
+    "rowheader"
+   ],
+   "inheritsIntoRoles": [],
+   "deprecated": false
+  },
+  {
+   "name": "aria-valuemax",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "number",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "range",
+    "scrollbar",
+    "separator",
+    "slider",
+    "spinbutton"
+   ],
+   "inheritsIntoRoles": [
+    "meter",
+    "progressbar",
+    "scrollbar",
+    "slider",
+    "spinbutton"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-valuemin",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "number",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "range",
+    "scrollbar",
+    "separator",
+    "slider",
+    "spinbutton"
+   ],
+   "inheritsIntoRoles": [
+    "meter",
+    "progressbar",
+    "scrollbar",
+    "slider",
+    "spinbutton"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-valuenow",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "number",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "meter",
+    "range",
+    "scrollbar",
+    "separator",
+    "slider",
+    "spinbutton"
+   ],
+   "inheritsIntoRoles": [
+    "meter",
+    "progressbar",
+    "scrollbar",
+    "slider",
+    "spinbutton"
+   ],
+   "deprecated": false
+  },
+  {
+   "name": "aria-valuetext",
+   "module": "aria-1.2",
+   "isState": false,
+   "type": "string",
+   "tokens": [],
+   "default": null,
+   "global": false,
+   "globalExceptRoles": [],
+   "usedInRoles": [
+    "range",
+    "separator",
+    "spinbutton"
+   ],
+   "inheritsIntoRoles": [
+    "meter",
+    "progressbar",
+    "scrollbar",
+    "slider",
+    "spinbutton"
+   ],
+   "deprecated": false
+  }
+ ]
+}

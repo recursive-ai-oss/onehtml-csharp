@@ -1,0 +1,35 @@
+{
+  "retrieved": "2026-10-25",
+  "specs": {
+    "aria-1.2": {
+      "file": "aria-1.2.html",
+      "url": "https://www.w3.org/TR/2023/REC-wai-aria-1.2-20230606/",
+      "title": "Accessible Rich Internet Applications (WAI-ARIA) 1.2, W3C Recommendation, 6 June 2023",
+      "sha256": "c0fea16fc747779569ab754d2d25bca3e2b7e8a673b8ef5362aeb9ebc73a4849"
+    },
+    "dpub-aria": {
+      "file": "dpub-aria.html",
+      "url": "https://www.w3.org/TR/dpub-aria-1.1/",
+      "title": "Digital Publishing WAI-ARIA Module 1.1, W3C Recommendation, 12 June 2025",
+      "sha256": "69cc6bb0b2d65e9d0cfcf2521d9208f9a0602f5b33eeded274acb0c7b695c604"
+    },
+    "graphics-aria": {
+      "file": "graphics-aria.html",
+      "url": "https://www.w3.org/TR/graphics-aria-1.0/",
+      "title": "WAI-ARIA Graphics Module 1.0, W3C Recommendation",
+      "sha256": "2b1219a68541135dc717f552ec33fe36fe4e89e3f27ec3b5a6e1f5df84969664"
+    },
+    "html-aam": {
+      "file": "html-aam.html",
+      "url": "https://www.w3.org/TR/html-aam-1.0/",
+      "title": "HTML Accessibility API Mappings 1.0, W3C Working Draft, 21 October 2026",
+      "sha256": "5ae5af42307d3360cbe1831fe49821bfdf618d075088b96e1dff19101dfe8924"
+    },
+    "aria-1.3-ed": {
+      "file": "aria-1.3-ed.html",
+      "url": "https://w3c.github.io/aria/",
+      "title": "Accessible Rich Internet Applications (WAI-ARIA) 1.3, W3C Editor's Draft, 21 October 2026 (used only for the additions listed in docs/accessibility-roles.md)",
+      "sha256": "6ac58f1c16619e40441cf47c50d75c70fde82b15e7a100fe738bc56da7379805"
+    }
+  }
+}

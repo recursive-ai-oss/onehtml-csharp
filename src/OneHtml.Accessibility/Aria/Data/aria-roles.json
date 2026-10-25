@@ -1,0 +1,7573 @@
+{
+ "version": 1,
+ "retrieved": "2026-10-25",
+ "sources": {
+  "aria-1.2": {
+   "url": "https://www.w3.org/TR/2023/REC-wai-aria-1.2-20230606/",
+   "title": "Accessible Rich Internet Applications (WAI-ARIA) 1.2, W3C Recommendation, 6 June 2023",
+   "sha256": "c0fea16fc747779569ab754d2d25bca3e2b7e8a673b8ef5362aeb9ebc73a4849"
+  },
+  "dpub-aria": {
+   "url": "https://www.w3.org/TR/dpub-aria-1.1/",
+   "title": "Digital Publishing WAI-ARIA Module 1.1, W3C Recommendation, 12 June 2025",
+   "sha256": "69cc6bb0b2d65e9d0cfcf2521d9208f9a0602f5b33eeded274acb0c7b695c604"
+  },
+  "graphics-aria": {
+   "url": "https://www.w3.org/TR/graphics-aria-1.0/",
+   "title": "WAI-ARIA Graphics Module 1.0, W3C Recommendation",
+   "sha256": "2b1219a68541135dc717f552ec33fe36fe4e89e3f27ec3b5a6e1f5df84969664"
+  },
+  "aria-1.3-ed": {
+   "url": "https://w3c.github.io/aria/",
+   "title": "Accessible Rich Internet Applications (WAI-ARIA) 1.3, W3C Editor's Draft, 21 October 2026 (used only for the additions listed in docs/accessibility-roles.md)",
+   "sha256": "6ac58f1c16619e40441cf47c50d75c70fde82b15e7a100fe738bc56da7379805"
+  }
+ },
+ "implicitFromDraft": [],
+ "roles": [
+  {
+   "name": "alert",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-live": "assertive",
+    "aria-atomic": "true"
+   }
+  },
+  {
+   "name": "alertdialog",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "alert",
+    "dialog"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-modal",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "application",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "structure"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "article",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "document"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "banner",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "blockquote",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "button",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "command"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-pressed",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  },
+  {
+   "name": "caption",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [
+    "figure",
+    "grid",
+    "table",
+    "treegrid"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "cell",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [
+    "row"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-colindex",
+    "aria-colindextext",
+    "aria-colspan",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-rowindex",
+    "aria-rowindextext",
+    "aria-rowspan"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "checkbox",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "input"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [
+    "aria-checked"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-checked",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-haspopup"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  },
+  {
+   "name": "code",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "columnheader",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "cell",
+    "gridcell",
+    "sectionhead"
+   ],
+   "requiredContext": [
+    "row"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-colindex",
+    "aria-colindextext",
+    "aria-colspan",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription",
+    "aria-rowindex",
+    "aria-rowindextext",
+    "aria-rowspan",
+    "aria-selected",
+    "aria-sort"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "combobox",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "input"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [
+    "aria-controls",
+    "aria-expanded"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-autocomplete",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-haspopup": "listbox"
+   }
+  },
+  {
+   "name": "command",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "widget"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "complementary",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "composite",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "widget"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "contentinfo",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "definition",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "deletion",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "dialog",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "window"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-modal",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "directory",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "list"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "document",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "structure"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "emphasis",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "feed",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "list"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "article"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "figure",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "form",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "generic",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "structure"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby",
+    "aria-roledescription"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "grid",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "composite",
+    "table"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "row"
+    ],
+    [
+     "rowgroup",
+     "row"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-colcount",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-multiselectable",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-rowcount"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "gridcell",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "cell",
+    "widget"
+   ],
+   "requiredContext": [
+    "row"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-colindex",
+    "aria-colindextext",
+    "aria-colspan",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription",
+    "aria-rowindex",
+    "aria-rowindextext",
+    "aria-rowspan",
+    "aria-selected"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "group",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "heading",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "sectionhead"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [
+    "aria-level"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-level",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "img",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  },
+  {
+   "name": "input",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "widget"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "insertion",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "landmark",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "link",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "command"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "list",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "listitem"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "listbox",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "select"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "group",
+     "option"
+    ],
+    [
+     "option"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-multiselectable",
+    "aria-orientation",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-haspopup"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-orientation": "vertical"
+   }
+  },
+  {
+   "name": "listitem",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [
+    "directory",
+    "list"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-level",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "log",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-live": "polite"
+   }
+  },
+  {
+   "name": "main",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "marquee",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "math",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "menu",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "select"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "group",
+     "menuitem"
+    ],
+    [
+     "group",
+     "menuitemradio"
+    ],
+    [
+     "group",
+     "menuitemcheckbox"
+    ],
+    [
+     "menuitem"
+    ],
+    [
+     "menuitemcheckbox"
+    ],
+    [
+     "menuitemradio"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-orientation": "vertical"
+   }
+  },
+  {
+   "name": "menubar",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "menu"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "group",
+     "menuitem"
+    ],
+    [
+     "group",
+     "menuitemradio"
+    ],
+    [
+     "group",
+     "menuitemcheckbox"
+    ],
+    [
+     "menuitem"
+    ],
+    [
+     "menuitemcheckbox"
+    ],
+    [
+     "menuitemradio"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-orientation": "horizontal"
+   }
+  },
+  {
+   "name": "menuitem",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "command"
+   ],
+   "requiredContext": [
+    "group",
+    "menu",
+    "menubar"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "menuitemcheckbox",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "menuitem"
+   ],
+   "requiredContext": [
+    "group",
+    "menu",
+    "menubar"
+   ],
+   "requiredOwned": [],
+   "required": [
+    "aria-checked"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-checked",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  },
+  {
+   "name": "menuitemradio",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "menuitemcheckbox"
+   ],
+   "requiredContext": [
+    "group",
+    "menu",
+    "menubar"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-checked",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  },
+  {
+   "name": "meter",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "range"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [
+    "aria-valuenow"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-valuemax",
+    "aria-valuemin",
+    "aria-valuenow",
+    "aria-valuetext"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {
+    "aria-valuemin": "0",
+    "aria-valuemax": "100"
+   }
+  },
+  {
+   "name": "navigation",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "none",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-description"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "note",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "option",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "input"
+   ],
+   "requiredContext": [
+    "group",
+    "listbox"
+   ],
+   "requiredOwned": [],
+   "required": [
+    "aria-selected"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-checked",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-selected",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {
+    "aria-selected": "false"
+   }
+  },
+  {
+   "name": "paragraph",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "presentation",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "structure"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "progressbar",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "range",
+    "widget"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-valuemax",
+    "aria-valuemin",
+    "aria-valuenow",
+    "aria-valuetext"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {
+    "aria-valuemin": "0",
+    "aria-valuemax": "100"
+   }
+  },
+  {
+   "name": "radio",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "input"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [
+    "aria-checked"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-checked",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  },
+  {
+   "name": "radiogroup",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "select"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "radio"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-haspopup"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "range",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "structure"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-valuemax",
+    "aria-valuemin",
+    "aria-valuenow",
+    "aria-valuetext"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "region",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "roletype",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "row",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "group",
+    "widget"
+   ],
+   "requiredContext": [
+    "grid",
+    "rowgroup",
+    "table",
+    "treegrid"
+   ],
+   "requiredOwned": [
+    [
+     "cell"
+    ],
+    [
+     "columnheader"
+    ],
+    [
+     "gridcell"
+    ],
+    [
+     "rowheader"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-colindex",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-level",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-rowindex",
+    "aria-rowindextext",
+    "aria-selected",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "rowgroup",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "structure"
+   ],
+   "requiredContext": [
+    "grid",
+    "table",
+    "treegrid"
+   ],
+   "requiredOwned": [
+    [
+     "row"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "rowheader",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "cell",
+    "gridcell",
+    "sectionhead"
+   ],
+   "requiredContext": [
+    "row"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-colindex",
+    "aria-colindextext",
+    "aria-colspan",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription",
+    "aria-rowindex",
+    "aria-rowindextext",
+    "aria-rowspan",
+    "aria-selected",
+    "aria-sort"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "scrollbar",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "range",
+    "widget"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [
+    "aria-controls",
+    "aria-valuenow"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-valuemax",
+    "aria-valuemin",
+    "aria-valuenow",
+    "aria-valuetext"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": true,
+   "implicit": {
+    "aria-orientation": "vertical",
+    "aria-valuemin": "0",
+    "aria-valuemax": "100"
+   }
+  },
+  {
+   "name": "search",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "searchbox",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "textbox"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-autocomplete",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-multiline",
+    "aria-owns",
+    "aria-placeholder",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "section",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "structure"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "sectionhead",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "structure"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "select",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "composite",
+    "group"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "separator",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "structure",
+    "widget"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [
+    "aria-valuenow"
+   ],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-valuemax",
+    "aria-valuemin",
+    "aria-valuenow",
+    "aria-valuetext"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": true,
+   "implicit": {
+    "aria-orientation": "horizontal",
+    "aria-valuemin": "0",
+    "aria-valuemax": "100"
+   }
+  },
+  {
+   "name": "slider",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "input",
+    "range"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [
+    "aria-valuenow"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-valuemax",
+    "aria-valuemin",
+    "aria-valuenow",
+    "aria-valuetext"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {
+    "aria-orientation": "horizontal",
+    "aria-valuemin": "0",
+    "aria-valuemax": "100"
+   }
+  },
+  {
+   "name": "spinbutton",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "composite",
+    "input",
+    "range"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription",
+    "aria-valuemax",
+    "aria-valuemin",
+    "aria-valuenow",
+    "aria-valuetext"
+   ],
+   "deprecated": [
+    "aria-haspopup"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-valuemin": "that",
+    "aria-valuemax": "that",
+    "aria-valuenow": "0"
+   }
+  },
+  {
+   "name": "status",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-live": "polite",
+    "aria-atomic": "true"
+   }
+  },
+  {
+   "name": "strong",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "structure",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "roletype"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "subscript",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "superscript",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "switch",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "checkbox"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [
+    "aria-checked"
+   ],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-checked",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-haspopup"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  },
+  {
+   "name": "tab",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "sectionhead",
+    "widget"
+   ],
+   "requiredContext": [
+    "tablist"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-selected",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": true,
+   "implicit": {
+    "aria-selected": "false"
+   }
+  },
+  {
+   "name": "table",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "row"
+    ],
+    [
+     "rowgroup",
+     "row"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-colcount",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-rowcount"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "tablist",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "composite"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "tab"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-multiselectable",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-orientation": "horizontal"
+   }
+  },
+  {
+   "name": "tabpanel",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "term",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "textbox",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "input"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-autocomplete",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-multiline",
+    "aria-owns",
+    "aria-placeholder",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "time",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "timer",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "status"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "toolbar",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "group"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-orientation": "horizontal"
+   }
+  },
+  {
+   "name": "tooltip",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "tree",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "select"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "group",
+     "treeitem"
+    ],
+    [
+     "treeitem"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-multiselectable",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-haspopup"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {
+    "aria-orientation": "vertical"
+   }
+  },
+  {
+   "name": "treegrid",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "grid",
+    "tree"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [
+    [
+     "row"
+    ],
+    [
+     "rowgroup",
+     "row"
+    ]
+   ],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-colcount",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-multiselectable",
+    "aria-orientation",
+    "aria-owns",
+    "aria-readonly",
+    "aria-relevant",
+    "aria-required",
+    "aria-roledescription",
+    "aria-rowcount"
+   ],
+   "deprecated": [
+    "aria-haspopup"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "treeitem",
+   "module": "aria-1.2",
+   "abstract": false,
+   "superclasses": [
+    "listitem",
+    "option"
+   ],
+   "requiredContext": [
+    "group",
+    "tree"
+   ],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-checked",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-level",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-selected",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-errormessage",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "widget",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "roletype"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "window",
+   "module": "aria-1.2",
+   "abstract": true,
+   "superclasses": [
+    "roletype"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-modal",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "comment",
+   "module": "aria-1.3-ed",
+   "abstract": false,
+   "superclasses": [
+    "article"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-level",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "mark",
+   "module": "aria-1.3-ed",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-braillelabel",
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "suggestion",
+   "module": "aria-1.3-ed",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [
+    "aria-braillelabel",
+    "aria-label",
+    "aria-labelledby"
+   ],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-abstract",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-acknowledgments",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-afterword",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-appendix",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-backlink",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "link"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-biblioentry",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "listitem"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-bibliography",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-biblioref",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "link"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-chapter",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-colophon",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-conclusion",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-cover",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "img"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-credit",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-credits",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-dedication",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-endnote",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "listitem"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-posinset",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-setsize"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-endnotes",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-epigraph",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-epilogue",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-errata",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-example",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "figure"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-footnote",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-foreword",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-glossary",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-glossref",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "link"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-index",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "navigation"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-introduction",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-noteref",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "link"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-notice",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "note"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-pagebreak",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "separator"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-orientation",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription",
+    "aria-valuemax",
+    "aria-valuemin",
+    "aria-valuenow",
+    "aria-valuetext"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  },
+  {
+   "name": "doc-pagefooter",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-pageheader",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "prohibited"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-pagelist",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "navigation"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-part",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-preface",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-prologue",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "landmark"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-pullquote",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-qna",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "section"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-subtitle",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "sectionhead"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "contents",
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-tip",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "note"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "doc-toc",
+   "module": "dpub-aria-1.1",
+   "abstract": false,
+   "superclasses": [
+    "navigation"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [
+    "aria-disabled",
+    "aria-errormessage",
+    "aria-haspopup",
+    "aria-invalid"
+   ],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "graphics-document",
+   "module": "graphics-aria-1.0",
+   "abstract": false,
+   "superclasses": [
+    "document"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "graphics-object",
+   "module": "graphics-aria-1.0",
+   "abstract": false,
+   "superclasses": [
+    "group"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-activedescendant",
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "author",
+    "contents"
+   ],
+   "nameRequired": false,
+   "childrenPresentational": false,
+   "implicit": {}
+  },
+  {
+   "name": "graphics-symbol",
+   "module": "graphics-aria-1.0",
+   "abstract": false,
+   "superclasses": [
+    "img"
+   ],
+   "requiredContext": [],
+   "requiredOwned": [],
+   "required": [],
+   "requiredWhenFocusable": [],
+   "supported": [
+    "aria-atomic",
+    "aria-braillelabel",
+    "aria-brailleroledescription",
+    "aria-busy",
+    "aria-controls",
+    "aria-current",
+    "aria-describedby",
+    "aria-description",
+    "aria-details",
+    "aria-disabled",
+    "aria-dropeffect",
+    "aria-errormessage",
+    "aria-expanded",
+    "aria-flowto",
+    "aria-grabbed",
+    "aria-haspopup",
+    "aria-hidden",
+    "aria-invalid",
+    "aria-keyshortcuts",
+    "aria-label",
+    "aria-labelledby",
+    "aria-live",
+    "aria-owns",
+    "aria-relevant",
+    "aria-roledescription"
+   ],
+   "deprecated": [],
+   "prohibited": [],
+   "nameFrom": [
+    "author"
+   ],
+   "nameRequired": true,
+   "childrenPresentational": true,
+   "implicit": {}
+  }
+ ]
+}

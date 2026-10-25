@@ -3,7 +3,9 @@
     <OutputType>Exe</OutputType>
     <IsTestProject>true</IsTestProject>
     <RootNamespace>RecursiveAI.OneHtml.Accessibility.Tests</RootNamespace>
-    <NoWarn>$(NoWarn);CA1707</NoWarn>
+    <!-- CA1707: test names use underscores. xUnit1051: the library calls under test are synchronous and finish in
+         milliseconds, so there is nothing to cancel. -->
+    <NoWarn>$(NoWarn);CA1707;xUnit1051</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="xunit.v3" />

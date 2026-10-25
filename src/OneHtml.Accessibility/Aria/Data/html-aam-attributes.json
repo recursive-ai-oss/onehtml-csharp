@@ -1,0 +1,1468 @@
+{
+ "version": 1,
+ "source": {
+  "url": "https://www.w3.org/TR/html-aam-1.0/",
+  "title": "HTML Accessibility API Mappings 1.0, W3C Working Draft, 21 October 2026",
+  "sha256": "5ae5af42307d3360cbe1831fe49821bfdf618d075088b96e1dff19101dfe8924"
+ },
+ "attributes": [
+  {
+   "id": "abbr",
+   "title": "abbr",
+   "html": "abbr",
+   "elements": "th",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "accept",
+   "title": "accept",
+   "html": "accept",
+   "elements": "input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "accept-charset",
+   "title": "accept-charset",
+   "html": "accept-charset",
+   "elements": "form",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "accesskey",
+   "title": "accesskey",
+   "html": "accesskey",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "action",
+   "title": "action",
+   "html": "action",
+   "elements": "form",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "allow",
+   "title": "allow",
+   "html": "allow",
+   "elements": "iframe",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "allowfullscreen",
+   "title": "allowfullscreen",
+   "html": "allowfullscreen",
+   "elements": "iframe",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "alt",
+   "title": "alt",
+   "html": "alt",
+   "elements": "area; img; input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "as",
+   "title": "as",
+   "html": "as",
+   "elements": "link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "async",
+   "title": "async",
+   "html": "async",
+   "elements": "script",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "autocapitalize",
+   "title": "autocapitalize",
+   "html": "autocapitalize",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "autocomplete-form",
+   "title": "autocomplete",
+   "html": "autocomplete",
+   "elements": "form",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "Note Note: the aria-autocomplete attribute and the HTML autocomplete attribute have disparate features. The aria-autocomplete attribute is not supported on the HTML form element or elements with an explicit ARIA form role. Note When used on a form element, the autocomplete attribute identifies whether form controls owned by the form will have their autofill field name set to \"on\" or \"off\" by default. See autocomplete for input, select, textarea for control mappings."
+  },
+  {
+   "id": "autocomplete",
+   "title": "autocomplete",
+   "html": "autocomplete",
+   "elements": "input, select and textarea",
+   "aria": "If specified autocomplete=off or the control is owned by a form with autocomplete=off - aria-autocomplete=none Otherwise, aria-autocomplete Note Note: the aria-autocomplete attribute and the HTML autocomplete attribute have disparate features, but they overlap as mechanisms for user agents to expose the control's support for autocompletion.",
+   "computedRole": "",
+   "comments": "If the form control has been specified as both autocomplete=off (whether due to explicit use of the attribute, or from inheriting the off state from a parent form element with autocomplete=off) and with an aria-autocomplete attribute with a valid value, user agents MUST expose only the aria-autocomplete attribute value. Otherwise, if the form control has an autocomplete attribute specified with a valid token value, and an aria-autocomplete attribute, then user agents MUST expose only the autocomplete attribute value."
+  },
+  {
+   "id": "autofocus",
+   "title": "autofocus",
+   "html": "autofocus",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "Provides a minimum role of group."
+  },
+  {
+   "id": "autoplay",
+   "title": "autoplay",
+   "html": "autoplay",
+   "elements": "audio and video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "blocking",
+   "title": "blocking",
+   "html": "blocking",
+   "elements": "link; script; style",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "charset-meta",
+   "title": "charset",
+   "html": "charset",
+   "elements": "meta",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "checked",
+   "title": "checked (if present)",
+   "html": "checked (if present)",
+   "elements": "input type=checkbox or type=radio",
+   "aria": "aria-checked=\"true\"",
+   "computedRole": "",
+   "comments": "If an input element in the checkbox or radio state includes both the checked attribute and the aria-checked attribute with a valid value, User Agents MUST expose only the checked attribute value."
+  },
+  {
+   "id": "checked-absent",
+   "title": "checked (if absent)",
+   "html": "checked (if absent)",
+   "elements": "input type=checkbox or type=radio",
+   "aria": "aria-checked=\"false\"",
+   "computedRole": "",
+   "comments": "An input element in the checkbox or radio state without a checked attribute has an implicit \"false\" state. User Agents MUST ignore an aria-checked attribute which conflicts with the native element's implicit checked state."
+  },
+  {
+   "id": "cite",
+   "title": "cite",
+   "html": "cite",
+   "elements": "blockquote; del and ins; q",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "class",
+   "title": "class",
+   "html": "class",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "color",
+   "title": "color",
+   "html": "color",
+   "elements": "link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "cols",
+   "title": "cols",
+   "html": "cols",
+   "elements": "textarea",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "Not mapped"
+  },
+  {
+   "id": "colspan",
+   "title": "colspan",
+   "html": "colspan",
+   "elements": "td and th",
+   "aria": "aria-colspan",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "command-popovers",
+   "title": "command (in the Toggle, Show, and Hide popover states)",
+   "html": "command",
+   "elements": "button (command in the Toggle popover state Show popover state and Hide popover state)",
+   "aria": "If the associated element is displayed as a popover: aria-expanded=true If the associated element is hidden: aria-expanded=false If the associated element is an accessibility ancestor of the element with the command attribute or is not present in the DOM: aria-expanded=undefined If the associated element is not a valid popover element: no aria-expanded mapping.",
+   "computedRole": "",
+   "comments": "User Agents MUST expose an aria-details relationship with the associated element (identified via the specified commandfor attribute) except under the following conditions: The associated popover element is the next immediate accessibility sibling to the invoking element, The element is a descendant of the popover it is associated with. Note A button that represents a submit button or is in the reset state with a form owner cannot invoke a command."
+  },
+  {
+   "id": "command-dialogs",
+   "title": "command (in the Close and Show Modal states)",
+   "html": "command",
+   "elements": "button (command in the Close state) and Show Modal state)",
+   "aria": "A command attribute in the close and show-modal states provide no additional accessibility mappings to the button element.",
+   "computedRole": "",
+   "comments": "Note A button that represents a submit button or is in the reset state with a form owner cannot invoke a command."
+  },
+  {
+   "id": "commandfor",
+   "title": "commandfor",
+   "html": "commandfor",
+   "elements": "button",
+   "aria": "See comments",
+   "computedRole": "",
+   "comments": "The commandfor attribute identifies the associated element for the button element. The specified command state will determine if a relationship mapping needs to be exposed between the button and its programmatically associated element."
+  },
+  {
+   "id": "content",
+   "title": "content",
+   "html": "content",
+   "elements": "meta",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "contenteditable",
+   "title": "contenteditable",
+   "html": "contenteditable",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "If the element is set to contenteditable and aria-readonly=\"true\", User Agents MUST expose only the contenteditable state."
+  },
+  {
+   "id": "controls",
+   "title": "controls",
+   "html": "controls",
+   "elements": "audio and video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "coords",
+   "title": "coords",
+   "html": "coords",
+   "elements": "area",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "crossorigin",
+   "title": "crossorigin",
+   "html": "crossorigin",
+   "elements": "audio; img; link; script; video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "data",
+   "title": "data",
+   "html": "data",
+   "elements": "object",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "datetime-delins",
+   "title": "datetime",
+   "html": "datetime",
+   "elements": "del and ins",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "datetime-time",
+   "title": "datetime",
+   "html": "datetime",
+   "elements": "time",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "decoding",
+   "title": "decoding",
+   "html": "decoding",
+   "elements": "img",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "default",
+   "title": "default",
+   "html": "default",
+   "elements": "track",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "defer",
+   "title": "defer",
+   "html": "defer",
+   "elements": "script",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "dir",
+   "title": "dir",
+   "html": "dir",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "dir-bdo",
+   "title": "dir",
+   "html": "dir",
+   "elements": "bdo",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "dirname",
+   "title": "dirname",
+   "html": "dirname",
+   "elements": "input and textarea",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "disabled",
+   "title": "disabled",
+   "html": "disabled",
+   "elements": "button; input; optgroup; option; select; textarea; form-associated custom element",
+   "aria": "aria-disabled=\"true\"",
+   "computedRole": "",
+   "comments": "If the element has both the disabled attribute and the aria-disabled attribute with a valid value, User Agents MUST expose only the disabled attribute value."
+  },
+  {
+   "id": "disabled-fieldset",
+   "title": "disabled",
+   "html": "disabled",
+   "elements": "fieldset",
+   "aria": "aria-disabled=\"true\"",
+   "computedRole": "",
+   "comments": "Form controls within a valid legend child element of a fieldset with a disabled attribute do not become disabled. If the element has both the disabled attribute and the aria-disabled attribute with a valid value, User Agents MUST expose only the disabled attribute value."
+  },
+  {
+   "id": "disabled-link",
+   "title": "disabled",
+   "html": "disabled",
+   "elements": "link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "download",
+   "title": "download",
+   "html": "download",
+   "elements": "a and area",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "draggable",
+   "title": "draggable",
+   "html": "draggable",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "Provides a minimum role of group."
+  },
+  {
+   "id": "enctype",
+   "title": "enctype",
+   "html": "enctype",
+   "elements": "form",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "enterkeyhint",
+   "title": "enterkeyhint",
+   "html": "enterkeyhint",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "Modifies the action label (or icon) to present for the enter key on virtual keyboards."
+  },
+  {
+   "id": "fetchpriority",
+   "title": "fetchpriority",
+   "html": "fetchpriority",
+   "elements": "img; link; script",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "for-label",
+   "title": "for",
+   "html": "for",
+   "elements": "label",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "for-output",
+   "title": "for",
+   "html": "for",
+   "elements": "output",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "form",
+   "title": "form",
+   "html": "form",
+   "elements": "button; fieldset; input; label; object; output; select; textarea; form-associated custom element",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "formaction",
+   "title": "formaction",
+   "html": "formaction",
+   "elements": "button; input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "formenctype",
+   "title": "formenctype",
+   "html": "formenctype",
+   "elements": "button; input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "formmethod",
+   "title": "formmethod",
+   "html": "formmethod",
+   "elements": "button; input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "formnovalidate",
+   "title": "formnovalidate",
+   "html": "formnovalidate",
+   "elements": "button; input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "formtarget",
+   "title": "formtarget",
+   "html": "formtarget",
+   "elements": "button; input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "headers",
+   "title": "headers",
+   "html": "headers",
+   "elements": "td; th",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "height",
+   "title": "height",
+   "html": "height",
+   "elements": "canvas; embed; iframe; img; input; object; source (in picture); video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "hidden",
+   "title": "hidden",
+   "html": "hidden",
+   "elements": "HTML elements",
+   "aria": "aria-hidden=\"true\" if the element retains its user agent default styling of display: none. Otherwise, if no other method for hiding the content is used (e.g., visibility: hidden) then it is not mapped.",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "high",
+   "title": "high",
+   "html": "high",
+   "elements": "meter",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "href",
+   "title": "href",
+   "html": "href",
+   "elements": "a; area",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "href-link",
+   "title": "href",
+   "html": "href",
+   "elements": "link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "hreflang",
+   "title": "hreflang",
+   "html": "hreflang",
+   "elements": "a; link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "http-equiv",
+   "title": "http-equiv",
+   "html": "http-equiv",
+   "elements": "meta",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "id",
+   "title": "id",
+   "html": "id",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "inert",
+   "title": "inert",
+   "html": "inert",
+   "elements": "HTML elements",
+   "aria": "Not Mapped",
+   "computedRole": "",
+   "comments": "Nodes that are inert are not exposed to an accessibility API. Note Note: an inert node can have descendants that are not inert. For example, a modal dialog can escape an inert subtree."
+  },
+  {
+   "id": "indeterminate",
+   "title": "indeterminate [IDL]",
+   "html": "indeterminate [IDL]",
+   "elements": "HTML elements; input",
+   "aria": "aria-checked (state)=\"mixed\"",
+   "computedRole": "",
+   "comments": "If the element has the indeterminate [IDL] set and the aria-checked attribute set, User Agents MUST expose only the indeterminate [IDL] state."
+  },
+  {
+   "id": "ismap",
+   "title": "ismap",
+   "html": "ismap",
+   "elements": "img",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "itemid",
+   "title": "itemid",
+   "html": "itemid",
+   "elements": "img",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "itemprop",
+   "title": "itemprop",
+   "html": "itemprop",
+   "elements": "img",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "itemref",
+   "title": "itemref",
+   "html": "itemref",
+   "elements": "img",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "itemscope",
+   "title": "itemscope",
+   "html": "itemscope",
+   "elements": "img",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "itemtype",
+   "title": "itemtype",
+   "html": "itemtype",
+   "elements": "img",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "kind",
+   "title": "kind",
+   "html": "kind",
+   "elements": "track",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "label",
+   "title": "label",
+   "html": "label",
+   "elements": "optgroup; option; track",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "See Also: Accessible Name and Description: Computation and API Mappings"
+  },
+  {
+   "id": "lang",
+   "title": "lang",
+   "html": "lang",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "list",
+   "title": "list",
+   "html": "list",
+   "elements": "input",
+   "aria": "aria-controls",
+   "computedRole": "",
+   "comments": "Refer to datalist and input element mappings."
+  },
+  {
+   "id": "loop",
+   "title": "loop",
+   "html": "loop",
+   "elements": "audio; video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "low",
+   "title": "low",
+   "html": "low",
+   "elements": "meter",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "max-input",
+   "title": "max",
+   "html": "max",
+   "elements": "input",
+   "aria": "aria-valuemax",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "max",
+   "title": "max",
+   "html": "max",
+   "elements": "meter; progress",
+   "aria": "aria-valuemax",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "maxlength",
+   "title": "maxlength",
+   "html": "maxlength",
+   "elements": "input; textarea",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "media",
+   "title": "media",
+   "html": "media",
+   "elements": "link; meta; source (in picture); style",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "method",
+   "title": "method",
+   "html": "method",
+   "elements": "form",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "min-input",
+   "title": "min",
+   "html": "min",
+   "elements": "input",
+   "aria": "aria-valuemin",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "min",
+   "title": "min",
+   "html": "min",
+   "elements": "meter",
+   "aria": "aria-valuemin",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "minlength",
+   "title": "minlength",
+   "html": "minlength",
+   "elements": "input; textarea",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "multiple-input",
+   "title": "multiple",
+   "html": "multiple",
+   "elements": "input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "multiple-select",
+   "title": "multiple",
+   "html": "multiple",
+   "elements": "select",
+   "aria": "aria-multiselectable=\"true\"",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "muted",
+   "title": "muted",
+   "html": "muted",
+   "elements": "audio; video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "name",
+   "title": "name",
+   "html": "name",
+   "elements": "button; fieldset; input; output; select; textarea; form-associated custom element",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "name-form",
+   "title": "name",
+   "html": "name",
+   "elements": "form",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "name-iframe",
+   "title": "name",
+   "html": "name",
+   "elements": "iframe; object",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "name-map",
+   "title": "name",
+   "html": "name",
+   "elements": "map",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "name-meta",
+   "title": "name",
+   "html": "name",
+   "elements": "meta",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "name-slot",
+   "title": "name",
+   "html": "name",
+   "elements": "slot",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "nomodule",
+   "title": "nomodule",
+   "html": "nomodule",
+   "elements": "script",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "nonce",
+   "title": "nonce",
+   "html": "nonce",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "novalidate",
+   "title": "novalidate",
+   "html": "novalidate",
+   "elements": "form",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "open-details",
+   "title": "open",
+   "html": "open",
+   "elements": "details",
+   "aria": "aria-expanded=\"true | false\"",
+   "computedRole": "",
+   "comments": "Set properties on the summary element."
+  },
+  {
+   "id": "open-dialog",
+   "title": "open",
+   "html": "open",
+   "elements": "dialog",
+   "aria": "If the open attribute is set via the showModal() method then aria-modal=\"true\" and aria-hidden=\"false\". Otherwise, if the open attribute is set via the show() method, or explicitly specified by an author, then aria-modal=\"false\" and aria-hidden=\"false\".",
+   "computedRole": "",
+   "comments": "The open attribute's value is irrelevant. When the open attribute is not specified the default user agent styling for a dialog is display: none. Authors can reveal a dialog through the style layer by modifying its display property. If revealed this way then the dialog is aria-modal=\"false\" and aria-hidden=\"false\"."
+  },
+  {
+   "id": "optimum",
+   "title": "optimum",
+   "html": "optimum",
+   "elements": "meter",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "pattern",
+   "title": "pattern",
+   "html": "pattern",
+   "elements": "input",
+   "aria": "If the value doesn't match the pattern: aria-invalid=\"true\"; Otherwise, aria-invalid=\"false\"",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "ping",
+   "title": "ping",
+   "html": "ping",
+   "elements": "a and area",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "placeholder",
+   "title": "placeholder",
+   "html": "placeholder",
+   "elements": "input; textarea",
+   "aria": "aria-placeholder",
+   "computedRole": "",
+   "comments": "When the placeholder and aria-placeholder attributes are both present, and the placeholder attribute's value is non-empty, user agents MUST expose the value of the placeholder attribute, and ignore aria-placeholder. If the placeholder attribute's value is empty, then user agents MUST expose the value of the aria-placeholder attribute."
+  },
+  {
+   "id": "playsinline",
+   "title": "playsinline",
+   "html": "playsinline",
+   "elements": "video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "popover",
+   "title": "popover",
+   "html": "popover",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "User agents MUST NOT expose a details relation between a popover and its invoking element under the following conditions: when the popover is the next immediate accessibility sibling to the invoking element, when the element has a popovertargetaction=hide attribute value, or when the element is a descendant of the popover and its popovertarget is the \"auto\" state. If specified on an element with an implicit role of generic, then the element's role instead maps to group for all popover states. Note There are no unique mappings for the different popover states. Any accessibility mapping changes for the popover element would be the responsibility of the author. e.g., using different base HTML elements, attributes, or ARIA attributes to make such changes."
+  },
+  {
+   "id": "popovertarget",
+   "title": "popovertarget",
+   "html": "popovertarget",
+   "elements": "button; input type=button, image, reset, submit",
+   "aria": "If the associated element is displayed as a popover: aria-expanded=true If the associated element is hidden: aria-expanded=false If the associated element is an accessibility ancestor of the element with the command attribute or is not present in the DOM: aria-expanded=undefined If the associated element is not a valid popover element: no aria-expanded mapping.",
+   "computedRole": "",
+   "comments": "User Agents MUST expose an aria-details relation with the associated popover element except under the following conditions: The element's popovertargetaction attribute value is \"hide\" The associated popover element is the next immediate accessibility sibling to the invoking element, The element's implicit or explicit popovertargetaction is the \"auto\" state and the element is a descendant of the popover it is associated with. NoteA button that represents a submit button with a form owner cannot invoke a popover."
+  },
+  {
+   "id": "popovertargetaction",
+   "title": "popovertargetaction",
+   "html": "popovertargetaction",
+   "elements": "button; input type=button, image, reset, submit",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "The value of this attribute can impact the mappings of its related popovertarget attribute."
+  },
+  {
+   "id": "poster",
+   "title": "poster",
+   "html": "poster",
+   "elements": "video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "preload",
+   "title": "preload",
+   "html": "preload",
+   "elements": "audio and video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "readonly",
+   "title": "readonly",
+   "html": "readonly",
+   "elements": "input; textarea; form-associated custom elements",
+   "aria": "aria-readonly=\"true\"",
+   "computedRole": "",
+   "comments": "If the element includes both the readonly attribute and the aria-readonly attribute with a valid value, User Agents MUST expose only the readonly attribute value."
+  },
+  {
+   "id": "referrerpolicy",
+   "title": "referrerpolicy",
+   "html": "referrerpolicy",
+   "elements": "a; area; iframe; img; link; script",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "rel",
+   "title": "rel",
+   "html": "rel",
+   "elements": "a; area; link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "required",
+   "title": "required",
+   "html": "required",
+   "elements": "input; select; textarea",
+   "aria": "aria-required",
+   "computedRole": "",
+   "comments": "If the element includes both the required attribute and the aria-required attribute with a valid value, User Agents MUST expose only the required attribute value. If an element is required, user agents MUST NOT expose the element with an initial invalid state (aria-invalid=\"true\"). The user agent SHOULD expose the invalid state only after 1) a user has purposefully interacted with a required element, or attempted to submit a form and 2) the element, or elements, do not meet constraint validation. Until these conditions are met, user agents MUST expose the elements as (aria-invalid=\"false\")."
+  },
+  {
+   "id": "reversed",
+   "title": "reversed",
+   "html": "reversed",
+   "elements": "ol",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "rows",
+   "title": "rows",
+   "html": "rows",
+   "elements": "textarea",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "rowspan",
+   "title": "rowspan",
+   "html": "rowspan",
+   "elements": "td; th",
+   "aria": "aria-rowspan",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "sandbox",
+   "title": "sandbox",
+   "html": "sandbox",
+   "elements": "iframe",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "scope",
+   "title": "scope",
+   "html": "scope",
+   "elements": "th",
+   "aria": "If scope=\"row\" then map th to rowheader If scope=\"col\" then map th to columnheader",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "selected",
+   "title": "selected",
+   "html": "selected",
+   "elements": "option",
+   "aria": "aria-selected=\"true\"",
+   "computedRole": "",
+   "comments": "If the element includes both the selected attribute and the aria-selected attribute with a valid value, User Agents MUST expose only the selected attribute value."
+  },
+  {
+   "id": "shape",
+   "title": "shape",
+   "html": "shape",
+   "elements": "area",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "size",
+   "title": "size",
+   "html": "size",
+   "elements": "input; select",
+   "aria": "Not mapped for input elements. If greater than 1, then creates a listbox accessible object. Refer to select element for details.",
+   "computedRole": "",
+   "comments": "For input elements that allow the size attribute, the attribute will modify their default width. A width provided by CSS will negate the effects of the size attribute on these input elements."
+  },
+  {
+   "id": "sizes",
+   "title": "sizes",
+   "html": "sizes",
+   "elements": "link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "sizes-img-source",
+   "title": "sizes",
+   "html": "sizes",
+   "elements": "img; source",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "slot",
+   "title": "slot",
+   "html": "slot",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "span",
+   "title": "span",
+   "html": "span",
+   "elements": "col; colgroup",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "spellcheck",
+   "title": "spellcheck",
+   "html": "spellcheck",
+   "elements": "HTML elements",
+   "aria": "aria-invalid=\"spelling\" or grammar",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "src-media",
+   "title": "src",
+   "html": "src",
+   "elements": "audio; embed; iframe; img; input; script; source (in audio or video); track; video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "srcdoc",
+   "title": "srcdoc",
+   "html": "srcdoc",
+   "elements": "iframe",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "srclang",
+   "title": "srclang",
+   "html": "srclang",
+   "elements": "track",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "srcset",
+   "title": "srcset",
+   "html": "srcset",
+   "elements": "img; source",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "start",
+   "title": "start",
+   "html": "start",
+   "elements": "ol",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "step",
+   "title": "step",
+   "html": "step",
+   "elements": "input",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "style",
+   "title": "style",
+   "html": "style",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "tabindex",
+   "title": "tabindex",
+   "html": "tabindex",
+   "elements": "HTML elements",
+   "aria": "See Focus States and Events Table",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "target",
+   "title": "target",
+   "html": "target",
+   "elements": "a; area",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "target-base",
+   "title": "target",
+   "html": "target",
+   "elements": "base",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "target-form",
+   "title": "target",
+   "html": "target",
+   "elements": "form",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "title",
+   "title": "title",
+   "html": "title",
+   "elements": "HTML elements",
+   "aria": "Either the accessible name, or the accessible description, or Not mapped (see Comments).",
+   "computedRole": "",
+   "comments": "The Accessible Name and Description Computation section specifies if the title attribute will be mapped and, if so, through what [WAI-ARIA] property."
+  },
+  {
+   "id": "title-abbr",
+   "title": "title",
+   "html": "title",
+   "elements": "abbr; dfn",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "title-link",
+   "title": "title",
+   "html": "title",
+   "elements": "link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "title-style",
+   "title": "title",
+   "html": "title",
+   "elements": "link; style",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "Provides the name for the CSS style sheet."
+  },
+  {
+   "id": "translate",
+   "title": "translate",
+   "html": "translate",
+   "elements": "HTML elements",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "type-hyperlink",
+   "title": "type",
+   "html": "type",
+   "elements": "a; link",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "type-button",
+   "title": "type",
+   "html": "type",
+   "elements": "button",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "type-embed",
+   "title": "type",
+   "html": "type",
+   "elements": "embed; object; script; source",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "type-input",
+   "title": "type",
+   "html": "type",
+   "elements": "input",
+   "aria": "Refer to WAI-ARIA mappings for input types with defined ARIA roles.",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "type-ol",
+   "title": "type",
+   "html": "type",
+   "elements": "ol",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "Some platforms (IAccessible2, ATK, UIA) do not expose an accessible object for the list item marker, whether it was created and then pruned from the accessibility tree, or never created in the first place. Instead, they expose the list item marker as part of the associated list item's accessible text. In these cases, implementors need to consider such things as adjusting the offsets (e.g., for caret-moved events, text-selection events, etc.) for the updated list item text that now also contains the list item marker as content, rather than just taking the offsets unmodified from the list item renderer."
+  },
+  {
+   "id": "usemap",
+   "title": "usemap",
+   "html": "usemap",
+   "elements": "img",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "Refer to img element."
+  },
+  {
+   "id": "value-button",
+   "title": "value",
+   "html": "value",
+   "elements": "button; option",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "value-data",
+   "title": "value",
+   "html": "value",
+   "elements": "data",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "value-input",
+   "title": "value",
+   "html": "value",
+   "elements": "input; input type=date; input type=datetime-local; input type=email; input type=month; input type=number; input type=password; input type=range input type=search; input type=tel; input type=text; input type=url; input type=week;",
+   "aria": "aria-valuenow",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "value-input-buttons",
+   "title": "value",
+   "html": "value",
+   "elements": "input type=button; input type=reset; input type=submit",
+   "aria": "Contributes to the accessible name of the input",
+   "computedRole": "",
+   "comments": "If specified, the value of the attribute will be the host language label used in the accessible name computation for input elements in the button, reset and submit states."
+  },
+  {
+   "id": "value-input-checkbox-hidden-radio",
+   "title": "value",
+   "html": "value",
+   "elements": "input type=checkbox; input type=hidden; input type=radio",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": "NoteThe value attribute of these input states is not directly communicated to users."
+  },
+  {
+   "id": "value-input-color",
+   "title": "value",
+   "html": "value",
+   "elements": "input type=color",
+   "aria": "aria-valuenow & aria-valuetext",
+   "computedRole": "",
+   "comments": "User agents MAY use the exact text value of the value attribute, or a localized variation of the specified text to present a human friendly representation of the color value."
+  },
+  {
+   "id": "value-input-image",
+   "title": "value",
+   "html": "value",
+   "elements": "input type=image",
+   "aria": "Contributes to the accessible name of the input",
+   "computedRole": "",
+   "comments": "If specified, and the input in the image state has no alt attribute specified, then the value of the attribute will be the host language label used in the accessible name computation, and will render as text if the image source is broken. Otherwise, the attribute is ignored."
+  },
+  {
+   "id": "value-li",
+   "title": "value",
+   "html": "value",
+   "elements": "li",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "value-meter",
+   "title": "value",
+   "html": "value",
+   "elements": "meter; progress",
+   "aria": "aria-valuenow",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "width",
+   "title": "width",
+   "html": "width",
+   "elements": "canvas; embed; iframe; img; input; object; source (in picture); video",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  },
+  {
+   "id": "wrap",
+   "title": "wrap",
+   "html": "wrap",
+   "elements": "textarea",
+   "aria": "Not mapped",
+   "computedRole": "",
+   "comments": ""
+  }
+ ]
+}

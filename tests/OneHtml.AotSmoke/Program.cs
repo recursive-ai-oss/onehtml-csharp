@@ -123,4 +123,18 @@ Console.WriteLine($"edit={edit.Succeeded} added={edit.Changes?.Added.Count} rang
 // The page has no charset, so it is windows-1252: the edit keeps the bytes, quotes in the page's style, and escapes text in <title>.
 bool editOk = edit.Succeeded && edited.StartsWith("<!DOCTYPE html><title id='t\u00E9'>t&lt;!--x--&gt;</title>", StringComparison.Ordinal)
     && doc.ToLosslessBytes().AsSpan().SequenceEqual(source);
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk ? 0 : 1;
+
+// Accessibility roles: the embedded WAI-ARIA data, then roles, conflict resolution and diagnostics for a small page.
+RecursiveAI.OneHtml.Document rdoc = RecursiveAI.OneHtml.Document.Parse("<header><ul role=none><li>a</ul><h1 role=none tabindex=0>t</h1><div role=checkbox aria-labelledby=gone>x</div><button><span id=in>y</span></button></header>");
+var roleMap = RecursiveAI.OneHtml.Accessibility.Aria.RoleComputer.Compute(rdoc);
+bool rolesOk = roleMap[rdoc.Root.QuerySelector("ul")].ComputedRole == "none"
+    && roleMap[rdoc.Root.QuerySelector("li")].Origin == RecursiveAI.OneHtml.Accessibility.Aria.RoleOrigin.InheritedPresentational
+    && roleMap[rdoc.Root.QuerySelector("h1")].ComputedRole == "heading"
+    && roleMap[rdoc.Root.QuerySelector("#in")].Origin == RecursiveAI.OneHtml.Accessibility.Aria.RoleOrigin.ChildrenPresentational
+    && roleMap[rdoc.Root.QuerySelector("header")].ComputedRole == "banner"
+    && roleMap[rdoc.Root.QuerySelector("[role=checkbox]")].Diagnostics.Length == 2
+    && RecursiveAI.OneHtml.Accessibility.Aria.AriaTaxonomy.Roles.Count > 100
+    && RecursiveAI.OneHtml.Accessibility.Aria.HtmlAam.Elements.Count > 100;
+Console.WriteLine($"roles: {rolesOk}");
+
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk ? 0 : 1;

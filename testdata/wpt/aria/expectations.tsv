@@ -1,0 +1,20 @@
+# Known failures of the role tests, one per line: page, test name, reason (tab separated).
+# Every entry is a test whose page marks it tentative, i.e. no browser passes it yet or the behaviour is not settled.
+html-aam/roles-contextual.tentative.html	el-footer	draft role sectionheader/sectionfooter for header/footer inside main or sectioning content; the Chromium profile exposes generic (unverified until the Chrome differential)
+html-aam/roles-contextual.tentative.html	el-footer-ancestormain	draft role sectionheader/sectionfooter for header/footer inside main or sectioning content; the Chromium profile exposes generic (unverified until the Chrome differential)
+html-aam/roles-contextual.tentative.html	el-header	draft role sectionheader/sectionfooter for header/footer inside main or sectioning content; the Chromium profile exposes generic (unverified until the Chrome differential)
+html-aam/roles-contextual.tentative.html	el-header-ancestormain	draft role sectionheader/sectionfooter for header/footer inside main or sectioning content; the Chromium profile exposes generic (unverified until the Chrome differential)
+html-aam/roles-generic.tentative.html	el-li-orphaned-in-dom-but-owned-by-list-element	needs aria-owns re-parenting, which the tree builds
+html-aam/roles-minimum.tentative.html	el-div-autofocus-attr	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+html-aam/roles-minimum.tentative.html	el-div-autofocus-attr-role-generic	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+html-aam/roles-minimum.tentative.html	el-div-autofocus-attr-role-none	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+html-aam/roles-minimum.tentative.html	el-div-draggable-attr	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+html-aam/roles-minimum.tentative.html	el-div-draggable-attr-role-generic	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+html-aam/roles-minimum.tentative.html	el-div-draggable-attr-role-none	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+html-aam/roles-minimum.tentative.html	el-div-popover-attr	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+html-aam/roles-minimum.tentative.html	el-div-draggable-attr-invalid-role	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+html-aam/roles-minimum.tentative.html	el-section-draggable-attr	HTML-AAM draft 'minimum role': generic elements with autofocus, draggable or popover are expected to be exposed as group; not implemented
+wai-aria/role/contextual-roles.tentative.html	role is sectionfooter (in main)	draft role sectionheader/sectionfooter for header/footer inside main or sectioning content; the Chromium profile exposes generic (unverified until the Chrome differential)
+wai-aria/role/contextual-roles.tentative.html	role is sectionheader (in main)	draft role sectionheader/sectionfooter for header/footer inside main or sectioning content; the Chromium profile exposes generic (unverified until the Chrome differential)
+wai-aria/role/roles.tentative.html	role: sectionheader	draft role sectionheader/sectionfooter for header/footer inside main or sectioning content; the Chromium profile exposes generic (unverified until the Chrome differential)
+wai-aria/role/roles.tentative.html	role: sectionfooter	draft role sectionheader/sectionfooter for header/footer inside main or sectioning content; the Chromium profile exposes generic (unverified until the Chrome differential)

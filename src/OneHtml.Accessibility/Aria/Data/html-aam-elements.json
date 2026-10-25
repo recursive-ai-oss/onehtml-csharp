@@ -1,0 +1,1333 @@
+{
+ "version": 1,
+ "source": {
+  "url": "https://www.w3.org/TR/html-aam-1.0/",
+  "title": "HTML Accessibility API Mappings 1.0, W3C Working Draft, 21 October 2026",
+  "sha256": "5ae5af42307d3360cbe1831fe49821bfdf618d075088b96e1dff19101dfe8924"
+ },
+ "elements": [
+  {
+   "id": "a",
+   "title": "a (represents a hyperlink)",
+   "html": "a (represents a hyperlink)",
+   "elements": "",
+   "aria": "link role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "a-no-href",
+   "title": "a (no href attribute)",
+   "html": "a (no href attribute)",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "abbr",
+   "title": "abbr",
+   "html": "abbr",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-abbr",
+   "comments": ""
+  },
+  {
+   "id": "address",
+   "title": "address",
+   "html": "address",
+   "elements": "",
+   "aria": "group role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "area",
+   "title": "area (represents a hyperlink)",
+   "html": "area (represents a hyperlink)",
+   "elements": "",
+   "aria": "link role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "area-no-href",
+   "title": "area (no href attribute)",
+   "html": "area (no href attribute)",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "User agents MAY still expose an a element lacking the href attribute with a link role in the event an author specifies interactive behavior for the element. For example, if using an event handler attribute."
+  },
+  {
+   "id": "article",
+   "title": "article",
+   "html": "article",
+   "elements": "",
+   "aria": "article role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "aside-ancestorbodymain",
+   "title": "aside (scoped to the body or main element)",
+   "html": "aside (scoped to the body or main element)",
+   "elements": "",
+   "aria": "complementary role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "aside",
+   "title": "aside (scoped to a sectioning content element)",
+   "html": "aside (scoped to a sectioning content element)",
+   "elements": "",
+   "aria": "complementary role if the aside element has an accessible name. Otherwise, generic role.",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "audio",
+   "title": "audio",
+   "html": "audio",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-audio",
+   "comments": ""
+  },
+  {
+   "id": "autonomous-custom-element",
+   "title": "autonomous custom element",
+   "html": "autonomous custom element",
+   "elements": "",
+   "aria": "If the author assigned a conforming ARIA role using the role attribute, map to that role. Otherwise, the generic role.",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "b",
+   "title": "b",
+   "html": "b",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "Exposed by platform specific bold font weight text styles."
+  },
+  {
+   "id": "base",
+   "title": "base",
+   "html": "base",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "bdi",
+   "title": "bdi",
+   "html": "bdi",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "IA2/ATK: May affect on \"writing-mode\" text attribute on its text container."
+  },
+  {
+   "id": "bdo",
+   "title": "bdo",
+   "html": "bdo",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "IA2/ATK: Exposed as \"writing-mode\" text attribute on its text container."
+  },
+  {
+   "id": "blockquote",
+   "title": "blockquote",
+   "html": "blockquote",
+   "elements": "",
+   "aria": "blockquote role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "body",
+   "title": "body",
+   "html": "body",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "User agents MUST ignore the aria-hidden attribute if specified on the body element."
+  },
+  {
+   "id": "br",
+   "title": "br",
+   "html": "br",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": "May be exposed as '\\n' character by the platform interface."
+  },
+  {
+   "id": "button",
+   "title": "button",
+   "html": "button",
+   "elements": "",
+   "aria": "button role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "A button's mapping will change if the aria-pressed or aria-haspopup attributes are specified."
+  },
+  {
+   "id": "canvas",
+   "title": "canvas",
+   "html": "canvas",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-canvas",
+   "comments": ""
+  },
+  {
+   "id": "caption",
+   "title": "caption",
+   "html": "caption",
+   "elements": "",
+   "aria": "caption role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "NoteIf a caption element is hidden from the accessibility tree, then it will not provide an accessible name to its parent table element."
+  },
+  {
+   "id": "cite",
+   "title": "cite",
+   "html": "cite",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-cite",
+   "comments": ""
+  },
+  {
+   "id": "code",
+   "title": "code",
+   "html": "code",
+   "elements": "",
+   "aria": "code role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "col",
+   "title": "col",
+   "html": "col",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "colgroup",
+   "title": "colgroup",
+   "html": "colgroup",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "data",
+   "title": "data",
+   "html": "data",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "datalist",
+   "title": "datalist (represents pre-defined options for input element)",
+   "html": "datalist (represents pre-defined options for input element)",
+   "elements": "",
+   "aria": "listbox role, with the aria-multiselectable property set to \"true\" if the datalist's selection model allows multiple option elements to be selected at a time, and \"false\" otherwise",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "If datalist is not linked to a proper input element, then datalist element is not mapped to accessibility APIs."
+  },
+  {
+   "id": "dd",
+   "title": "dd",
+   "html": "dd",
+   "elements": "",
+   "aria": "definition role",
+   "computedRole": "Use WAI-ARIA mapping NoteEditorial Note: This value may change upon resolution of ARIA #1662.",
+   "comments": ""
+  },
+  {
+   "id": "del",
+   "title": "del",
+   "html": "del",
+   "elements": "",
+   "aria": "deletion role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "details",
+   "title": "details",
+   "html": "details",
+   "elements": "",
+   "aria": "group role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "dfn",
+   "title": "dfn",
+   "html": "dfn",
+   "elements": "",
+   "aria": "term role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "dialog",
+   "title": "dialog",
+   "html": "dialog",
+   "elements": "",
+   "aria": "dialog role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "See also the dialog element's open attribute."
+  },
+  {
+   "id": "dir",
+   "title": "dir (obsolete)",
+   "html": "dir",
+   "elements": "",
+   "aria": "list role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "The dir element is marked as obsolete in HTML, and is not to be used by authors."
+  },
+  {
+   "id": "div",
+   "title": "div",
+   "html": "div",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "dl",
+   "title": "dl",
+   "html": "dl",
+   "elements": "",
+   "aria": "list role",
+   "computedRole": "list NoteEditorial Note: This value may change upon resolution of ARIA #1662.",
+   "comments": ""
+  },
+  {
+   "id": "dt",
+   "title": "dt",
+   "html": "dt",
+   "elements": "",
+   "aria": "term role",
+   "computedRole": "Use WAI-ARIA mapping NoteEditorial Note: This value may change upon resolution of ARIA #1662.",
+   "comments": ""
+  },
+  {
+   "id": "em",
+   "title": "em",
+   "html": "em",
+   "elements": "",
+   "aria": "emphasis role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "embed",
+   "title": "embed",
+   "html": "embed",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-embed",
+   "comments": ""
+  },
+  {
+   "id": "fieldset",
+   "title": "fieldset",
+   "html": "fieldset",
+   "elements": "",
+   "aria": "group role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "NoteIf a legend element is hidden from the accessibility tree, then it will not provide an accessible name to its parent fieldset element."
+  },
+  {
+   "id": "figcaption",
+   "title": "figcaption",
+   "html": "figcaption",
+   "elements": "",
+   "aria": "caption role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "figure",
+   "title": "figure",
+   "html": "figure",
+   "elements": "",
+   "aria": "figure role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "footer-ancestorbody",
+   "title": "footer (scoped to the body element)",
+   "html": "footer (scoped to the body element)",
+   "elements": "",
+   "aria": "contentinfo role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "footer",
+   "title": "footer (scoped to the main element, or a sectioning content element)",
+   "html": "footer (scoped to the main element, or a sectioning content element)",
+   "elements": "",
+   "aria": "sectionfooter role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "User agents and assistive technology MAY not expose the sectionfooter role if the element: has no accessible name is not keyboard focusable has no other global ARIA attributes or HTML attributes that expose information to user agent's accessibility tree"
+  },
+  {
+   "id": "form",
+   "title": "form",
+   "html": "form",
+   "elements": "",
+   "aria": "form role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "If a form has no accessible name, do not expose the element as a landmark."
+  },
+  {
+   "id": "form-associated-custom-element",
+   "title": "form-associated custom element",
+   "html": "form-associated custom element",
+   "elements": "",
+   "aria": "If the author assigned a conforming ARIA role using the role attribute, map to that role. Otherwise, the generic role.",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "h1-h6",
+   "title": "h1, h2, h3, h4, h5, and h6",
+   "html": "h1, h2, h3, h4, h5, and h6",
+   "elements": "",
+   "aria": "heading role, with the aria-level property set to the number in the element's tag name.",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "head",
+   "title": "head",
+   "html": "head",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not Mapped",
+   "comments": ""
+  },
+  {
+   "id": "header-ancestorbody",
+   "title": "header (scoped to the body element)",
+   "html": "header (scoped to the body element)",
+   "elements": "",
+   "aria": "banner role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "header",
+   "title": "header (scoped to the main element, or a sectioning content element)",
+   "html": "header (scoped to the main element, or a sectioning content element)",
+   "elements": "",
+   "aria": "sectionheader role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "User agents and assistive technology MAY not expose the sectionheader role if the element: has no accessible name is not keyboard focusable has no other global ARIA attributes or HTML attributes that expose information to user agent's accessibility tree"
+  },
+  {
+   "id": "hgroup",
+   "title": "hgroup",
+   "html": "hgroup",
+   "elements": "",
+   "aria": "group role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "If an hgroup contains multiple heading elements, then the user agent MAY treat the heading element with the highest priority level as the sole heading of the hgroup. The user agent MAY expose all other heading elements as if they were p elements. See paragraph role on Core AAM."
+  },
+  {
+   "id": "hr",
+   "title": "hr",
+   "html": "hr",
+   "elements": "",
+   "aria": "separator role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "If an hr element is a descendant of a select element, user agents MAY expose the element with a role of none."
+  },
+  {
+   "id": "html",
+   "title": "html",
+   "html": "html",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "User agents MUST ignore the aria-hidden attribute if specified on the html element. NoteThe document role of a web page is not exposed by the html element, but rather from a parent document node created by the user agent."
+  },
+  {
+   "id": "i",
+   "title": "i",
+   "html": "i",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "Exposed by platform specific italic text styles."
+  },
+  {
+   "id": "iframe",
+   "title": "iframe",
+   "html": "iframe",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-iframe",
+   "comments": ""
+  },
+  {
+   "id": "img",
+   "title": "img",
+   "html": "img",
+   "elements": "",
+   "aria": "image or img role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "NoteARIA 1.3 adds the image role as the preferred synonym to the ARIA 1.0 img role. The expected computed role for named img elements is now \"image\"."
+  },
+  {
+   "id": "img-empty-alt",
+   "title": "img (alt attribute value, when trimmed of whitespace, is the empty string, i.e., alt=\"\", alt=\" \", or alt with no value in the markup)",
+   "html": "img (alt attribute value, when trimmed of whitespace, is the empty string, i.e., alt=\"\", alt=\" \", or alt with no value in the markup)",
+   "elements": "",
+   "aria": "none or presentation",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "Note If an img has an empty alt, but has been provided an accessible name via another valid naming mechanism per the naming steps of this specification, user agents will expose the element with its implicit image role."
+  },
+  {
+   "id": "input-button",
+   "title": "input (type attribute in the Button state)",
+   "html": "input (type attribute in the Button state)",
+   "elements": "",
+   "aria": "button role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-checkbox",
+   "title": "input (type attribute in the Checkbox state)",
+   "html": "input (type attribute in the Checkbox state)",
+   "elements": "",
+   "aria": "checkbox role, with the aria-checked state set to \"mixed\" if the element's indeterminate IDL attribute is true, or \"true\" if the element's checkedness is true, or \"false\" otherwise",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-color",
+   "title": "input (type attribute in the Color state)",
+   "html": "input (type attribute in the Color state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-input-color",
+   "comments": "If implemented as a color picker, any UI controls presented for selecting a color are exposed in the accessibility tree, associated with the input element, and mapped as appropriate for the type of control (e.g., button or slider)."
+  },
+  {
+   "id": "input-date",
+   "title": "input (type attribute in the Date state)",
+   "html": "input (type attribute in the Date state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-input-date",
+   "comments": ""
+  },
+  {
+   "id": "input-datetime-local",
+   "title": "input (type attribute in the Local Date and Time state)",
+   "html": "input (type attribute in the Local Date and Time state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-input-datetime-local",
+   "comments": ""
+  },
+  {
+   "id": "input-email",
+   "title": "input (type attribute in the E-mail state with no suggestions source element)",
+   "html": "input (type attribute in the E-mail state with no suggestions source element)",
+   "elements": "",
+   "aria": "textbox role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-file",
+   "title": "input (type attribute in the File Upload state)",
+   "html": "input (type attribute in the File Upload state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-input-file",
+   "comments": ""
+  },
+  {
+   "id": "input-hidden",
+   "title": "input (type attribute in the Hidden state)",
+   "html": "input (type attribute in the Hidden state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "input-image",
+   "title": "input (type attribute in the Image Button state)",
+   "html": "input (type attribute in the Image Button state)",
+   "elements": "",
+   "aria": "button role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-month",
+   "title": "input (type attribute in the Month state)",
+   "html": "input (type attribute in the Month state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-input-month",
+   "comments": ""
+  },
+  {
+   "id": "input-number",
+   "title": "input (type attribute in the Number state)",
+   "html": "input (type attribute in the Number state)",
+   "elements": "",
+   "aria": "spinbutton role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-password",
+   "title": "input (type attribute in the Password state)",
+   "html": "input (type attribute in the Password state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-input-password",
+   "comments": ""
+  },
+  {
+   "id": "input-radio",
+   "title": "input (type attribute in the Radio Button state)",
+   "html": "input (type attribute in the Radio Button state)",
+   "elements": "",
+   "aria": "radio role, with the aria-checked state set to \"true\" if the element's checkedness is true, or \"false\" otherwise. With aria-setsize value reflecting number of type=radio input elements within the radio button group and aria-posinset value reflecting the elements position within the radio button group.",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-range",
+   "title": "input (type attribute in the Range state)",
+   "html": "input (type attribute in the Range state)",
+   "elements": "",
+   "aria": "slider role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-reset",
+   "title": "input (type attribute in the Reset Button state)",
+   "html": "input (type attribute in the Reset Button state)",
+   "elements": "",
+   "aria": "button role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-search",
+   "title": "input (type attribute in the Search state with no suggestions source element)",
+   "html": "input (type attribute in the Search state with no suggestions source element)",
+   "elements": "",
+   "aria": "searchbox role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-submit",
+   "title": "input (type attribute in the Submit Button state)",
+   "html": "input (type attribute in the Submit Button state)",
+   "elements": "",
+   "aria": "button role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-tel",
+   "title": "input (type attribute in the Telephone state with no suggestions source element)",
+   "html": "input (type attribute in the Telephone state with no suggestions source element)",
+   "elements": "",
+   "aria": "textbox role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-text",
+   "title": "input (type attribute in the Text state with no suggestions source element)",
+   "html": "input (type attribute in the Text state with no suggestions source element)",
+   "elements": "",
+   "aria": "textbox role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-textetc-autocomplete",
+   "title": "input (type attribute in the Text, Search, Telephone, URL, or E-mail states with a suggestions source element)",
+   "html": "input (type attribute in the Text, Search, Telephone, URL, or E-mail states with a suggestions source element)",
+   "elements": "",
+   "aria": "combobox role, with the aria-controls property set to the same value as the list attribute",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-time",
+   "title": "input (type attribute in the Time state)",
+   "html": "input (type attribute in the Time state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-input-time",
+   "comments": ""
+  },
+  {
+   "id": "input-url",
+   "title": "input (type attribute in the URL state with no suggestions source element)",
+   "html": "input (type attribute in the URL state with no suggestions source element)",
+   "elements": "",
+   "aria": "textbox role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "input-week",
+   "title": "input (type attribute in the Week state)",
+   "html": "input (type attribute in the Week state)",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-input-week",
+   "comments": ""
+  },
+  {
+   "id": "ins",
+   "title": "ins",
+   "html": "ins",
+   "elements": "",
+   "aria": "insertion role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "kbd",
+   "title": "kbd",
+   "html": "kbd",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-kbd",
+   "comments": ""
+  },
+  {
+   "id": "label",
+   "title": "label",
+   "html": "label",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-label",
+   "comments": "Note If a label element is hidden from the accessibility tree, then it will not provide an accessible name to the labelable element it is associated with."
+  },
+  {
+   "id": "legend",
+   "title": "legend",
+   "html": "legend",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-legend",
+   "comments": ""
+  },
+  {
+   "id": "li",
+   "title": "li",
+   "html": "li",
+   "elements": "",
+   "aria": "listitem role with aria-setsize value reflecting number of li elements within the parent ol, menu or ul and aria-posinset value reflecting the li elements position within the set.",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "If li element is not an accessibility child of an ol , menu or ul, or if the containing list element is no longer exposed with a list role, then expose the li element with a generic role."
+  },
+  {
+   "id": "link",
+   "title": "link",
+   "html": "link",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "main",
+   "title": "main",
+   "html": "main",
+   "elements": "",
+   "aria": "main role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "map",
+   "title": "map",
+   "html": "map",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-map",
+   "comments": ""
+  },
+  {
+   "id": "mark",
+   "title": "mark",
+   "html": "mark",
+   "elements": "",
+   "aria": "mark role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "math",
+   "title": "math",
+   "html": "math",
+   "elements": "",
+   "aria": "See comments",
+   "computedRole": "See comments",
+   "comments": "Mapping for math is defined by MathML AAM 1.0."
+  },
+  {
+   "id": "menu",
+   "title": "menu",
+   "html": "menu",
+   "elements": "",
+   "aria": "list role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "The menu element is a semantic alternative to the ul element. It has no implemented mappings or behavior that reflect the semantics of the ARIA menu role. Note obsolete menuitem element and menu with type attribute."
+  },
+  {
+   "id": "meta",
+   "title": "meta",
+   "html": "meta",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "meter",
+   "title": "meter",
+   "html": "meter",
+   "elements": "",
+   "aria": "meter role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "nav",
+   "title": "nav",
+   "html": "nav",
+   "elements": "",
+   "aria": "navigation role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "noscript",
+   "title": "noscript",
+   "html": "noscript",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "object",
+   "title": "object",
+   "html": "object",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-object",
+   "comments": ""
+  },
+  {
+   "id": "ol",
+   "title": "ol",
+   "html": "ol",
+   "elements": "",
+   "aria": "list role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "optgroup",
+   "title": "optgroup",
+   "html": "optgroup",
+   "elements": "",
+   "aria": "group role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "option",
+   "title": "option (in a list of options or represents a suggestion in a datalist)",
+   "html": "option (in a list of options or represents a suggestion in a datalist)",
+   "elements": "",
+   "aria": "option role, with the aria-selected state set to \"true\" if the element's selectedness is true, or \"false\" otherwise.",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "output",
+   "title": "output",
+   "html": "output",
+   "elements": "",
+   "aria": "status role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "AXDescription: value from associated label element subtree."
+  },
+  {
+   "id": "p",
+   "title": "p",
+   "html": "p",
+   "elements": "",
+   "aria": "paragraph role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "param",
+   "title": "param",
+   "html": "param",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": "param is obsolete in HTML"
+  },
+  {
+   "id": "picture",
+   "title": "picture",
+   "html": "picture",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "pre",
+   "title": "pre",
+   "html": "pre",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "progress",
+   "title": "progress",
+   "html": "progress",
+   "elements": "",
+   "aria": "progressbar role, with, if the progress bar is determinate, the aria-valuemax property set to the maximum value of the progress bar, the aria-valuemin property set to zero, and the aria-valuenow property set to the current value of the progress bar",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "q",
+   "title": "q",
+   "html": "q",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "::before and ::after CSS pseudo content is used by platforms to render the element's quotation marks."
+  },
+  {
+   "id": "rp",
+   "title": "rp",
+   "html": "rp",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-rp",
+   "comments": ""
+  },
+  {
+   "id": "rt",
+   "title": "rt",
+   "html": "rt",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-rt",
+   "comments": ""
+  },
+  {
+   "id": "ruby",
+   "title": "ruby",
+   "html": "ruby",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-ruby",
+   "comments": ""
+  },
+  {
+   "id": "s",
+   "title": "s",
+   "html": "s",
+   "elements": "",
+   "aria": "deletion role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "samp",
+   "title": "samp",
+   "html": "samp",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "script",
+   "title": "script",
+   "html": "script",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "search",
+   "title": "search",
+   "html": "search",
+   "elements": "",
+   "aria": "search role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "section",
+   "title": "section",
+   "html": "section",
+   "elements": "",
+   "aria": "region role if the section element has an accessible name. Otherwise, the generic role.",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "select-listbox",
+   "title": "select (rendered as a list box)",
+   "html": "select (rendered as a list box)",
+   "elements": "",
+   "aria": "listbox role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "select-combobox",
+   "title": "select (rendered as a drop-down box)",
+   "html": "select (rendered as a drop-down box)",
+   "elements": "",
+   "aria": "combobox role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "slot",
+   "title": "slot",
+   "html": "slot",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "small",
+   "title": "small",
+   "html": "small",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "Exposed by platform specific font size styles."
+  },
+  {
+   "id": "source",
+   "title": "source",
+   "html": "source",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "span",
+   "title": "span",
+   "html": "span",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "strong",
+   "title": "strong",
+   "html": "strong",
+   "elements": "",
+   "aria": "strong role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "style",
+   "title": "style",
+   "html": "style",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": "Note: There are instances where CSS properties can affect what is exposed by accessibility APIs. For instance, display: none or visibility: hidden will remove an element from the accessibility tree and hide its presence from assistive technologies."
+  },
+  {
+   "id": "sub",
+   "title": "sub",
+   "html": "sub",
+   "elements": "",
+   "aria": "subscript role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "summary",
+   "title": "summary",
+   "html": "summary",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "If the element is the first child of its type within a parent details element: html-summary Otherwise, if it is not the first child of its type of a parent details element, or it is not a child of a details element: generic role",
+   "comments": "If a summary element is not a child of a details element, or it is not the first summary element of a parent details, then user agents MUST expose the summary element with a generic role (see HTML summary element)."
+  },
+  {
+   "id": "sup",
+   "title": "sup",
+   "html": "sup",
+   "elements": "",
+   "aria": "superscript role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "svg",
+   "title": "svg",
+   "html": "svg",
+   "elements": "",
+   "aria": "See comments",
+   "computedRole": "See comments",
+   "comments": "Mapping for svg is defined by SVG Accessibility API Mappings. See also Graphics Accessibility API Role Mappings"
+  },
+  {
+   "id": "table",
+   "title": "table",
+   "html": "table",
+   "elements": "",
+   "aria": "table role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "tbody",
+   "title": "tbody",
+   "html": "tbody",
+   "elements": "",
+   "aria": "rowgroup role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "td",
+   "title": "td (ancestor table element has table role)",
+   "html": "td (ancestor table element has table role)",
+   "elements": "",
+   "aria": "cell role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "td-gridcell",
+   "title": "td (ancestor table element has grid or treegrid role)",
+   "html": "td (ancestor table element has grid or treegrid role)",
+   "elements": "",
+   "aria": "gridcell role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "template",
+   "title": "template",
+   "html": "template",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "textarea",
+   "title": "textarea",
+   "html": "textarea",
+   "elements": "",
+   "aria": "textbox role, with the aria-multiline property set to \"true\"",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "tfoot",
+   "title": "tfoot",
+   "html": "tfoot",
+   "elements": "",
+   "aria": "rowgroup role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "th",
+   "title": "th (is not a column header, row header, column group header or row group header, and ancestor table element has table role)",
+   "html": "th (is not a column header, row header, column group header or row group header, and ancestor table element has table role)",
+   "elements": "",
+   "aria": "cell role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "th-gridcell",
+   "title": "th (is not a column header, row header, column group header or row group header, and ancestor table element has grid or treegrid role)",
+   "html": "th (is not a column header, row header, column group header or row group header, and ancestor table element has grid or treegrid role)",
+   "elements": "",
+   "aria": "gridcell role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "th-columnheader",
+   "title": "th (is a column header or column group header)",
+   "html": "th (is a column header or column group header)",
+   "elements": "",
+   "aria": "columnheader role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "th-rowheader",
+   "title": "th (is a row header or row group header)",
+   "html": "th (is a row header or row group header)",
+   "elements": "",
+   "aria": "rowheader role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "thead",
+   "title": "thead",
+   "html": "thead",
+   "elements": "",
+   "aria": "rowgroup role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "time",
+   "title": "time",
+   "html": "time",
+   "elements": "",
+   "aria": "time role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "title",
+   "title": "title",
+   "html": "title",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": "A title element provides the accessible name for its document."
+  },
+  {
+   "id": "tr",
+   "title": "tr",
+   "html": "tr",
+   "elements": "",
+   "aria": "row role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "track",
+   "title": "track",
+   "html": "track",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "u",
+   "title": "u",
+   "html": "u",
+   "elements": "",
+   "aria": "generic role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": "Exposed by platform specific underline text styles."
+  },
+  {
+   "id": "ul",
+   "title": "ul",
+   "html": "ul",
+   "elements": "",
+   "aria": "list role",
+   "computedRole": "Use WAI-ARIA mapping",
+   "comments": ""
+  },
+  {
+   "id": "var",
+   "title": "var",
+   "html": "var",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-var",
+   "comments": ""
+  },
+  {
+   "id": "video",
+   "title": "video",
+   "html": "video",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "html-video",
+   "comments": ""
+  },
+  {
+   "id": "wbr",
+   "title": "wbr",
+   "html": "wbr",
+   "elements": "",
+   "aria": "No corresponding role",
+   "computedRole": "Not mapped",
+   "comments": ""
+  },
+  {
+   "id": "img-name",
+   "title": "img Element Accessible Name Computation",
+   "html": "",
+   "elements": "",
+   "aria": "",
+   "computedRole": "",
+   "comments": ""
+  }
+ ]
+}

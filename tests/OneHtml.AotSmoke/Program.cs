@@ -40,4 +40,25 @@ foreach (var rule in sheet.Rules)
 
 Console.WriteLine(rules + " " + sheet.Serialize().Length + " " + sheet.ToSourceText().Length);
 bool cssOk = rules == 3 && sheet.ToSourceText() == sheet.Text;
-return htmlOk && cssOk ? 0 : 1;
+
+// Parse a page into a document, read it back, serialize it, and write it out byte for byte.
+string html = "<!DOCTYPE html><title>t</title><table><tr><td>x<b>y<p>z</b>w</table><select><button><selectedcontent></button><option>o</select><svg viewbox='0 0 1 1'><circle/></svg>";
+byte[] source = Encoding.UTF8.GetBytes(html);
+RecursiveAI.OneHtml.Document doc = RecursiveAI.OneHtml.Document.Parse(source);
+int elements = 0;
+var pending = new System.Collections.Generic.Stack<RecursiveAI.OneHtml.Node>();
+pending.Push(doc.Root);
+while (pending.Count > 0)
+{
+    RecursiveAI.OneHtml.Node node = pending.Pop();
+    elements += node.IsElement ? 1 : 0;
+    foreach (RecursiveAI.OneHtml.Node child in node.Children)
+    {
+        pending.Push(child);
+    }
+}
+
+RecursiveAI.OneHtml.Document fragment = RecursiveAI.OneHtml.Document.ParseFragment("<li>a<li>b", new RecursiveAI.OneHtml.FragmentContext(RecursiveAI.OneHtml.ElementNamespace.Html, "ul"));
+bool lossless = doc.ToLosslessBytes().AsSpan().SequenceEqual(source);
+Console.WriteLine($"nodes={doc.NodeCount} elements={elements} lossless={lossless} mode={doc.Mode} fragment={fragment.SerializeChildren(fragment.Root)}");
+return htmlOk && cssOk && lossless && elements > 15 ? 0 : 1;

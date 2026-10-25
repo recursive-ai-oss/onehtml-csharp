@@ -87,11 +87,16 @@ Implementation-independent CSS parsing tests by Simon Sapin, in `testdata/css/cs
 The files are unmodified. They are dedicated to the public domain under CC0; the licence text is kept next to them
 as a courtesy.
 
-## web-platform-tests, css/css-syntax
+## web-platform-tests (test data only)
 
-Tests from https://github.com/web-platform-tests/wpt at commit `68d964a5f292bc4b2c2eba2f21e2b916190b6ad2`, in
-`testdata/css/wpt/css/css-syntax/` (the `charset/` directory is not included). The files are unmodified.
+Source: <https://github.com/web-platform-tests/wpt>, commit `68d964a5f292bc4b2c2eba2f21e2b916190b6ad2`. The files are
+unmodified and are not part of the published packages. Used in:
 
+- `testdata/wpt/`: the tree construction test files from `html/syntax/parsing/resources/` (the former html5lib-tests
+  tree construction suite, which is now maintained there).
+- `testdata/css/wpt/css/css-syntax/`: CSS Syntax tests (the `charset/` directory is not included).
+
+```
 The 3-Clause BSD License
 
 Copyright (c) web-platform-tests contributors
@@ -113,3 +118,4 @@ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PRO
 SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```

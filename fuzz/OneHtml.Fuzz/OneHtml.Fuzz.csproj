@@ -7,6 +7,9 @@
     <PackageReference Include="SharpFuzz" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="../../tests/OneHtml.Tests/DocumentInvariants.cs" Link="DocumentInvariants.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />
     <ProjectReference Include="../../src/OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
     <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />

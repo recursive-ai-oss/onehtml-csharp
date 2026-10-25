@@ -28,4 +28,29 @@ public sealed record ParseLimits
     /// nearly every character comes anywhere near the bound.
     /// </summary>
     public int MaxOffsetMapRuns { get; init; } = 16 * 1024 * 1024;
+
+    /// <summary>
+    /// Most nodes (elements, text, comments, DOCTYPE and processing instructions, and template content roots) one
+    /// document may hold. Default 4,194,304 (about 250 MiB of columns). Checked before each node is added.
+    /// </summary>
+    public int MaxNodes { get; init; } = 4 * 1024 * 1024;
+
+    /// <summary>
+    /// Most elements on the stack of open elements at once, which is the nesting depth of the tree being built.
+    /// Default 4096. Nothing recurses on depth, but the standard's scope checks walk the stack, so this also bounds
+    /// their cost. Checked before each push.
+    /// </summary>
+    public int MaxOpenElements { get; init; } = 4096;
+
+    /// <summary>
+    /// Most entries on the list of active formatting elements. Default 1024. The standard's "Noah's Ark" check scans
+    /// the list on every push, so this bounds its cost. Checked before each push.
+    /// </summary>
+    public int MaxActiveFormattingElements { get; init; } = 1024;
+
+    /// <summary>
+    /// Most attributes stored in one document, counting the copies made when formatting elements are reopened.
+    /// Default 4,194,304. Checked before each attribute is stored.
+    /// </summary>
+    public int MaxTotalAttributes { get; init; } = 4 * 1024 * 1024;
 }

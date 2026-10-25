@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using RecursiveAI.OneHtml.Css;
+using RecursiveAI.OneHtml.Editing;
 using RecursiveAI.OneHtml.Encodings;
 using RecursiveAI.OneHtml.Parsing;
 
@@ -47,12 +48,17 @@ string html = "<!DOCTYPE html><title>t</title><table><tr><td>x<b>y<p>z</b>w</tab
 byte[] source = Encoding.UTF8.GetBytes(html);
 RecursiveAI.OneHtml.Document doc = RecursiveAI.OneHtml.Document.Parse(source);
 int elements = 0;
+RecursiveAI.OneHtml.Node titleNode = default;
 var pending = new System.Collections.Generic.Stack<RecursiveAI.OneHtml.Node>();
 pending.Push(doc.Root);
 while (pending.Count > 0)
 {
     RecursiveAI.OneHtml.Node node = pending.Pop();
     elements += node.IsElement ? 1 : 0;
+    if (node.IsElement && node.LocalName == "title" && titleNode.Document is null)
+    {
+        titleNode = node;
+    }
     foreach (RecursiveAI.OneHtml.Node child in node.ChildNodes)
     {
         pending.Push(child);
@@ -106,4 +112,15 @@ bool catalogueOk = RecursiveAI.OneHtml.Accessibility.Validation.Catalogue.Valida
     && RecursiveAI.OneHtml.Accessibility.Validation.Catalogue.ActRules.All.Count > 90;
 Console.WriteLine($"catalogue: {catalogueOk} {contrastCriterion}");
 
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk ? 0 : 1;
+// Edit: set an attribute and append markup, then check the result and that the old snapshot is untouched.
+RecursiveAI.OneHtml.Editing.EditResult edit = RecursiveAI.OneHtml.DocumentEditing.Apply(doc, new[]
+{
+    RecursiveAI.OneHtml.Editing.Edit.SetAttribute(titleNode, "id", "t\u00E9"),
+    RecursiveAI.OneHtml.Editing.Edit.Append(titleNode, "<!--x-->"),
+});
+string edited = edit.Succeeded ? Encoding.Latin1.GetString(edit.Document!.ToLosslessBytes()) : "";
+Console.WriteLine($"edit={edit.Succeeded} added={edit.Changes?.Added.Count} ranges={edit.Changes?.Ranges.Count} {edited.Length}");
+// The page has no charset, so it is windows-1252: the edit keeps the bytes, quotes in the page's style, and escapes text in <title>.
+bool editOk = edit.Succeeded && edited.StartsWith("<!DOCTYPE html><title id='t\u00E9'>t&lt;!--x--&gt;</title>", StringComparison.Ordinal)
+    && doc.ToLosslessBytes().AsSpan().SequenceEqual(source);
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk ? 0 : 1;

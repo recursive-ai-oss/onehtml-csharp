@@ -298,7 +298,10 @@ internal sealed partial class TreeBuilder
         }
 
         IReadOnlyList<ParseError> errors = _tz.Errors is { } list ? list.ToArray() : [];
-        return new Document(_a, _names, _source, _quirks, _fragment, documentElement, _doctype, _publicId, _systemId, errors);
+        return new Document(_a, _names, _source, _quirks, _fragment, documentElement, _doctype, _publicId, _systemId, errors)
+        {
+            ScriptingEnabled = _scripting,
+        };
     }
 
     // ---- The tree construction dispatcher (HTML 13.2.6) ----

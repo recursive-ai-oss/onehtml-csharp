@@ -155,6 +155,9 @@ public sealed partial class Document
 
     internal Arena Arena { get; }
 
+    /// <summary>The parser's scripting flag at the time of the parse; an edit re-parses with the same value.</summary>
+    internal bool ScriptingEnabled { get; init; }
+
     internal NameTable Names { get; }
 
     internal int DocumentElementIndex { get; }

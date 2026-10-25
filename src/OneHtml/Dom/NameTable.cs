@@ -15,6 +15,9 @@ internal sealed class NameTable
     private int[] _slots = [];
     private int _count;
 
+    /// <summary>A private copy that can take new names without touching the original, which stays read-only.</summary>
+    public NameTable Clone() => new() { _names = (string[])_names.Clone(), _slots = (int[])_slots.Clone(), _count = _count };
+
     /// <summary>The number of names the document added to the fixed ones.</summary>
     public int DynamicCount => _count;
 

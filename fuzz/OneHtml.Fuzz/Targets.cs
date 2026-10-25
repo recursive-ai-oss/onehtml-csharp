@@ -11,6 +11,7 @@ internal static class Targets
     public static readonly SortedDictionary<string, Action<ReadOnlySpan<byte>>> All = new(StringComparer.Ordinal)
     {
         ["css"] = CssTarget.Run,
+        ["edit"] = EditTarget.Run,
         ["noop"] = static _ => { },
         ["selectors"] = SelectorTarget.Run,
         ["tokenize"] = Tokenize,

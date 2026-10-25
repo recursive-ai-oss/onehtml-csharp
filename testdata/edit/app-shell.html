@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset=utf-8>
+<title>Student Portal</title>
+<style>
+:root { --accent: #0a5; }
+.card { border: 1px solid var(--accent); }
+</style>
+</head>
+<body>
+<div id=app data-role='shell' class="shell dark">
+<my-menu open><button aria-expanded=false aria-controls=m1>Menu</button></my-menu>
+<ul id=m1 hidden>
+<li><a href=/grades>Grades</a>
+<li><a href=/schedule>Schedule</a>
+<li><a href=/aid>Financial aid</a>
+</ul>
+<template id=row><tr><td class=name></td><td class=grade></td></tr></template>
+<svg viewBox="0 0 24 24" width=24 height=24 role=img aria-label="Alert"><title>Alert</title><path d="M12 2L1 21h22z"/><circle cx=12 cy=17 r=1></circle></svg>
+<p style="color:red;font-size: 12px" title="a &quot;quoted&quot; title">Heads up: <b>deadline</b> <i>Friday</i>!</p>
+<pre>
+  indented
+    code &lt;here&gt;
+</pre>
+<textarea name=notes rows=3>
+first line
+second</textarea>
+<!-- a comment -->
+<table>
+<tr><td>one<td>two
+<tr><td>three<td>four
+</table>
+<p>Unclosed <b>bold <i>both</b> italics</i> end
+<noscript><p>Enable JavaScript</p></noscript>
+<math><mi>x</mi><mo>=</mo><mn>2</mn></math>
+<details open><summary>More</summary><p>Hidden details &#x263A; &#9731;</p></details>
+</div>
+<script>
+  var s = "</div>"; if (a < b) { go(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Riverside Community College &ndash; Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    .hero { background: #003366; color: #fff; padding: 2rem; }
+    .hero a { color: #ffd700; }
+    nav ul { list-style: none; margin: 0; padding: 0; }
+  </style>
+</head>
+<body class="home">
+  <a class="skip" href="#main">Skip to main content</a>
+  <header class="hero" style="margin-bottom: 1rem; border-bottom: 2px solid #ffd700">
+    <img src="/img/logo.png" alt="Riverside Community College" width="120" height="40">
+    <h1>Welcome to Riverside</h1>
+    <p>Learn, grow &amp; <em>succeed</em> with over 120 programs.</p>
+  </header>
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="/admissions">Admissions</a></li>
+      <li><a href="/academics" class="current">Academics</a></li>
+      <li><a href="/campus-life">Campus Life</a></li>
+      <li><a href="/calendar">Calendar</a></li>
+    </ul>
+  </nav>
+  <main id="main">
+    <section class="news">
+      <h2>News</h2>
+      <article>
+        <h3><a href="/news/1">Spring registration opens</a></h3>
+        <p>Registration for the spring term opens on <time datetime="2026-11-02">November 2</time>. See the <a href="/reg">guide</a>.</p>
+      </article>
+      <article>
+        <h3><a href="/news/2">New library hours</a></h3>
+        <p>The library is now open until midnight &mdash; Sunday through Thursday.</p>
+      </article>
+    </section>
+    <section class="events">
+      <h2>Upcoming events</h2>
+      <table class="schedule">
+        <caption>This week</caption>
+        <thead>
+          <tr><th scope="col">Day</th><th scope="col">Event</th><th scope="col">Room</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Mon</td><td>Open house</td><td>A-101</td></tr>
+          <tr><td>Wed</td><td>Career fair</td><td>Gym</td></tr>
+          <tr><td>Fri</td><td>Concert &amp; reception</td><td>Hall</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <form action="/search" method="get" class="search">
+      <label for="q">Search</label>
+      <input type="text" id="q" name="q" placeholder="Search the site">
+      <select name="scope">
+        <option value="all" selected>Everything</option>
+        <option value="people">People</option>
+        <option value="courses">Courses</option>
+      </select>
+      <button type="submit">Go</button>
+    </form>
+  </main>
+  <footer>
+    <p>&copy; 2026 Riverside Community College. <a href="/privacy">Privacy</a> | <a href="/contact">Contact</a></p>
+  </footer>
+  <script>document.documentElement.className += ' js'; if (1 < 2 && 3 > 2) { console.log("ready"); }</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# Known failures of the web-platform-tests value-parsing replay (tests/OneHtml.Tests/Css/CssWptValueTests.cs).
+# Fields, separated by tabs: file regex, call regex, input regex (matched against "property: value" or the query), reason.
+# A failure that matches no line fails the test. Every line says what is not done and why.
+#
+# --- CSS Color 4/5 ---
+color-valid-color-mix-function\.html	.*	.*	The specified value of color-mix() is not kept as written; ToCss returns the mixed color (CSS Color 5 section 3 serializes a color-mix() whose operands are not all resolved as the function). Only the computed result is modeled.
+color-valid-relative-color\.html	.*	.*	The specified value of a relative color is not kept as written; ToCss returns the resolved color (CSS Color 5 section 4 serializes the specified value as the function).
+color-computed-none\.html	.*	.*	Missing (none) components are carried through mixes and relative colors only for hue and alpha and for same-space operands; the analogous-component rules of CSS Color 4 section 12.4 between different spaces, and single-operand color-mix(), are not implemented.
+color-computed-powerless\.html	.*	.*	Powerless-component thresholds are applied on conversion to a polar space (CSS Color 4 section 12.4) but not on authored colors in the mix space, nor in single-operand color-mix().
+color-computed-color-mix-function\.html	.*	.*	Single-operand and 0%-weighted color-mix(), and none/powerless operands of hwb and hsl mixes, are not implemented (CSS Color 5 section 3).
+color-computed-relative-color\.html	.*	.*	Symbols repeated in all channels (r r r / r) and relative colors from currentcolor need the cascade; none carried from a bare symbol is implemented.
+relative-color-out-of-gamut\.html	.*	.*	Relative rgb(), hsl() and hwb() results are clamped to the sRGB gamut; CSS Color 5 section 4.2 keeps out-of-gamut channel values.
+color-mix-out-of-gamut\.html	.*	.*	Color-mix in hwb of an out-of-gamut operand is gamut-clamped before mixing.
+color-computed-named-color\.html	.*	.*	System-color and deprecated-color keywords compute to the light-scheme sRGB values, not the keyword.
+color-computed\.html	.*	.*	System-color keywords compute to the light-scheme sRGB values, not the keyword.
+color-valid\.html	.*	.*	The declared value of transparent and of named colors serializes as the sRGB value, not as the keyword (CSS Color 4 section 15.2 keeps the keyword for the declared value).
+color-valid-lab\.html	.*	.*	Math functions inside lab(), lch(), oklab() and oklch() are resolved when parsed, so the specified serialization shows the number, not calc() (CSS Values 4 section 10.9).
+alpha-color-.*\.html	.*	.*	The alpha() function (CSS Color 6) is not implemented.
+color-valid-contrast-color-function\.html	.*	.*	The contrast-color() function (CSS Color 6) is not implemented.
+contrast-color-function-calc-container\.html	.*	.*	The contrast-color() function (CSS Color 6) is not implemented.
+color-(valid|computed)-(rgb|hsl|hwb|lab|color-function)\.html	.*	(\dem|cqw|1em|2cqw)	A font-relative or container length inside a color calculation needs a length context that the color parser does not have; the cascade resolves such colors.
+color-computed-color-function\.html	.*	display-p3-linear	The display-p3-linear color space is not implemented.
+color-computed-lab\.html	.*	1\.28rad	Serialization keeps six decimals (CSS Color 4 section 15.1 allows at least the round-trip precision), where the test expects six significant digits.
+# --- CSS Values ---
+progress-computed\.html	.*	.*	The progress() function (CSS Values 5) is not implemented.
+random-.*\.html	.*	.*	The random() and random-item() functions (CSS Values 5) are not implemented.
+calc-mix-computed\.tentative\.html	.*	.*	The calc-mix() function (a CSS Values 5 proposal) is not implemented.
+clamp-partial-serialize\.tentative\.html	.*	.*	clamp() with a none bound is kept as written; the proposal that rewrites it to min()/max() is not implemented.
+inherit-function-parsing\.html	.*	.*	The inherit() function (CSS Values 5) is not implemented.
+typed_arithmetic\.html	.*	.*	Products and quotients that leave a percentage or a zero-valued unit in the result type (CSS Values 4 section 10.1 type algebra) are not simplified.
+# --- Media Queries ---
+(display-state|navigation-controls|resizable|display-mode)\.tentative\.html	.*	.*	The feature is a tentative proposal that no specification defines yet, so it is an unknown feature here.

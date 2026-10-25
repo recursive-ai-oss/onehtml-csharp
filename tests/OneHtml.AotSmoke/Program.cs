@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using RecursiveAI.OneHtml.Css;
 using RecursiveAI.OneHtml.Encodings;
 using RecursiveAI.OneHtml.Parsing;
 
@@ -61,4 +62,30 @@ while (pending.Count > 0)
 RecursiveAI.OneHtml.Document fragment = RecursiveAI.OneHtml.Document.ParseFragment("<li>a<li>b", new RecursiveAI.OneHtml.FragmentContext(RecursiveAI.OneHtml.ElementNamespace.Html, "ul"));
 bool lossless = doc.ToLosslessBytes().AsSpan().SequenceEqual(source);
 Console.WriteLine($"nodes={doc.NodeCount} elements={elements} lossless={lossless} mode={doc.Mode} fragment={fragment.SerializeChildren(fragment.Root)}");
-return htmlOk && cssOk && lossless && elements > 15 ? 0 : 1;
+
+// CSS values: property table, colours, math, var(), shorthands, media queries, @supports, stylesheet bytes.
+bool valuesOk = PropertyTable.TryGet("margin", out PropertyInfo? margin) && margin.IsShorthand && PropertyTable.Count > 500;
+bool colorOk = CssColor.TryParse("color-mix(in oklch, hsl(120 30% 50%), rgb(from red r g b / 50%))", out CssColor mixed) && mixed.ToCss().Length > 0
+    && CssColor.TryParse("#336699", out CssColor hex) && hex.ToCss() == "rgb(51, 102, 153)";
+bool calcOk = CssQuantity.TryParse(CssTree.ParseComponentValueList("clamp(1px, 2em + 10%, 100px)").Values, QuantityKinds.LengthPercentage, out CssQuantity length)
+    && length.Resolve(LengthContext.Default, 200) == 52;
+var custom = new System.Collections.Generic.Dictionary<string, ComponentValueList> { ["--a"] = CssTree.ParseComponentValueList("1px var(--b, 2px)").Values };
+SubstitutionResult substituted = VarSubstitution.Substitute(CssTree.ParseComponentValueList("var(--a) var(--missing, 3em)").Values, VarSubstitution.ResolveCustomProperties(custom));
+bool varOk = substituted.IsValid && substituted.Text == "1px 2px 3em" && VarSubstitution.IsValidSyntax(CssTree.ParseComponentValueList("var({--x}, 1px)").Values);
+ShorthandExpansion expansion = Shorthands.Expand("margin", CssTree.ParseComponentValueList("1px 2px").Values);
+bool shorthandOk = expansion.Status == ShorthandStatus.Expanded && expansion.Longhands.Count == 4;
+MediaQueryList media = MediaQueryList.Parse("screen and (min-width: 600px) and (prefers-color-scheme: light), print");
+bool mediaOk = media.Matches(StyleContext.Default.Media) && !MediaQueryList.Parse("(prefers-color-scheme: dark)").Matches(StyleContext.Default);
+bool supportsOk = SupportsCondition.Parse("(display: grid) and (not (foo: bar))").Evaluate();
+var sheetBytes = Encoding.Latin1.GetBytes("@charset \"iso-8859-2\"; a { content: \"\u00E9\" }");
+int byteRules = 0;
+foreach (CssNode unused in Stylesheet.Parse(sheetBytes, WhatwgCssEncodingProvider.Instance).Rules)
+{
+    byteRules++;
+}
+
+bool bytesOk = byteRules == 2; // the @charset rule and the style rule
+Console.WriteLine($"var: {substituted.Status} [{substituted.Text}] bytes: {byteRules}");
+Console.WriteLine($"values: table={valuesOk} color={colorOk} calc={calcOk} var={varOk} shorthand={shorthandOk} media={mediaOk} supports={supportsOk} bytes={bytesOk}");
+bool valueApiOk = valuesOk && colorOk && calcOk && varOk && shorthandOk && mediaOk && supportsOk && bytesOk;
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk ? 0 : 1;

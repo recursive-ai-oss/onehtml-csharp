@@ -509,6 +509,12 @@ public static class CssSerializer
             {
                 sb.Append('\\').Append(c);
             }
+            else if (c >= '\u0080' && !CssChars.IsNonAsciiIdent(c))
+            {
+                // CSSOM leaves every character from U+0080 up as is, but CSS Syntax 4.2 does not list the C1 controls and
+                // some others as ident code points, so a bare one would not read back as part of the identifier.
+                AppendHexEscape(sb, c);
+            }
             else if (c >= '\u0080' || c is '-' or '_' || c is >= '0' and <= '9' || c is >= 'A' and <= 'Z' || c is >= 'a' and <= 'z')
             {
                 if (char.IsHighSurrogate(c) && i + 1 < value.Length && char.IsLowSurrogate(value[i + 1]))

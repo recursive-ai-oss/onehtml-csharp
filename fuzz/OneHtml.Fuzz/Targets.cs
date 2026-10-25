@@ -14,6 +14,7 @@ internal static class Targets
         ["noop"] = static _ => { },
         ["tokenize"] = Tokenize,
         ["treebuilder"] = TreeBuilder,
+        ["values"] = ValueTarget.Run,
     };
 
     // Small limits so hostile inputs reach the limit paths quickly.

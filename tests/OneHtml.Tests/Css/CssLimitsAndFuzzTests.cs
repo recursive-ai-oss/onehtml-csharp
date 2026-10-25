@@ -29,7 +29,7 @@ public class CssLimitsAndFuzzTests
     public void Byte_input_much_longer_than_the_limit_is_refused_before_decoding()
     {
         var o = new CssParseOptions { MaxInputLength = 10 };
-        var provider = new TestEncodingProvider();
+        var provider = WhatwgCssEncodingProvider.Instance;
         Assert.Throws<CssLimitExceededException>(() => Stylesheet.Parse(new byte[41], provider, options: o, cancellationToken: Ct));
     }
 

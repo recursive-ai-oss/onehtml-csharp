@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RecursiveAI.OneHtml.Fuzz</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SharpFuzz" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />
+    <ProjectReference Include="../../src/OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
+    <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />
+  </ItemGroup>
+</Project>

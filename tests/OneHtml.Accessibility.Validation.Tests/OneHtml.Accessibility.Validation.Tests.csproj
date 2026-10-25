@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>RecursiveAI.OneHtml.Accessibility.Validation.Tests</RootNamespace>
+    <NoWarn>$(NoWarn);CA1707</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />
+  </ItemGroup>
+</Project>

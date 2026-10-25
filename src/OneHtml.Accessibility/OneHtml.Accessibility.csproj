@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>The accessibility tree for OneHtml documents. In development.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../OneHtml/OneHtml.csproj" />
+  </ItemGroup>
+</Project>

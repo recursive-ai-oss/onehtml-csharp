@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/bench/">
+    <Project Path="bench/OneHtml.Benchmarks/OneHtml.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/fuzz/">
+    <Project Path="fuzz/OneHtml.Fuzz/OneHtml.Fuzz.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />
+    <Project Path="src/OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
+    <Project Path="src/OneHtml/OneHtml.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OneHtml.Accessibility.Tests/OneHtml.Accessibility.Tests.csproj" />
+    <Project Path="tests/OneHtml.Accessibility.Validation.Tests/OneHtml.Accessibility.Validation.Tests.csproj" />
+    <Project Path="tests/OneHtml.AotSmoke/OneHtml.AotSmoke.csproj" />
+    <Project Path="tests/OneHtml.Tests/OneHtml.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/OneHtml.Differential/OneHtml.Differential.csproj" />
+  </Folder>
+</Solution>

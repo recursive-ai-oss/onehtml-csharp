@@ -1,0 +1,20 @@
+* text=auto eol=lf
+
+*.cs text eol=lf
+*.csproj text eol=lf
+*.props text eol=lf
+*.slnx text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.sh text eol=lf
+
+# Round-trip tests compare bytes, so test data must never be converted.
+testdata/** -text
+**/testdata/** -text
+
+*.png binary
+*.gif binary
+*.jpg binary
+*.woff binary
+*.woff2 binary

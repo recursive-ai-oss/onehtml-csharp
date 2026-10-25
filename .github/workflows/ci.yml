@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: win-x64, os: windows-latest, rid: win-x64 }
+          - { name: linux-x64, os: ubuntu-latest, rid: linux-x64 }
+          - { name: linux-arm64, os: ubuntu-24.04-arm, rid: linux-arm64 }
+          - { name: osx-arm64, os: macos-latest, rid: osx-arm64 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Build
+        run: dotnet build -c Release
+      - name: Test
+        run: dotnet test -c Release --no-build
+      - name: NativeAOT publish (trim and AOT warnings are errors)
+        run: dotnet publish tests/OneHtml.AotSmoke -r ${{ matrix.rid }} -c Release -o aot-out
+      - name: Run the published smoke app
+        shell: bash
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then ./aot-out/OneHtml.AotSmoke.exe; else ./aot-out/OneHtml.AotSmoke; fi

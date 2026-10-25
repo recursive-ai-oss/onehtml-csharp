@@ -1,6 +1,10 @@
-# Build output is redirected outside the repo; these guard against strays.
+# Build output is redirected outside the repo when ONEHTML_ARTIFACTS is set; these guard against strays.
 bin/
 obj/
 artifacts/
 *.user
 .vs/
+.idea/
+*.swp
+TestResults/
+BenchmarkDotNet.Artifacts/

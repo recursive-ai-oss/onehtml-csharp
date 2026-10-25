@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>HTML and CSS parsing, selectors, cascade and lossless editing. In development.</Description>
+  </PropertyGroup>
+</Project>

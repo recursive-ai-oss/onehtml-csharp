@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RecursiveAI.OneHtml.Benchmarks</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Include="AngleSharp" />
+    <PackageReference Include="HtmlAgilityPack" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />
+    <ProjectReference Include="../../src/OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
+    <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />
+  </ItemGroup>
+</Project>

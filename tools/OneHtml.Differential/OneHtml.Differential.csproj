@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RecursiveAI.OneHtml.Differential</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AngleSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />
+    <ProjectReference Include="../../src/OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
+    <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Accessibility checks over OneHtml documents, without a browser. In development.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
+  </ItemGroup>
+</Project>

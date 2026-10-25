@@ -1,0 +1,13 @@
+<Project>
+  <!-- Versions for test, benchmark, fuzz and differential projects only. Library projects take no packages. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="xunit.v3" Version="4.0.2" />
+    <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
+    <PackageVersion Include="SharpFuzz" Version="2.3.0" />
+    <PackageVersion Include="AngleSharp" Version="1.8.6" />
+    <PackageVersion Include="HtmlAgilityPack" Version="1.13.1" />
+  </ItemGroup>
+</Project>

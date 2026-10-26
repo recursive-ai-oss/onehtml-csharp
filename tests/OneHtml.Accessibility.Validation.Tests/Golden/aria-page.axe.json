@@ -158,6 +158,24 @@
       "nodes": []
     },
     {
+      "id": "autocomplete-valid",
+      "impact": null,
+      "tags": [
+        "cat.forms",
+        "wcag21aa",
+        "wcag135",
+        "EN-301-549",
+        "EN-9.1.3.5",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.13.1"
+      ],
+      "description": "The autocomplete attribute of a form field must follow the HTML autofill token syntax.",
+      "help": "Change the autocomplete value to the field name that matches the data the field collects, such as email or street-address, optionally preceded by section-*, shipping or billing, and a contact type for telephone and e-mail fields.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/autocomplete-valid",
+      "nodes": []
+    },
+    {
       "id": "button-name",
       "impact": null,
       "tags": [
@@ -180,6 +198,15 @@
       "nodes": []
     },
     {
+      "id": "element-lang-matches-content",
+      "impact": null,
+      "tags": [],
+      "description": "The language named by a lang attribute should be the language of the text it covers.",
+      "help": "Read the passage and make its lang attribute name the language the text is written in.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
       "id": "empty-heading",
       "impact": null,
       "tags": [
@@ -189,6 +216,18 @@
       "description": "A heading must have text.",
       "help": "Put text in the heading, or remove the heading element if it is only for spacing.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/empty-heading",
+      "nodes": []
+    },
+    {
+      "id": "empty-table-header",
+      "impact": null,
+      "tags": [
+        "cat.name-role-value",
+        "best-practice"
+      ],
+      "description": "A table header cell should have text a screen reader can read.",
+      "help": "Put text in the header cell, or make it a data cell if it does not head anything.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/empty-table-header",
       "nodes": []
     },
     {
@@ -248,6 +287,24 @@
       "description": "Frames with the same accessible name must have the same purpose.",
       "help": "Give each frame a name that says what it holds, or show the same resource in frames that share a name.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/frame-title-unique",
+      "nodes": []
+    },
+    {
+      "id": "html-xml-lang-mismatch",
+      "impact": null,
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.3.1"
+      ],
+      "description": "When the html element has both lang and xml:lang, their primary languages must be the same.",
+      "help": "Make the xml:lang attribute of the html element name the same language as lang, or remove xml:lang.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/html-xml-lang-mismatch",
       "nodes": []
     },
     {
@@ -428,6 +485,18 @@
       "nodes": []
     },
     {
+      "id": "scope-attr-valid",
+      "impact": null,
+      "tags": [
+        "cat.tables",
+        "best-practice"
+      ],
+      "description": "The scope attribute belongs on th elements and must be col, row, colgroup or rowgroup.",
+      "help": "Use scope only on th elements, with the value col, row, colgroup or rowgroup.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/scope-attr-valid",
+      "nodes": []
+    },
+    {
       "id": "select-name",
       "impact": null,
       "tags": [
@@ -488,6 +557,124 @@
       "description": "An SVG element with an image role must have a text alternative.",
       "help": "Add a title child, aria-label or aria-labelledby that says what the graphic shows.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/svg-img-alt",
+      "nodes": []
+    },
+    {
+      "id": "table-duplicate-name",
+      "impact": null,
+      "tags": [
+        "cat.tables",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-5.2.1"
+      ],
+      "description": "A table's caption should not repeat the text of its summary attribute.",
+      "help": "Make the caption name the table and use summary only for extra detail, or remove the obsolete summary attribute.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/table-duplicate-name",
+      "nodes": []
+    },
+    {
+      "id": "table-fake-caption",
+      "impact": null,
+      "tags": [
+        "cat.tables",
+        "experimental",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.4.1"
+      ],
+      "description": "A data cell that spans the whole first row to title the table should be a caption element.",
+      "help": "Move the text into a caption element as the first child of the table and remove the spanning cell.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/table-fake-caption",
+      "nodes": []
+    },
+    {
+      "id": "td-has-header",
+      "impact": null,
+      "tags": [
+        "cat.tables",
+        "experimental",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.4"
+      ],
+      "description": "Each cell with content in a data table of at least three rows and three columns must have a header cell.",
+      "help": "Mark the heading cells with th (and scope where needed), or give the cell a headers attribute that lists its header cells.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/td-has-header",
+      "nodes": []
+    },
+    {
+      "id": "td-headers-attr",
+      "impact": null,
+      "tags": [
+        "cat.tables",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.4"
+      ],
+      "description": "Every id listed in a cell's headers attribute must belong to another cell of the same table.",
+      "help": "Make each id in the headers attribute the id of a header or data cell in the same table, and do not list the cell's own id.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/td-headers-attr",
+      "nodes": []
+    },
+    {
+      "id": "th-has-data-cells",
+      "impact": null,
+      "tags": [
+        "cat.tables",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.1"
+      ],
+      "description": "Every header cell of a table must have at least one cell that it is the header of.",
+      "help": "Remove the header cell or the markup that cuts it off from its cells, or add the cells it describes.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/th-has-data-cells",
+      "nodes": []
+    },
+    {
+      "id": "valid-lang",
+      "impact": null,
+      "tags": [
+        "cat.language",
+        "wcag2aa",
+        "wcag312",
+        "TTv5",
+        "TT11.b",
+        "EN-301-549",
+        "EN-9.3.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.8.1"
+      ],
+      "description": "A lang attribute on content inside the body must start with a registered language code.",
+      "help": "Change the lang attribute to a language code from the IANA registry, such as es or zh-Hans.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/valid-lang",
       "nodes": []
     }
   ],
@@ -1434,6 +1621,82 @@
       ]
     },
     {
+      "id": "html-has-lang",
+      "impact": null,
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "TTv5",
+        "TT11.a",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.3.1"
+      ],
+      "description": "The html element must have a lang attribute that is not empty.",
+      "help": "Add a lang attribute to the html element that names the main language of the page, such as lang=\"en\".",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/html-has-lang",
+      "nodes": [
+        {
+          "html": "<html lang=\"en\">",
+          "impact": null,
+          "target": [
+            "html"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "html-lang-valid",
+      "impact": null,
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "TTv5",
+        "TT11.a",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.4.1"
+      ],
+      "description": "The lang attribute of the html element must start with a registered language code.",
+      "help": "Change the lang attribute of the html element to a language code from the IANA registry, such as en or fr-CA.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/html-lang-valid",
+      "nodes": [
+        {
+          "html": "<html lang=\"en\">",
+          "impact": null,
+          "target": [
+            "html"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
       "id": "presentational-children-focusable",
       "impact": null,
       "tags": [],
@@ -1513,6 +1776,47 @@
     }
   ],
   "incomplete": [
+    {
+      "id": "html-lang-matches-content",
+      "impact": "serious",
+      "tags": [],
+      "description": "The language named by the lang attribute of the html element should be the main language of the page's text.",
+      "help": "Read the page and make the lang attribute of the html element name the language most of the text is written in.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<html lang=\"en\">",
+          "impact": "serious",
+          "target": [
+            "html"
+          ],
+          "any": [
+            {
+              "id": "html-lang-matches-content",
+              "data": [
+                {
+                  "attribute": "lang",
+                  "value": "en"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "Check that most of the page is written in \"en\"."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that most of the page is written in \"en\".\npage language",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
     {
       "id": "link-in-context-descriptive",
       "impact": "moderate",

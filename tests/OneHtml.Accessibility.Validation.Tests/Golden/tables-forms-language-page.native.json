@@ -1,0 +1,1467 @@
+{
+  "format": "onehtml-results",
+  "version": 1,
+  "document": {
+    "sha256": "7f5767580b533573bc8dc7266118a8da73d4a27690676a289fb763742d2aa328",
+    "url": "https://example.test/page"
+  },
+  "styleContext": {
+    "viewportWidth": 1280,
+    "viewportHeight": 720,
+    "media": "screen",
+    "colorScheme": "light",
+    "reducedMotion": "no-preference",
+    "contrast": "no-preference",
+    "forcedColors": false,
+    "cssOnly": false
+  },
+  "profile": null,
+  "limitReached": false,
+  "rules": [
+    {
+      "id": "autocomplete-valid",
+      "description": "The autocomplete attribute of a form field must follow the HTML autofill token syntax.",
+      "help": "Change the autocomplete value to the field name that matches the data the field collects, such as email or street-address, optionally preceded by section-*, shipping or billing, and a contact type for telephone and e-mail fields.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "autocomplete-valid"
+        },
+        {
+          "kind": "act",
+          "id": "73f2c2"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.5",
+          "handle": "Identify Input Purpose",
+          "level": "AA",
+          "version": "2.1"
+        }
+      ],
+      "tags": [
+        "cat.forms",
+        "wcag21aa",
+        "wcag135",
+        "EN-301-549",
+        "EN-9.1.3.5",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.13.1"
+      ],
+      "fix": null,
+      "noFixReason": "Removing a bad value would only hide the problem; the right token depends on what the field collects."
+    },
+    {
+      "id": "element-lang-matches-content",
+      "description": "The language named by a lang attribute should be the language of the text it covers.",
+      "help": "Read the passage and make its lang attribute name the language the text is written in.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "off6ek"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.2",
+          "handle": "Language of Parts",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Deciding which language a passage is in needs a reader."
+    },
+    {
+      "id": "empty-table-header",
+      "description": "A table header cell should have text a screen reader can read.",
+      "help": "Put text in the header cell, or make it a data cell if it does not head anything.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "empty-table-header"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.name-role-value",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "What the header should say is a content decision."
+    },
+    {
+      "id": "html-has-lang",
+      "description": "The html element must have a lang attribute that is not empty.",
+      "help": "Add a lang attribute to the html element that names the main language of the page, such as lang=\"en\".",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "html-has-lang"
+        },
+        {
+          "kind": "act",
+          "id": "b5c3f8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.1",
+          "handle": "Language of Page",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "TTv5",
+        "TT11.a",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "The language of the page is content that the checker cannot know."
+    },
+    {
+      "id": "html-lang-matches-content",
+      "description": "The language named by the lang attribute of the html element should be the main language of the page's text.",
+      "help": "Read the page and make the lang attribute of the html element name the language most of the text is written in.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "ucwvc8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.1",
+          "handle": "Language of Page",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Deciding which language the text is in needs a reader."
+    },
+    {
+      "id": "html-lang-valid",
+      "description": "The lang attribute of the html element must start with a registered language code.",
+      "help": "Change the lang attribute of the html element to a language code from the IANA registry, such as en or fr-CA.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "html-lang-valid"
+        },
+        {
+          "kind": "act",
+          "id": "bf051a"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.1",
+          "handle": "Language of Page",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "TTv5",
+        "TT11.a",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.4.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which language the page is in is content; a corrected value cannot be derived from the markup."
+    },
+    {
+      "id": "html-xml-lang-mismatch",
+      "description": "When the html element has both lang and xml:lang, their primary languages must be the same.",
+      "help": "Make the xml:lang attribute of the html element name the same language as lang, or remove xml:lang.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "html-xml-lang-mismatch"
+        },
+        {
+          "kind": "act",
+          "id": "5b7ae0"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.1",
+          "handle": "Language of Page",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which of the two values is right is content; removing xml:lang would also discard it for XML consumers."
+    },
+    {
+      "id": "scope-attr-valid",
+      "description": "The scope attribute belongs on th elements and must be col, row, colgroup or rowgroup.",
+      "help": "Use scope only on th elements, with the value col, row, colgroup or rowgroup.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "scope-attr-valid"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.tables",
+        "best-practice"
+      ],
+      "fix": "Remove an invalid scope value from a th: a browser already treats it as no scope, so removing it changes nothing but the markup.",
+      "noFixReason": null
+    },
+    {
+      "id": "table-duplicate-name",
+      "description": "A table's caption should not repeat the text of its summary attribute.",
+      "help": "Make the caption name the table and use summary only for extra detail, or remove the obsolete summary attribute.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "table-duplicate-name"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.tables",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-5.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Either the caption or the summary can be the one to drop or reword, which is a content decision."
+    },
+    {
+      "id": "table-fake-caption",
+      "description": "A data cell that spans the whole first row to title the table should be a caption element.",
+      "help": "Move the text into a caption element as the first child of the table and remove the spanning cell.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "table-fake-caption"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.tables",
+        "experimental",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.4.1"
+      ],
+      "fix": null,
+      "noFixReason": "Moving the text changes the table's structure and styling; whether the cell is a title is a judgement."
+    },
+    {
+      "id": "td-has-header",
+      "description": "Each cell with content in a data table of at least three rows and three columns must have a header cell.",
+      "help": "Mark the heading cells with th (and scope where needed), or give the cell a headers attribute that lists its header cells.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "td-has-header"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.tables",
+        "experimental",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.4"
+      ],
+      "fix": null,
+      "noFixReason": "Which cells are the headers is a content decision."
+    },
+    {
+      "id": "td-headers-attr",
+      "description": "Every id listed in a cell's headers attribute must belong to another cell of the same table.",
+      "help": "Make each id in the headers attribute the id of a header or data cell in the same table, and do not list the cell's own id.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "td-headers-attr"
+        },
+        {
+          "kind": "act",
+          "id": "a25f45"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.tables",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.4"
+      ],
+      "fix": null,
+      "noFixReason": "The right header cells depend on what the table says; the markup does not show them."
+    },
+    {
+      "id": "th-has-data-cells",
+      "description": "Every header cell of a table must have at least one cell that it is the header of.",
+      "help": "Remove the header cell or the markup that cuts it off from its cells, or add the cells it describes.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "th-has-data-cells"
+        },
+        {
+          "kind": "act",
+          "id": "d0f69e"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.tables",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.1"
+      ],
+      "fix": null,
+      "noFixReason": "Whether a header is stray or its cells are missing is a content decision."
+    },
+    {
+      "id": "valid-lang",
+      "description": "A lang attribute on content inside the body must start with a registered language code.",
+      "help": "Change the lang attribute to a language code from the IANA registry, such as es or zh-Hans.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "valid-lang"
+        },
+        {
+          "kind": "act",
+          "id": "de46e4"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.2",
+          "handle": "Language of Parts",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.language",
+        "wcag2aa",
+        "wcag312",
+        "TTv5",
+        "TT11.b",
+        "EN-301-549",
+        "EN-9.3.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which language a passage is in is content; a corrected value cannot be derived from the markup."
+    }
+  ],
+  "results": [
+    {
+      "rule": "autocomplete-valid",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "input",
+        "locator": "input[name=\"e\"]",
+        "source": {
+          "start": 724,
+          "end": 778
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autocomplete-valid",
+      "outcome": "failed",
+      "message": "The autocomplete value \"shiping street-address\" is not valid: \"shiping\" is not an autofill field name.",
+      "target": {
+        "tag": "input",
+        "locator": "input[name=\"s\"]",
+        "source": {
+          "start": 781,
+          "end": 847
+        }
+      },
+      "findings": [
+        {
+          "attribute": "autocomplete",
+          "value": "shiping street-address",
+          "message": "\"shiping\" is not an autofill field name"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autocomplete-valid",
+      "outcome": "failed",
+      "message": "The autocomplete value \"home photo\" is not valid: the contact type \"home\" can only go with a telephone or e-mail field name, not \"photo\".",
+      "target": {
+        "tag": "input",
+        "locator": "input[name=\"x\"]",
+        "source": {
+          "start": 850,
+          "end": 904
+        }
+      },
+      "findings": [
+        {
+          "attribute": "autocomplete",
+          "value": "home photo",
+          "message": "the contact type \"home\" can only go with a telephone or e-mail field name, not \"photo\""
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "element-lang-matches-content",
+      "outcome": "needs-review",
+      "message": "Check that the text is written in \"fr\".",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(2)",
+        "source": {
+          "start": 973,
+          "end": 989
+        }
+      },
+      "findings": [
+        {
+          "attribute": "lang",
+          "value": "fr-CH",
+          "message": "passage language"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-table-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(1)",
+        "source": {
+          "start": 246,
+          "end": 265
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-table-header",
+      "outcome": "needs-review",
+      "message": "This header cell has no text, so it gives its column or row no name.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(2)",
+        "source": {
+          "start": 273,
+          "end": 277
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-table-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(3)",
+        "source": {
+          "start": 282,
+          "end": 298
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-table-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "#h1",
+        "source": {
+          "start": 461,
+          "end": 473
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-table-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "#h2",
+        "source": {
+          "start": 482,
+          "end": 494
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-table-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(3) > tbody > tr:nth-of-type(2) > th:nth-of-type(1)",
+        "source": {
+          "start": 646,
+          "end": 650
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-table-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(3) > tbody > tr:nth-of-type(2) > th:nth-of-type(2)",
+        "source": {
+          "start": 657,
+          "end": 661
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "html-has-lang",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 52
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "html-lang-matches-content",
+      "outcome": "needs-review",
+      "message": "Check that most of the page is written in \"en\".",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 52
+        }
+      },
+      "findings": [
+        {
+          "attribute": "lang",
+          "value": "en-US-GB",
+          "message": "page language"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "html-lang-valid",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 52
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "html-xml-lang-mismatch",
+      "outcome": "failed",
+      "message": "lang names \"en\" but xml:lang names \"fr\".",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 52
+        }
+      },
+      "findings": [
+        {
+          "attribute": "lang",
+          "value": "en-US-GB",
+          "message": "xml:lang is fr"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "scope-attr-valid",
+      "outcome": "failed",
+      "message": "\"column\" is not a valid scope value.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(1)",
+        "source": {
+          "start": 246,
+          "end": 265
+        }
+      },
+      "findings": [
+        {
+          "attribute": "scope",
+          "value": "column",
+          "message": "not row, col, rowgroup or colgroup"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": [
+        {
+          "description": "Remove the scope attribute.",
+          "edit": 0
+        }
+      ]
+    },
+    {
+      "rule": "scope-attr-valid",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(3)",
+        "source": {
+          "start": 282,
+          "end": 298
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "table-duplicate-name",
+      "outcome": "failed",
+      "message": "The caption and the summary attribute say the same thing.",
+      "target": {
+        "tag": "table",
+        "locator": "body > table:nth-of-type(1)",
+        "source": {
+          "start": 125,
+          "end": 156
+        }
+      },
+      "findings": [
+        {
+          "attribute": "summary",
+          "value": "Opening hours",
+          "message": "same text as the caption"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "table-fake-caption",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "table",
+        "locator": "body > table:nth-of-type(1)",
+        "source": {
+          "start": 125,
+          "end": 156
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "table-fake-caption",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "table",
+        "locator": "body > table:nth-of-type(2)",
+        "source": {
+          "start": 447,
+          "end": 454
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "table-fake-caption",
+      "outcome": "failed",
+      "message": "This cell spans the whole first row and holds text, as a caption would.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(3) > tbody > tr:nth-of-type(1) > td",
+        "source": {
+          "start": 597,
+          "end": 613
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-has-header",
+      "outcome": "failed",
+      "message": "This cell has no header cell in a table of 4 rows and 3 columns.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(1) > td",
+        "source": {
+          "start": 198,
+          "end": 214
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-has-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(3) > td:nth-of-type(1)",
+        "source": {
+          "start": 324,
+          "end": 328
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-has-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(3) > td:nth-of-type(2)",
+        "source": {
+          "start": 336,
+          "end": 340
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-has-header",
+      "outcome": "failed",
+      "message": "This cell has no header cell in a table of 4 rows and 3 columns.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(3) > td:nth-of-type(3)",
+        "source": {
+          "start": 349,
+          "end": 371
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-has-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(4) > td:nth-of-type(1)",
+        "source": {
+          "start": 393,
+          "end": 397
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-has-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(4) > td:nth-of-type(2)",
+        "source": {
+          "start": 405,
+          "end": 409
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-has-header",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(4) > td:nth-of-type(3)",
+        "source": {
+          "start": 418,
+          "end": 422
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-headers-attr",
+      "outcome": "failed",
+      "message": "The headers attribute lists ids that are not other cells of the same table: nothere.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(3) > td:nth-of-type(3)",
+        "source": {
+          "start": 349,
+          "end": 371
+        }
+      },
+      "findings": [
+        {
+          "attribute": "headers",
+          "value": "nothere",
+          "message": "is not the id of a cell in this table"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-headers-attr",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(2) > tbody > tr:nth-of-type(2) > td:nth-of-type(1)",
+        "source": {
+          "start": 516,
+          "end": 533
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-headers-attr",
+      "outcome": "failed",
+      "message": "The headers attribute lists ids that are not other cells of the same table: h2x.",
+      "target": {
+        "tag": "td",
+        "locator": "body > table:nth-of-type(2) > tbody > tr:nth-of-type(2) > td:nth-of-type(2)",
+        "source": {
+          "start": 541,
+          "end": 562
+        }
+      },
+      "findings": [
+        {
+          "attribute": "headers",
+          "value": "h2x",
+          "message": "is not the id of a cell in this table"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "th-has-data-cells",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(1)",
+        "source": {
+          "start": 246,
+          "end": 265
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "th-has-data-cells",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(2)",
+        "source": {
+          "start": 273,
+          "end": 277
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "th-has-data-cells",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(3)",
+        "source": {
+          "start": 282,
+          "end": 298
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "th-has-data-cells",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "#h1",
+        "source": {
+          "start": 461,
+          "end": 473
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "th-has-data-cells",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "#h2",
+        "source": {
+          "start": 482,
+          "end": 494
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "th-has-data-cells",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(3) > tbody > tr:nth-of-type(2) > th:nth-of-type(1)",
+        "source": {
+          "start": 646,
+          "end": 650
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "th-has-data-cells",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "th",
+        "locator": "body > table:nth-of-type(3) > tbody > tr:nth-of-type(2) > th:nth-of-type(2)",
+        "source": {
+          "start": 657,
+          "end": 661
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "valid-lang",
+      "outcome": "failed",
+      "message": "\"dutch\" does not start with a registered language code (unknown primary language).",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(1)",
+        "source": {
+          "start": 913,
+          "end": 929
+        }
+      },
+      "findings": [
+        {
+          "attribute": "lang",
+          "value": "dutch",
+          "message": "unknown primary language"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "valid-lang",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(2)",
+        "source": {
+          "start": 973,
+          "end": 989
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    }
+  ],
+  "suggestedEdits": {
+    "format": "onehtml-edits",
+    "version": 1,
+    "document": {
+      "sha256": "7f5767580b533573bc8dc7266118a8da73d4a27690676a289fb763742d2aa328"
+    },
+    "edits": [
+      {
+        "op": "removeAttribute",
+        "target": {
+          "locator": "body > table:nth-of-type(1) > tbody > tr:nth-of-type(2) > th:nth-of-type(1)",
+          "fingerprint": {
+            "tag": "th",
+            "text": "sha256:8f2364e11b8be3ff008f32b3dedb54e659362429bcc9e3eb6acb6070de4ffbff",
+            "path": "sha256:82da05cdf283d401cc75ffdfc90776c7b6b1c2e8e640094ca95f55417be5105b"
+          },
+          "anchor": {
+            "start": 246,
+            "end": 273,
+            "bytes": "sha256:a8f28b81b1bab25d471de6d11276ae81f302fbca66ad48663e3205cd887ae0b7"
+          }
+        },
+        "name": "scope",
+        "meta": {
+          "rule": "scope-attr-valid",
+          "criteria": [],
+          "suggested": true
+        }
+      }
+    ]
+  }
+}

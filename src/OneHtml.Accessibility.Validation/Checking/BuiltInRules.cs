@@ -15,6 +15,7 @@ public static class BuiltInRules
     {
         var list = new List<IAccessibilityRule>
         {
+            new AutocompleteValidRule(),
             new AriaAllowedAttrRule(),
             new AriaAllowedRoleRule(),
             new AriaBrailleEquivalentRule(),
@@ -30,6 +31,19 @@ public static class BuiltInRules
             new AriaTextRule(),
             new AriaValidAttrRule(),
             new AriaValidAttrValueRule(),
+            new ElementLangMatchesContentRule(),
+            new EmptyTableHeaderRule(),
+            new HtmlHasLangRule(),
+            new HtmlLangMatchesContentRule(),
+            new HtmlLangValidRule(),
+            new HtmlXmlLangMismatchRule(),
+            new ScopeAttrValidRule(),
+            new TableDuplicateNameRule(),
+            new TableFakeCaptionRule(),
+            new TdHasHeaderRule(),
+            new TdHeadersAttrRule(),
+            new ThHasDataCellsRule(),
+            new ValidLangRule(),
             new PresentationRoleConflictRule(),
             new PresentationalChildrenFocusableRule(),
             new RoleNameRule("aria-command-name", "A button, link or menu item given its role by the role attribute must have an accessible name.", "Give the control a visible text label, an aria-label or an aria-labelledby.", ["button", "link", "menuitem"], ["m6b1q3", "97a4e1", "c487ae"]),

@@ -3,7 +3,8 @@
 `RecursiveAI.OneHtml.Accessibility.Validation` runs accessibility rules over a document and its accessibility tree and
 returns labelled results. This page covers the API, how rules are selected, and how to add a private rule. The shape of
 the results and the two JSON exports is in [results.md](results.md); the rules that ship are in
-[rules/aria.md](rules/aria.md) and [rules/names.md](rules/names.md); the data about the standards they cite is in [catalogue.md](catalogue.md).
+[rules/aria.md](rules/aria.md), [rules/names.md](rules/names.md), [rules/tables.md](rules/tables.md),
+[rules/forms.md](rules/forms.md) and [rules/language.md](rules/language.md); the data about the standards they cite is in [catalogue.md](catalogue.md).
 
 ## Running a check
 

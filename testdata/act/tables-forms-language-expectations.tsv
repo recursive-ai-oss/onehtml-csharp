@@ -1,0 +1,9 @@
+# ACT test cases the static table, form and language rules cannot judge. Columns: case id, status, reason.
+# A case listed here must still be wrong (or the test says the entry is stale).
+c762c64d2fad555db40034d643e8f12cd5bcddc4	n/a	a25f45 Inapplicable Example 3: the table is off-screen with position: absolute and negative offsets; telling that it is not visible needs layout (rendered facts)
+190e6aec2df43e234c468b187d427c32d5d942c1	n/a	b5c3f8 Inapplicable Example 1: an SVG document; the library parses every input as HTML, which wraps the svg in an html element, and does not know the content type
+580a61d57084cdbbe6b27c3dc35d4cc51d078c41	n/a	b5c3f8 Inapplicable Example 2: a MathML document; same as the SVG case
+24fd835bb3314fafe0c822f640869bb93dae23d3	n/a	5b7ae0 Inapplicable Example 4: inapplicable only because the page is served as XHTML (XML content type); the markup is parsed as HTML here
+e57483df633ffdf9a51197960a6fd43aed2d9881	n/a	ucwvc8 Inapplicable Example 4: the page text is valid French and English alike, so no default language can be determined; only a reader can see that
+a694775060f9898b905bd24114ac3aa2b7eed6ca	n/a	off6ek Inapplicable Example 1: an SVG document, as for b5c3f8
+1f5b59313700fb26ac0260e5fb25bd69d805bc82	n/a	off6ek Failed Example 4: the text is hidden but used as an image name through aria-labelledby; the rule counts it as text of the image, this check only counts rendered text

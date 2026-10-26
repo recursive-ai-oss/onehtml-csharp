@@ -28,11 +28,11 @@ Criteria with at least one rule: 42 of 87.
 | 1.2.7 | Extended Audio Description (Prerecorded) | AAA | 2.0+ |  |  |  | unassessed |
 | 1.2.8 | Media Alternative (Prerecorded) | AAA | 2.0+ | 1a02b0, c5a4ea |  |  | unassessed |
 | 1.2.9 | Audio-only (Live) | AAA | 2.0+ |  |  |  | unassessed |
-| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent | unassessed |
+| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | unassessed |
 | 1.3.2 | Meaningful Sequence | A | 2.0+ |  |  |  | unassessed |
 | 1.3.3 | Sensory Characteristics | A | 2.0+ | 9bd38c |  |  | unassessed |
 | 1.3.4 | Orientation | AA | 2.1+ | b33eff | css-orientation-lock |  | unassessed |
-| 1.3.5 | Identify Input Purpose | AA | 2.1+ | 73f2c2 | autocomplete-valid |  | unassessed |
+| 1.3.5 | Identify Input Purpose | AA | 2.1+ | 73f2c2 | autocomplete-valid | autocomplete-valid | unassessed |
 | 1.3.6 | Identify Purpose | AAA | 2.1+ |  |  |  | unassessed |
 | 1.4.1 | Use of Color | A | 2.0+ |  | link-in-text-block |  | unassessed |
 | 1.4.2 | Audio Control | A | 2.0+ | 80f0bf | no-autoplay-audio |  | unassessed |
@@ -81,8 +81,8 @@ Criteria with at least one rule: 42 of 87.
 | 2.5.6 | Concurrent Input Mechanisms | AAA | 2.1+ |  |  |  | unassessed |
 | 2.5.7 | Dragging Movements | AA | 2.2+ |  |  |  | unassessed |
 | 2.5.8 | Target Size (Minimum) | AA | 2.2+ |  | target-size |  | unassessed |
-| 3.1.1 | Language of Page | A | 2.0+ | 5b7ae0 (deprecated), b5c3f8, bf051a, ucwvc8 | html-has-lang, html-lang-valid, html-xml-lang-mismatch |  | unassessed |
-| 3.1.2 | Language of Parts | AA | 2.0+ | de46e4, off6ek | valid-lang |  | unassessed |
+| 3.1.1 | Language of Page | A | 2.0+ | 5b7ae0 (deprecated), b5c3f8, bf051a, ucwvc8 | html-has-lang, html-lang-valid, html-xml-lang-mismatch | html-has-lang, html-lang-matches-content, html-lang-valid, html-xml-lang-mismatch | unassessed |
+| 3.1.2 | Language of Parts | AA | 2.0+ | de46e4, off6ek | valid-lang | element-lang-matches-content, valid-lang | unassessed |
 | 3.1.3 | Unusual Words | AAA | 2.0+ |  |  |  | unassessed |
 | 3.1.4 | Abbreviations | AAA | 2.0+ |  |  |  | unassessed |
 | 3.1.5 | Reading Level | AAA | 2.0+ |  |  |  | unassessed |
@@ -106,4 +106,4 @@ Criteria with at least one rule: 42 of 87.
 | 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, presentational-children-focusable, select-name, summary-name | unassessed |
 | 4.1.3 | Status Messages | AA | 2.1+ |  |  |  | unassessed |
 
-Implemented best-practice rules, which check no criterion: aria-allowed-role, aria-dialog-name, aria-text, aria-treeitem-name, empty-heading, image-redundant-alt, label-title-only, presentation-role-conflict.
+Implemented best-practice rules, which check no criterion: aria-allowed-role, aria-dialog-name, aria-text, aria-treeitem-name, empty-heading, empty-table-header, image-redundant-alt, label-title-only, presentation-role-conflict, scope-attr-valid, table-duplicate-name.

@@ -28,7 +28,7 @@ deprecated; `p-as-heading`, `focus-order-semantics` and `hidden-content` are exp
 ## The rules
 
 Columns: sources, criteria (or best practice), axe impact, needs, and the suggested edit. A suggested edit exists only
-where the rule names exactly one correct, judgement-free fix; the library never applies it. The fix decisions follow
+where the rule names exactly one correct, judgement-free fix; the library never applies it. `listitem` has none, because the right wrapper and its effect on layout depend on what the author meant. The fix decisions follow
 the table.
 
 | Rule | Sources | Criteria | Impact | Needs | Suggested edit |
@@ -49,7 +49,7 @@ the table.
 | page-has-heading-one | axe | best practice | moderate | static | none |
 | p-as-heading (experimental) | axe | 1.3.1 | serious | static (cascade) | none |
 | list | axe | 1.3.1 | serious | static | none |
-| listitem | axe | 1.3.1 | serious | static | wrap a run of orphan `li` in `ul` |
+| listitem | axe | 1.3.1 | serious | static | none |
 | definition-list | axe | 1.3.1 | serious | static | none |
 | dlitem | axe | 1.3.1 | serious | static | none |
 | duplicate-id (deprecated) | axe, ACT 3ea0c8 | 4.1.1 (obsolete) | minor | static | none |
@@ -84,12 +84,9 @@ landmarks or replacing a marquee all need the author.
   when the tree's focus order is strictly increasing in document order, and nothing otherwise (then the author chose the
   order). The edits are one set and must be applied together: applying one of several positive values alone can reorder
   the rest. After applying them all the focus order is the same and the findings are gone.
-- **listitem.** An `li` outside a list renders with a bullet already, so `ul` is the list it looks like, and the edit is
-  `wrap` of the run of consecutive sibling `li` (whitespace and comments may sit between) in `<ul></ul>`, offered on the
-  first `li` of the run; one edit clears every `li` of the run. It is offered only when no item has a `value` attribute,
-  none has a role, and the parent has no role. It is the one decision here that deserves a second look by a person: the
-  wrapper adds the default list indentation and margins of `ul`, so the page may move a little. The edit goes through the
-  fragment parser, splices bytes, and re-checking shows no `listitem` failure.
+- **listitem: no edit.** An `li` outside a list renders with a bullet already, but wrapping it in a `ul` adds the default
+  list indentation and margins, so the page may move, and whether the item belongs in a `ul`, an `ol` or a container with
+  the role `list` depends on what the author meant.
 - **Duplicate ids: no edit.** Renaming the later copies looks safe because browsers resolve every reference to the first
   element with the id, but the author may have meant any of them, a stylesheet or script the library cannot see may
   select every copy, and the new id would be an invented name. A rename is judgement-free only if no reference could
@@ -263,7 +260,7 @@ non-empty name) belongs to the names-and-labels area.
 
 `StructureRuleTests` applies the suggested edits of the area through `Document.Apply` (no re-serialization fallback) and
 through replay of their saved form, requires identical bytes, re-checks, and requires that no rule fails more than it did
-before. The wrap edit's output is compared byte for byte.
+before.
 
 ## Timing
 

@@ -82,7 +82,7 @@ the locator (the start offset when there is none); it is stable while the elemen
 | `id` | the rule id |
 | `shortDescription` | the rule's description |
 | `fullDescription` | the description, the success criteria it is relevant to with level and WCAG version (or that it is a best practice no criterion requires), and whether it needs rendered facts |
-| `help` | the help sentence, then the suggested edit the rule names or why it has none |
+| `help` | the help sentence, then the suggested edit the rule names or why it has none (for example `aria-valid-attr-value`, `aria-prohibited-attr` and `listitem` always say why they have none) |
 | `helpUri` | the ACT rule page if the rule has an ACT source, else the Deque University page of the pinned axe version if it has an axe source, else none |
 | `defaultConfiguration` | `enabled`, `level` and `rank` from the impact, as for results |
 | `relationships` | one per success criterion, kind `relevant`, targeting the WCAG taxon by `id` and `index` |

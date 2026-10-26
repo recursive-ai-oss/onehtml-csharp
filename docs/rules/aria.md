@@ -14,7 +14,7 @@ accessibility tree" of the ACT rules. The ACT rules that apply "to any element" 
 ## The rules
 
 Columns: sources, criteria (or best practice), axe impact, and the fix decision. A suggested edit exists only where the
-rule names exactly one correct, judgement-free fix; the library never applies it.
+rule names exactly one correct, judgement-free fix; the library never applies it. `aria-valid-attr-value` and `aria-prohibited-attr` have none, because the right correction depends on what the author meant.
 
 | Rule | Sources | Criteria | Impact | Suggested edit |
 |---|---|---|---|---|
@@ -30,7 +30,7 @@ rule names exactly one correct, judgement-free fix; the library never applies it
 | aria-input-field-name | axe | 4.1.2 | serious | none |
 | aria-meter-name | axe | 1.1.1 | serious | none |
 | aria-progressbar-name | axe | 1.1.1 | serious | none |
-| aria-prohibited-attr | axe, ACT 5c01ea, kb1m8s | 4.1.2 | serious | remove the attribute |
+| aria-prohibited-attr | axe, ACT 5c01ea, kb1m8s | 4.1.2 | serious | none |
 | aria-required-attr | axe, ACT 4e8ab6 | 4.1.2 | critical | none |
 | aria-required-children | axe, ACT bc4a75 | 1.3.1 | critical | none |
 | aria-required-parent | axe, ACT ff89c9 | 1.3.1 | critical | none |
@@ -41,7 +41,7 @@ rule names exactly one correct, judgement-free fix; the library never applies it
 | aria-tooltip-name | axe | 4.1.2 | serious | none |
 | aria-treeitem-name | axe | best practice | serious | none |
 | aria-valid-attr | axe, ACT 5f99a7 | 4.1.2 | critical | remove the attribute |
-| aria-valid-attr-value | axe, ACT 6a7281 | 4.1.2 | critical | remove the attribute (not a required one) |
+| aria-valid-attr-value | axe, ACT 6a7281 | 4.1.2 | critical | none |
 | presentation-role-conflict | axe, ACT 46ca7f | best practice | minor | none |
 
 `nested-interactive` (axe, ACT 307n5z) is the same check as the ACT rule about presentational children; it is listed in
@@ -55,17 +55,17 @@ rule names exactly one correct, judgement-free fix; the library never applies it
 - **aria-valid-attr-value** (ACT 6a7281). Each non-empty defined state or property has a value of its type (true/false,
   tristate, token from the allowed list, token list, integer, number, single ID reference). An ID reference or list that
   the element's role *requires* must name at least one element that exists. A broken reference to a property the role does
-  not require is not a failure here (ACT passes it; the tree reports it as a diagnostic). *Fix:* remove an attribute with
-  an invalid value, because the browser already falls back to the attribute's default. *No fix* when the role requires
-  that attribute (removing it would trade this failure for a missing required attribute), and none for a missing required
-  reference.
+  not require is not a failure here (ACT passes it; the tree reports it as a diagnostic). *No public fix:* the right
+  correction depends on what the author meant (a mistyped value, an id that should exist, or an attribute that should go),
+  and removing an attribute the role requires would trade this failure for a missing required attribute.
 - **aria-allowed-attr**. A defined attribute must be supported by the element's role (own, required or inherited), be
   global, or, on an element with no role, be one that ARIA in HTML grants to the element (`aria-disabled`,
   `aria-invalid` and `aria-required` on `input`; `aria-disabled` and `aria-haspopup` on `summary`). *No fix:* an
   unsupported attribute may mean the role is wrong rather than the attribute, and choosing which is a judgement.
 - **aria-prohibited-attr** (ACT 5c01ea, kb1m8s). The role prohibits the attribute (`aria-label` and `aria-labelledby` on
-  `generic`, `presentation`, `paragraph`, …; the exception list of each global attribute). *Fix:* remove the attribute,
-  since authors may not set it on that role.
+  `generic`, `presentation`, `paragraph`, …; the exception list of each global attribute). *No public fix:* the
+  attribute may be a name or state meant for another element or role, so whether to remove it, move it or change the
+  role depends on what the author meant.
 - **aria-conditional-attr**. `aria-checked` on a native `input type=checkbox` must agree with the `checked` attribute;
   `mixed` cannot be judged from markup (indeterminate is set by script) and is needs-review. *Fix:* remove `aria-checked`
   when it disagrees, because the native state is the one assistive technology reports.

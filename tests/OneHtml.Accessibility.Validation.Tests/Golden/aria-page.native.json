@@ -541,8 +541,8 @@
         "RGAAv4",
         "RGAA-7.1.1"
       ],
-      "fix": "Remove the prohibited attribute. Authors may not set it on this role, and removing it leaves the element with the semantics the rest of its markup gives.",
-      "noFixReason": null
+      "fix": null,
+      "noFixReason": "The attribute may be a name or state meant for another element or role, so whether to remove it, move it or change the role depends on what the author meant."
     },
     {
       "id": "aria-required-attr",
@@ -912,8 +912,8 @@
         "RGAAv4",
         "RGAA-7.1.1"
       ],
-      "fix": "Remove an attribute whose value is outside its type when the role does not require that attribute. A browser already falls back to the attribute's default, so removing it changes nothing a user perceives.",
-      "noFixReason": null
+      "fix": null,
+      "noFixReason": "The right value depends on what the author meant: a mistyped value, an id that should exist, or an attribute that should go. No single edit is correct for all of them."
     },
     {
       "id": "audio-alternative",
@@ -2895,8 +2895,8 @@
         "RGAAv4",
         "RGAA-9.3.1"
       ],
-      "fix": "Wrap a run of sibling li elements that have no role and no value attribute in a ul.",
-      "noFixReason": null
+      "fix": null,
+      "noFixReason": "Whether the item belongs in a ul, an ol or another list, and what the wrapper does to the layout, depends on what the author meant."
     },
     {
       "id": "marquee",
@@ -5521,12 +5521,7 @@
       "cssOnly": false,
       "factsUsed": [],
       "factsMissing": [],
-      "suggested": [
-        {
-          "description": "Remove the aria-valuenow attribute.",
-          "edit": 3
-        }
-      ]
+      "suggested": []
     },
     {
       "rule": "aria-valid-attr-value",
@@ -7974,34 +7969,6 @@
         "name": "aria-labelled",
         "meta": {
           "rule": "aria-valid-attr",
-          "criteria": [
-            "4.1.2"
-          ],
-          "suggested": true
-        }
-      },
-      {
-        "op": "removeAttribute",
-        "target": {
-          "locator": "#f1",
-          "fingerprint": {
-            "tag": "div",
-            "attrs": {
-              "id": "f1",
-              "role": "textbox"
-            },
-            "text": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "path": "sha256:ddc93ea0f4d9c25de1b3bfc9c4457c6828f4c5d3872aac2313e950375f9bcf2f"
-          },
-          "anchor": {
-            "start": 89,
-            "end": 159,
-            "bytes": "sha256:8dce4d1cedf6a0101e8f89b10fd9816d38fdc28511585b3703eddb84be89785b"
-          }
-        },
-        "name": "aria-valuenow",
-        "meta": {
-          "rule": "aria-valid-attr-value",
           "criteria": [
             "4.1.2"
           ],

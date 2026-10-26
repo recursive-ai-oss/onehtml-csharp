@@ -4,7 +4,7 @@ Accessibility checks over a `RecursiveAI.OneHtml` document and its accessibility
 
 - **Results** carry an outcome (`Failed`, `Passed`, `NeedsReview`, `NeedsRender`, `Inapplicable`), labels, task impact, the facts used and missing, the style context, and the target as a node, a locator and a source range.
 - **Profiles** select labels: WCAG 2.0 AA, 2.1 AA, 2.2 AA, or all. A profile names the standard it follows; it is not a legal claim.
-- **Suggested edits** appear only where exactly one judgement-free fix exists (for example removing an undefined `aria-*` attribute). They are in the OneHtml edit format, are never applied by the library, and applying one clears the finding.
+- **Suggested edits** appear only where exactly one judgement-free fix exists (for example removing an undefined `aria-*` attribute). They are in the OneHtml edit format, are never applied by the library, and applying one clears the finding. `aria-valid-attr-value`, `aria-prohibited-attr` and `listitem` have no public fix: the correct edit depends on what the author meant (a mistyped value, a name meant for another element, a layout choice), so they report the problem and offer no suggestion.
 - **Contrast** is computed where the cascade or supplied rendered facts show a solid background; it never guesses one.
 - **Output:** native versioned JSON, axe-compatible JSON (lossy, documented; `NeedsRender` maps to `incomplete`) and SARIF 2.1.0.
 - **Your own rules** implement a public interface and are registered with `new Checker(privateRules)`.

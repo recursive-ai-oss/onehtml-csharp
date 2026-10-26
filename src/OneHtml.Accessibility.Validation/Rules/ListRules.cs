@@ -102,14 +102,13 @@ internal sealed class ListRule : StructureRule
 }
 
 // axe listitem, WCAG 1.3.1. An li belongs in a ul, ol or menu (HTML 4.4.8) or in an element with the role list. Only the
-// orphan run of plain li elements gets a suggested edit: wrapping it in a ul. The browser already draws an orphan li with
-// a bullet, so ul is the list it looks like; the edit still adds the default list indentation, so this is the one rule
-// decision to review (see docs/rules/structure.md).
+// orphan li has no suggested edit: wrapping it in a ul would change the layout (default list indentation), and whether the
+// item belongs in a ul, an ol or a role=list container is the author's decision (see docs/rules/structure.md).
 internal sealed class ListItemRule : StructureRule
 {
     public ListItemRule()
         : base("listitem", "An li element must be inside a ul, an ol or a list.", "Put the li in a ul or ol, or give its parent the role list.",
-            "Wrap a run of sibling li elements that have no role and no value attribute in a ul.", null)
+            null, "Whether the item belongs in a ul, an ol or another list, and what the wrapper does to the layout, depends on what the author meant.")
     {
     }
 
@@ -139,13 +138,7 @@ internal sealed class ListItemRule : StructureRule
                 continue;
             }
 
-            IReadOnlyList<SuggestedEdit>? fix = null;
-            if (Wrappable(li, parent, out int count))
-            {
-                fix = [reporter.Suggest(Editing.Edit.Wrap(li, "<ul></ul>", count), "Wrap the " + (count == 1 ? "list item" : "run of list items") + " in a ul.")];
-            }
-
-            reporter.Failed(li, "The li is not inside a ul, an ol or a list.", [new Finding(null, parent.IsNull ? null : parent.LocalName, "Its parent is not a list.")], fix);
+            reporter.Failed(li, "The li is not inside a ul, an ol or a list.", [new Finding(null, parent.IsNull ? null : parent.LocalName, "Its parent is not a list.")]);
         }
     }
 
@@ -159,59 +152,6 @@ internal sealed class ListItemRule : StructureRule
 
         // A ul or ol with no role, or presentational (then its items are presentational too, ARIA 1.2 presentational roles inheritance).
         return (IsHtml(parent, "ul") || IsHtml(parent, "ol") || IsHtml(parent, "menu")) && role is null or "none" or "presentation";
-    }
-
-    // The suggestion goes on the first li of a run of plain sibling li elements (whitespace and comments may sit between).
-    // The later ones fail without one: the single wrap edit clears them all.
-    private static bool Wrappable(Node li, Node parent, out int count)
-    {
-        count = 0;
-        if (parent.IsNull || ListRuleSet.RoleToken(parent) is not null || li.HasAttribute("value") || !IsRunStart(li))
-        {
-            return false;
-        }
-
-        int n = 0, lastLi = 0;
-        for (Node s = li; !s.IsNull; s = s.NextSibling)
-        {
-            n++;
-            if (s.IsElement)
-            {
-                if (IsHtml(s, "li") && ListRuleSet.RoleToken(s) is null && !s.HasAttribute("value"))
-                {
-                    lastLi = n;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else if (s.Kind == NodeKind.Text && !IsBlank(s.Data))
-            {
-                break;
-            }
-        }
-
-        count = lastLi;
-        return lastLi > 0;
-    }
-
-    private static bool IsRunStart(Node li)
-    {
-        for (Node s = li.PreviousSibling; !s.IsNull; s = s.PreviousSibling)
-        {
-            if (s.IsElement)
-            {
-                return !(IsHtml(s, "li") && ListRuleSet.RoleToken(s) is null && !s.HasAttribute("value"));
-            }
-
-            if (s.Kind == NodeKind.Text && !IsBlank(s.Data))
-            {
-                return true;
-            }
-        }
-
-        return true;
     }
 }
 

@@ -319,7 +319,7 @@ public sealed class StructureRuleTests
             Assert.DoesNotContain(recheck.WithOutcome(Outcome.Failed), f => f.RuleId == rule && rule is "tabindex");
         }
 
-        // The wrap clears every li of the run; nothing new fails, counted by rule.
+        // Nothing new fails, counted by rule.
         var failedBefore = before.WithOutcome(Outcome.Failed).GroupBy(f => f.RuleId).ToDictionary(g => g.Key, g => g.Count());
         foreach (IGrouping<string, RuleResult> g in recheck.WithOutcome(Outcome.Failed).GroupBy(f => f.RuleId))
         {
@@ -330,24 +330,19 @@ public sealed class StructureRuleTests
     }
 
     [Fact]
-    public void Orphan_list_items_are_wrapped_in_one_ul_per_run()
+    public void Orphan_list_items_fail_without_a_suggested_edit()
     {
         const string html = "<div>\n  <li>a</li>\n  <li>b</li>\n  <p>x</p>\n  <li>c</li>\n</div>";
         CheckReport r = Run(html, "listitem");
         Assert.Equal("F:li,F:li,F:li", Verdicts(r, "listitem"));
-        Assert.Equal([1, 0, 1], r.Results.Select(x => x.SuggestedEdits.Count).ToArray());
-        Assert.Equal(2, Verify(html));
-        Document source = r.Document;
-        Document after = source.Apply(r.SuggestedEditList()).Document!;
-        Assert.Equal("<div>\n  <ul><li>a</li>\n  <li>b</li></ul>\n  <p>x</p>\n  <ul><li>c</li></ul>\n</div>", after.Source.Text.Replace("<html><head></head><body>", string.Empty));
-        // No suggestion where the author numbered the items or gave the parent a role.
-        Assert.All(Run("<div><li value=3>a</li></div><section role=group><li>b</li></section>", "listitem").Results, x => Assert.Empty(x.SuggestedEdits));
+        Assert.All(r.Results, x => Assert.Empty(x.SuggestedEdits));
+        Assert.Equal(0, Verify(html));
+        Assert.Equal(0, Verify("<body><li>one</li><li>two</li></body>"));
     }
 
     [Fact]
     public void Suggested_edits_of_the_area_apply_replay_and_clear()
     {
         Assert.True(Verify("<a href=/a tabindex=1>a</a><button tabindex=2>b</button><p>text</p>") > 0);
-        Assert.True(Verify("<body><li>one</li><li>two</li></body>") > 0);
     }
 }

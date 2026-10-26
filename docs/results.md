@@ -24,7 +24,7 @@ Labels live on the rule: `Rule.Descriptor` has the sources (ACT id, axe id, fail
 also has a description, a help sentence and an impact. Descriptions and help texts are written for this library.
 
 A suggested edit is a normal `Edit` against the checked snapshot, carrying `meta` with the rule id, the criteria and
-`"suggested": true`. Applying one is the caller's choice; `Document.Apply` and replay both accept them.
+`"suggested": true`. Applying one is the caller's choice; `Document.Apply` and replay both accept them. `aria-valid-attr-value`, `aria-prohibited-attr` and `listitem` have no public fix: the correct edit depends on what the author meant (a mistyped value, a name meant for another element, a layout choice), so they report the problem and offer no suggestion.
 
 ## Native JSON: `onehtml-results` version 1
 

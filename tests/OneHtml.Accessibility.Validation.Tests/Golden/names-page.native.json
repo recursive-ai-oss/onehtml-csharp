@@ -541,8 +541,8 @@
         "RGAAv4",
         "RGAA-7.1.1"
       ],
-      "fix": "Remove the prohibited attribute. Authors may not set it on this role, and removing it leaves the element with the semantics the rest of its markup gives.",
-      "noFixReason": null
+      "fix": null,
+      "noFixReason": "The attribute may be a name or state meant for another element or role, so whether to remove it, move it or change the role depends on what the author meant."
     },
     {
       "id": "aria-required-attr",
@@ -912,8 +912,8 @@
         "RGAAv4",
         "RGAA-7.1.1"
       ],
-      "fix": "Remove an attribute whose value is outside its type when the role does not require that attribute. A browser already falls back to the attribute's default, so removing it changes nothing a user perceives.",
-      "noFixReason": null
+      "fix": null,
+      "noFixReason": "The right value depends on what the author meant: a mistyped value, an id that should exist, or an attribute that should go. No single edit is correct for all of them."
     },
     {
       "id": "audio-alternative",
@@ -2895,8 +2895,8 @@
         "RGAAv4",
         "RGAA-9.3.1"
       ],
-      "fix": "Wrap a run of sibling li elements that have no role and no value attribute in a ul.",
-      "noFixReason": null
+      "fix": null,
+      "noFixReason": "Whether the item belongs in a ul, an ol or another list, and what the wrapper does to the layout, depends on what the author meant."
     },
     {
       "id": "marquee",

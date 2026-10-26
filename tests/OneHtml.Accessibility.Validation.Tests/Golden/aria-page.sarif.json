@@ -897,7 +897,7 @@
                 "text": "A WAI-ARIA attribute must not be used on a role that prohibits it, such as aria-label on an element with no role. Relevant WCAG success criteria: 4.1.2 Name, Role, Value (level A, WCAG 2.0)."
               },
               "help": {
-                "text": "Remove the attribute, or give the element a role that can be named. Suggested edit: Remove the prohibited attribute. Authors may not set it on this role, and removing it leaves the element with the semantics the rest of its markup gives."
+                "text": "Remove the attribute, or give the element a role that can be named. No suggested edit: The attribute may be a name or state meant for another element or role, so whether to remove it, move it or change the role depends on what the author meant."
               },
               "helpUri": "https://act-rules.github.io/rules/5c01ea",
               "defaultConfiguration": {
@@ -954,8 +954,8 @@
                     "version": "2.0"
                   }
                 ],
-                "fix": "Remove the prohibited attribute. Authors may not set it on this role, and removing it leaves the element with the semantics the rest of its markup gives.",
-                "noFixReason": null
+                "fix": null,
+                "noFixReason": "The attribute may be a name or state meant for another element or role, so whether to remove it, move it or change the role depends on what the author meant."
               }
             },
             {
@@ -1563,7 +1563,7 @@
                 "text": "Every non-empty WAI-ARIA state or property must have a value of its type, and a required ID reference must name an element in the page. Relevant WCAG success criteria: 4.1.2 Name, Role, Value (level A, WCAG 2.0)."
               },
               "help": {
-                "text": "Use one of the values WAI-ARIA allows for the attribute, or point the required reference at an element that exists. Suggested edit: Remove an attribute whose value is outside its type when the role does not require that attribute. A browser already falls back to the attribute's default, so removing it changes nothing a user perceives."
+                "text": "Use one of the values WAI-ARIA allows for the attribute, or point the required reference at an element that exists. No suggested edit: The right value depends on what the author meant: a mistyped value, an id that should exist, or an attribute that should go. No single edit is correct for all of them."
               },
               "helpUri": "https://act-rules.github.io/rules/6a7281",
               "defaultConfiguration": {
@@ -1616,8 +1616,8 @@
                     "version": "2.0"
                   }
                 ],
-                "fix": "Remove an attribute whose value is outside its type when the role does not require that attribute. A browser already falls back to the attribute's default, so removing it changes nothing a user perceives.",
-                "noFixReason": null
+                "fix": null,
+                "noFixReason": "The right value depends on what the author meant: a mistyped value, an id that should exist, or an attribute that should go. No single edit is correct for all of them."
               }
             },
             {
@@ -5213,7 +5213,7 @@
                 "text": "An li element must be inside a ul, an ol or a list. Relevant WCAG success criteria: 1.3.1 Info and Relationships (level A, WCAG 2.0)."
               },
               "help": {
-                "text": "Put the li in a ul or ol, or give its parent the role list. Suggested edit: Wrap a run of sibling li elements that have no role and no value attribute in a ul."
+                "text": "Put the li in a ul or ol, or give its parent the role list. No suggested edit: Whether the item belongs in a ul, an ol or another list, and what the wrapper does to the layout, depends on what the author meant."
               },
               "helpUri": "https://dequeuniversity.com/rules/axe/4.14/listitem",
               "defaultConfiguration": {
@@ -5262,8 +5262,8 @@
                     "version": "2.0"
                   }
                 ],
-                "fix": "Wrap a run of sibling li elements that have no role and no value attribute in a ul.",
-                "noFixReason": null
+                "fix": null,
+                "noFixReason": "Whether the item belongs in a ul, an ol or another list, and what the wrapper does to the layout, depends on what the author meant."
               }
             },
             {
@@ -8493,33 +8493,6 @@
           "partialFingerprints": {
             "onehtml/v1": "0bfee0690c5899329d3d972672a193b1"
           },
-          "fixes": [
-            {
-              "description": {
-                "text": "Remove the aria-valuenow attribute."
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "https://example.test/page",
-                    "index": 0
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "startLine": 6,
-                        "startColumn": 30,
-                        "endLine": 6,
-                        "endColumn": 48,
-                        "byteOffset": 116,
-                        "byteLength": 18
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
           "properties": {
             "outcome": "failed",
             "locator": "#f1",

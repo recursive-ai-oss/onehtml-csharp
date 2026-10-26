@@ -96,7 +96,7 @@ public sealed class SuggestedEditTests
             total += Verify(html);
         }
 
-        Assert.True(total >= 8, "edits suggested: " + total);
+        Assert.True(total >= 7, "edits suggested: " + total);
     }
 
     [Fact]
@@ -108,5 +108,20 @@ public sealed class SuggestedEditTests
         {
             Assert.Empty(f.SuggestedEdits);
         }
+    }
+
+    // Which fix is right depends on what the author meant, so these three rules report the problem and offer no edit.
+    [Theory]
+    [InlineData("aria-valid-attr-value", "<div aria-hidden=\"yes\" aria-live=\"loud\" aria-colspan=\"two\">x</div>")]
+    [InlineData("aria-valid-attr-value", "<p aria-expanded=\"maybe\">x</p>")]
+    [InlineData("aria-prohibited-attr", "<div aria-label=\"x\">no role</div>")]
+    [InlineData("aria-prohibited-attr", "<span aria-labelledby=\"a\">y</span><p id=a>z</p>")]
+    [InlineData("listitem", "<div><li>a</li><li>b</li></div>")]
+    [InlineData("listitem", "<body><li>one</li></body>")]
+    public void Rules_with_no_public_fix_fail_without_a_suggestion(string rule, string html)
+    {
+        CheckReport r = new Checker().Check(Document.Parse(html));
+        Assert.Contains(r.WithOutcome(Outcome.Failed), f => f.RuleId == rule);
+        Assert.All(r.Results.Where(f => f.RuleId == rule), f => Assert.Empty(f.SuggestedEdits));
     }
 }

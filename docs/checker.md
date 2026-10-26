@@ -50,7 +50,7 @@ with no target. The order does not depend on the order rules were registered in 
 
 `report.SuggestedEdits()` returns the suggested edits of all results as one edit-format envelope (`docs/edit-format.md`),
 without duplicates, and `report.SuggestedEditList()` returns the same edits as `Edit` objects for `Document.Apply`. The
-library never applies them. Each carries `meta`: `{ "rule": id, "criteria": [...], "suggested": true }`.
+library never applies them. Each carries `meta`: `{ "rule": id, "criteria": [...], "suggested": true }`. `aria-valid-attr-value`, `aria-prohibited-attr` and `listitem` have no public fix: the correct edit depends on what the author meant (a mistyped value, a name meant for another element, a layout choice), so they report the problem and offer no suggestion.
 
 ## Private rules
 

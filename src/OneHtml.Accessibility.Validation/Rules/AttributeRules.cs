@@ -76,8 +76,8 @@ internal sealed class AriaValidAttrValueRule : AriaRule
             "aria-valid-attr-value",
             "Every non-empty WAI-ARIA state or property must have a value of its type, and a required ID reference must name an element in the page.",
             "Use one of the values WAI-ARIA allows for the attribute, or point the required reference at an element that exists.",
-            "Remove an attribute whose value is outside its type when the role does not require that attribute. A browser already falls back to the attribute's default, so removing it changes nothing a user perceives.",
             null,
+            "The right value depends on what the author meant: a mistyped value, an id that should exist, or an attribute that should go. No single edit is correct for all of them.",
             actIds: ["6a7281"])
     {
     }
@@ -116,7 +116,6 @@ internal sealed class AriaValidAttrValueRule : AriaRule
             }
 
             List<Finding>? bad = null;
-            List<SuggestedEdit>? fixes = null;
             AriaRole? role = nr.Role;
             foreach (RoleDiagnostic d in nr.Diagnostics)
             {
@@ -126,10 +125,6 @@ internal sealed class AriaValidAttrValueRule : AriaRule
                 }
 
                 (bad ??= []).Add(new Finding(d.Attribute, d.Value, d.Message));
-                if (role is null || (!System.Linq.Enumerable.Contains(role.RequiredAttributes, d.Attribute) && !System.Linq.Enumerable.Contains(role.RequiredWhenFocusable, d.Attribute)))
-                {
-                    (fixes ??= []).Add(RemoveAttribute(reporter, el, d.Attribute));
-                }
             }
 
             // A required ID reference (or list) needs at least one id that exists in the document.
@@ -227,7 +222,7 @@ internal sealed class AriaValidAttrValueRule : AriaRule
 
             if (bad is not null)
             {
-                reporter.Failed(el, "A WAI-ARIA state or property has a value it cannot have.", bad, fixes);
+                reporter.Failed(el, "A WAI-ARIA state or property has a value it cannot have.", bad);
             }
             else if (review is not null)
             {
@@ -258,7 +253,7 @@ internal sealed class AriaAllowedAttrRule : AriaRule
     public override RuleScope Scope => RuleScope.Node;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter) =>
-        AttributeDiagnosticRules.Run(context, reporter, RoleDiagnosticKind.UnsupportedAttribute, "The role does not support this state or property.", false);
+        AttributeDiagnosticRules.Run(context, reporter, RoleDiagnosticKind.UnsupportedAttribute, "The role does not support this state or property.");
 }
 
 // axe "aria-prohibited-attr" and ACT 5c01ea / kb1m8s: roles that prohibit naming or other attributes (ARIA 1.2 section 5.3.2).
@@ -269,8 +264,8 @@ internal sealed class AriaProhibitedAttrRule : AriaRule
             "aria-prohibited-attr",
             "A WAI-ARIA attribute must not be used on a role that prohibits it, such as aria-label on an element with no role.",
             "Remove the attribute, or give the element a role that can be named.",
-            "Remove the prohibited attribute. Authors may not set it on this role, and removing it leaves the element with the semantics the rest of its markup gives.",
             null,
+            "The attribute may be a name or state meant for another element or role, so whether to remove it, move it or change the role depends on what the author meant.",
             actIds: ["5c01ea", "kb1m8s"])
     {
     }
@@ -278,12 +273,12 @@ internal sealed class AriaProhibitedAttrRule : AriaRule
     public override RuleScope Scope => RuleScope.Node;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter) =>
-        AttributeDiagnosticRules.Run(context, reporter, RoleDiagnosticKind.ProhibitedAttribute, "The role prohibits this state or property.", true);
+        AttributeDiagnosticRules.Run(context, reporter, RoleDiagnosticKind.ProhibitedAttribute, "The role prohibits this state or property.");
 }
 
 internal static class AttributeDiagnosticRules
 {
-    internal static void Run(CheckContext context, RuleReporter reporter, RoleDiagnosticKind kind, string reason, bool suggestRemoval)
+    internal static void Run(CheckContext context, RuleReporter reporter, RoleDiagnosticKind kind, string reason)
     {
         int counter = 0;
         foreach (AxNode node in context.TreeNodes())
@@ -316,7 +311,6 @@ internal static class AttributeDiagnosticRules
 
             NodeRole nr = context.Tree.Roles[el];
             List<Finding>? bad = null;
-            List<SuggestedEdit>? fixes = null;
             foreach (RoleDiagnostic d in nr.Diagnostics)
             {
                 if (d.Kind != kind || d.Attribute is null)
@@ -326,10 +320,6 @@ internal static class AttributeDiagnosticRules
 
                 string where = nr.Role is { } r ? "the role " + r.Name : "an element with no role";
                 (bad ??= []).Add(new Finding(d.Attribute, d.Value ?? el.GetAttribute(d.Attribute), d.Attribute + " is not allowed on " + where + ". " + reason));
-                if (suggestRemoval)
-                {
-                    (fixes ??= []).Add(reporter.Suggest(Editing.Edit.RemoveAttribute(el, d.Attribute), "Remove the " + d.Attribute + " attribute."));
-                }
             }
 
             // An element with no role supports only the global attributes, plus the few ARIA in HTML grants to native
@@ -347,7 +337,7 @@ internal static class AttributeDiagnosticRules
 
             if (bad is not null)
             {
-                reporter.Failed(el, "The element has a WAI-ARIA attribute its role does not allow.", bad, fixes);
+                reporter.Failed(el, "The element has a WAI-ARIA attribute its role does not allow.", bad);
             }
             else
             {

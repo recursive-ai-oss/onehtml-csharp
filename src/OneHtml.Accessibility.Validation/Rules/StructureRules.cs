@@ -145,12 +145,7 @@ internal static class StructureDiagnosticRules
     {
         var allowed = new HashSet<string>(StringComparer.Ordinal);
         var between = new HashSet<string>(StringComparer.Ordinal);
-        var chains = new List<IReadOnlyList<string>>(role.RequiredOwned);
-        if (role.Name == "list")
-        {
-            // WAI-ARIA 1.1 let a list own list items through a group, and the ACT rule still passes that shape.
-            chains.Add(["group", "listitem"]);
-        }
+        IReadOnlyList<IReadOnlyList<string>> chains = role.RequiredOwned;
 
         foreach (IReadOnlyList<string> chain in chains)
         {

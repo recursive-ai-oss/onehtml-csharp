@@ -26,8 +26,8 @@ name computation, states and focus.
 ## `empty-alt-image`
 
 - **Topic:** img with an empty alt
-- **Choice:** The role is none unless aria-label has text or aria-labelledby names an element. A title does not name it.
-- **Matches:** wpt html-aam/roles-contextual.html el-img-empty-alt-title and the aria-label and aria-labelledby cases.
+- **Choice:** The role is none unless aria-label has text or aria-labelledby names an element. A title does not name it. Presentational conflict resolution then restores the role img when the image is focusable (any tabindex) or has a global WAI-ARIA attribute with a non-blank value that is not deprecated; an empty aria-label does not count.
+- **Matches:** wpt html-aam/roles-contextual.html el-img-empty-alt-title and the aria-label and aria-labelledby cases (including the empty and blank aria-label cases); WAI-ARIA 1.2 section 8.4; ACT 46ca7f.
 - **Evidence:** test suite
 
 ## `unnamed-landmark-token`
@@ -145,8 +145,8 @@ name computation, states and focus.
 ## `foreign-elements`
 
 - **Topic:** SVG and MathML elements
-- **Choice:** Only the roots are mapped (svg: graphics-document, math: math); other foreign elements have no implicit role until SVG-AAM is applied.
-- **Matches:** HTML-AAM defers both to their own mapping documents.
+- **Choice:** The roots are mapped (svg: graphics-document, math: math), and an SVG a element with an href or xlink:href is a link, so it is named from its contents like an HTML link; other foreign elements have no implicit role until SVG-AAM is applied further.
+- **Matches:** HTML-AAM defers both to their own mapping documents; SVG-AAM maps a to link when it has a link target; ACT b20e66 and 5effbb use such links.
 - **Evidence:** specification
 
 ## `switch-input`

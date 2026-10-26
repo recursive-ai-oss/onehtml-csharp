@@ -1,0 +1,3367 @@
+{
+  "format": "onehtml-results",
+  "version": 1,
+  "document": {
+    "sha256": "ee186fbc758c6cf951a5f621c3f7e0a2da66c98156b6914f3a0a611f749ad969",
+    "url": "https://example.test/names"
+  },
+  "styleContext": {
+    "viewportWidth": 1280,
+    "viewportHeight": 720,
+    "media": "screen",
+    "colorScheme": "light",
+    "reducedMotion": "no-preference",
+    "contrast": "no-preference",
+    "forcedColors": false,
+    "cssOnly": false
+  },
+  "profile": null,
+  "limitReached": false,
+  "rules": [
+    {
+      "id": "area-alt",
+      "description": "An area element of an image map that is a link must have alternative text.",
+      "help": "Add an alt attribute to the area that says where the link goes.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "area-alt"
+        },
+        {
+          "kind": "act",
+          "id": "c487ae"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.4",
+          "handle": "Link Purpose (In Context)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag244",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.2.4.4",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "aria-allowed-attr",
+      "description": "Each WAI-ARIA state or property on an element must be one that the element's role supports.",
+      "help": "Remove the attribute, or give the element the role that supports it.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-allowed-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The attribute may be right and the role wrong (or the reverse); choosing between changing the role and dropping the attribute is a judgement."
+    },
+    {
+      "id": "aria-allowed-role",
+      "description": "The role attribute of an element should be one that ARIA in HTML allows on that element.",
+      "help": "Remove the role, or use an element that suits the role.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-allowed-role"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Changing the role changes what the element means to users, and which meaning is intended is the author's call."
+    },
+    {
+      "id": "aria-braille-equivalent",
+      "description": "aria-braillelabel needs an accessible name and aria-brailleroledescription needs an aria-roledescription to refine.",
+      "help": "Add the ordinary label or role description that the braille text abbreviates.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-braille-equivalent"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The missing text is content, which only the author can supply."
+    },
+    {
+      "id": "aria-command-name",
+      "description": "A button, link or menu item given its role by the role attribute must have an accessible name.",
+      "help": "Give the control a visible text label, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-command-name"
+        },
+        {
+          "kind": "act",
+          "id": "m6b1q3"
+        },
+        {
+          "kind": "act",
+          "id": "97a4e1"
+        },
+        {
+          "kind": "act",
+          "id": "c487ae"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-conditional-attr",
+      "description": "A native checkbox must not carry an aria-checked value that disagrees with its checked state.",
+      "help": "Drop aria-checked and let the checked attribute carry the state.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-conditional-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove aria-checked from a native checkbox whose value disagrees with the checked attribute. The native state is the one assistive technology reports.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-deprecated-role",
+      "description": "The role that applies to an element must not be one that WAI-ARIA or its digital publishing module has deprecated.",
+      "help": "Replace the deprecated role with the role the specification recommends in its place.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-deprecated-role"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Replace the role directory with list, the replacement WAI-ARIA 1.2 names.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-dialog-name",
+      "description": "A dialog or alert dialog given its role by the role attribute should have an accessible name.",
+      "help": "Name the dialog with aria-labelledby pointing at its title, or with aria-label.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-dialog-name"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-hidden-body",
+      "description": "The body element must not have aria-hidden=\"true\", which hides the whole page from assistive technology.",
+      "help": "Remove aria-hidden from body; hide only the parts of the page that need hiding.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-hidden-body"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-10.8.1"
+      ],
+      "fix": "Remove aria-hidden=\"true\" from body. No reading of the page is served by hiding all of it.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-hidden-focus",
+      "description": "An element with aria-hidden=\"true\" must not contain anything that can receive focus through the Tab key.",
+      "help": "Make the hidden content non-focusable (tabindex=\"-1\" or disabled), or stop hiding it.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-hidden-focus"
+        },
+        {
+          "kind": "act",
+          "id": "6cfa84"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-10.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Hiding it from assistive technology, making it unfocusable and showing it are three different outcomes, and the author must choose."
+    },
+    {
+      "id": "aria-input-field-name",
+      "description": "A combo box, list box, search box, slider, spin button or text box given its role by the role attribute must have an accessible name.",
+      "help": "Label the field with a visible label, aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-input-field-name"
+        },
+        {
+          "kind": "act",
+          "id": "e086e5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-meter-name",
+      "description": "A meter given its role by the role attribute must have an accessible name.",
+      "help": "Say what the meter measures with aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-meter-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag111",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-progressbar-name",
+      "description": "A progress bar given its role by the role attribute must have an accessible name.",
+      "help": "Say what is progressing with aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-progressbar-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag111",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-prohibited-attr",
+      "description": "A WAI-ARIA attribute must not be used on a role that prohibits it, such as aria-label on an element with no role.",
+      "help": "Remove the attribute, or give the element a role that can be named.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-prohibited-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        },
+        {
+          "kind": "act",
+          "id": "kb1m8s"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove the prohibited attribute. Authors may not set it on this role, and removing it leaves the element with the semantics the rest of its markup gives.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-required-attr",
+      "description": "An element with an explicit role must set the states and properties that role requires.",
+      "help": "Add the required attribute with a value that matches the element's state.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-attr"
+        },
+        {
+          "kind": "act",
+          "id": "4e8ab6"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The value of a required state (checked, the current value of a slider) is the page's own data, so the library cannot choose it."
+    },
+    {
+      "id": "aria-required-children",
+      "description": "An element whose role needs owned elements (a list needs items, a table needs rows) must contain them.",
+      "help": "Add the required child elements, or use a role that needs none.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-children"
+        },
+        {
+          "kind": "act",
+          "id": "bc4a75"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Adding rows, items or options is content, and wrapping existing children can change the page's structure, so the right edit is the author's."
+    },
+    {
+      "id": "aria-required-parent",
+      "description": "An element whose role needs a parent role (a list item needs a list, a tab needs a tab list) must be inside one.",
+      "help": "Put the element inside an element with the required role, or use a role that needs no parent.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-parent"
+        },
+        {
+          "kind": "act",
+          "id": "ff89c9"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Wrapping orphans in a container changes layout and styling, and which container role is right depends on the content."
+    },
+    {
+      "id": "aria-roles",
+      "description": "A role attribute must contain at least one token that names a WAI-ARIA role authors may use.",
+      "help": "Correct the role name, or remove the attribute and use an element that already has the meaning.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-roles"
+        },
+        {
+          "kind": "act",
+          "id": "674b10"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "Passing a list of tokens when one of them is valid is allowed (fallback roles), so a failure means no token is usable and the intended role is unknown."
+    },
+    {
+      "id": "aria-tab-name",
+      "description": "A tab given its role by the role attribute must have an accessible name.",
+      "help": "Give the tab text, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-tab-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-text",
+      "description": "An element with role=\"text\" must not contain focusable elements.",
+      "help": "Move the focusable element out of the role=\"text\" element, or remove the role.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-text"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a control or dropping the role changes the page's structure, which is an authoring decision."
+    },
+    {
+      "id": "aria-toggle-field-name",
+      "description": "A checkbox, radio button, switch, option or toggling menu item given its role by the role attribute must have an accessible name.",
+      "help": "Label the control with text, aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-toggle-field-name"
+        },
+        {
+          "kind": "act",
+          "id": "e086e5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-tooltip-name",
+      "description": "A tooltip given its role by the role attribute must have an accessible name.",
+      "help": "Give the tooltip text content, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-tooltip-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-treeitem-name",
+      "description": "A tree item given its role by the role attribute should have an accessible name.",
+      "help": "Give the tree item text, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-treeitem-name"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-valid-attr",
+      "description": "Every attribute that starts with aria- must be a state or property defined by WAI-ARIA.",
+      "help": "Fix the spelling of the attribute, or remove it if WAI-ARIA has no such state or property.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-valid-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5f99a7"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove the aria- attribute that WAI-ARIA does not define. A browser ignores it, so removing it changes nothing a user perceives.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-valid-attr-value",
+      "description": "Every non-empty WAI-ARIA state or property must have a value of its type, and a required ID reference must name an element in the page.",
+      "help": "Use one of the values WAI-ARIA allows for the attribute, or point the required reference at an element that exists.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-valid-attr-value"
+        },
+        {
+          "kind": "act",
+          "id": "6a7281"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove an attribute whose value is outside its type when the role does not require that attribute. A browser already falls back to the attribute's default, so removing it changes nothing a user perceives.",
+      "noFixReason": null
+    },
+    {
+      "id": "button-name",
+      "description": "A button element must have an accessible name.",
+      "help": "Put text in the button, or add an aria-label or aria-labelledby.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "button-name"
+        },
+        {
+          "kind": "act",
+          "id": "97a4e1"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "document-title",
+      "description": "The document must have a title element with text in it.",
+      "help": "Add a title element to the head of the document and say in it what the page is.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "document-title"
+        },
+        {
+          "kind": "act",
+          "id": "2779a5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.2",
+          "handle": "Page Titled",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag242",
+        "TTv5",
+        "TT12.a",
+        "EN-301-549",
+        "EN-9.2.4.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.5.1"
+      ],
+      "fix": null,
+      "noFixReason": "The title is content: only the author knows what the page is called."
+    },
+    {
+      "id": "empty-heading",
+      "description": "A heading must have text.",
+      "help": "Put text in the heading, or remove the heading element if it is only for spacing.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "empty-heading"
+        },
+        {
+          "kind": "act",
+          "id": "ffd0e9"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.name-role-value",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "form-field-multiple-labels",
+      "description": "A form field should not have more than one label element.",
+      "help": "Use one label element for the field and put the extra text inside it.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "form-field-multiple-labels"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.3.2",
+          "handle": "Labels or Instructions",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag332",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.3.3.2",
+        "RGAAv4",
+        "RGAA-11.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which label to keep, or how to merge them, is a content decision."
+    },
+    {
+      "id": "frame-title",
+      "description": "A frame or iframe must have an accessible name.",
+      "help": "Add a title attribute to the frame that says what it contains.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "frame-title"
+        },
+        {
+          "kind": "act",
+          "id": "cae760"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.i",
+        "TTv5",
+        "TT12.d",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-2.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "frame-title-unique",
+      "description": "Frames with the same accessible name must have the same purpose.",
+      "help": "Give each frame a name that says what it holds, or show the same resource in frames that share a name.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "frame-title-unique"
+        },
+        {
+          "kind": "act",
+          "id": "4b1c6c"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT12.d",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-2.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Naming a frame is a content decision."
+    },
+    {
+      "id": "identical-links-same-purpose",
+      "description": "Links with the same accessible name should serve the same purpose.",
+      "help": "Give links that go to different places different names, or send the identical names to the same resource.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "identical-links-same-purpose"
+        },
+        {
+          "kind": "act",
+          "id": "b20e66"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.9",
+          "handle": "Link Purpose (Link Only)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.semantics",
+        "wcag2aaa",
+        "wcag249"
+      ],
+      "fix": null,
+      "noFixReason": "Naming a link is a content decision."
+    },
+    {
+      "id": "image-alt",
+      "description": "An img element must have alternative text, or be marked as decorative with an empty alt.",
+      "help": "Add an alt attribute that says what the image shows, or alt=\"\" if it is decorative.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "image-alt"
+        },
+        {
+          "kind": "act",
+          "id": "23a2a8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "TT7.b",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the image is informative or decorative, and what it shows, is content only the author knows."
+    },
+    {
+      "id": "image-name-descriptive",
+      "description": "The accessible name of an image should describe it.",
+      "help": "Reword the name so that it says what the image shows or does.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "qt1vmo"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "needs-review-only"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the text is descriptive is a judgement about content; there is no single correct replacement."
+    },
+    {
+      "id": "image-redundant-alt",
+      "description": "The alternative text of an image should not repeat the text next to it in a link or button.",
+      "help": "Give the image an empty alt when the surrounding text already says it, or word the alt differently.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "image-redundant-alt"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.text-alternatives",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to empty the alt or reword it depends on what the image shows."
+    },
+    {
+      "id": "input-button-name",
+      "description": "An input button must have an accessible name.",
+      "help": "Give the input a value attribute, or an aria-label or aria-labelledby.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "input-button-name"
+        },
+        {
+          "kind": "act",
+          "id": "97a4e1"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "input-image-alt",
+      "description": "An image button must have alternative text that says what it does.",
+      "help": "Add an alt attribute to the image button that describes its action.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "input-image-alt"
+        },
+        {
+          "kind": "act",
+          "id": "59796f"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.3"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "label",
+      "description": "A form field must have a label.",
+      "help": "Associate a visible label element with the field, or add an aria-label or aria-labelledby.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "label"
+        },
+        {
+          "kind": "act",
+          "id": "e086e5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.n",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "label-content-name-mismatch",
+      "description": "The accessible name of a control must contain the text visible on it.",
+      "help": "Start or include the visible text in the aria-label or aria-labelledby that names the control.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "label-content-name-mismatch"
+        },
+        {
+          "kind": "act",
+          "id": "2ee8b8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.5.3",
+          "handle": "Label in Name",
+          "level": "A",
+          "version": "2.1"
+        }
+      ],
+      "tags": [
+        "experimental",
+        "cat.semantics",
+        "wcag21a",
+        "wcag253",
+        "EN-301-549",
+        "EN-9.2.5.3",
+        "RGAAv4",
+        "RGAA-6.1.5"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: the fix is to reword it around the visible text, which is the author's call."
+    },
+    {
+      "id": "label-title-only",
+      "description": "A form field should have a visible label, not only a title attribute or a description.",
+      "help": "Add a visible label element for the field, or name it with aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "label-title-only"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.forms",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The label is content: its wording and place on the page are the author's."
+    },
+    {
+      "id": "link-in-context-descriptive",
+      "description": "A link's purpose should be clear from its name and its context.",
+      "help": "Reword the link, or put the missing context in its sentence, paragraph, list item or table cell.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "5effbb"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.4",
+          "handle": "Link Purpose (In Context)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "2.4.9",
+          "handle": "Link Purpose (Link Only)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "needs-review-only"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the text is descriptive is a judgement about content; there is no single correct replacement."
+    },
+    {
+      "id": "link-name",
+      "description": "A link must have an accessible name.",
+      "help": "Put text or an image with alternative text in the link, or add an aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "link-name"
+        },
+        {
+          "kind": "act",
+          "id": "c487ae"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.4",
+          "handle": "Link Purpose (In Context)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag244",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.2.4.4",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-6.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "object-alt",
+      "description": "An object element that shows non-text content must have an accessible name.",
+      "help": "Name the object with aria-label, aria-labelledby or a title attribute.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "object-alt"
+        },
+        {
+          "kind": "act",
+          "id": "8fc3b6"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-1.1.6"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the embedded resource is."
+    },
+    {
+      "id": "presentation-role-conflict",
+      "description": "An element marked as decorative must really be presentational: it may not be focusable or carry a global WAI-ARIA attribute.",
+      "help": "Either make the element non-interactive without WAI-ARIA attributes, or drop the presentational role and give it a real one.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "presentation-role-conflict"
+        },
+        {
+          "kind": "act",
+          "id": "46ca7f"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice",
+        "ACT"
+      ],
+      "fix": null,
+      "noFixReason": "Two fixes exist (remove the role or remove what conflicts with it) and which one is right depends on the author's intent."
+    },
+    {
+      "id": "presentational-children-focusable",
+      "description": "An element whose role makes its children presentational (a button, a tab, an image) must not contain anything reachable with the Tab key.",
+      "help": "Move the focusable element out, or change the outer role to one that exposes its children.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "307n5z"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Removing the focusable child, moving it or changing the outer role each change the page; the author must choose."
+    },
+    {
+      "id": "role-img-alt",
+      "description": "An element given the img role must have a text alternative.",
+      "help": "Add an aria-label or aria-labelledby that says what the element shows.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "role-img-alt"
+        },
+        {
+          "kind": "act",
+          "id": "23a2a8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "select-name",
+      "description": "A select element must have an accessible name.",
+      "help": "Associate a label element with the select, or add an aria-label or aria-labelledby.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "select-name"
+        },
+        {
+          "kind": "act",
+          "id": "e086e5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.n",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "summary-name",
+      "description": "The summary of a details element must have an accessible name.",
+      "help": "Put text in the summary, or add an aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "summary-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "svg-img-alt",
+      "description": "An SVG element with an image role must have a text alternative.",
+      "help": "Add a title child, aria-label or aria-labelledby that says what the graphic shows.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "svg-img-alt"
+        },
+        {
+          "kind": "act",
+          "id": "7d6734"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.5"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    }
+  ],
+  "results": [
+    {
+      "rule": "area-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-attr",
+      "outcome": "passed",
+      "message": "Every WAI-ARIA attribute is allowed on the element's role.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Close dialog\"]",
+        "source": {
+          "start": 326,
+          "end": 374
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-attr",
+      "outcome": "passed",
+      "message": "Every WAI-ARIA attribute is allowed on the element's role.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Next\"]",
+        "source": {
+          "start": 389,
+          "end": 429
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-braille-equivalent",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-command-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-conditional-attr",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-dialog-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-hidden-body",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "body",
+        "locator": "body",
+        "source": {
+          "start": 69,
+          "end": 75
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-hidden-focus",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-input-field-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-meter-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-progressbar-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-prohibited-attr",
+      "outcome": "passed",
+      "message": "Every WAI-ARIA attribute is allowed on the element's role.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Close dialog\"]",
+        "source": {
+          "start": 326,
+          "end": 374
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-prohibited-attr",
+      "outcome": "passed",
+      "message": "Every WAI-ARIA attribute is allowed on the element's role.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Next\"]",
+        "source": {
+          "start": 389,
+          "end": 429
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-children",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-parent",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-tab-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-text",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-toggle-field-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-tooltip-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-treeitem-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr",
+      "outcome": "passed",
+      "message": "Every aria- attribute is defined by WAI-ARIA.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Close dialog\"]",
+        "source": {
+          "start": 326,
+          "end": 374
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr",
+      "outcome": "passed",
+      "message": "Every aria- attribute is defined by WAI-ARIA.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Next\"]",
+        "source": {
+          "start": 389,
+          "end": 429
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr-value",
+      "outcome": "passed",
+      "message": "Every non-empty state and property has a valid value.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Close dialog\"]",
+        "source": {
+          "start": 326,
+          "end": 374
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr-value",
+      "outcome": "passed",
+      "message": "Every non-empty state and property has a valid value.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Next\"]",
+        "source": {
+          "start": 389,
+          "end": 429
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "button-name",
+      "outcome": "failed",
+      "message": "The button has no accessible name.",
+      "target": {
+        "tag": "button",
+        "locator": "body > button:nth-of-type(1)",
+        "source": {
+          "start": 294,
+          "end": 316
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "button-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Close dialog\"]",
+        "source": {
+          "start": 326,
+          "end": 374
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "button-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Next\"]",
+        "source": {
+          "start": 389,
+          "end": 429
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "document-title",
+      "outcome": "failed",
+      "message": "The document has no title element.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-heading",
+      "outcome": "failed",
+      "message": "The heading has no accessible name.",
+      "target": {
+        "tag": "h1",
+        "locator": "h1",
+        "source": {
+          "start": 76,
+          "end": 80
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "form-field-multiple-labels",
+      "outcome": "needs-review",
+      "message": "The field has 2 label elements; check that the name they make together reads well.",
+      "target": {
+        "tag": "input",
+        "locator": "#first",
+        "source": {
+          "start": 530,
+          "end": 561
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-title",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "iframe",
+        "locator": "body > iframe:nth-of-type(1)",
+        "source": {
+          "start": 733,
+          "end": 776
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-title",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "iframe",
+        "locator": "body > iframe:nth-of-type(2)",
+        "source": {
+          "start": 786,
+          "end": 829
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-title",
+      "outcome": "failed",
+      "message": "The frame has no accessible name.",
+      "target": {
+        "tag": "iframe",
+        "locator": "body > iframe:nth-of-type(3)",
+        "source": {
+          "start": 839,
+          "end": 861
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-title-unique",
+      "outcome": "needs-review",
+      "message": "Frames named \"Contributors\" show different resources; check that they serve the same purpose.",
+      "target": {
+        "tag": "iframe",
+        "locator": "body > iframe:nth-of-type(1)",
+        "source": {
+          "start": 733,
+          "end": 776
+        }
+      },
+      "findings": [
+        {
+          "attribute": "src",
+          "value": "/a.html",
+          "message": "Where the frame points."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-title-unique",
+      "outcome": "needs-review",
+      "message": "Frames named \"Contributors\" show different resources; check that they serve the same purpose.",
+      "target": {
+        "tag": "iframe",
+        "locator": "body > iframe:nth-of-type(2)",
+        "source": {
+          "start": 786,
+          "end": 829
+        }
+      },
+      "findings": [
+        {
+          "attribute": "src",
+          "value": "/b.html",
+          "message": "Where the frame points."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "identical-links-same-purpose",
+      "outcome": "needs-review",
+      "message": "Links named \"Contact us\" go to different resources; check that they serve the same purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "body > p:nth-of-type(1) > a:nth-of-type(1)",
+        "source": {
+          "start": 89,
+          "end": 108
+        }
+      },
+      "findings": [
+        {
+          "attribute": "href",
+          "value": "/contact",
+          "message": "Where the link points."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "identical-links-same-purpose",
+      "outcome": "needs-review",
+      "message": "Links named \"Contact us\" go to different resources; check that they serve the same purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "body > p:nth-of-type(1) > a:nth-of-type(2)",
+        "source": {
+          "start": 123,
+          "end": 148
+        }
+      },
+      "findings": [
+        {
+          "attribute": "href",
+          "value": "/about/contact",
+          "message": "Where the link points."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-alt",
+      "outcome": "failed",
+      "message": "The image has no accessible name.",
+      "target": {
+        "tag": "img",
+        "locator": "body > p:nth-of-type(2) > img:nth-of-type(1)",
+        "source": {
+          "start": 192,
+          "end": 212
+        }
+      },
+      "findings": [
+        {
+          "attribute": "alt",
+          "value": null,
+          "message": "No text alternative could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-alt",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "img",
+        "locator": "body > p:nth-of-type(2) > img:nth-of-type(2)",
+        "source": {
+          "start": 213,
+          "end": 261
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-alt",
+      "outcome": "passed",
+      "message": "The image is marked as decorative.",
+      "target": {
+        "tag": "img",
+        "locator": "body > p:nth-of-type(2) > img:nth-of-type(3)",
+        "source": {
+          "start": 262,
+          "end": 289
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-name-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the image's name describes it.",
+      "target": {
+        "tag": "img",
+        "locator": "body > p:nth-of-type(2) > img:nth-of-type(2)",
+        "source": {
+          "start": 213,
+          "end": 261
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "The team on the steps",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-redundant-alt",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "img",
+        "locator": "body > p:nth-of-type(2) > img:nth-of-type(2)",
+        "source": {
+          "start": 213,
+          "end": 261
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "input-button-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "input-image-alt",
+      "outcome": "failed",
+      "message": "The image button has no accessible name.",
+      "target": {
+        "tag": "input",
+        "locator": "form > input:nth-of-type(4)",
+        "source": {
+          "start": 691,
+          "end": 724
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "input",
+        "locator": "#first",
+        "source": {
+          "start": 530,
+          "end": 561
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "input",
+        "locator": "#city",
+        "source": {
+          "start": 564,
+          "end": 606
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label",
+      "outcome": "failed",
+      "message": "The form field has no accessible name.",
+      "target": {
+        "tag": "input",
+        "locator": "#zip",
+        "source": {
+          "start": 609,
+          "end": 636
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label-content-name-mismatch",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Close dialog\"]",
+        "source": {
+          "start": 326,
+          "end": 374
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label-content-name-mismatch",
+      "outcome": "failed",
+      "message": "The accessible name does not contain the visible text.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Next\"]",
+        "source": {
+          "start": 389,
+          "end": 429
+        }
+      },
+      "findings": [
+        {
+          "attribute": "aria-label",
+          "value": "Next",
+          "message": "The name."
+        },
+        {
+          "attribute": null,
+          "value": "Next page",
+          "message": "The visible text."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label-title-only",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "input",
+        "locator": "#first",
+        "source": {
+          "start": 530,
+          "end": 561
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label-title-only",
+      "outcome": "failed",
+      "message": "The field is named only by its title attribute.",
+      "target": {
+        "tag": "input",
+        "locator": "#city",
+        "source": {
+          "start": 564,
+          "end": 606
+        }
+      },
+      "findings": [
+        {
+          "attribute": "title",
+          "value": "City",
+          "message": "The title is the only name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-in-context-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's purpose is clear from its name together with its context.",
+      "target": {
+        "tag": "a",
+        "locator": "body > p:nth-of-type(1) > a:nth-of-type(1)",
+        "source": {
+          "start": 89,
+          "end": 108
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "Contact us",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-in-context-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's purpose is clear from its name together with its context.",
+      "target": {
+        "tag": "a",
+        "locator": "body > p:nth-of-type(1) > a:nth-of-type(2)",
+        "source": {
+          "start": 123,
+          "end": 148
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "Contact us",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "body > p:nth-of-type(1) > a:nth-of-type(1)",
+        "source": {
+          "start": 89,
+          "end": 108
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "body > p:nth-of-type(1) > a:nth-of-type(2)",
+        "source": {
+          "start": 123,
+          "end": 148
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-name",
+      "outcome": "failed",
+      "message": "The link has no accessible name.",
+      "target": {
+        "tag": "a",
+        "locator": "body > p:nth-of-type(1) > a:nth-of-type(3)",
+        "source": {
+          "start": 163,
+          "end": 180
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "object-alt",
+      "outcome": "failed",
+      "message": "The object has no accessible name.",
+      "target": {
+        "tag": "object",
+        "locator": "object",
+        "source": {
+          "start": 921,
+          "end": 946
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentation-role-conflict",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "img",
+        "locator": "body > p:nth-of-type(2) > img:nth-of-type(3)",
+        "source": {
+          "start": 262,
+          "end": 289
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "img",
+        "locator": "body > p:nth-of-type(2) > img:nth-of-type(1)",
+        "source": {
+          "start": 192,
+          "end": 212
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "img",
+        "locator": "body > p:nth-of-type(2) > img:nth-of-type(2)",
+        "source": {
+          "start": 213,
+          "end": 261
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "body > button:nth-of-type(1)",
+        "source": {
+          "start": 294,
+          "end": 316
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Close dialog\"]",
+        "source": {
+          "start": 326,
+          "end": 374
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "[aria-label=\"Next\"]",
+        "source": {
+          "start": 389,
+          "end": 429
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "option",
+        "locator": "option",
+        "source": {
+          "start": 659,
+          "end": 667
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "input",
+        "locator": "form > input:nth-of-type(4)",
+        "source": {
+          "start": 691,
+          "end": 724
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "role-img-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "select-name",
+      "outcome": "failed",
+      "message": "The select has no accessible name.",
+      "target": {
+        "tag": "select",
+        "locator": "#colour",
+        "source": {
+          "start": 639,
+          "end": 659
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "summary-name",
+      "outcome": "failed",
+      "message": "The summary has no accessible name.",
+      "target": {
+        "tag": "summary",
+        "locator": "summary",
+        "source": {
+          "start": 880,
+          "end": 889
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "svg-img-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    }
+  ],
+  "suggestedEdits": {
+    "format": "onehtml-edits",
+    "version": 1,
+    "document": {
+      "sha256": "ee186fbc758c6cf951a5f621c3f7e0a2da66c98156b6914f3a0a611f749ad969"
+    },
+    "edits": []
+  }
+}

@@ -106,7 +106,8 @@ area and is not the same check.
 - **presentation-role-conflict** (ACT 46ca7f). An element marked decorative (`role=none` or `presentation`, or an `img`
   with `alt=""`) that is in the accessibility tree must end up with the role `none`/`presentation`. Conflict resolution
   (WAI-ARIA 1.2 section 8.4) takes the presentational role away from a focusable element or one with a global attribute;
-  the role layer does not apply it to an `img` with an empty `alt`, so this rule does. Not in the tree counts as passed.
+  the role layer applies it to all of them, including an `img` with an empty `alt`, so the rule reads the computed role.
+  Not in the tree counts as passed.
   *No fix:* there are two (drop the role or drop what conflicts), and the author's intent decides.
 - **aria-hidden-body**. `body` must not carry `aria-hidden="true"`. *Fix:* remove it; no reading of the page is served by
   hiding all of it.
@@ -129,7 +130,7 @@ captures are compared. These are from reading the rule texts and the test cases,
 - `aria-roles`: a list of fallback roles passes if any token is valid.
 - `aria-valid-attr-value`: a broken ID reference to a property the role does not require passes.
 - `aria-required-children`: extra children that are not required owned roles fail, not only a missing required one;
-  `list` also accepts `group > listitem` (WAI-ARIA 1.1 had it and ACT passes it).
+  `list` also accepts `group > listitem`; the role data lists that chain for `list` (see `accessibility-roles.md`).
 - `aria-required-attr`: an empty value counts as missing.
 - `aria-allowed-attr`: on an element with no role only global attributes (and the ARIA in HTML grants above) pass.
 - Results here never use needs-review except `aria-conditional-attr` with `mixed`. Axe lists "needs review" outcomes for

@@ -78,6 +78,12 @@ internal static class HtmlRoleMapper
                 return n.LocalName == "math" ? new ImplicitRole(R("math")) : default;
             case ElementNamespace.Svg:
                 // HTML-AAM 3.5 "svg" defers to SVG-AAM; only the root is mapped here (graphics-document, Graphics-ARIA).
+                if (n.LocalName == "a" && (n.HasAttribute("href") || n.HasAttribute("xlink:href")))
+                {
+                    // SVG-AAM "a": a link when it has an href (also the XLink form), so it is named from its contents.
+                    return new ImplicitRole(R("link"));
+                }
+
                 return n.LocalName == "svg" ? new ImplicitRole(R("graphics-document")) : default;
             default:
                 return default;

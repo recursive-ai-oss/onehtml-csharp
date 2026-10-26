@@ -45,6 +45,10 @@ marks deprecated on that role), `prohibited`, `nameFrom` (`author`, `contents`, 
 `childrenPresentational` and `implicit` (default values, such as `aria-live` `polite` for `log`). `none` shares the
 characteristics of `presentation`; the data of `presentation` is used for both.
 
+One entry is added to the generated data by `tools/aria/generate-aria.py`: `list` owns `listitem` directly or through a
+`group` (`["group", "listitem"]`). The WAI-ARIA 1.2 role table names only `listitem`; WAI-ARIA 1.1 listed the group chain
+and ACT rule bc4a75 still passes that shape, so the chain is kept.
+
 ### Property record
 
 For every state and property: `name`, `module`, `isState`, `type` (`boolean`, `booleanUndefined`, `tristate`, `idref`,

@@ -227,20 +227,6 @@ internal sealed class AriaHiddenBodyRule : AriaRule
 // WAI-ARIA attribute (WAI-ARIA 1.2 section 8.4, Presentational Roles Conflict Resolution).
 internal sealed class PresentationRoleConflictRule : AriaRule
 {
-    private static bool HasGlobalAria(Node el)
-    {
-        foreach (Attr a in el.Attributes)
-        {
-            if (a.QualifiedName.StartsWith("aria-", StringComparison.Ordinal) && !IsBlank(a.Value)
-                && AriaTaxonomy.FindProperty(a.QualifiedName) is { IsGlobal: true, IsDeprecated: false })
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public PresentationRoleConflictRule()
         : base(
             "presentation-role-conflict",
@@ -267,8 +253,6 @@ internal sealed class PresentationRoleConflictRule : AriaRule
                 decorative = RoleComputer.ResolveExplicitRole(roleValue) is { Name: "none" or "presentation" };
             }
 
-            bool decorativeByRole = decorative;
-
             if (!decorative && el.LocalName == "img" && el.NamespaceURI == "http://www.w3.org/1999/xhtml" && el.GetAttribute("alt") is { Length: 0 })
             {
                 decorative = true;
@@ -287,17 +271,14 @@ internal sealed class PresentationRoleConflictRule : AriaRule
 
             NodeRole nr = context.Tree.Roles[el];
 
-            // The role layer gives an img with an empty alt the role none even when it is focusable or carries a global
-            // attribute; WAI-ARIA 1.2 section 8.4 says the conflict brings the img role back, so look for it here.
-            bool imgConflict = !decorativeByRole && nr.Role is { Name: "none" or "presentation" } && (nr.IsFocusable || HasGlobalAria(el));
-            if (!imgConflict && (nr.Role is { Name: "none" or "presentation" } || nr.Role is null && nr.Origin == RoleOrigin.None))
+            if (nr.Role is { Name: "none" or "presentation" } || nr.Role is null && nr.Origin == RoleOrigin.None)
             {
                 reporter.Passed(el);
             }
             else
             {
                 string why = nr.IsFocusable ? "it is focusable" : "it has a global WAI-ARIA attribute";
-                reporter.Failed(el, "The element is marked as decorative but has the role " + (imgConflict ? "img" : nr.Role?.Name ?? "none") + " because " + why + ".",
+                reporter.Failed(el, "The element is marked as decorative but has the role " + (nr.Role?.Name ?? "none") + " because " + why + ".",
                     [new Finding("role", el.GetAttribute("role"), "The presentational role is ignored because " + why + ".")]);
             }
         }

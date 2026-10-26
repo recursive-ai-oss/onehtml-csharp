@@ -13,9 +13,9 @@ public sealed class GoldenTests
 {
     private static string Dir { get; } = Path.Combine(AriaActTests.Repo, "tests", "OneHtml.Accessibility.Validation.Tests", "Golden");
 
-    private static CheckReport Report(StyleContext? context = null)
+    private static CheckReport Report(string page = "aria-page", StyleContext? context = null)
     {
-        Document doc = Document.Parse(File.ReadAllBytes(Path.Combine(Dir, "aria-page.html")));
+        Document doc = Document.Parse(File.ReadAllBytes(Path.Combine(Dir, page + ".html")));
         AccessibilityTree tree = AccessibilityTree.Build(doc, DocumentStyles.Create(doc), context);
         return new Checker().Check(tree);
     }
@@ -38,6 +38,14 @@ public sealed class GoldenTests
     [Fact]
     public void Axe_compatible_json_matches_the_golden_file() =>
         Compare("aria-page.axe.json", Report().ToAxeJson(new ExportOptions { Indented = true, Url = "https://example.test/page" }));
+
+    [Fact]
+    public void Names_page_native_json_matches_the_golden_file() =>
+        Compare("names-page.native.json", Report("names-page").ToNativeJson(new ExportOptions { Indented = true, Url = "https://example.test/names" }));
+
+    [Fact]
+    public void Names_page_axe_compatible_json_matches_the_golden_file() =>
+        Compare("names-page.axe.json", Report("names-page").ToAxeJson(new ExportOptions { Indented = true, Url = "https://example.test/names" }));
 
     [Fact]
     public void Exports_do_not_depend_on_the_run()

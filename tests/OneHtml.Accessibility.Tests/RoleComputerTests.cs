@@ -318,4 +318,17 @@ public sealed class RoleComputerTests
         Assert.Equal("aria-selected=true", Props("o"));
         Assert.Equal("aria-valuemin=0;aria-valuemax=10;aria-valuenow=4", Props("r"));
     }
+
+    // WAI-ARIA 1.2 section 8.4 (Presentational Roles Conflict Resolution) applies to the role none that HTML-AAM gives img alt="".
+    [Theory]
+    [InlineData("<img id=t alt=''>", "none")]
+    [InlineData("<img id=t alt='' tabindex=0>", "image")]
+    [InlineData("<img id=t alt='' aria-describedby=x>", "image")]
+    [InlineData("<img id=t alt='' aria-live=polite>", "image")]
+    [InlineData("<img id=t alt='' aria-label=''>", "none")]
+    [InlineData("<img id=t alt='' tabindex=-1>", "image")]
+    [InlineData("<img id=t alt=' ' tabindex=0>", "image")]
+    [InlineData("<img id=t role=none tabindex=0 alt=''>", "image")]
+    public void Empty_alt_image_keeps_the_image_role_when_it_is_focusable_or_has_a_global_attribute(string html, string expected) =>
+        Assert.Equal(expected, Role(html, "#t"));
 }

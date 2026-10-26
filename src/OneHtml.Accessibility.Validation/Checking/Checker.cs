@@ -1,4 +1,5 @@
 using System;
+using RecursiveAI.OneHtml.Accessibility.Rendered;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -59,6 +60,12 @@ public sealed class CheckOptions
 
     /// <summary>Run only these rules, by id. Default: no restriction. An unknown id is an <see cref="ArgumentException"/>.</summary>
     public IReadOnlyCollection<string> RuleIds { get; init; } = [];
+
+    /// <summary>
+    /// Rendered facts captured for the document (layout boxes, text boxes). Rules that need layout use them when present and
+    /// report needs-render, naming the missing facts, when absent. Default: none. They must describe the same document.
+    /// </summary>
+    public RenderedFacts? Facts { get; init; }
 
     /// <summary>Keep passed results. Default <see langword="true"/>; false keeps the report small on big pages.</summary>
     public bool IncludePasses { get; init; } = true;
@@ -143,7 +150,7 @@ public sealed class Checker
             }
         }
 
-        var context = new CheckContext(tree);
+        var context = new CheckContext(tree, options.Facts);
         var all = new List<RuleResult>();
         var ran = new List<IAccessibilityRule>();
         bool limit = false;
@@ -162,7 +169,7 @@ public sealed class Checker
             limit |= reporter.LimitReached;
             if (results.Count == 0)
             {
-                all.Add(new RuleResult(rule, Outcome.Inapplicable, default, "The rule found nothing to check.", [], [], [], TaskImpact.Cosmetic, null,
+                all.Add(new RuleResult(rule, Outcome.Inapplicable, default, "The rule found nothing to check.", [], [], [], [], TaskImpact.Cosmetic, null,
                     tree.Context.HasInteractionState, _ => null, SourceRange.None));
                 continue;
             }

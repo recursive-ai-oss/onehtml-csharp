@@ -47,6 +47,9 @@ public sealed partial class TaxonomyTests
         Assert.Equal("polite", AriaTaxonomy.FindRole("log")!.ImplicitValues["aria-live"]);
         Assert.True(AriaTaxonomy.FindRole("button")!.ChildrenPresentational);
         Assert.Contains(AriaTaxonomy.FindRole("listbox")!.RequiredOwned, c => c.SequenceEqual(["group", "option"]));
+        // A list may own its items through a group.
+        Assert.Contains(AriaTaxonomy.FindRole("list")!.RequiredOwned, c => c.SequenceEqual(["listitem"]));
+        Assert.Contains(AriaTaxonomy.FindRole("list")!.RequiredOwned, c => c.SequenceEqual(["group", "listitem"]));
         Assert.Contains("aria-valuenow", AriaTaxonomy.FindRole("separator")!.RequiredWhenFocusable);
         Assert.Contains("aria-braillelabel", AriaTaxonomy.FindRole("button")!.SupportedAttributes);
         Assert.Equal(AriaModule.DigitalPublishing, AriaTaxonomy.FindRole("doc-chapter")!.Module);

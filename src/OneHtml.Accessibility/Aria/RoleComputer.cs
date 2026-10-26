@@ -229,6 +229,7 @@ public static class RoleComputer
             bool hasDisabledAttr = false;
             bool editable = false;
             bool hasGlobalAria = false;
+            bool hasUsedGlobalAria = false;
             AttributeList attrs = n.Attributes;
             for (int a = 0; a < attrs.Count; a++)
             {
@@ -245,6 +246,7 @@ public static class RoleComputer
                     if (p is { IsGlobal: true })
                     {
                         hasGlobalAria = true;
+                        hasUsedGlobalAria |= !p.IsDeprecated && !AsciiText.Trim(attr.Value).IsEmpty;
                     }
 
                     continue;
@@ -340,6 +342,14 @@ public static class RoleComputer
             // ---- role resolution ----
             AriaRole? role;
             RoleOrigin origin;
+            if (html && local == "img" && implicitResolved is { Name: "none" } && (focusable || hasUsedGlobalAria))
+            {
+                // HTML-AAM el-img-empty-alt gives img alt="" the role none; WAI-ARIA 1.2 section 8.4 (Presentational Roles
+                // Conflict Resolution) says a focusable element or one with a global WAI-ARIA attribute keeps its native role. An empty or
+                // blank value does not count (WPT html-aam el-img-empty-alt-aria-label-empty).
+                implicitResolved = AriaTaxonomy.FindRole("img");
+            }
+
             string? implicitName = implicitResolved?.Name;
             bool explicitPresentational = explicitRole is { Name: "none" or "presentation" };
             if (explicitRole is not null && !explicitPresentational)

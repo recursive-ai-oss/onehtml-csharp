@@ -18,7 +18,7 @@ Criteria with at least one rule: 42 of 87.
 
 | Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation |
 |---|---|---|---|---|---|---|---|
-| 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt | aria-meter-name, aria-progressbar-name | unassessed |
+| 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt | aria-meter-name, aria-progressbar-name, image-alt, image-name-descriptive, input-image-alt, object-alt, role-img-alt, svg-img-alt | unassessed |
 | 1.2.1 | Audio-only and Video-only (Prerecorded) | A | 2.0+ | 1a02b0, c3232f, e7aa44, ee13b5, f51b46 | audio-caption (deprecated) |  | unassessed |
 | 1.2.2 | Captions (Prerecorded) | A | 2.0+ | eac66b | video-caption |  | unassessed |
 | 1.2.3 | Audio Description or Media Alternative (Prerecorded) | A | 2.0+ | c5a4ea |  |  | unassessed |
@@ -61,21 +61,21 @@ Criteria with at least one rule: 42 of 87.
 | 2.3.2 | Three Flashes | AAA | 2.0+ |  |  |  | unassessed |
 | 2.3.3 | Animation from Interactions | AAA | 2.1+ |  |  |  | unassessed |
 | 2.4.1 | Bypass Blocks | A | 2.0+ | cf77f2 | bypass |  | unassessed |
-| 2.4.2 | Page Titled | A | 2.0+ | 2779a5, c4a8a4 | document-title |  | unassessed |
+| 2.4.2 | Page Titled | A | 2.0+ | 2779a5, c4a8a4 | document-title | document-title | unassessed |
 | 2.4.3 | Focus Order | A | 2.0+ |  |  |  | unassessed |
-| 2.4.4 | Link Purpose (In Context) | A | 2.0+ | 5effbb, c487ae, fd3a94 | area-alt, link-name |  | unassessed |
+| 2.4.4 | Link Purpose (In Context) | A | 2.0+ | 5effbb, c487ae, fd3a94 | area-alt, link-name | area-alt, link-in-context-descriptive, link-name | unassessed |
 | 2.4.5 | Multiple Ways | AA | 2.0+ |  |  |  | unassessed |
 | 2.4.6 | Headings and Labels | AA | 2.0+ | b49b2e, cc0f0a |  |  | unassessed |
 | 2.4.7 | Focus Visible | AA | 2.0+ | oj04fd |  |  | unassessed |
 | 2.4.8 | Location | AAA | 2.0+ |  |  |  | unassessed |
-| 2.4.9 | Link Purpose (Link Only) | AAA | 2.0+ | 5effbb, aizyf1, b20e66, c487ae, fd3a94 | identical-links-same-purpose |  | unassessed |
+| 2.4.9 | Link Purpose (Link Only) | AAA | 2.0+ | 5effbb, aizyf1, b20e66, c487ae, fd3a94 | identical-links-same-purpose | identical-links-same-purpose, link-in-context-descriptive | unassessed |
 | 2.4.10 | Section Headings | AAA | 2.0+ |  |  |  | unassessed |
 | 2.4.11 | Focus Not Obscured (Minimum) | AA | 2.2+ |  |  |  | unassessed |
 | 2.4.12 | Focus Not Obscured (Enhanced) | AAA | 2.2+ |  |  |  | unassessed |
 | 2.4.13 | Focus Appearance | AAA | 2.2+ |  |  |  | unassessed |
 | 2.5.1 | Pointer Gestures | A | 2.1+ |  |  |  | unassessed |
 | 2.5.2 | Pointer Cancellation | A | 2.1+ |  |  |  | unassessed |
-| 2.5.3 | Label in Name | A | 2.1+ | 2ee8b8, e086e5 | label-content-name-mismatch |  | unassessed |
+| 2.5.3 | Label in Name | A | 2.1+ | 2ee8b8, e086e5 | label-content-name-mismatch | label-content-name-mismatch | unassessed |
 | 2.5.4 | Motion Actuation | A | 2.1+ | 7677a9, c249d5 |  |  | unassessed |
 | 2.5.5 | Target Size (Enhanced) | AAA | 2.1+ |  |  |  | unassessed |
 | 2.5.6 | Concurrent Input Mechanisms | AAA | 2.1+ |  |  |  | unassessed |
@@ -94,7 +94,7 @@ Criteria with at least one rule: 42 of 87.
 | 3.2.5 | Change on Request | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions |  | unassessed |
 | 3.2.6 | Consistent Help | A | 2.2+ |  |  |  | unassessed |
 | 3.3.1 | Error Identification | A | 2.0+ | 36b590 |  |  | unassessed |
-| 3.3.2 | Labels or Instructions | A | 2.0+ |  | form-field-multiple-labels |  | unassessed |
+| 3.3.2 | Labels or Instructions | A | 2.0+ |  | form-field-multiple-labels | form-field-multiple-labels | unassessed |
 | 3.3.3 | Error Suggestion | AA | 2.0+ |  |  |  | unassessed |
 | 3.3.4 | Error Prevention (Legal, Financial, Data) | AA | 2.0+ |  |  |  | unassessed |
 | 3.3.5 | Help | AAA | 2.0+ |  |  |  | unassessed |
@@ -103,7 +103,7 @@ Criteria with at least one rule: 42 of 87.
 | 3.3.8 | Accessible Authentication (Minimum) | AA | 2.2+ |  |  |  | unassessed |
 | 3.3.9 | Accessible Authentication (Enhanced) | AAA | 2.2+ |  |  |  | unassessed |
 | 4.1.1 | Parsing | A | 2.0 (removed in 2.2) | 3ea0c8 (deprecated), e6952f (deprecated) | duplicate-id (deprecated), duplicate-id-active (deprecated) |  | unassessed |
-| 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, presentational-children-focusable | unassessed |
+| 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, presentational-children-focusable, select-name, summary-name | unassessed |
 | 4.1.3 | Status Messages | AA | 2.1+ |  |  |  | unassessed |
 
-Implemented best-practice rules, which check no criterion: aria-allowed-role, aria-dialog-name, aria-text, aria-treeitem-name, presentation-role-conflict.
+Implemented best-practice rules, which check no criterion: aria-allowed-role, aria-dialog-name, aria-text, aria-treeitem-name, empty-heading, image-redundant-alt, label-title-only, presentation-role-conflict.

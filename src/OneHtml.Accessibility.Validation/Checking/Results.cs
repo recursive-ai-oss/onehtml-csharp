@@ -73,6 +73,7 @@ public sealed class RuleResult
         IReadOnlyList<Finding> findings,
         IReadOnlyList<SuggestedEdit> suggested,
         IReadOnlyList<string> factsMissing,
+        IReadOnlyList<string> factsUsed,
         TaskImpact taskImpact,
         string? taskImpactReason,
         bool cssOnly,
@@ -86,6 +87,7 @@ public sealed class RuleResult
         Findings = findings;
         SuggestedEdits = suggested;
         FactsMissing = factsMissing;
+        FactsUsed = factsUsed;
         TaskImpact = taskImpact;
         TaskImpactReason = taskImpactReason;
         CssOnly = cssOnly;
@@ -115,10 +117,10 @@ public sealed class RuleResult
     public IReadOnlyList<SuggestedEdit> SuggestedEdits { get; }
 
     /// <summary>
-    /// Rendered facts the result used. The ARIA rules use none, so this is empty for them; a result that needed facts it
-    /// did not have lists them in <see cref="FactsMissing"/> instead.
+    /// Rendered facts the result used, such as <c>text boxes</c>. Empty when the verdict came from the document, the
+    /// cascade and the tree alone; a result that needed facts it did not have lists them in <see cref="FactsMissing"/> instead.
     /// </summary>
-    public IReadOnlyList<string> FactsUsed { get; } = [];
+    public IReadOnlyList<string> FactsUsed { get; }
 
     /// <summary>For <see cref="Outcome.NeedsRender"/>, the facts a caller would have to supply.</summary>
     public IReadOnlyList<string> FactsMissing { get; }

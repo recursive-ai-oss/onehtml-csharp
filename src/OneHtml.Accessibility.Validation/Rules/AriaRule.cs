@@ -17,7 +17,7 @@ internal abstract class AriaRule : IAccessibilityRule
     private const string XhtmlNamespace = "http://www.w3.org/1999/xhtml";
     private const string SvgNamespace = "http://www.w3.org/2000/svg";
 
-    protected AriaRule(string id, string description, string help, string? fix, string? noFixReason, bool axe = true, IReadOnlyList<string>? actIds = null, Impact? impact = null, IReadOnlyList<string>? extraTags = null, IReadOnlyList<string>? criteria = null)
+    protected AriaRule(string id, string description, string help, string? fix, string? noFixReason, bool axe = true, IReadOnlyList<string>? actIds = null, Impact? impact = null, IReadOnlyList<string>? extraTags = null, IReadOnlyList<string>? criteria = null, RuleNeeds needs = RuleNeeds.Static)
     {
         Description = description;
         Help = help;
@@ -56,7 +56,7 @@ internal abstract class AriaRule : IAccessibilityRule
             sources.Add(RuleSource.Own(id));
         }
 
-        Descriptor = new RuleDescriptor(id, sources, crit.Distinct(StringComparer.Ordinal), bestPractice, RuleNeeds.Static, fix, noFixReason, tags.Distinct(StringComparer.Ordinal));
+        Descriptor = new RuleDescriptor(id, sources, crit.Distinct(StringComparer.Ordinal), bestPractice, needs, fix, noFixReason, tags.Distinct(StringComparer.Ordinal));
     }
 
     public RuleDescriptor Descriptor { get; }

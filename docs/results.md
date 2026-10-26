@@ -16,7 +16,7 @@ exports. Both exports are deterministic: the same report gives the same bytes on
 | `Message`, `Findings` | one sentence; and the attributes and values found, in attribute order |
 | `TaskImpact`, `TaskImpactReason` | `BlocksTask` with `interactive`, `form` or `dialog`, or `Cosmetic` |
 | `CssOnly` | the style context had interaction state, so the result reflects the CSS alone |
-| `FactsUsed`, `FactsMissing` | rendered facts a result used; for `NeedsRender`, the facts to supply |
+| `FactsUsed`, `FactsMissing` | rendered facts a result used (for example `layout text`, `text boxes`); for `NeedsRender`, the facts to supply |
 | `SuggestedEdits` | edits, only where the rule names exactly one judgement-free fix |
 
 Labels live on the rule: `Rule.Descriptor` has the sources (ACT id, axe id, failure technique, or ours), the criteria

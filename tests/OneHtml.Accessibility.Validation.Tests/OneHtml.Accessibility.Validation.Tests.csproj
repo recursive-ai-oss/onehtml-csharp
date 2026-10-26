@@ -3,10 +3,14 @@
     <OutputType>Exe</OutputType>
     <IsTestProject>true</IsTestProject>
     <RootNamespace>RecursiveAI.OneHtml.Accessibility.Validation.Tests</RootNamespace>
-    <NoWarn>$(NoWarn);CA1707;xUnit1051</NoWarn>
+    <!-- CS0649: the shared FakeSnapshot helper has fields that only the tree tests assign. -->
+    <NoWarn>$(NoWarn);CA1707;xUnit1051;CS0649</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../OneHtml.Accessibility.Tests/FakeSnapshot.cs" Link="FakeSnapshot.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />

@@ -71,6 +71,10 @@ def parse_roles(doc, module, only=None):
         if "Required Owned Elements:" in rows:
             for n, t in items(rows["Required Owned Elements:"]):
                 owned.append([p.strip().strip("`") for p in t.split("→")])
+        if name == "list" and ["listitem"] in owned and ["group", "listitem"] not in owned:
+            # A list owns its items through a group (group > listitem): the shape WAI-ARIA 1.1 listed and ACT rule
+            # bc4a75 still passes. The 1.2 role table names only listitem, so the chain is added here.
+            owned.append(["group", "listitem"])
         r["requiredOwned"] = owned
         req, req_focus = [], []
         if "Required States and Properties:" in rows:

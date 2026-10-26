@@ -14,6 +14,30 @@
   "url": "https://example.test/page",
   "inapplicable": [
     {
+      "id": "area-alt",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag244",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.2.4.4",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.2"
+      ],
+      "description": "An area element of an image map that is a link must have alternative text.",
+      "help": "Add an alt attribute to the area that says where the link goes.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/area-alt",
+      "nodes": []
+    },
+    {
       "id": "aria-braille-equivalent",
       "impact": null,
       "tags": [
@@ -131,6 +155,339 @@
       "description": "A tree item given its role by the role attribute should have an accessible name.",
       "help": "Give the tree item text, an aria-label or an aria-labelledby.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-treeitem-name",
+      "nodes": []
+    },
+    {
+      "id": "button-name",
+      "impact": null,
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "description": "A button element must have an accessible name.",
+      "help": "Put text in the button, or add an aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/button-name",
+      "nodes": []
+    },
+    {
+      "id": "empty-heading",
+      "impact": null,
+      "tags": [
+        "cat.name-role-value",
+        "best-practice"
+      ],
+      "description": "A heading must have text.",
+      "help": "Put text in the heading, or remove the heading element if it is only for spacing.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/empty-heading",
+      "nodes": []
+    },
+    {
+      "id": "form-field-multiple-labels",
+      "impact": null,
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag332",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.3.3.2",
+        "RGAAv4",
+        "RGAA-11.2.1"
+      ],
+      "description": "A form field should not have more than one label element.",
+      "help": "Use one label element for the field and put the extra text inside it.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/form-field-multiple-labels",
+      "nodes": []
+    },
+    {
+      "id": "frame-title",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.i",
+        "TTv5",
+        "TT12.d",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-2.1.1"
+      ],
+      "description": "A frame or iframe must have an accessible name.",
+      "help": "Add a title attribute to the frame that says what it contains.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/frame-title",
+      "nodes": []
+    },
+    {
+      "id": "frame-title-unique",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT12.d",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-2.2.1"
+      ],
+      "description": "Frames with the same accessible name must have the same purpose.",
+      "help": "Give each frame a name that says what it holds, or show the same resource in frames that share a name.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/frame-title-unique",
+      "nodes": []
+    },
+    {
+      "id": "identical-links-same-purpose",
+      "impact": null,
+      "tags": [
+        "cat.semantics",
+        "wcag2aaa",
+        "wcag249"
+      ],
+      "description": "Links with the same accessible name should serve the same purpose.",
+      "help": "Give links that go to different places different names, or send the identical names to the same resource.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/identical-links-same-purpose",
+      "nodes": []
+    },
+    {
+      "id": "image-name-descriptive",
+      "impact": null,
+      "tags": [
+        "needs-review-only"
+      ],
+      "description": "The accessible name of an image should describe it.",
+      "help": "Reword the name so that it says what the image shows or does.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "image-redundant-alt",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "best-practice"
+      ],
+      "description": "The alternative text of an image should not repeat the text next to it in a link or button.",
+      "help": "Give the image an empty alt when the surrounding text already says it, or word the alt differently.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/image-redundant-alt",
+      "nodes": []
+    },
+    {
+      "id": "input-button-name",
+      "impact": null,
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "description": "An input button must have an accessible name.",
+      "help": "Give the input a value attribute, or an aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/input-button-name",
+      "nodes": []
+    },
+    {
+      "id": "input-image-alt",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.3"
+      ],
+      "description": "An image button must have alternative text that says what it does.",
+      "help": "Add an alt attribute to the image button that describes its action.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/input-image-alt",
+      "nodes": []
+    },
+    {
+      "id": "label-content-name-mismatch",
+      "impact": null,
+      "tags": [
+        "experimental",
+        "cat.semantics",
+        "wcag21a",
+        "wcag253",
+        "EN-301-549",
+        "EN-9.2.5.3",
+        "RGAAv4",
+        "RGAA-6.1.5"
+      ],
+      "description": "The accessible name of a control must contain the text visible on it.",
+      "help": "Start or include the visible text in the aria-label or aria-labelledby that names the control.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch",
+      "nodes": []
+    },
+    {
+      "id": "label-title-only",
+      "impact": null,
+      "tags": [
+        "cat.forms",
+        "best-practice"
+      ],
+      "description": "A form field should have a visible label, not only a title attribute or a description.",
+      "help": "Add a visible label element for the field, or name it with aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-title-only",
+      "nodes": []
+    },
+    {
+      "id": "link-name",
+      "impact": null,
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag244",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.2.4.4",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-6.2.1"
+      ],
+      "description": "A link must have an accessible name.",
+      "help": "Put text or an image with alternative text in the link, or add an aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/link-name",
+      "nodes": []
+    },
+    {
+      "id": "object-alt",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-1.1.6"
+      ],
+      "description": "An object element that shows non-text content must have an accessible name.",
+      "help": "Name the object with aria-label, aria-labelledby or a title attribute.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/object-alt",
+      "nodes": []
+    },
+    {
+      "id": "role-img-alt",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.1"
+      ],
+      "description": "An element given the img role must have a text alternative.",
+      "help": "Add an aria-label or aria-labelledby that says what the element shows.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/role-img-alt",
+      "nodes": []
+    },
+    {
+      "id": "select-name",
+      "impact": null,
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.n",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "description": "A select element must have an accessible name.",
+      "help": "Associate a label element with the select, or add an aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/select-name",
+      "nodes": []
+    },
+    {
+      "id": "summary-name",
+      "impact": null,
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "description": "The summary of a details element must have an accessible name.",
+      "help": "Put text in the summary, or add an aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/summary-name",
+      "nodes": []
+    },
+    {
+      "id": "svg-img-alt",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.5"
+      ],
+      "description": "An SVG element with an image role must have a text alternative.",
+      "help": "Add a title child, aria-label or aria-labelledby that says what the graphic shows.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/svg-img-alt",
       "nodes": []
     }
   ],
@@ -1039,6 +1396,44 @@
       ]
     },
     {
+      "id": "document-title",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag242",
+        "TTv5",
+        "TT12.a",
+        "EN-301-549",
+        "EN-9.2.4.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.5.1"
+      ],
+      "description": "The document must have a title element with text in it.",
+      "help": "Add a title element to the head of the document and say in it what the page is.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/document-title",
+      "nodes": [
+        {
+          "html": "<html lang=\"en\">",
+          "impact": null,
+          "target": [
+            "html"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
       "id": "presentational-children-focusable",
       "impact": null,
       "tags": [],
@@ -1096,11 +1491,72 @@
             "factsMissing": [],
             "suggestedEdits": 0
           }
+        },
+        {
+          "html": "<img src=\"a.png\" alt=\"\" tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "img"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
         }
       ]
     }
   ],
-  "incomplete": [],
+  "incomplete": [
+    {
+      "id": "link-in-context-descriptive",
+      "impact": "moderate",
+      "tags": [
+        "needs-review-only"
+      ],
+      "description": "A link's purpose should be clear from its name and its context.",
+      "help": "Reword the link, or put the missing context in its sentence, paragraph, list item or table cell.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<span role=\"link\">",
+          "impact": "moderate",
+          "target": [
+            "[role=\"link\"]"
+          ],
+          "any": [
+            {
+              "id": "link-in-context-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "a"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's purpose is clear from its name together with its context."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's purpose is clear from its name together with its context.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    }
+  ],
   "violations": [
     {
       "id": "aria-allowed-attr",
@@ -1642,6 +2098,115 @@
             "cssOnly": false,
             "factsMissing": [],
             "suggestedEdits": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "image-alt",
+      "impact": "critical",
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "TT7.b",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.1"
+      ],
+      "description": "An img element must have alternative text, or be marked as decorative with an empty alt.",
+      "help": "Add an alt attribute that says what the image shows, or alt=\"\" if it is decorative.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/image-alt",
+      "nodes": [
+        {
+          "html": "<img src=\"a.png\" alt=\"\" tabindex=\"0\">",
+          "impact": "critical",
+          "target": [
+            "img"
+          ],
+          "any": [
+            {
+              "id": "image-alt",
+              "data": [
+                {
+                  "attribute": "alt",
+                  "value": ""
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "The image has no accessible name."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The image has no accessible name.\nNo text alternative could be computed.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "label",
+      "impact": "critical",
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.n",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "description": "A form field must have a label.",
+      "help": "Associate a visible label element with the field, or add an aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label",
+      "nodes": [
+        {
+          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
+          "impact": "critical",
+          "target": [
+            "input"
+          ],
+          "any": [
+            {
+              "id": "label",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": null
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "The form field has no accessible name."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The form field has no accessible name.\nNo accessible name could be computed.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
           }
         }
       ]

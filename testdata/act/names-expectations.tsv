@@ -1,0 +1,8 @@
+# ACT test cases of the names-and-labels rules that the static checks cannot judge. Columns: case id, status, reason.
+# A case listed here must still be wrong (or the test says the entry is stale).
+a00721ec4ac80c5c932ee7ca4873f493ce943e98	n/a	4b1c6c passed: the second iframe is created inside a shadow root by a script, which is inert here
+c326fc94a3ff1cc20192cf4499ef925989247151	n/a	4b1c6c failed: the nested iframe sits in the srcdoc of another frame; the library does not parse frame contents
+39be33320e28784dabe83c32689346ce51b552e5	n/a	2779a5 inapplicable: the case is a standalone SVG document; HTML parsing wraps it in an html element, so the page has a document with no title
+65be0004543e57d44dd4a53d9f582c482503727c	n/a	2ee8b8 passed: the visible label is an icon-font ligature (the word search is drawn as a glyph), which only a rendering shows; the rule answers needs-render
+fda0d12ccb0e057cac61f4dd02b6d496feb9ccb2	n/a	b20e66 passed: the second link is in the srcdoc of an iframe; the library does not parse frame contents
+3adf9351567b2e293705311c1c3236b59b2b7867	n/a	ffd0e9 failed: an img with role presentation inside the heading still gives its alt text to the heading name in our name computation; the case expects an empty name

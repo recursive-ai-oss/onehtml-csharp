@@ -1,4 +1,5 @@
 using System;
+using RecursiveAI.OneHtml.Accessibility.Rendered;
 using System.Collections.Generic;
 using System.Threading;
 using RecursiveAI.OneHtml.Css;
@@ -40,16 +41,27 @@ public sealed class CheckContext
 
     /// <summary>Creates a context over a tree. The document, styles and style context are the tree's own.</summary>
     /// <param name="tree">The accessibility tree to check.</param>
+    /// <param name="facts">Rendered facts captured for the tree's document, or <see langword="null"/> (the default) for none.</param>
     /// <exception cref="ArgumentNullException"><paramref name="tree"/> is <see langword="null"/>.</exception>
-    public CheckContext(AccessibilityTree tree)
+    /// <exception cref="ArgumentException"><paramref name="facts"/> were not captured for the tree's document (the same <c>Document</c> object).</exception>
+    public CheckContext(AccessibilityTree tree, RenderedFacts? facts = null)
     {
         ArgumentNullException.ThrowIfNull(tree);
+        if (facts is not null && (facts.DocumentId != tree.Document.Id || facts.NodeCount != tree.Document.NodeCount))
+        {
+            throw new ArgumentException("The rendered facts describe a different document.", nameof(facts));
+        }
+
         Tree = tree;
+        Facts = facts;
         _locators = new Lazy<LocatorGenerator>(() => new LocatorGenerator(tree.Document), LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     /// <summary>The accessibility tree.</summary>
     public AccessibilityTree Tree { get; }
+
+    /// <summary>The rendered facts the caller supplied, or <see langword="null"/>. Rules that need layout decide only when they are present.</summary>
+    public RenderedFacts? Facts { get; }
 
     /// <summary>The document the tree was built from.</summary>
     public Document Document => Tree.Document;
@@ -108,23 +120,26 @@ public sealed class RuleReporter
     /// <summary>Reports that the target meets the rule.</summary>
     /// <param name="target">The element or text node.</param>
     /// <param name="message">A sentence, or <see langword="null"/> for the rule's default.</param>
-    public void Passed(Node target, string? message = null) =>
-        Add(Outcome.Passed, target, message ?? "Meets the rule.", [], [], []);
+    /// <param name="factsUsed">Rendered facts the verdict used; empty for none.</param>
+    public void Passed(Node target, string? message = null, IReadOnlyList<string>? factsUsed = null) =>
+        Add(Outcome.Passed, target, message ?? "Meets the rule.", [], [], [], factsUsed);
 
     /// <summary>Reports that the target breaks the rule.</summary>
     /// <param name="target">The element or text node.</param>
     /// <param name="message">A sentence.</param>
     /// <param name="findings">What was found; may be empty.</param>
     /// <param name="suggested">Edits that fix it, only where there is exactly one judgement-free fix.</param>
-    public void Failed(Node target, string message, IReadOnlyList<Finding>? findings = null, IReadOnlyList<SuggestedEdit>? suggested = null) =>
-        Add(Outcome.Failed, target, message, findings ?? [], suggested ?? [], []);
+    /// <param name="factsUsed">Rendered facts the verdict used; empty for none.</param>
+    public void Failed(Node target, string message, IReadOnlyList<Finding>? findings = null, IReadOnlyList<SuggestedEdit>? suggested = null, IReadOnlyList<string>? factsUsed = null) =>
+        Add(Outcome.Failed, target, message, findings ?? [], suggested ?? [], [], factsUsed);
 
     /// <summary>Reports that a person has to decide.</summary>
     /// <param name="target">The element or text node.</param>
     /// <param name="message">A sentence.</param>
     /// <param name="findings">What was found; may be empty.</param>
-    public void NeedsReview(Node target, string message, IReadOnlyList<Finding>? findings = null) =>
-        Add(Outcome.NeedsReview, target, message, findings ?? [], [], []);
+    /// <param name="factsUsed">Rendered facts the verdict used; empty for none.</param>
+    public void NeedsReview(Node target, string message, IReadOnlyList<Finding>? findings = null, IReadOnlyList<string>? factsUsed = null) =>
+        Add(Outcome.NeedsReview, target, message, findings ?? [], [], [], factsUsed);
 
     /// <summary>Reports that rendered facts are needed to decide.</summary>
     /// <param name="target">The element or text node.</param>
@@ -152,7 +167,7 @@ public sealed class RuleReporter
 
     internal bool HasResults => _results.Count > 0;
 
-    private void Add(Outcome outcome, Node target, string message, IReadOnlyList<Finding> findings, IReadOnlyList<SuggestedEdit> suggested, IReadOnlyList<string> missing)
+    private void Add(Outcome outcome, Node target, string message, IReadOnlyList<Finding> findings, IReadOnlyList<SuggestedEdit> suggested, IReadOnlyList<string> missing, IReadOnlyList<string>? factsUsed = null)
     {
         if (_results.Count >= _maxResults)
         {
@@ -167,7 +182,7 @@ public sealed class RuleReporter
             range = target.Document!.ToByteRange(r);
         }
 
-        _results.Add(new RuleResult(_rule, outcome, target, message, findings, suggested, missing, impact, reason,
+        _results.Add(new RuleResult(_rule, outcome, target, message, findings, suggested, missing, factsUsed ?? [], impact, reason,
             _context.StyleContext.HasInteractionState, _context.LocatorOf, range));
     }
 }

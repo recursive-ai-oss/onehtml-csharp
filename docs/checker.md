@@ -3,7 +3,7 @@
 `RecursiveAI.OneHtml.Accessibility.Validation` runs accessibility rules over a document and its accessibility tree and
 returns labelled results. This page covers the API, how rules are selected, and how to add a private rule. The shape of
 the results and the two JSON exports is in [results.md](results.md); the rules that ship are in
-[rules/aria.md](rules/aria.md); the data about the standards they cite is in [catalogue.md](catalogue.md).
+[rules/aria.md](rules/aria.md) and [rules/names.md](rules/names.md); the data about the standards they cite is in [catalogue.md](catalogue.md).
 
 ## Running a check
 
@@ -87,6 +87,10 @@ focusable or has a widget role, or sits inside a `form`, a `dialog` or an `alert
 `CssOnly` is true when the style context has interaction state (focus, hover, active, target). Script-driven states
 are invisible to the library, so such results reflect the CSS alone.
 
-Rules declare `RuleNeeds.Static` or `RuleNeeds.RenderedFacts`. Every rule in the ARIA area is static, so `FactsUsed` is
-empty and `FactsMissing` is empty. The reporter's `NeedsRender` is there for rules that will need layout facts; the
-context will carry the facts when the adapter that fills them is added.
+Rules declare `RuleNeeds.Static` or `RuleNeeds.RenderedFacts`. Rendered facts reach the rules through
+`CheckOptions.Facts` and `CheckContext.Facts` (null when the caller has none). They must have been captured for the
+same `Document` object the tree was built from, or the checker throws `ArgumentException`. A rule that needs layout
+decides from the facts when they are there and lists them in `FactsUsed`; when they are not, it either decides from the
+cascade where nothing can move the text, or reports `NeedsRender` with the missing facts in `FactsMissing`, so the caller
+knows what to capture. `label-content-name-mismatch` is the one rule of the names area that reads facts; the ARIA rules
+and the rest of the names rules are static and leave both lists empty.

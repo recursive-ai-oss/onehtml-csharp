@@ -20,11 +20,12 @@ public sealed class CheckPerformanceTests
         }
 
         var sb = new StringBuilder("<!doctype html><title>Perf</title><style>.card{margin:1em} .hide{display:none}</style><body><main>");
-        for (int i = 0; sb.Length < 450_000; i++)
+        for (int i = 0; sb.Length < 570_000; i++)
         {
             sb.Append("<section class=card aria-label='Card ").Append(i).Append("'><h2>Heading ").Append(i).Append("</h2><p>Some <b>bold</b> text and a <a href='/p/").Append(i)
                 .Append("'>link ").Append(i).Append("</a>.</p><ul role=list><li role=listitem>One</li><li>Two <span class=hide>x</span></li></ul><button type=button aria-describedby=d").Append(i).Append(">Go</button><span id=d").Append(i)
-                .Append(" role=nope aria-foo=1>help</span><div role=tab aria-selected=maybe></div><div aria-hidden=true><a href=#>x</a></div></section>");
+                .Append(" role=nope aria-foo=1>help</span><div role=tab aria-selected=maybe></div><div aria-hidden=true><a href=#>x</a></div>")
+                .Append("<img src=i").Append(i).Append(".png alt='Picture ").Append(i).Append("'><label for=f").Append(i).Append(">Field</label><input id=f").Append(i).Append("><a href='/dup'>More</a><iframe title=t").Append(i % 7).Append(" src=/f").Append(i % 3).Append("></iframe></section>");
         }
 
         sb.Append("</main></body>");
@@ -43,12 +44,20 @@ public sealed class CheckPerformanceTests
         CheckReport r = checker.Check(tree);
         long ms = sw.ElapsedMilliseconds;
         long alloc = GC.GetAllocatedBytesForCurrentThread() - before;
+        string[] nameRules = ["image-alt", "input-image-alt", "area-alt", "object-alt", "svg-img-alt", "role-img-alt", "image-redundant-alt", "button-name", "input-button-name", "link-name", "select-name", "summary-name", "label", "label-title-only", "form-field-multiple-labels", "frame-title", "frame-title-unique", "document-title", "label-content-name-mismatch", "empty-heading", "identical-links-same-purpose", "image-name-descriptive", "link-in-context-descriptive"];
+        var only = new CheckOptions { RuleIds = nameRules };
+        _ = checker.Check(tree, only);
+        long nameBefore = GC.GetAllocatedBytesForCurrentThread();
+        var nameTimer = Stopwatch.StartNew();
+        CheckReport nr = checker.Check(tree, only);
+        long nameMs = nameTimer.ElapsedMilliseconds;
+        long nameAlloc = GC.GetAllocatedBytesForCurrentThread() - nameBefore;
         sw.Restart();
         int native = r.ToNativeJson().Length;
         long nativeMs = sw.ElapsedMilliseconds;
         sw.Restart();
         int axe = r.ToAxeJson().Length;
         long axeMs = sw.ElapsedMilliseconds;
-        File.WriteAllText(report, $"dom nodes={doc.NodeCount} tree nodes={tree.Nodes.Count} tree_build_ms={treeMs} rules={r.RulesRun.Count} results={r.Results.Count} check_ms={ms} check_alloc_mb={alloc / 1048576.0:F1} native_json_ms={nativeMs} native_bytes={native} axe_json_ms={axeMs} axe_bytes={axe}\n");
+        File.WriteAllText(report, $"dom nodes={doc.NodeCount} tree nodes={tree.Nodes.Count} tree_build_ms={treeMs} rules={r.RulesRun.Count} results={r.Results.Count} check_ms={ms} check_alloc_mb={alloc / 1048576.0:F1} names_rules={nr.RulesRun.Count} names_results={nr.Results.Count} names_ms={nameMs} names_alloc_mb={nameAlloc / 1048576.0:F1} native_json_ms={nativeMs} native_bytes={native} axe_json_ms={axeMs} axe_bytes={axe}\n");
     }
 }

@@ -67,6 +67,10 @@ internal abstract class AriaRule : IAccessibilityRule
 
     public Impact Impact { get; }
 
+    public virtual RuleScope Scope => RuleScope.Unspecified;
+
+    public virtual IReadOnlyCollection<string>? RelevantElements => null;
+
     public abstract void Evaluate(CheckContext context, RuleReporter reporter);
 
     private static Impact ParseImpact(string s) => s switch
@@ -81,7 +85,7 @@ internal abstract class AriaRule : IAccessibilityRule
     // ---- helpers shared by the rules ----
 
     /// <summary>Every element of the document in document order (template contents excluded).</summary>
-    protected static IEnumerable<Node> Elements(CheckContext c) => c.Document.Root.DescendantElements;
+    protected static IEnumerable<Node> Elements(CheckContext c) => c.Elements();
 
     /// <summary>True for HTML and SVG elements, the two namespaces the ACT ARIA rules apply to.</summary>
     protected static bool IsHtmlOrSvg(Node e) => e.NamespaceURI is XhtmlNamespace or SvgNamespace;
@@ -140,7 +144,7 @@ internal abstract class AriaRule : IAccessibilityRule
         Document doc = c.Document;
         var own = new bool[doc.NodeCount];
         var sub = new bool[doc.NodeCount];
-        var all = new List<Node>(Elements(c));
+        var all = new List<Node>(c.AllElements());
         for (int i = all.Count - 1; i >= 0; i--)
         {
             Node n = all[i];

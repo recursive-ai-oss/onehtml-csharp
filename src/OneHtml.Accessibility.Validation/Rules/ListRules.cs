@@ -48,6 +48,8 @@ internal sealed class ListRule : StructureRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         foreach (Node list in Elements(context))
@@ -110,6 +112,8 @@ internal sealed class ListItemRule : StructureRule
             "Wrap a run of sibling li elements that have no role and no value attribute in a ul.", null)
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Ancestors | RuleScope.Siblings;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
@@ -213,6 +217,8 @@ internal sealed class DefinitionListRule : StructureRule
             "Which terms and descriptions belong together is the author's decision.")
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
@@ -337,6 +343,8 @@ internal sealed class DefinitionItemRule : StructureRule
             "Whether the content is a definition list at all is the author's decision.")
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Ancestors;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {

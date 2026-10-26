@@ -72,6 +72,18 @@ public sealed class CheckOptions
 
     /// <summary>The most results one rule may report; further ones are dropped and <see cref="CheckReport.LimitReached"/> is set. Default 100,000.</summary>
     public int MaxResultsPerRule { get; init; } = 100_000;
+
+    // A copy with other facts, for a re-check; every selection is carried over.
+    internal CheckOptions WithFacts(RenderedFacts? facts) => new()
+    {
+        Profile = Profile,
+        Tags = Tags,
+        Criteria = Criteria,
+        RuleIds = RuleIds,
+        Facts = facts,
+        IncludePasses = IncludePasses,
+        MaxResultsPerRule = MaxResultsPerRule,
+    };
 }
 
 /// <summary>Runs rules over an accessibility tree and collects their results in a fixed order.</summary>
@@ -80,7 +92,7 @@ public sealed class CheckOptions
 /// (failed, passed, needs-review, needs-render); a rule that applied to nothing contributes one inapplicable result.
 /// The same input gives the same report whatever order the rules were registered in.
 /// </remarks>
-public sealed class Checker
+public sealed partial class Checker
 {
     private readonly IAccessibilityRule[] _rules;
 
@@ -153,6 +165,7 @@ public sealed class Checker
         var context = new CheckContext(tree, options.Facts);
         var all = new List<RuleResult>();
         var ran = new List<IAccessibilityRule>();
+        var slices = new List<RuleSlice>();
         bool limit = false;
         foreach (IAccessibilityRule rule in _rules)
         {
@@ -163,43 +176,67 @@ public sealed class Checker
             }
 
             ran.Add(rule);
-            var results = new List<RuleResult>();
-            var reporter = new RuleReporter(rule, context, results, Math.Max(1, options.MaxResultsPerRule), cancellationToken);
-            rule.Evaluate(context, reporter);
-            limit |= reporter.LimitReached;
-            if (results.Count == 0)
+            limit |= RunRule(rule, context, options, Math.Max(1, options.MaxResultsPerRule), all, slices, cancellationToken);
+        }
+
+        return new CheckReport(tree, options.Profile, ran, all, limit, options, slices);
+    }
+
+    /// <summary>Runs one rule and appends its ordered results (or its inapplicable result) to <paramref name="all"/>; true when the result limit was hit.</summary>
+    private static bool RunRule(IAccessibilityRule rule, CheckContext context, CheckOptions options, int maxResults, List<RuleResult> all, List<RuleSlice> slices, CancellationToken cancellationToken)
+    {
+        var results = new List<RuleResult>();
+        var reporter = new RuleReporter(rule, context, results, maxResults, cancellationToken);
+        rule.Evaluate(context, reporter);
+        int start = all.Count;
+        if (results.Count == 0)
+        {
+            all.Add(Inapplicable(rule, context.Tree));
+            slices.Add(new RuleSlice(rule, start, 1, true, []));
+            return reporter.LimitReached;
+        }
+
+        var dropped = new List<int>();
+        foreach (RuleResult r in SortResults(results))
+        {
+            if (r.Outcome != Outcome.Passed || options.IncludePasses)
             {
-                all.Add(new RuleResult(rule, Outcome.Inapplicable, default, "The rule found nothing to check.", [], [], [], [], TaskImpact.Cosmetic, null,
-                    tree.Context.HasInteractionState, _ => null, SourceRange.None));
-                continue;
+                all.Add(r);
             }
-
-            var indexed = results.Select((r, i) => (r, i)).ToList();
-            indexed.Sort((a, b) =>
+            else
             {
-                int c = a.r.Target.IsNull.CompareTo(b.r.Target.IsNull);
-                if (c == 0)
-                {
-                    c = (a.r.Target.IsNull ? 0 : a.r.Target.Index).CompareTo(b.r.Target.IsNull ? 0 : b.r.Target.Index);
-                }
-
-                if (c == 0)
-                {
-                    c = ((int)a.r.Outcome).CompareTo((int)b.r.Outcome);
-                }
-
-                return c != 0 ? c : a.i.CompareTo(b.i);
-            });
-            foreach ((RuleResult r, _) in indexed)
-            {
-                if (r.Outcome != Outcome.Passed || options.IncludePasses)
-                {
-                    all.Add(r);
-                }
+                dropped.Add(r.Target.Index);
             }
         }
 
-        return new CheckReport(tree, options.Profile, ran, all, limit);
+        slices.Add(new RuleSlice(rule, start, all.Count - start, false, [.. dropped]));
+        return reporter.LimitReached;
+    }
+
+    internal static RuleResult Inapplicable(IAccessibilityRule rule, AccessibilityTree tree) =>
+        new(rule, Outcome.Inapplicable, default, "The rule found nothing to check.", [], [], [], [], TaskImpact.Cosmetic, null,
+            tree.Context.HasInteractionState, _ => null, SourceRange.None);
+
+    /// <summary>The report order within one rule: target in document order (no target last), then outcome, then the order the rule reported them.</summary>
+    internal static List<RuleResult> SortResults(List<RuleResult> results)
+    {
+        var indexed = results.Select((r, i) => (r, i)).ToList();
+        indexed.Sort((a, b) =>
+        {
+            int c = a.r.Target.IsNull.CompareTo(b.r.Target.IsNull);
+            if (c == 0)
+            {
+                c = (a.r.Target.IsNull ? 0 : a.r.Target.Index).CompareTo(b.r.Target.IsNull ? 0 : b.r.Target.Index);
+            }
+
+            if (c == 0)
+            {
+                c = ((int)a.r.Outcome).CompareTo((int)b.r.Outcome);
+            }
+
+            return c != 0 ? c : a.i.CompareTo(b.i);
+        });
+        return indexed.Select(x => x.r).ToList();
     }
 
     private static bool Selected(IAccessibilityRule rule, CheckOptions o)

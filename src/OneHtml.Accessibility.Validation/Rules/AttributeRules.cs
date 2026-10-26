@@ -19,6 +19,8 @@ internal sealed class AriaValidAttrRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         int counter = 0;
@@ -79,6 +81,8 @@ internal sealed class AriaValidAttrValueRule : AriaRule
             actIds: ["6a7281"])
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node | RuleScope.IdReferences;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
@@ -251,6 +255,8 @@ internal sealed class AriaAllowedAttrRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter) =>
         AttributeDiagnosticRules.Run(context, reporter, RoleDiagnosticKind.UnsupportedAttribute, "The role does not support this state or property.", false);
 }
@@ -269,6 +275,8 @@ internal sealed class AriaProhibitedAttrRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter) =>
         AttributeDiagnosticRules.Run(context, reporter, RoleDiagnosticKind.ProhibitedAttribute, "The role prohibits this state or property.", true);
 }
@@ -278,7 +286,7 @@ internal static class AttributeDiagnosticRules
     internal static void Run(CheckContext context, RuleReporter reporter, RoleDiagnosticKind kind, string reason, bool suggestRemoval)
     {
         int counter = 0;
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if ((++counter & 1023) == 0)
             {
@@ -369,6 +377,8 @@ internal sealed class AriaConditionalAttrRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         foreach (Node el in Elements(context))
@@ -412,9 +422,11 @@ internal sealed class AriaBrailleEquivalentRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if (node.Kind != AxNodeKind.Element || !context.IsExposed(node.DomNode))
             {

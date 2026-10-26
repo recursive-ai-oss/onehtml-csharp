@@ -28,10 +28,13 @@ internal sealed class AriaAllowedRoleRule : AriaRule
     {
     }
 
+    // The element, its ancestors (the parent, the table), its descendants (a figcaption anywhere inside) and its siblings (the first summary).
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Ancestors | RuleScope.Descendants | RuleScope.Siblings;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         int counter = 0;
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if ((++counter & 1023) == 0)
             {

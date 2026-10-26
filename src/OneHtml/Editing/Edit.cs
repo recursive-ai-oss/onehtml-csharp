@@ -231,6 +231,21 @@ public sealed class Edit
         Meta = meta,
     };
 
+    /// <summary>
+    /// Returns a copy of this edit aimed at <paramref name="target"/>, with the same operation, arguments and metadata. Used to
+    /// carry an edit proposed for one snapshot over to the node that replaced its target in the next one.
+    /// </summary>
+    /// <param name="target">A node of the snapshot the copy will be applied to.</param>
+    public Edit WithTarget(Node target) => new(Operation, target)
+    {
+        Name = Name,
+        Value = Value,
+        Important = Important,
+        Count = Count,
+        TextSplices = TextSplices,
+        Meta = Meta,
+    };
+
     /// <inheritdoc />
     public override string ToString() => Operation + " " + Target;
 }

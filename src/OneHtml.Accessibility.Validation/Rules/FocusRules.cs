@@ -106,6 +106,8 @@ internal sealed class NestedInteractiveRule : StructureRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         bool[]? tabbable = null;
@@ -337,6 +339,8 @@ internal sealed class FrameFocusableContentRule : StructureRule
             "Whether the frame or its content should change is the author's decision.", actIds: ["akn7bn"])
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {

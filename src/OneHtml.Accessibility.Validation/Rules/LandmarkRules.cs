@@ -366,6 +366,8 @@ internal sealed class SkipLinkRule : StructureRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.IdReferences;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         foreach (Node a in Elements(context))

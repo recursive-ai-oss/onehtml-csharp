@@ -19,6 +19,8 @@ internal sealed class AriaRolesRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         foreach (Node el in Elements(context))
@@ -71,6 +73,8 @@ internal sealed class AriaDeprecatedRoleRule : AriaRule
             null)
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
@@ -140,9 +144,11 @@ internal sealed class AriaRequiredAttrRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if (node.Kind != AxNodeKind.Element || !context.IsExposed(node.DomNode))
             {
@@ -201,6 +207,10 @@ internal sealed class AriaHiddenBodyRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Page;
+
+    public override IReadOnlyCollection<string>? RelevantElements => ["body"];
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         Node body = context.Document.Root.QuerySelector("body");
@@ -237,6 +247,8 @@ internal sealed class PresentationRoleConflictRule : AriaRule
             actIds: ["46ca7f"])
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
@@ -298,6 +310,8 @@ internal sealed class AriaTextRule : AriaRule
             "Moving a control or dropping the role changes the page's structure, which is an authoring decision.")
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {

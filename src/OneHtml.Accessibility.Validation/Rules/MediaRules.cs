@@ -123,6 +123,9 @@ internal sealed class MediaReviewRule : AriaRule
     // The element is shown: it has a tree node that is not hidden by display or the hidden attribute, and is not visibility hidden.
     internal static bool IsShown(CheckContext context, Node e) => TextSupport.IsDrawn(context, e, context.Styles.GetStyle(e));
 
+    // The details read the element's track children.
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         int counter = 0;
@@ -152,6 +155,8 @@ internal sealed class AutoplayRule : AriaRule
         : base(id, description, help, null, "Adding controls, muting or removing autoplay changes how the media behaves, which is the author's decision.", axe: axe, actIds: actIds, criteria: criteria)
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {

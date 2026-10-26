@@ -21,6 +21,8 @@ internal sealed class AriaRequiredChildrenRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants | RuleScope.Ancestors | RuleScope.IdReferences;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter) =>
         StructureDiagnosticRules.Run(context, reporter, owned: true);
 }
@@ -40,6 +42,8 @@ internal sealed class AriaRequiredParentRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants | RuleScope.Ancestors | RuleScope.IdReferences;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter) =>
         StructureDiagnosticRules.Run(context, reporter, owned: false);
 }
@@ -49,7 +53,7 @@ internal static class StructureDiagnosticRules
     internal static void Run(CheckContext context, RuleReporter reporter, bool owned)
     {
         int counter = 0;
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if ((++counter & 1023) == 0)
             {
@@ -267,6 +271,8 @@ internal sealed class AriaHiddenFocusRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         bool[]? tabbable = null;
@@ -302,10 +308,12 @@ internal sealed class RoleNameRule : AriaRule
         _roles = new HashSet<string>(roles, StringComparer.Ordinal);
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         int counter = 0;
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if ((++counter & 1023) == 0)
             {

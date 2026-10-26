@@ -74,6 +74,8 @@ internal sealed class HiddenContentRule : StructureRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants | RuleScope.Ancestors;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         foreach (Node e in Elements(context))
@@ -161,6 +163,8 @@ internal sealed class ObsoleteElementRule : StructureRule
         _element = element;
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         foreach (Node e in Elements(context))
@@ -183,6 +187,8 @@ internal sealed class ServerSideImageMapRule : StructureRule
             "How the map's regions become links is design, so the author decides.")
     {
     }
+
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Ancestors;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
@@ -299,6 +305,8 @@ internal sealed class MetaViewportRule : StructureRule
     {
         _limit = limit;
     }
+
+    public override RuleScope Scope => RuleScope.Node;
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {

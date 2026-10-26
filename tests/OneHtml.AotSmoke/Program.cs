@@ -257,4 +257,12 @@ bool updateOk = tree1.UpdateInfo is { Incremental: true } && tree1.ToChromeJson(
     && reading.Items.Any(i => i.Text == "button: Start") && nav.Headings.Count == 1 && nav.Links.Count == 1
     && tree0.CreateReadingView().Diff(reading, treeEdit.Changes).Changed.Count == 1;
 Console.WriteLine($"update={updateOk} recomputed={tree1.UpdateInfo?.NamesRecomputed}/{tree1.UpdateInfo?.ElementNodes} reading={reading.Items.Count}");
-return validationOk && htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk && factsOk && updateOk ? 0 : 1;
+// Incremental re-check: the same edit, tree update and a re-check that must equal a fresh check.
+RecursiveAI.OneHtml.Accessibility.Validation.Checker recheckChecker = new();
+RecursiveAI.OneHtml.Accessibility.Validation.CheckReport recheck0 = recheckChecker.Check(tree0);
+RecursiveAI.OneHtml.Accessibility.Validation.CheckReport recheck1 = recheckChecker.Recheck(recheck0, treeEdit, treeRestyle, tree1);
+RecursiveAI.OneHtml.Accessibility.Validation.CheckReport recheckFresh = recheckChecker.Check(tree1);
+bool recheckOk = recheck1.Recheck is { Incremental: true, RulesRerunPartly: > 0 } && recheck1.Results.Count == recheckFresh.Results.Count
+    && recheck1.Results.Zip(recheckFresh.Results).All(p => p.First.RuleId == p.Second.RuleId && p.First.Outcome == p.Second.Outcome && p.First.Target == p.Second.Target && p.First.Message == p.Second.Message && p.First.Locator == p.Second.Locator);
+Console.WriteLine($"recheck={recheckOk} full={recheck1.Recheck?.RulesRerunInFull} partly={recheck1.Recheck?.RulesRerunPartly} carried={recheck1.Recheck?.RulesCarried}");
+return validationOk && htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk && factsOk && updateOk && recheckOk ? 0 : 1;

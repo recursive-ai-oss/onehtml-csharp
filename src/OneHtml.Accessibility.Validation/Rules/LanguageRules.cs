@@ -132,6 +132,10 @@ internal sealed class HtmlHasLangRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Page;
+
+    public override IReadOnlyCollection<string>? RelevantElements => ["html"];
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         // ACT b5c3f8: applies to the html element of a text/html document; fails when lang is absent, empty or only whitespace.
@@ -165,6 +169,10 @@ internal sealed class HtmlLangValidRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Page;
+
+    public override IReadOnlyCollection<string>? RelevantElements => ["html"];
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         // ACT bf051a: applies to html with a lang that is not blank; expects a known primary language tag (RFC 5646 / IANA registry).
@@ -197,6 +205,10 @@ internal sealed class HtmlXmlLangMismatchRule : AriaRule
             actIds: ["5b7ae0"])
     {
     }
+
+    public override RuleScope Scope => RuleScope.Page;
+
+    public override IReadOnlyCollection<string>? RelevantElements => ["html"];
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
@@ -280,6 +292,10 @@ internal sealed class HtmlLangMatchesContentRule : AriaRule
             axe: false, actIds: ["ucwvc8"], impact: Impact.Serious)
     {
     }
+
+    public override RuleScope Scope => RuleScope.Page;
+
+    public override IReadOnlyCollection<string>? RelevantElements => ["html"];
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {

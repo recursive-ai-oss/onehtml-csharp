@@ -32,6 +32,65 @@ public interface IAccessibilityRule
     /// <param name="context">The document, styles and tree.</param>
     /// <param name="reporter">Where results go. It also carries the cancellation token.</param>
     void Evaluate(CheckContext context, RuleReporter reporter);
+
+    /// <summary>
+    /// What the rule's result for a target depends on, which lets <see cref="Checker.Recheck(CheckReport, Editing.EditResult, RestyleResult, AccessibilityTree, Rendered.RenderedFacts?, CancellationToken)"/>
+    /// re-run it only where an edit reached. The default, <see cref="RuleScope.Unspecified"/>, means the rule may read
+    /// anything, so it runs in full after every edit; a rule that does not override this keeps working unchanged.
+    /// </summary>
+    RuleScope Scope => RuleScope.Unspecified;
+
+    /// <summary>
+    /// For a <see cref="RuleScope.Page"/> rule: the local names of the elements the rule reads, so an edit that touches none of
+    /// them leaves the rule's results alone. <see langword="null"/> (the default) means any change re-runs the rule.
+    /// </summary>
+    IReadOnlyCollection<string>? RelevantElements => null;
+}
+
+/// <summary>
+/// The inputs a rule's result for one target reads, declared by <see cref="IAccessibilityRule.Scope"/>. Combine the flags
+/// <see cref="Node"/>, <see cref="Descendants"/>, <see cref="Ancestors"/> and <see cref="IdReferences"/> to say that a result
+/// depends on all of them; <see cref="Page"/> stands alone.
+/// </summary>
+/// <remarks>
+/// A rule that declares a node-level scope promises three things: it reports each result on the node whose inputs it
+/// read (never on another node), it finds its targets by iterating the elements the checker offers it (see
+/// <see cref="CheckContext.Elements"/>) or by examining nodes independently of one another, and its outcome and message do
+/// not depend on anything but the declared inputs. The checker enforces the first by dropping a result reported on a node it
+/// did not ask about; a rule whose result also depends on other nodes must declare more, or nothing.
+/// </remarks>
+[Flags]
+public enum RuleScope
+{
+    /// <summary>Nothing is declared: the rule runs in full on every re-check. The safe default.</summary>
+    Unspecified = 0,
+
+    /// <summary>
+    /// The target's own attributes, text, cascaded style and accessibility-tree node (role, name, description, states,
+    /// relations, hidden status, focusability, diagnostics and its parent in the tree).
+    /// </summary>
+    Node = 1,
+
+    /// <summary>The target's DOM descendants too: their attributes, text and tree nodes.</summary>
+    Descendants = 2,
+
+    /// <summary>The target's DOM ancestors too: their attributes and style.</summary>
+    Ancestors = 4,
+
+    /// <summary>
+    /// The elements the target names by ID (<c>aria-labelledby</c>, <c>for</c>, <c>headers</c>, …) and the elements that name
+    /// the target, as the declared inputs of <see cref="Node"/> for those elements.
+    /// </summary>
+    IdReferences = 8,
+
+    /// <summary>
+    /// The rule compares or counts across the whole page (duplicate ids, one main landmark). It re-runs in full when the edit
+    /// touched anything, or, with <see cref="IAccessibilityRule.RelevantElements"/>, when it touched one of those elements.
+    /// </summary>
+    Page = 16,
+
+    /// <summary>The own attributes, text and tree node of the target's sibling elements and text (a list item looks at its neighbours).</summary>
+    Siblings = 32,
 }
 
 /// <summary>What a rule can see: the document, its cascade, the accessibility tree and the style context they were computed under.</summary>
@@ -85,6 +144,80 @@ public sealed class CheckContext
     public bool IsExposed(Node element) =>
         Tree.Find(element) is { } n && !n.Hidden.IsNotRendered
         && (n.Hidden.Reasons & (HiddenReasons.AriaHidden | HiddenReasons.Inert | HiddenReasons.VisibilityHidden)) == 0;
+
+    // Set by the checker for a re-check: the elements (ascending index) a node-scoped rule has to look at again, and a mask over
+    // every node index of the results it may report. Null means the whole document.
+    internal int[]? CandidateElements { get; set; }
+
+    internal bool[]? CandidateMask { get; set; }
+
+    internal int[]? CandidateNodes { get; set; }
+
+    /// <summary>
+    /// The elements a rule should examine, in document order (template contents excluded). During a re-check this is only the
+    /// elements a node-scoped rule has to look at again, so a rule that iterates this and reports on the element it examined
+    /// does the least work with no change to its code.
+    /// </summary>
+    public IEnumerable<Node> Elements()
+    {
+        if (CandidateElements is not { } list)
+        {
+            return Document.Root.DescendantElements;
+        }
+
+        return CandidatesOnly(list);
+    }
+
+    /// <summary>Every element of the document in document order (template contents excluded), whatever a re-check restricts <see cref="Elements"/> to. For a rule that must look at the whole page to decide about one element.</summary>
+    public IEnumerable<Node> AllElements() => Document.Root.DescendantElements;
+
+    /// <summary>
+    /// The tree nodes a rule should examine: the whole tree normally, and during a re-check only the nodes whose DOM node the
+    /// edit reached (see <see cref="Elements"/>). Nodes a tree does not hold for a DOM node (not rendered) are not returned.
+    /// </summary>
+    public IEnumerable<AxNode> TreeNodes()
+    {
+        if (CandidateNodes is not { } list)
+        {
+            return Tree.Nodes;
+        }
+
+        return TreeNodesOf(list);
+    }
+
+    private IEnumerable<AxNode> TreeNodesOf(int[] list)
+    {
+        foreach (int i in list)
+        {
+            // Find can return a node that is not in Tree.Nodes (an element owned through aria-owns by something outside the tree);
+            // a rule that walks the whole tree never sees it, so neither does a narrowed walk.
+            if (Tree.Find(Document.GetNode(i)) is { } n && n.Id >= 0 && n.Id < Tree.Nodes.Count && ReferenceEquals(Tree.Nodes[n.Id], n))
+            {
+                yield return n;
+            }
+        }
+    }
+
+    private IEnumerable<Node> CandidatesOnly(int[] list)
+    {
+        foreach (int i in list)
+        {
+            yield return Document.GetNode(i);
+        }
+    }
+
+    private readonly Dictionary<string, object> _memo = [];
+
+    // A value several rules share for this tree, computed by the first rule that asks. Rules run one at a time.
+    internal T Memo<T>(string key, Func<T> create) where T : class
+    {
+        if (!_memo.TryGetValue(key, out object? v))
+        {
+            _memo[key] = v = create();
+        }
+
+        return (T)v;
+    }
 
     internal string? LocatorOf(Node node) => _locators.Value.TryGenerate(node, out string? l) ? l : null;
 }
@@ -169,6 +302,11 @@ public sealed class RuleReporter
 
     private void Add(Outcome outcome, Node target, string message, IReadOnlyList<Finding> findings, IReadOnlyList<SuggestedEdit> suggested, IReadOnlyList<string> missing, IReadOnlyList<string>? factsUsed = null)
     {
+        if (_context.CandidateMask is { } mask && (target.IsNull || target.Index >= mask.Length || !mask[target.Index]))
+        {
+            return;
+        }
+
         if (_results.Count >= _maxResults)
         {
             LimitReached = true;

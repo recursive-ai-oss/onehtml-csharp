@@ -9,14 +9,29 @@ namespace RecursiveAI.OneHtml.Accessibility.Validation;
 /// <summary>The results of one <see cref="Checker"/> run, in the fixed order described on <see cref="Checker"/>.</summary>
 public sealed class CheckReport
 {
-    internal CheckReport(AccessibilityTree tree, Catalogue.ValidationProfile? profile, IReadOnlyList<IAccessibilityRule> rulesRun, IReadOnlyList<RuleResult> results, bool limitReached)
+    internal CheckReport(AccessibilityTree tree, Catalogue.ValidationProfile? profile, IReadOnlyList<IAccessibilityRule> rulesRun, IReadOnlyList<RuleResult> results, bool limitReached,
+        CheckOptions options, IReadOnlyList<RuleSlice> slices, RecheckInfo? recheck = null)
     {
+        Options = options;
+        Slices = slices;
+        Recheck = recheck;
         Tree = tree;
         Profile = profile;
         RulesRun = rulesRun;
         Results = results;
         LimitReached = limitReached;
     }
+
+    internal CheckOptions Options { get; }
+
+    // Where each rule's results sit in Results, so a re-check can take them over rule by rule.
+    internal IReadOnlyList<RuleSlice> Slices { get; }
+
+    /// <summary>
+    /// How <see cref="Checker.Recheck(CheckReport, Editing.EditResult, RestyleResult, AccessibilityTree, Rendered.RenderedFacts?, System.Threading.CancellationToken)"/>
+    /// made this report; <see langword="null"/> for a report made by <see cref="Checker.Check(Document, CheckOptions?, System.Threading.CancellationToken)"/>.
+    /// </summary>
+    public RecheckInfo? Recheck { get; }
 
     /// <summary>The tree that was checked.</summary>
     public AccessibilityTree Tree { get; }
@@ -72,4 +87,44 @@ public sealed class CheckReport
 
         return edits;
     }
+}
+
+/// <summary>Where one rule's results sit in a report, and the passes that were left out of it.</summary>
+/// <param name="Rule">The rule.</param>
+/// <param name="Start">Index of its first entry in <see cref="CheckReport.Results"/>.</param>
+/// <param name="Count">How many entries it has there (an inapplicable rule has one).</param>
+/// <param name="Inapplicable">True when the entry is the rule's single inapplicable result.</param>
+/// <param name="DroppedPasses">Node indexes of the passed results left out because <see cref="CheckOptions.IncludePasses"/> was false.</param>
+internal readonly record struct RuleSlice(IAccessibilityRule Rule, int Start, int Count, bool Inapplicable, int[] DroppedPasses);
+
+/// <summary>What a re-check did, for callers that want to know how much work it saved.</summary>
+public sealed class RecheckInfo
+{
+    internal RecheckInfo(bool incremental, string? fullRunReason, int rulesRerunInFull, int rulesRerunPartly, int rulesCarried, int nodesReexamined)
+    {
+        Incremental = incremental;
+        FullRunReason = fullRunReason;
+        RulesRerunInFull = rulesRerunInFull;
+        RulesRerunPartly = rulesRerunPartly;
+        RulesCarried = rulesCarried;
+        NodesReexamined = nodesReexamined;
+    }
+
+    /// <summary>False when the whole check ran again (see <see cref="FullRunReason"/>); true when results were carried over.</summary>
+    public bool Incremental { get; }
+
+    /// <summary>Why every rule ran in full, or <see langword="null"/> for an incremental re-check.</summary>
+    public string? FullRunReason { get; }
+
+    /// <summary>Rules that ran over the whole document (no declared scope, or too much of the page was affected).</summary>
+    public int RulesRerunInFull { get; }
+
+    /// <summary>Rules that ran only over the nodes the edit reached.</summary>
+    public int RulesRerunPartly { get; }
+
+    /// <summary>Rules whose results were all taken over unchanged (remapped to the new snapshot).</summary>
+    public int RulesCarried { get; }
+
+    /// <summary>The number of nodes the edit, the restyle and the tree changes reached before each rule's scope widened them.</summary>
+    public int NodesReexamined { get; }
 }

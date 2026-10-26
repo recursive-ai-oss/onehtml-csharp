@@ -96,6 +96,10 @@ internal sealed class DocumentTitleDescriptiveRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Page;
+
+    public override IReadOnlyCollection<string>? RelevantElements => ["html", "title"];
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         Node html = default;

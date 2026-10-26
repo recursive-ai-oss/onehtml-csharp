@@ -238,6 +238,8 @@ internal sealed class ColorContrastRule : AriaRule
         _enhanced = enhanced;
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Ancestors | RuleScope.IdReferences;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         var paint = new PaintCalculator(context);

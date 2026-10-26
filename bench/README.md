@@ -43,3 +43,8 @@ Differences to keep in mind when reading the numbers: our side reads the page's 
 - Per-page timings: `dotnet OneHtml.Benchmarks.dll --check-per-page ours.jsonl` (median of `ONEHTML_BENCH_REPEATS`, default 3, after one warm-up).
 - Chrome side and comparison: `python3 bench/axe-bench/axe_bench.py run --corpus <corpus> --ours ours.jsonl --out axe.jsonl`, then `axe_bench.py compare ours.jsonl axe.jsonl`.
 - On the worker, all of it under the lock: `bash bench/run-worker.sh checker ~/onehtml/corpus/<version> ~/onehtml/bench-out/<name>` (extra variables: `ONEHTML_BENCH_FOCUS_CAP`, `ONEHTML_BENCH_AXE_LIMIT`, `ONEHTML_BENCH_SKIP_BDN`).
+
+## Incremental re-check
+
+`RecheckBenchmarks` times a full check against `Checker.Recheck` after one attribute edit and after one text edit on a synthetic page of about 35,000 DOM nodes, with the edit, restyle and updated tree prepared in setup so the "Re-check" rows are the checker alone, and "Edit and re-check" rows that include `Apply`, `Restyle` and `AccessibilityTree.Update`. Those rows run every rule but `focus-visible-indicator`, which takes tens of seconds on this page and cannot be narrowed; `RecheckAllRulesBenchmarks` has the whole catalogue in a short job. Filter with `--filter '*Recheck*'` (and set `ONEHTML_BENCH_CORPUS`, which the entry point requires, to any directory of HTML files).
+

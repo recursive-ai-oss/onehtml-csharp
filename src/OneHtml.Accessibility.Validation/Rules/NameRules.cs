@@ -174,10 +174,12 @@ internal sealed class SubjectNameRule : AriaRule
         _named = named;
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Ancestors;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         int counter = 0;
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if ((++counter & 1023) == 0)
             {
@@ -214,10 +216,12 @@ internal sealed class ReviewOnlyRule : AriaRule
         _applies = applies;
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Ancestors;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         int counter = 0;
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if ((++counter & 1023) == 0)
             {
@@ -244,10 +248,12 @@ internal sealed class ImageAltRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         int counter = 0;
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if ((++counter & 1023) == 0)
             {
@@ -335,9 +341,11 @@ internal sealed class ObjectAltRule : AriaRule
         return false;
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.Descendants;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if (node.Kind != AxNodeKind.Element || !NameSupport.Is(node.DomNode, "object") || !context.IsExposed(node.DomNode)
                 || node.AriaRole is { Name: "none" or "presentation" } || RendersText(node.DomNode))
@@ -366,6 +374,10 @@ internal sealed class DocumentTitleRule : AriaRule
             "The title is content: only the author knows what the page is called.", actIds: ["2779a5"])
     {
     }
+
+    public override RuleScope Scope => RuleScope.Page;
+
+    public override IReadOnlyCollection<string>? RelevantElements => ["html", "title"];
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
@@ -506,9 +518,11 @@ internal sealed class LabelTitleOnlyRule : AriaRule
     {
     }
 
+    public override RuleScope Scope => RuleScope.Node;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
-        foreach (AxNode node in context.Tree.Nodes)
+        foreach (AxNode node in context.TreeNodes())
         {
             if (node.Kind != AxNodeKind.Element || !context.IsExposed(node.DomNode) || !FormFields.IsField(context, node))
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using RecursiveAI.OneHtml.Editing;
 
 namespace RecursiveAI.OneHtml.Accessibility.Validation;
@@ -63,7 +64,11 @@ public sealed record SuggestedEdit(Edit Edit, string Description);
 /// <summary>The result of one rule on one target (or, for <see cref="Outcome.Inapplicable"/>, on nothing).</summary>
 public sealed class RuleResult
 {
-    private readonly Lazy<string?> _locator;
+    // The locator is generated on first use. Two threads asking at once may both generate it; they get the same string, and
+    // a reference write is atomic, so no lock is needed (and a lock-free field keeps a result small).
+    private static readonly object s_noLocator = new();
+    private readonly Func<Node, string?> _locatorSource;
+    private object? _locatorValue;
 
     internal RuleResult(
         IAccessibilityRule rule,
@@ -92,7 +97,7 @@ public sealed class RuleResult
         TaskImpactReason = taskImpactReason;
         CssOnly = cssOnly;
         SourceBytes = source;
-        _locator = new Lazy<string?>(() => target.IsNull ? null : locator(target));
+        _locatorSource = locator;
     }
 
     /// <summary>The rule that produced the result.</summary>
@@ -138,7 +143,20 @@ public sealed class RuleResult
     public bool CssOnly { get; }
 
     /// <summary>The target's locator, generated on first use; <see langword="null"/> when there is no target or it has none.</summary>
-    public string? Locator => _locator.Value;
+    public string? Locator
+    {
+        get
+        {
+            object? v = Volatile.Read(ref _locatorValue);
+            if (v is null)
+            {
+                v = Target.IsNull ? s_noLocator : (object?)_locatorSource(Target) ?? s_noLocator;
+                Volatile.Write(ref _locatorValue, v);
+            }
+
+            return ReferenceEquals(v, s_noLocator) ? null : (string)v;
+        }
+    }
 
     /// <summary>The target's byte range in the source, or <see cref="SourceRange.None"/>.</summary>
     public SourceRange SourceBytes { get; }

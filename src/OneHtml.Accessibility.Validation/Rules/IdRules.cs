@@ -42,13 +42,43 @@ internal sealed class DuplicateIdRule : StructureRule
         _kind = kind;
     }
 
+    public override RuleScope Scope => RuleScope.Node | RuleScope.IdReferences;
+
     public override void Evaluate(CheckContext context, RuleReporter reporter)
+    {
+        // Every element counts toward an id's users and referrers, so the index covers the page even when a re-check
+        // asks about a few elements; the three rules share one.
+        IdIndex index = context.Memo("duplicate-id-index", () => BuildIndex(context, reporter.CancellationToken));
+        Dictionary<string, List<Node>> byId = index.ById;
+        HashSet<string> referenced = index.Referenced;
+        foreach (Node e in Elements(context))
+        {
+            if (!IsHtmlOrSvg(e) || e.GetAttribute("id") is not { Length: > 0 } id || !Applies(context, e, id, referenced))
+            {
+                continue;
+            }
+
+            int n = byId[id].Count;
+            if (n == 1)
+            {
+                reporter.Passed(e);
+            }
+            else
+            {
+                reporter.Failed(e, "The id " + id + " is used by " + n + " elements.", [new Finding("id", id, n + " elements share this id.")]);
+            }
+        }
+    }
+
+    private sealed record IdIndex(Dictionary<string, List<Node>> ById, HashSet<string> Referenced);
+
+    private static IdIndex BuildIndex(CheckContext context, System.Threading.CancellationToken ct)
     {
         var byId = new Dictionary<string, List<Node>>(StringComparer.Ordinal);
         var referenced = new HashSet<string>(StringComparer.Ordinal);
-        foreach (Node e in Elements(context))
+        foreach (Node e in context.AllElements())
         {
-            reporter.CancellationToken.ThrowIfCancellationRequested();
+            ct.ThrowIfCancellationRequested();
             if (!IsHtmlOrSvg(e))
             {
                 continue;
@@ -78,23 +108,7 @@ internal sealed class DuplicateIdRule : StructureRule
             }
         }
 
-        foreach (Node e in Elements(context))
-        {
-            if (!IsHtmlOrSvg(e) || e.GetAttribute("id") is not { Length: > 0 } id || !Applies(context, e, id, referenced))
-            {
-                continue;
-            }
-
-            int n = byId[id].Count;
-            if (n == 1)
-            {
-                reporter.Passed(e);
-            }
-            else
-            {
-                reporter.Failed(e, "The id " + id + " is used by " + n + " elements.", [new Finding("id", id, n + " elements share this id.")]);
-            }
-        }
+        return new IdIndex(byId, referenced);
     }
 
     private bool Applies(CheckContext c, Node e, string id, HashSet<string> referenced)

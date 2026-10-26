@@ -55,18 +55,35 @@ internal static class EditFuzzCommand
 
     private static void CheckPage(Options o, CorpusItem item, byte[] bytes, GateReport report, CancellationToken ct)
     {
+        var clock = System.Diagnostics.Stopwatch.StartNew();
         Document doc = Document.Parse(bytes, new ParseOptions { ContentType = item.ContentType }, ct);
+        if (GateRunner.Trace)
+        {
+            Console.Error.WriteLine(FormattableString.Invariant($"{item.Sha256[..7]}: {bytes.Length} bytes, {doc.NodeCount} nodes, parse {clock.Elapsed.TotalMilliseconds:0.0} ms"));
+        }
+
         var rng = new Random(o.Seed ^ Convert.ToInt32(item.Sha256[..7], 16));
         report.Count("pages");
         var local = new EditStats();
+        if (GateRunner.Trace && o.Jobs == 1)
+        {
+            EditTarget.Observer = (_, edits, result) => Console.Error.WriteLine(FormattableString.Invariant(
+                $"    apply at {clock.Elapsed.TotalMilliseconds:0.0} ms: {string.Join(',', edits.Select(e => e.Operation + "#" + e.Target.Index))} succeeded {result.Succeeded} fallbacks {result.Fallbacks.Count} verifications {result.Verifications}"));
+        }
+
         var failed = new HashSet<string>(StringComparer.Ordinal);
         for (int i = 0; i < o.PerPage; i++)
         {
             ct.ThrowIfCancellationRequested();
             int seed = rng.Next();
+            clock.Restart();
             try
             {
                 EditTarget.CheckDocument(doc, seed, local);
+                if (GateRunner.Trace)
+                {
+                    Console.Error.WriteLine(FormattableString.Invariant($"  html transaction {i} seed {seed}: {clock.Elapsed.TotalMilliseconds:0.0} ms"));
+                }
             }
             catch (EditCheckException ex)
             {
@@ -103,9 +120,15 @@ internal static class EditFuzzCommand
             int seed = rng.Next();
             var r2 = new Random(seed);
             InlineStylesheet inl = inlines[r2.Next(inlines.Count)];
+            clock.Restart();
             try
             {
                 CheckStyleElement(doc, inl, r2, report, ct, out string? problem, out string label);
+                if (GateRunner.Trace)
+                {
+                    Console.Error.WriteLine(FormattableString.Invariant($"  style transaction {i} ({inl.Sheet.Text.Length} chars) {label}: {clock.Elapsed.TotalMilliseconds:0.0} ms"));
+                }
+
                 if (problem is not null && failed.Add("style-element:" + problem))
                 {
                     report.Fail("style-element:" + problem, item.Sha256 + " seed " + seed.ToString(CultureInfo.InvariantCulture));

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Text;
+using RecursiveAI.OneHtml.Encodings;
 using Xunit;
 
 namespace RecursiveAI.OneHtml.Tests;
@@ -75,6 +76,36 @@ public class LimitsTests
         double large = Time(Repeat(unit, Small * 8));
         Assert.True(large < 200 + 24 * small, $"{name}: {Small} units took {small:F1} ms, {Small * 8} took {large:F1} ms");
         Assert.True(large < 20_000, $"{name}: {large:F0} ms");
+    }
+
+    // HTML 13.2.3.5: a CR LF pair decodes to one LF. The decoder once converted all the input behind each line
+    // before cutting it at the line's carriage return, so a document with CRLF line ends cost quadratic time
+    // (a 2 MB page of short lines took ten seconds).
+    [Theory]
+    [InlineData("text\r\n")]
+    [InlineData("<p>a\r\n")]
+    [InlineData("<!-- c\r\n -->\r\n")]
+    [InlineData("<pre>a\r\nb</pre>\r\n")]
+    [InlineData("\u00e9 line\r\n")]
+    [InlineData("a\rb\r\r\n")]
+    public void Crlf_line_ends_decode_in_linear_time(string unit)
+    {
+        const int Small = 20_000;
+        Time(Repeat(unit, 500)); // warm up
+        double small = Time(Repeat(unit, Small));
+        double large = Time(Repeat(unit, Small * 8));
+        Assert.True(large < 200 + 24 * small, $"{Small} units took {small:F1} ms, {Small * 8} took {large:F1} ms");
+    }
+
+    [Fact]
+    public void Crlf_decodes_to_lf_and_maps_back_to_the_bytes()
+    {
+        byte[] bytes = Encoding.UTF8.GetBytes(Repeat("ab\r\ncd\re\r\n", 50));
+        SourceText source = SourceText.Decode(bytes);
+        Assert.Equal(Repeat("ab\ncd\ne\n", 50), source.Text);
+        Assert.Equal(bytes.Length, source.Map.ToByteOffset(source.Text.Length));
+        Assert.Equal(4, source.Map.ToByteOffset(3));
+        Assert.Equal(7, source.Map.ToByteOffset(6));
     }
 
     [Fact]

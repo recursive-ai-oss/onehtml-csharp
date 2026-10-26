@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Text;
 using System.Threading;
 
@@ -10,6 +11,9 @@ namespace RecursiveAI.OneHtml.Encodings;
 /// </summary>
 internal sealed class DecodeSink
 {
+    // A carriage return, which needs newline handling, and every byte at or above 0x80, which is not ASCII.
+    private static readonly SearchValues<byte> s_runEnd = SearchValues.Create(CreateRunEnd());
+
     private readonly CancellationToken _cancellation;
     private int _ticks;
     private bool _afterCarriageReturn;
@@ -100,26 +104,39 @@ internal sealed class DecodeSink
         }
 
         Tick();
+
+        // Look only as far as the first byte that ends the run (a carriage return or a non-ASCII byte), so a call
+        // costs the length of its run rather than the length of the input behind it. Converting the whole remainder
+        // and cutting it at the first carriage return made every call of a CRLF document cost the rest of the file.
+        int stop = source.IndexOfAny(s_runEnd);
+        ReadOnlySpan<byte> run = stop >= 0 ? source[..stop] : source;
+        if (run.IsEmpty)
+        {
+            return 0;
+        }
+
         Span<char> destination = Chars.AsSpan(Length);
-        Ascii.ToUtf16(source, destination, out int written);
+        Ascii.ToUtf16(run, destination, out int written);
         if (written == 0)
         {
             return 0;
         }
 
-        int cr = destination[..written].IndexOf('\r');
-        if (cr >= 0)
-        {
-            written = cr;
-            if (written == 0)
-            {
-                return 0;
-            }
-        }
-
         Length += written;
         Map.Add(1, 1, written);
         return written;
+    }
+
+    private static byte[] CreateRunEnd()
+    {
+        var bytes = new byte[129];
+        bytes[0] = (byte)'\r';
+        for (int i = 0; i < 128; i++)
+        {
+            bytes[i + 1] = (byte)(0x80 + i);
+        }
+
+        return bytes;
     }
 
     private void Tick()

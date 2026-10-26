@@ -1,7 +1,8 @@
 #!/bin/bash
 # Runs the parse benchmark on the shared worker. Usage:
 #   bench/run-worker.sh <corpus-version-dir> [out-dir] [extra BenchmarkDotNet arguments...]
-# Environment: ONEHTML_BENCH_SAMPLE_SIZE (default 100), ONEHTML_BENCH_BAND_CAP (default none),
+# Environment: ONEHTML_BENCH_SAMPLE_SIZE (default 100), ONEHTML_BENCH_BAND_CAP (default none), ONEHTML_BENCH_FILTER
+#   (default "*ParseBenchmarks* *EditBenchmarks*"),
 #   ONEHTML_BENCH_MAX_SECONDS (default 7200, the cut-off for the whole benchmark).
 #
 #   bench/run-worker.sh checker <corpus-version-dir> [out-dir]
@@ -77,7 +78,10 @@ dotnet build "$ROOT/bench/OneHtml.Benchmarks" -c Release -v quiet -clp:NoSummary
 BIN=$(ls -d "$ONEHTML_ARTIFACTS"/bin/OneHtml.Benchmarks/release*)
 
 # BenchmarkDotNet runs in process: its out-of-process builder expects the project next to the binaries.
-timeout "$MAX" dotnet "$BIN/OneHtml.Benchmarks.dll" --inProcess --filter '*' --artifacts "$OUT/bdn" "$@" 2>&1 | tee "$OUT/bench.log"
+# The checker rows take seconds per invocation, which the in-process toolchain refuses, so they have their own mode.
+# ONEHTML_BENCH_FILTER (space-separated BenchmarkDotNet filters) overrides the default parse and edit rows.
+read -r -a FILTERS <<< "${ONEHTML_BENCH_FILTER:-*ParseBenchmarks* *EditBenchmarks*}"
+timeout "$MAX" dotnet "$BIN/OneHtml.Benchmarks.dll" --inProcess --filter "${FILTERS[@]}" --artifacts "$OUT/bdn" "$@" 2>&1 | tee "$OUT/bench.log"
 STATUS=$?
 
 echo "after:" >> "$OUT/load.log"; sample_load

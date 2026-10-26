@@ -37,7 +37,7 @@ internal static class RoundTrip
 
     public static int Run(Options o)
     {
-        List<CorpusItem> items = Corpus.Load(o.Corpus);
+        List<CorpusItem> items = Corpus.Load(o.Corpus, pages: o.Only != "stylesheets", stylesheets: o.Only != "pages");
         if (items.Count > o.Limit)
         {
             items.RemoveRange(o.Limit, items.Count - o.Limit);

@@ -15,7 +15,7 @@ namespace RecursiveAI.OneHtml.Differential;
 internal sealed record Mismatch(string Field, string Path, string Ours, string Theirs, string NodeDesc, int Hint)
 {
     /// <summary>The key reproducers must keep: same field, same node types on both sides.</summary>
-    public string Signature => Field is "text" or "comment" or "attr.value" or "childCount" or "attr.order" or "attr.namespace" or "quirks" or "encoding" || Field.StartsWith("doctype.", StringComparison.Ordinal)
+    public string Signature => Field is "text" or "comment" or "attr.value" or "childCount" or "attr.order" or "attr.namespace" or "attr.prefix" or "quirks" || Field.StartsWith("doctype.", StringComparison.Ordinal)
         ? Field
         : Field + "|" + Ours + "|" + Theirs;
 }
@@ -198,35 +198,43 @@ internal static class TreeComparer
         }
     }
 
+    /// <summary>
+    /// Attributes are paired by namespace and local name, which is what DOM identifies an attribute by: the same pair can
+    /// carry different prefixes, and two attributes may share a local name in different namespaces (<c>href</c> and
+    /// <c>xlink:href</c> on SVG <c>use</c>). Qualified name, namespace and value are then compared on each pair.
+    /// </summary>
     private static void CompareAttributes(Node o, IElement e, Step path, List<Mismatch> found)
     {
-        // Attributes are matched by qualified name; namespace and value are then compared on the pair.
         string shape = path.Shape(3);
-        var theirs = new Dictionary<string, (string? Ns, string Value)>(StringComparer.Ordinal);
+        var theirs = new Dictionary<string, (string Qualified, string Value)>(StringComparer.Ordinal);
         var theirOrder = new List<string>();
         foreach (IAttr a in e.Attributes)
         {
-            if (theirs.TryAdd(a.Name, (string.IsNullOrEmpty(a.NamespaceUri) ? null : a.NamespaceUri, a.Value)))
+            string key = Key(string.IsNullOrEmpty(a.NamespaceUri) ? null : a.NamespaceUri, a.LocalName);
+            string qualified = string.IsNullOrEmpty(a.Prefix) ? a.LocalName : a.Prefix + ":" + a.LocalName;
+            if (theirs.TryAdd(key, (qualified, a.Value)))
             {
-                theirOrder.Add(a.Name);
+                theirOrder.Add(key);
             }
         }
 
         var ourOrder = new List<string>();
+        var ourSet = new HashSet<string>(StringComparer.Ordinal);
         foreach (Attr a in o.Attributes)
         {
             string name = a.QualifiedName;
-            ourOrder.Add(name);
-            if (!theirs.TryGetValue(name, out (string? Ns, string Value) tv))
+            string key = Key(AttributeNamespaceUri(a.Namespace), a.LocalName);
+            ourOrder.Add(key);
+            ourSet.Add(key);
+            if (!theirs.TryGetValue(key, out (string Qualified, string Value) tv))
             {
                 found.Add(new Mismatch("attr.name", path.ToString(), name, "(absent)", shape, HintOf(o)));
                 continue;
             }
 
-            string? ns = AttributeNamespaceUri(a.Namespace);
-            if (!string.Equals(ns, tv.Ns, StringComparison.Ordinal))
+            if (!string.Equals(name, tv.Qualified, StringComparison.Ordinal))
             {
-                found.Add(new Mismatch("attr.namespace", path.ToString() + "@" + name, ns ?? "(none)", tv.Ns ?? "(none)", shape + "@" + name, HintOf(o)));
+                found.Add(new Mismatch("attr.prefix", path.ToString(), name, tv.Qualified, shape + "@" + a.LocalName, HintOf(o)));
             }
 
             string ov = a.Value.ToString();
@@ -236,12 +244,11 @@ internal static class TreeComparer
             }
         }
 
-        var ourSet = new HashSet<string>(ourOrder, StringComparer.Ordinal);
-        foreach (string name in theirOrder)
+        foreach (string key in theirOrder)
         {
-            if (!ourSet.Contains(name))
+            if (!ourSet.Contains(key))
             {
-                found.Add(new Mismatch("attr.name", path.ToString(), "(absent)", name, shape, HintOf(o)));
+                found.Add(new Mismatch("attr.name", path.ToString(), "(absent)", theirs[key].Qualified, shape, HintOf(o)));
             }
         }
 
@@ -258,10 +265,12 @@ internal static class TreeComparer
         }
     }
 
+    private static string Key(string? ns, string local) => (ns ?? string.Empty) + "|" + local;
+
     private static void PushChildren(Node o, INode t, Step path, List<Mismatch> found, Stack<(Node, INode, Step)> stack)
     {
         var ours = new List<Node>();
-        foreach (Node c in o.Children)
+        foreach (Node c in o.ChildNodes)
         {
             ours.Add(c);
         }

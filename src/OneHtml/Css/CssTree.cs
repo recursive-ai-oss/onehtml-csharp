@@ -114,6 +114,13 @@ public sealed class CssTree
         GroupBounds = groups;
     }
 
+    /// <summary>
+    /// True when blocks and functions nested deeper than <see cref="CssParseOptions.MaxNestingDepth"/>. Matching then
+    /// stops at the limit: the block that would exceed it and everything after it are read as unclosed blocks that run
+    /// to the end of their range, as CSS Syntax treats a block with no closing token at the end of the input.
+    /// </summary>
+    public bool NestingLimitReached { get; internal init; }
+
     internal int ValuesFrom { get; }
 
     internal int ValuesTo { get; }

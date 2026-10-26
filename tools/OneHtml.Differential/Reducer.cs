@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace RecursiveAI.OneHtml.Differential;
 
@@ -41,6 +42,9 @@ internal static class Reducer
         }
 
         List<string> lines = SplitLines(text);
+
+        // Binary or minified input has few newlines, so long lines are cut into pieces that delta debugging can drop.
+        lines = [.. lines.SelectMany(static l => l.Length <= 2000 ? [l] : Chunks(l, 512))];
         lines = Ddmin(lines, parts => Test(string.Concat(parts)), Budget);
         string joined = string.Concat(lines);
 
@@ -59,6 +63,22 @@ internal static class Reducer
 
         chars = Ddmin(chars, parts => Test(string.Concat(parts)), Budget);
         return string.Concat(chars);
+    }
+
+    private static IEnumerable<string> Chunks(string s, int size)
+    {
+        int i = 0;
+        while (i < s.Length)
+        {
+            int n = Math.Min(size, s.Length - i);
+            if (i + n < s.Length && char.IsHighSurrogate(s[i + n - 1]))
+            {
+                n++; // keep a surrogate pair together
+            }
+
+            yield return s.Substring(i, n);
+            i += n;
+        }
     }
 
     private static List<string> SplitLines(string s)

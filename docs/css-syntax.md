@@ -29,7 +29,7 @@ records only what that text leaves open or what this library adds.
 
 Function and `(`, `[`, `{` openers are paired with their closers in one pass with an explicit stack: a closer closes
 the innermost open block only if it is that block's ending token, otherwise it is an ordinary token (§5.5.9, §5.5.10).
-An opener left open at end of input has no closer and runs to the end. The same pass enforces the nesting limit.
+An opener left open at end of input has no closer and runs to the end. The same pass applies the nesting limit (see Limits).
 All parsing then skips a nested block by jumping to its matching closer, so nothing recurses on input depth.
 
 ## Nodes
@@ -70,9 +70,22 @@ consumer that needs CSS Nesting's grouping of declarations into nested-declarati
 ## Limits
 
 `CssParseOptions` defaults: input 16,777,216 code units, 8,388,608 tokens, nesting depth 256 (blocks and functions
-together). Input length is checked before tokenizing, token count as tokens are added (the arrays grow only up to the
-limit), nesting during bracket pairing. Exceeding one throws `CssLimitExceededException` with the limit that was hit.
-Malformed CSS never throws. Cancellation is checked every 4096 tokens and every 4096 parser steps.
+together). Input length is checked before tokenizing and token count as tokens are added (the arrays grow only up to the
+limit). Exceeding either throws `CssLimitExceededException` with the limit that was hit. Malformed CSS never throws.
+Cancellation is checked every 4096 tokens and every 4096 parser steps.
+
+**Nesting depth degrades; it does not throw.** CSS Syntax 3 closes every block still open at the end of the input
+(§5.5.9 "consume a simple block" and §5.5.10 "consume a function": end of input is a parse error and the block is returned),
+so input made of thousands of unclosed brackets is ordinary, if odd, CSS, and so is binary data that was served as a
+stylesheet. Throwing for it would fail the whole sheet, and every other sheet's rules with it, over one bad region. So when
+a block or function would nest deeper than `MaxNestingDepth`, bracket pairing stops at that opener: it and everything after
+it stay unpaired, which the parser already reads as blocks that run to the end of their range, and `CssTree.NestingLimitReached`
+is set. The block that crosses the limit keeps its tokens but is not parsed into rules or declarations (its contents were
+never bracket-matched, so they may hold closers that match nothing). The tree stays lossless (`ToSourceText` equals the
+input) and its depth stays at most `MaxNestingDepth` plus one; nothing recurses on input depth. `CssLimit.NestingDepth`
+is kept in the enum for compatibility and is no longer thrown. Tests: `CssLimitsAndFuzzTests` (hand-written deep and
+random bracket input, lossless round trip). On the corpus the one stylesheet that hit the limit was a gzip body stored
+undecoded, 56 kB of binary data.
 
 ## Serialization
 

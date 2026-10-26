@@ -3,14 +3,15 @@
 Corpus commands that compare our parser with itself and with AngleSharp, and our accessibility tree with Chrome's. AngleSharp is used in-process as a black box, and only here (never in `src/`). The corpus commands take a corpus version directory (see `tools/corpus/README.md`: `manifest.jsonl` plus `bodies/ab/<sha256>`) or any directory of loose files (`.css` is a stylesheet, everything else a page). Items are processed in SHA-256 order, so `--limit n` always picks the same items. Output never contains page content except where stated below; copy nothing from an output directory into the repo.
 
 ```
-OneHtml.Differential <roundtrip|angle|replay> <corpus-dir> [--out dir] [--jobs n] [--limit n] [--timeout s] [--top n] [--max-reduce n] [--seed n] [--per-page n]
+OneHtml.Differential <roundtrip|angle|replay> <corpus-dir> [--out dir] [--jobs n] [--limit n] [--timeout s] [--top n] [--max-reduce n] [--only pages|stylesheets] [--seed n] [--per-page n]
+OneHtml.Differential show <file>
 ```
 
-Defaults: `--out ./out`, `--jobs 2`, no limit, `--timeout 30` seconds per item, `--top 20`, `--max-reduce 100`.
+Defaults: `--out ./out`, `--jobs 2`, no limit, `--timeout 30` seconds per item, `--top 20`, `--max-reduce 100` (for `angle`, how many mismatches are minimized, see below). `--only` restricts `roundtrip`. `show <file>` prints our tree and AngleSharp's for one input, and where the first differing text nodes differ.
 
 ## `roundtrip`: lossless output and robustness
 
-For every 2xx page, parses the stored bytes with the record's `Content-Type` and requires `ToLosslessBytes()` to equal the input. For every 2xx stylesheet, parses the bytes (encoding by CSS Syntax's fallback rules, using the library's WHATWG encodings) and requires the source writer to reproduce the decoded text. Every item runs under a wall-clock timeout (a parse that ignores cancellation for 5 more seconds is abandoned and reported as `hang`), every exception is caught and classified.
+For every 2xx page, parses the stored bytes with the record's `Content-Type` and requires `ToLosslessBytes()` to equal the input. For every 2xx stylesheet, parses the bytes (encoding by CSS Syntax's fallback rules, using the library's WHATWG encodings) and requires the source writer to reproduce the decoded text. Every item runs under a wall-clock timeout (a parse that ignores cancellation for 5 more seconds is abandoned and reported as `hang`), every exception is caught and classified (nothing an item does can abort the run).
 
 Failure classes: `mismatch`, `timeout`, `hang`, `limit` (a configured parse limit was hit), `exception:<Type>`, `missing-body`.
 
@@ -18,14 +19,17 @@ Writes to `--out`: `summary.json`, `summary.md` (counts, failures by class, top 
 
 ## `angle`: AngleSharp tree differential
 
-For every page, parses with our parser and with AngleSharp's `HtmlParser`, giving AngleSharp the decoded text our sniffer produced, and compares the trees in document order: node kind, namespace, local name, attributes (qualified name, namespace, value, order), text and comment data, doctype name, public and system identifiers, template contents, child counts, and quirks mode. AngleSharp reports only quirks and not-quirks, so limited-quirks counts as standards mode. The two parsers' sniffed encodings are compared separately as the `encoding` field (AngleSharp gets the same bytes and `Content-Type` through its own loader; the default for a page with no declaration differs between the two, so expect many `windows-1252 -> utf-8` rows). After a difference in a node's kind, namespace or name its subtree is not compared.
+For every page, parses with our parser and with AngleSharp's `HtmlParser`, giving AngleSharp the decoded text our sniffer produced, and compares the trees in document order: node kind, namespace, local name, attributes, text and comment data, doctype name, public and system identifiers, template contents, child counts, and quirks mode. Attributes are paired by namespace and local name (what DOM identifies an attribute by), then qualified name (`attr.prefix`), value and order are compared. AngleSharp reports only quirks and not-quirks, so limited-quirks counts as standards mode. The two parsers' sniffed encodings are compared separately as the `encoding` field (AngleSharp gets the same bytes and `Content-Type` through its own loader). When only the last-resort default separates the two (ours windows-1252, AngleSharp UTF-8; HTML 13.2.3.2 leaves it to the locale) the page is not a mismatch and is listed as such.
+
+Below a structural difference (child counts, node kinds, names) the two trees no longer line up by position, so that subtree is not compared further and what it would report is not counted.
 
 Writes to `--out`:
 
-- `summary.json` and `summary.md`: pages compared and identical, mismatch rate per field (pages with at least one, and total occurrences), encoding disagreements, and the classes below.
-- A **class** is the first difference in a page's tree, keyed by field, the node types on both sides and the element path without indexes (`attr.name|xlink:href|(absent) @ body>math>mi`); encoding and quirks differences are classes of their own. Each class lists its page count and an example page by sha256.
+- `summary.json` and `summary.md`: pages compared and identical, mismatch rate per field (pages with at least one, and total occurrences), encoding disagreements, causes and classes.
+- A **class** is one difference in a page, keyed by field, the node types on both sides, the innermost element and the **cause** it was traced to (`childCount @ div [search-element]`). Per page a class counts once: the document-level differences, and every difference that is not inside the subtree of an earlier structural one.
+- A **cause** is a section of `docs/anglesharp-differential.md`, where our behaviour is tied to the standard's text. It is recognised from the field and node types, or, for structural differences, from the minimized reproducer. A class with no known cause is `unexplained`; the goal is none. `--max-reduce` bounds how many mismatches are minimized (default 100; the full corpus needs about 200); a mismatch beyond it is `not-analysed`.
 - `classes/<id>.sha256.txt`: the pages of each class.
-- `repro/<id>/min.html`: a minimized reproducer for the top `--max-reduce` classes: a window around the divergence, then delta debugging over lines and characters (up to 6000 parses or 20 s per class) while the same field and node types still differ. **These are derived from crawled pages: keep them out of the repo.** Hand-written tests are written from them instead.
+- `repro/<id>/min.html`: the minimized reproducer of the first page of each class: a window around the divergence, then delta debugging over lines, over pieces of long lines and over characters (up to 6000 parses or 20 s) while the same class key and the same path shape still differ. **These are derived from crawled pages: keep them out of the repo.** Hand-written tests are written from them instead (`AngleSharpDivergenceTests`).
 - `pages.jsonl`: one line per page with sha256, node count, both encodings and mismatch counts per field.
 
 ## `replay`: durable edits on mutated copies

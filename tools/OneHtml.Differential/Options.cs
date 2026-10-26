@@ -35,6 +35,9 @@ internal sealed class Options
     /// <summary>The <c>ax</c> command's rendered-facts mode: <c>on</c>, <c>off</c> or <c>both</c>.</summary>
     public string Facts { get; private set; } = "both";
 
+    /// <summary>Restricts <c>roundtrip</c> to <c>pages</c> or <c>stylesheets</c>; null for both.</summary>
+    public string? Only { get; private set; }
+
     public static Options? Parse(string[] args)
     {
         var o = new Options();
@@ -53,7 +56,7 @@ internal sealed class Options
                 continue;
             }
 
-            if (i + 1 >= args.Length || !int.TryParse(args[i + 1], NumberStyles.None, CultureInfo.InvariantCulture, out int n) && a is not ("--out" or "--corpus" or "--facts"))
+            if (i + 1 >= args.Length || !int.TryParse(args[i + 1], NumberStyles.None, CultureInfo.InvariantCulture, out int n) && a is not ("--out" or "--corpus" or "--facts" or "--only"))
             {
                 return null;
             }
@@ -62,6 +65,14 @@ internal sealed class Options
             {
                 case "--out": o.Out = args[++i]; break;
                 case "--corpus": o.StyleCorpus = args[++i]; break;
+                case "--only":
+                    o.Only = args[++i];
+                    if (o.Only is not ("pages" or "stylesheets"))
+                    {
+                        return null;
+                    }
+
+                    break;
                 case "--facts":
                     o.Facts = args[++i];
                     if (o.Facts is not ("on" or "off" or "both"))
@@ -87,6 +98,7 @@ internal sealed class Options
     public const string Usage = """
         options (after the corpus directory): --out <dir> (default ./out) --jobs <n> (default 2) --limit <n> (first n items in sha256 order)
           --timeout <seconds per item> (default 30) --top <n> (default 20) --max-reduce <classes to minimize> (default 100, angle only)
+          --only pages|stylesheets (roundtrip only)
           --seed <n> (default 1) --per-page <targets per page> (default 5), replay only
           ax: the positional argument is the capture directory; --corpus <dir> supplies stylesheets (a corpus version or a directory of
           pages), --facts on|off|both (default both), --dump (also write dump/<sha>-<viewport>.txt)
@@ -104,14 +116,18 @@ internal static class Guard
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
         Task<T> task = Task.Factory.StartNew(() => work(cts.Token), CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-        if (!task.Wait(TimeSpan.FromSeconds(timeoutSeconds + 5)))
+        try
         {
-            return (default, "hang");
+            // Wait rethrows a faulted task as an AggregateException, so a failing item is classified here and never
+            // reaches the caller's parallel loop.
+            if (!task.Wait(TimeSpan.FromSeconds(timeoutSeconds + 5)))
+            {
+                return (default, "hang");
+            }
         }
-
-        if (task.IsFaulted)
+        catch (AggregateException ex)
         {
-            return (default, Classify(task.Exception!.GetBaseException()));
+            return (default, Classify(ex.GetBaseException()));
         }
 
         return (task.Result, null);

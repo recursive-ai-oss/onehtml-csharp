@@ -43,14 +43,49 @@ public class CssLimitsAndFuzzTests
     }
 
     [Fact]
-    public void Nesting_depth_is_limited_for_blocks_and_functions()
+    public void Nesting_past_the_limit_degrades_to_unclosed_blocks_and_stays_lossless()
     {
         var o = new CssParseOptions { MaxNestingDepth = 3 };
-        CssTree.ParseComponentValueList("((()))", o, Ct);
-        CssTree.ParseComponentValueList("a(b[c{}])", o, Ct);
-        Assert.Equal(CssLimit.NestingDepth, Assert.Throws<CssLimitExceededException>(() => CssTree.ParseComponentValueList("(((())))", o, Ct)).Limit);
-        Assert.Throws<CssLimitExceededException>(() => CssTree.ParseStylesheet("a{b{c{d{}}}}", o, Ct));
-        Assert.Throws<CssLimitExceededException>(() => CssTree.ParseStylesheet("a{b:c(d(e(f(", o, Ct));
+        Assert.False(CssTree.ParseComponentValueList("((()))", o, Ct).NestingLimitReached);
+        Assert.False(CssTree.ParseComponentValueList("a(b[c{}])", o, Ct).NestingLimitReached);
+
+        // The fourth opener is not matched; like a block still open at EOF it swallows the rest of the input.
+        CssTree values = CssTree.ParseComponentValueList("(((()))) x", o, Ct);
+        Assert.True(values.NestingLimitReached);
+        Assert.Equal(1, values.Values.Count);
+
+        foreach (string css in new[] { "a{b{c{d{}}}} e{}", "a{b:c(d(e(f(", "a{b{c{d{e:f}}}}}}" })
+        {
+            CssTree t = CssTree.ParseStylesheet(css, o, Ct);
+            Assert.True(t.NestingLimitReached);
+            Assert.Equal(css, t.Text);
+        }
+    }
+
+    [Fact]
+    public void Random_bracket_soup_with_a_tiny_depth_limit_never_throws_and_round_trips()
+    {
+        string[] pieces = ["{", "}", "(", ")", "[", "]", "a", "b:c", ";", " ", "x(", "@m ", "'s'", "\n"];
+        var rng = new Random(12345);
+        var o = new CssParseOptions { MaxNestingDepth = 4 };
+        for (int n = 0; n < 3000; n++)
+        {
+            string css = string.Concat(Enumerable.Range(0, rng.Next(1, 40)).Select(_ => pieces[rng.Next(pieces.Length)]));
+            Stylesheet sheet = Stylesheet.Parse(css, null, o);
+            Assert.Equal(css, sheet.ToSourceText());
+            CssTree.ParseDeclarationList(css, o, Ct);
+            CssTree.ParseComponentValueList(css, o, Ct);
+        }
+    }
+
+    [Fact]
+    public void Very_deep_unclosed_blocks_are_a_stylesheet_not_an_exception()
+    {
+        // Unclosed blocks are closed at end of input (CSS Syntax 5.4.8), so 5000 of them are ordinary, if odd, input.
+        string css = "@media screen{" + string.Concat(Enumerable.Repeat("a{", 5000)) + "b:c";
+        Stylesheet sheet = Stylesheet.Parse(css);
+        Assert.Equal(css, sheet.ToSourceText());
+        Assert.Single(sheet.Rules);
     }
 
     [Fact]

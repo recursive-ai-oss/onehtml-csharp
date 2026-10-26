@@ -17,6 +17,11 @@ internal sealed class CssTreeBuilder
 
     private readonly string _text;
     private readonly CssParseOptions _options;
+
+    /// <summary>Set when bracket matching stopped at <see cref="CssParseOptions.MaxNestingDepth"/>.</summary>
+    internal bool NestingLimitReached;
+
+    private int _overflowAt = -1; // the first opener past the limit; its block is kept as opaque tokens
     private readonly CancellationToken _cancel;
     private Token[] _t = [];
     private int _n; // tokens produced from the text itself (excludes re-tokenized unicode-range values)
@@ -106,10 +111,13 @@ internal sealed class CssTreeBuilder
                 break;
         }
 
-        return new CssTree(_text, _t, _n, _match, _comments, _commentInts, _items, _itemCount, error, valuesFrom, valuesTo, groups);
+        return new CssTree(_text, _t, _n, _match, _comments, _commentInts, _items, _itemCount, error, valuesFrom, valuesTo, groups)
+        {
+            NestingLimitReached = NestingLimitReached,
+        };
     }
 
-    // ---- bracket matching (explicit stack; also enforces the nesting limit) ----
+    // ---- bracket matching (explicit stack; also applies the nesting limit) ----
 
     private static bool IsOpener(CssTokenKind k) =>
         k is CssTokenKind.LeftBrace or CssTokenKind.LeftParen or CssTokenKind.LeftBracket or CssTokenKind.Function;
@@ -139,7 +147,13 @@ internal sealed class CssTreeBuilder
             {
                 if (sp >= max)
                 {
-                    throw new CssLimitExceededException(CssLimit.NestingDepth, max);
+                    // CSS Syntax 5.5.9 and 5.5.10 close every block still open at the end of the input, so a block that
+                    // never closes is ordinary input. Nesting past the limit is treated that way: this opener and
+                    // everything after it stay unmatched, which the builders read as blocks running to the end of
+                    // their range. The tree stays lossless and its depth stays bounded, and nothing throws.
+                    NestingLimitReached = true;
+                    _overflowAt = i;
+                    break;
                 }
 
                 if (sp == _matchStack.Length)
@@ -425,7 +439,13 @@ internal sealed class CssTreeBuilder
 
         int idx = NewItem(fi, item);
         _frames[fi].Pos = close >= 0 ? close + 1 : _frames[fi].End;
-        PushFrame(idx, open + 1, close >= 0 ? close : _n, ModeBlock);
+
+        // The block past the nesting limit stays unparsed: what follows it was never bracket-matched, so it may hold
+        // closers that match nothing.
+        if (open != _overflowAt)
+        {
+            PushFrame(idx, open + 1, close >= 0 ? close : _n, ModeBlock);
+        }
     }
 
     // §5.5.3 "consume a qualified rule"

@@ -429,10 +429,9 @@ public class CssWptSyntaxTests
         Sheet("* {\n  @\\aaa\n}");
         CssTree.ParseDeclarationList("content: attr(test) / attr(", cancellationToken: Ct);
 
-        // 60000 unclosed brackets exceed the nesting limit and fail with the typed exception, never a crash.
-        var ex = Assert.Throws<CssLimitExceededException>(() =>
-            CssTree.ParseDeclarationList("content: " + new string('(', 60000) + "\";", cancellationToken: Ct));
-        Assert.Equal(CssLimit.NestingDepth, ex.Limit);
+        // 60000 unclosed brackets pass the nesting limit and degrade to unclosed blocks, never a crash.
+        CssTree deep = CssTree.ParseDeclarationList("content: " + new string('(', 60000) + "\";", cancellationToken: Ct);
+        Assert.True(deep.NestingLimitReached);
     }
 
     // ---- serialize-escape-identifiers.html ----

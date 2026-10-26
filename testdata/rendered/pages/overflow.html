@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Overflow clipping</title>
+<style>
+  body { margin: 8px; font: 14px sans-serif; }
+  .clip { width: 120px; height: 40px; border: 1px solid #000; margin-bottom: 8px; }
+  #hidden-overflow { overflow: hidden; }
+  #scroll { overflow: auto; }
+  #ellipsis { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  #clip-path { clip-path: inset(0 50% 0 0); }
+  #rect-clip { position: absolute; clip: rect(0 20px 20px 0); left: 200px; top: 8px; width: 100px; height: 40px; background: #ccc; }
+  #offscreen { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+<div id="hidden-overflow" class="clip">This text is much longer than its small box, so most of it is clipped away.</div>
+<div id="scroll" class="clip">This text is much longer than its small box, so a scrollbar would be needed to reach it.</div>
+<div id="ellipsis" class="clip">A single line that does not fit and ends with an ellipsis.</div>
+<div id="clip-path" class="clip">Half of this box is clipped by clip-path.</div>
+<div id="rect-clip">Legacy clip rectangle</div>
+<a id="offscreen" href="#top">Skip link placed off screen</a>
+</body>
+</html>

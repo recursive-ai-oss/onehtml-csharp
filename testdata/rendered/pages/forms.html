@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Form controls</title>
+<style>body { margin: 8px; font: 14px sans-serif; } label { display: block; margin: 4px 0; }</style>
+</head>
+<body>
+<form action="#" id="f">
+  <label>Name <input id="name" type="text" value="Ada" placeholder="Full name"></label>
+  <label>Password <input id="pw" type="password"></label>
+  <label><input id="agree" type="checkbox" checked> I agree</label>
+  <label><input id="r1" type="radio" name="r" value="1"> One</label>
+  <label><input id="r2" type="radio" name="r" value="2" checked> Two</label>
+  <label>Range <input id="range" type="range" min="0" max="10" value="4"></label>
+  <label>Date <input id="date" type="date" value="2026-01-02"></label>
+  <label>Colour <input id="colour" type="color" value="#336699"></label>
+  <label>File <input id="file" type="file"></label>
+  <label>Comments <textarea id="ta" rows="2" cols="20">Some
+text</textarea></label>
+  <label>Pick <select id="sel"><option value="a">Alpha</option><option value="b" selected>Beta</option><optgroup label="More"><option>Gamma</option></optgroup></select></label>
+  <label>Number <input id="num" type="number" value="3"></label>
+  <input id="submit" type="submit" value="Send">
+  <button id="btn" type="button">Button</button>
+  <progress id="prog" value="30" max="100"></progress>
+  <meter id="meter" value="0.6"></meter>
+  <details id="det"><summary>More</summary><p>Details body</p></details>
+</form>
+</body>
+</html>

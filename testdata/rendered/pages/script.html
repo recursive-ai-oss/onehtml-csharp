@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Static page</title>
+<style>body { font: 14px sans-serif; } .late { color: red; }</style>
+<script>
+  document.title = "Changed by script";
+  document.addEventListener("DOMContentLoaded", function () {
+    var p = document.createElement("p");
+    p.id = "added";
+    p.className = "late";
+    p.textContent = "Added by script";
+    document.body.appendChild(p);
+    document.getElementById("target").remove();
+  });
+</script>
+</head>
+<body onload="document.body.setAttribute('data-loaded', '1')">
+<h1>Script disabled</h1>
+<p id="target">This paragraph exists only when no script runs.</p>
+<noscript><p id="ns">Shown because scripting is off.</p></noscript>
+<script>document.write("<p id='written'>written</p>");</script>
+</body>
+</html>

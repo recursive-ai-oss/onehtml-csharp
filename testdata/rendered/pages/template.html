@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Template</title>
+<style>body { margin: 8px; font: 14px sans-serif; } template, #tpl-sibling { display: block; }</style>
+</head>
+<body>
+<p id="before">Before the template</p>
+<template id="tpl"><div id="in-tpl"><span>Template content</span><template id="nested"><b>Nested</b></template></div></template>
+<p id="tpl-sibling">After the template</p>
+<ul id="list"><template><li>Item</li></template><li id="real">Real item</li></ul>
+</body>
+</html>

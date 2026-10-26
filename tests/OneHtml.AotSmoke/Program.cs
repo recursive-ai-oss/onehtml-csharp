@@ -206,4 +206,25 @@ bool treeOk = tree.Find(tdoc.GetElementById("h"))!.Name.Value == "Title here" &&
     && tree.GetHidden(tdoc.GetElementById("hid")).Reasons == RecursiveAI.OneHtml.Accessibility.HiddenReasons.HiddenAttribute
     && tree.FocusOrder[0].DomNode.LocalName == "a" && json.Contains("\"nodes\"", StringComparison.Ordinal);
 Console.WriteLine($"tree={treeOk} nodes={tree.Nodes.Count} json={json.Length}");
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk ? 0 : 1;
+
+// Rendered facts: a small DOMSnapshot.captureSnapshot result mapped onto the document it describes, then refused for another.
+const string snapshotJson = """
+{"documents":[{"documentURL":9,"nodes":{"nodeType":[9,1,1,1,1,3],"parentIndex":[-1,0,1,1,3,4],"nodeName":[0,1,2,3,4,5],"nodeValue":[-1,-1,-1,-1,-1,6],
+"attributes":[[],[],[],[],[7,8],[]],"backendNodeId":[1,2,3,4,5,6]},
+"layout":{"nodeIndex":[4,5],"bounds":[[8,8,100,18],[8,8,12,18]],"styles":[[10],[10]],"text":[-1,6],"paintOrders":[1,1],"stackingContexts":{"index":[0]}},
+"textBoxes":{"layoutIndex":[1],"bounds":[[8,8,12,18]],"start":[0],"length":[2]}}],
+"strings":["#document","HTML","HEAD","BODY","P","#text","hi","id","a","http://x.invalid/","block"]}
+""";
+var snapshot = RecursiveAI.OneHtml.Accessibility.Rendered.DomSnapshot.Parse(System.Text.Encoding.UTF8.GetBytes(snapshotJson), ["display"]);
+RecursiveAI.OneHtml.Document factsDoc = RecursiveAI.OneHtml.Document.Parse("<p id=a>hi</p>");
+var mapped = RecursiveAI.OneHtml.Accessibility.Rendered.DomSnapshotAdapter.Map(snapshot, factsDoc);
+var refused = RecursiveAI.OneHtml.Accessibility.Rendered.DomSnapshotAdapter.Map(snapshot, RecursiveAI.OneHtml.Document.Parse("<p id=a>hi</p><p>more</p>"));
+bool factsOk = mapped.Succeeded && mapped.Accounting!.IsComplete
+    && mapped.Facts![factsDoc.Root.QuerySelector("p")].Layout.BorderBox.Width == 100
+    && mapped.Facts[factsDoc.Root.QuerySelector("p")].GetStyle("display") == "block"
+    && mapped.Facts[factsDoc.Root.QuerySelector("p").FirstChild].Layout.TextBoxes.Length == 1
+    && !mapped.Facts[factsDoc.Root.QuerySelector("head")].HasLayout
+    && !refused.Succeeded && refused.Refusal!.Reason == RecursiveAI.OneHtml.Accessibility.Rendered.RefusalReason.NodeCountMismatch;
+Console.WriteLine($"rendered facts: {factsOk}");
+
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk && factsOk ? 0 : 1;

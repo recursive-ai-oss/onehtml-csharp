@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Positioned and stacked</title>
+<style>
+  body { margin: 0; font: 14px sans-serif; }
+  #stage { position: relative; width: 400px; height: 300px; background: #eee; }
+  .box { position: absolute; width: 120px; height: 80px; color: #fff; }
+  #a { left: 20px; top: 20px; background: #c00; z-index: 1; }
+  #b { left: 60px; top: 50px; background: #00c; z-index: 2; }
+  #c { left: 200px; top: 40px; background: #060; }
+  #fixed { position: fixed; right: 10px; bottom: 10px; width: 100px; height: 30px; background: #333; color: #fff; }
+  #sticky { position: sticky; top: 0; background: #ffc; }
+  #ctx { opacity: 0.9; position: absolute; left: 240px; top: 160px; width: 100px; height: 60px; background: #f90; }
+  #ctx-child { position: absolute; z-index: 5; left: 5px; top: 5px; background: #fff; }
+  #float { float: left; width: 60px; height: 40px; background: #09c; }
+</style>
+</head>
+<body>
+<div id="sticky">Sticky bar</div>
+<div id="stage">
+  <div id="a" class="box">A (z 1)</div>
+  <div id="b" class="box">B (z 2)</div>
+  <div id="c" class="box">C (auto)</div>
+  <div id="ctx"><span id="ctx-child">child z 5</span></div>
+</div>
+<div id="float">Float</div>
+<div id="fixed">Fixed</div>
+</body>
+</html>

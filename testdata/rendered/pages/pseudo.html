@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Generated content</title>
+<style>
+  body { margin: 8px; font: 16px sans-serif; }
+  #quote::before { content: "\201C"; color: #900; }
+  #quote::after { content: "\201D"; color: #900; }
+  #badge::before { content: "New: "; font-weight: bold; }
+  #icon::after { content: ""; display: inline-block; width: 12px; height: 12px; background: #090; }
+  #named::before { content: attr(data-label); }
+  #none::before { content: none; }
+  ul.marked li::marker { color: #06c; }
+  #hidden-pseudo { display: none; }
+  #hidden-pseudo::before { content: "never shown"; }
+</style>
+</head>
+<body>
+<p id="quote">Quoted text</p>
+<p id="badge">Fresh item</p>
+<span id="icon">Status</span>
+<p id="named" data-label="Label:">from attribute</p>
+<p id="none">No generated content</p>
+<ul class="marked"><li id="li1">First</li><li id="li2">Second</li></ul>
+<p id="hidden-pseudo">Hidden host</p>
+</body>
+</html>

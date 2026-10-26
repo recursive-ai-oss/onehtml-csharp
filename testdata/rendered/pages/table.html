@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Table</title>
+<style>
+  body { margin: 8px; font: 14px sans-serif; }
+  table { border-collapse: collapse; }
+  th, td { border: 1px solid #666; padding: 4px 8px; }
+  .layout td { border: 0; }
+</style>
+</head>
+<body>
+<table id="data">
+  <caption>Quarterly figures</caption>
+  <thead><tr><th scope="col">Quarter</th><th scope="col">Total</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Q1</th><td>10</td></tr>
+    <tr><th scope="row">Q2</th><td>20</td></tr>
+  </tbody>
+  <tfoot><tr><td colspan="2">Sum 30</td></tr></tfoot>
+</table>
+<table class="layout" role="presentation" id="layout"><tr><td>Left</td><td>Right</td></tr></table>
+<table id="implied"><tr><td>Implied tbody</td></tr></table>
+<div style="display:table" id="css-table"><div style="display:table-row"><div style="display:table-cell">CSS cell</div></div></div>
+</body>
+</html>

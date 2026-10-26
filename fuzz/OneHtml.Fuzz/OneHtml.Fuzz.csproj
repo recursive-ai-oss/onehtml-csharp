@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../../tests/OneHtml.Tests/DocumentInvariants.cs" Link="DocumentInvariants.cs" />
+    <Compile Include="../../tests/OneHtml.Accessibility.Tests/FakeSnapshot.cs" Link="FakeSnapshot.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />

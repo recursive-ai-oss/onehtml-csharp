@@ -31,6 +31,7 @@ if [ "${SKIP_BUILD:-0}" != 1 ]; then
     dotnet publish "$ROOT/fuzz/OneHtml.Fuzz" -c Release -o "$BUILD" -v quiet -clp:NoSummary
     # Instrument the library only; the harness and its dependencies stay plain.
     "$U7/tools/sharpfuzz" "$BUILD/RecursiveAI.OneHtml.dll"
+    "$U7/tools/sharpfuzz" "$BUILD/RecursiveAI.OneHtml.Accessibility.dll"
 fi
 
 mkdir -p "$OUT/corpus" "$OUT/crashes"

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Frames</title>
+<style>body { margin: 8px; font: 14px sans-serif; } iframe { width: 300px; height: 100px; border: 1px solid #000; }</style>
+</head>
+<body>
+<h1>Frames</h1>
+<iframe id="f1" title="Inline frame" srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;h2 id='inner'&gt;Inside the frame&lt;/h2&gt;&lt;p&gt;Frame paragraph&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
+<iframe id="f2" title="Empty frame" srcdoc=""></iframe>
+<iframe id="f3" title="Hidden frame" srcdoc="&lt;p&gt;not shown&lt;/p&gt;" style="display:none"></iframe>
+<p id="after">After the frames</p>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Hidden content</title>
+<style>
+  body { margin: 8px; font: 16px/1.4 sans-serif; }
+  .gone { display: none; }
+  .invisible { visibility: hidden; }
+  .shown-child { visibility: visible; }
+  .transparent { opacity: 0; }
+  .zero { width: 0; height: 0; overflow: hidden; }
+  .contents { display: contents; }
+</style>
+</head>
+<body>
+<h1 id="title">Hidden content</h1>
+<p id="visible">This paragraph is visible.</p>
+<p id="none" class="gone">This paragraph is display:none.</p>
+<div id="none-parent" class="gone"><span id="none-child">Child of a display:none parent</span></div>
+<p id="hidden-attr" hidden>This paragraph has the hidden attribute.</p>
+<div id="vis-hidden" class="invisible">Visibility hidden<span id="vis-child" class="shown-child"> with a visible child</span></div>
+<p id="transparent" class="transparent">Fully transparent text still takes space.</p>
+<div id="zero" class="zero">Zero sized clip</div>
+<div id="contents" class="contents"><span id="contents-child">Inside display:contents</span></div>
+<p aria-hidden="true" id="aria-hidden">Hidden from assistive technology only.</p>
+</body>
+</html>

@@ -32,6 +32,12 @@ internal static class Program
             return 2;
         }
 
+        if (args.Length == 3 && args[0] == "domsnapshot" && args[1] == "--seeds")
+        {
+            SnapshotTarget.WriteSeeds(args[2]);
+            return 0;
+        }
+
         if (args.Length == 4 && args[1] == "--mutate")
         {
             return Mutate(target, int.Parse(args[2], System.Globalization.CultureInfo.InvariantCulture), args[3]);

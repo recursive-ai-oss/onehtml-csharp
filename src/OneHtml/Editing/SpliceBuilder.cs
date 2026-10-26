@@ -508,8 +508,27 @@ internal sealed class SpliceBuilder
             return false;
         }
 
+        if (_m.TextSplices.TryGetValue(t, out IReadOnlyList<TextSplice>? parts))
+        {
+            foreach (TextSplice p in parts)
+            {
+                var part = new StringBuilder();
+                _writer.WriteRawText(p.Text, part);
+                if (_writer.Error is not null)
+                {
+                    why = _writer.Error;
+                    return false;
+                }
+
+                into.Add(Make(s + p.Start, s + p.End, part.ToString()));
+            }
+
+            return true;
+        }
+
         var sb = new StringBuilder();
         _writer.WriteLeaf(t, sb);
+
         if (_writer.Error is not null)
         {
             why = _writer.Error;

@@ -12,6 +12,7 @@ internal static class Targets
     {
         ["css"] = CssTarget.Run,
         ["edit"] = EditTarget.Run,
+        ["editjson"] = EditJsonTarget.Run,
         ["noop"] = static _ => { },
         ["selectors"] = SelectorTarget.Run,
         ["style"] = StyleTarget.Run,

@@ -1,6 +1,6 @@
 # Editing HTML
 
-Normative behaviour of `Document.Apply` and `DocumentEditor` in `RecursiveAI.OneHtml`. A port must reproduce it from this text. Stylesheet edits, the saved-edit JSON and replay are separate.
+Normative behaviour of `Document.Apply` and `DocumentEditor` in `RecursiveAI.OneHtml`. A port must reproduce it from this text. The saved-edit JSON and replay are in `edit-format.md`; stylesheet edits are at the end of this file.
 
 ## Contract
 
@@ -58,3 +58,21 @@ Synthesized `selectedcontent` clones are never editable. Edit the selected `opti
 ## Cost
 
 One edit costs about one parse of the document plus about 1 ms (the verification re-parse dominates; the column copy does not). On a 35,011-node page: parse 4.6 ms, one attribute edit 5.8 ms (12.4 MB allocated), 100 attribute edits in one transaction 7.2 ms. Reads on an old snapshot, on a fresh parse and on an edited snapshot cost the same.
+
+## Statuses
+
+`EditStatus` also has `Stale` (a saved target is gone or no longer looks like it did) and `Ambiguous` (a saved target matches several places). Only replay produces them; see `edit-format.md`.
+
+## Stylesheet edits
+
+`SheetEdit` operations: `SetDeclaration`, `RemoveDeclaration`, `InsertRule` (before or after a rule, or at the end of a stylesheet or of a rule's block), `RemoveRule`, `ReplaceRule`. Targets are rules of a specific `Stylesheet` snapshot. `Stylesheet.Apply(edits)` edits a stylesheet as text; `EditBatch` applies document edits and stylesheet edits together, all or nothing, to `<style>` elements (`InlineStylesheets.Of(doc)`, named `inline:<n>`), to supplied `LinkedStylesheet`s (named by URL, written back in the sheet's own encoding) and to loose snapshots.
+
+- **Splice only what changed.** Every edit becomes a local replacement of source text. For a `<style>` element only the stretches that change are spliced into the document, so the document's change set shows those text stretches. For a linked sheet the new bytes are the old bytes with the same stretches replaced. All edits of a transaction refer to the original snapshot and are placed by original position; list order decides only the order among edits landing at the same offset: appended declarations, then insertions after a rule, insertions before a rule, then insertions at the end of a block.
+- **Conflicts.** Two edits that change the same bytes, or an insertion strictly inside a replaced stretch, make the transaction `Invalid`. Pure deletions that touch or overlap merge. A later edit that contradicts an earlier one on the same property is resolved by the expected rule model and written through the fallback below.
+- **Local format.** New text copies the sheet: the newline sequence (documents and sheets are decoded with newlines normalized to line feed, and the original convention is restored on writing), the indentation unit and the indentation of the line the neighbour starts on, the text before and after a declaration's colon and before `!important`, whether the last declaration of a block ends in a semicolon, and the white space between adjacent rules (taken from the pair around the reference rule, then any pair in the container, then any pair at the top level). With no evidence the defaults are: one line feed between rules, two spaces of indentation, `: ` after a property, a semicolon after the last declaration. Removing an item removes the white space that separated it from its neighbour (after it, or before it for the last item of a block); comments between rules stay.
+- **Inserted CSS** must parse as exactly one rule (CSS Syntax 3 §5.3 "consume a rule"); leading and trailing white space is dropped, a block-less at-rule gets its semicolon, and later lines are re-indented. An insertion at the end of a stylesheet whose last item is an incomplete prelude cannot be written and is `Failed`.
+- **Verification.** The edited text is parsed again and its rule events (rule kind, name, normalized prelude, declarations with normalized values and importance, in order) must equal the events derived from the original tree and the edits. The expected events never come from the new text.
+- **Fallback.** If they differ, the rule containing the edit is rewritten from the expected events; if that still differs, the next enclosing rule is rewritten, up to the stylesheet's top level. Each rewrite is reported in the `StylesheetChangeSet.Ranges` with its level (0 is a local splice).
+- **Limits.** The `EditOptions` limits apply to the whole batch: the count of edits, the inserted length, and the number of verification parses.
+- **Change set.** `StylesheetChangeSet` lists rules `Added`, `Removed` and `Changed` (new-snapshot nodes for added and changed, old-snapshot nodes for removed) and the rewritten ranges, each with old and new range, the edits that produced it and its fallback level. A cascade consumer restyles the elements matched by the rules in the change set. An edit of an embedded sheet is also in the document's change set as a text change.
+- **Linked sheets.** Unencodable characters in the target encoding make the edit `Failed`; the byte order mark is kept.

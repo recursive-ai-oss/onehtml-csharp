@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Maple Valley School District</title>
+<link rel="stylesheet" href="/assets/district.css">
+<style>
+.banner{background:#014;color:#fff}
+.card{border:1px solid #ccc;margin:0 0 1em}
+.card h3{margin:0}
+.card:hover{box-shadow:0 0 4px #888}
+@supports (display:grid){.grid{display:grid;gap:1em}}
+</style>
+</head>
+<body class="district">
+<div class="banner" id="alert"><p><strong>Notice:</strong> Schools open two hours late on Monday.</p></div>
+<header><h1 class="site-title">Maple Valley School District</h1>
+<nav class="primary" aria-label="Primary"><a href="/schools">Schools</a> <a href="/calendar">Calendar</a> <a href="/lunch">Lunch menu</a> <a href="/jobs">Jobs</a></nav></header>
+<div class="grid">
+<section class="card"><h3>Bus routes</h3><p>Routes change on <b>Nov 3</b>.</p><a href="/bus" class="more">Read more</a></section>
+<section class="card"><h3>Lunch menu</h3><p>Pizza on Fridays.</p><a href="/lunch" class="more">Read more</a></section>
+<section class="card"><h3>Registration</h3><p>Kindergarten registration is open.</p><a href="/register" class="more">Read more</a></section>
+</div>
+<aside><h2>Quick links</h2>
+<ul>
+<li><a href="/pay">Pay fees</a>
+<li><a href="/forms">Forms</a>
+<li><a href="/board">Board meetings</a>
+</ul></aside>
+<script>window.dataLayer = window.dataLayer || [];</script>
+<footer><p>Maple Valley School District<br>100 Main St<br>Maple Valley</p></footer>
+</body>
+</html>

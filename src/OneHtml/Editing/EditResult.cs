@@ -20,6 +20,15 @@ public enum EditStatus
 
     /// <summary>An earlier edit stopped the transaction before this one was looked at.</summary>
     NotAttempted = 3,
+
+    /// <summary>
+    /// Replay only: the saved edit's target is gone, or it is there but no longer looks like what the edit was made
+    /// for (its tag, key attributes or text differ). Nothing was applied.
+    /// </summary>
+    Stale = 4,
+
+    /// <summary>Replay only: the saved edit's target description matches more than one place. Nothing was applied.</summary>
+    Ambiguous = 5,
 }
 
 /// <summary>The result of one edit.</summary>

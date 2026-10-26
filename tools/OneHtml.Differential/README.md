@@ -3,7 +3,7 @@
 Corpus commands that compare our parser with itself and with AngleSharp. AngleSharp is used in-process as a black box, and only here (never in `src/`). Both commands take a corpus version directory (see `tools/corpus/README.md`: `manifest.jsonl` plus `bodies/ab/<sha256>`) or any directory of loose files (`.css` is a stylesheet, everything else a page). Items are processed in SHA-256 order, so `--limit n` always picks the same items. Output never contains page content except where stated below; copy nothing from an output directory into the repo.
 
 ```
-OneHtml.Differential <roundtrip|angle> <corpus-dir> [--out dir] [--jobs n] [--limit n] [--timeout s] [--top n] [--max-reduce n]
+OneHtml.Differential <roundtrip|angle|replay> <corpus-dir> [--out dir] [--jobs n] [--limit n] [--timeout s] [--top n] [--max-reduce n] [--seed n] [--per-page n]
 ```
 
 Defaults: `--out ./out`, `--jobs 2`, no limit, `--timeout 30` seconds per item, `--top 20`, `--max-reduce 100`.
@@ -27,6 +27,12 @@ Writes to `--out`:
 - `classes/<id>.sha256.txt`: the pages of each class.
 - `repro/<id>/min.html`: a minimized reproducer for the top `--max-reduce` classes: a window around the divergence, then delta debugging over lines and characters (up to 6000 parses or 20 s per class) while the same field and node types still differ. **These are derived from crawled pages: keep them out of the repo.** Hand-written tests are written from them instead.
 - `pages.jsonl`: one line per page with sha256, node count, both encodings and mismatch counts per field.
+
+## `replay`: durable edits on mutated copies
+
+For every page, saves a `setAttribute` edit (`EditJson.Create`, written and read back as JSON) on up to `--per-page` sampled elements (default 5), then replays it on copies of the page changed in one known way: blanks inside the start tag, swapped attribute order, a sibling inserted before the target, the target removed, duplicated before or after, its text changed, its `id` or `class` changed, an unrelated text node changed (longer, then same length). Seven more mutations do the same for the page's `<style>` rules (whitespace, rule removed or duplicated, declaration changed, rule inserted, a style element inserted before). The expected element comes from the mutation, never from the library: a replay that applies to a node other than the target counts as `wrong` unless the node is a byte-identical copy (`twin`) or has the same tag, key attributes and text as the target (`lookalike`), which the saved format cannot tell apart. Exit status 1 if any `wrong`. Targets whose edit does not apply even to the unmutated page are skipped and counted.
+
+Writes `replay.md` (applied, stale, ambiguous, invalid, wrong, twin, lookalike and unexpected counts per mutation) and `replay-findings.txt` to `--out`; `--seed` fixes the sampling.
 
 ## Worker commands
 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Faculty directory</title>
+<style>
+  body { font: 16px/1.5 Georgia, serif; margin: 0 }
+  table.directory { border-collapse: collapse; width: 100% }
+  table.directory th, table.directory td { border: 1px solid #999; padding: .4em }
+  @media (max-width: 600px) {
+    table.directory { font-size: 14px }
+  }
+  .filters label { display: block }
+</style>
+</head>
+<body>
+<header id="top" role="banner"><a href="/" class="logo"><img src="/logo.svg" alt="Hillcrest University"></a></header>
+<nav aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/people">People</a></li><li>Faculty</li></ol></nav>
+<main id="content">
+<h1>Faculty directory</h1>
+<form class="filters" action="/people" method="get">
+<label for="dept">Department</label>
+<select id="dept" name="dept"><option value="">Any</option><option value="bio">Biology</option><option value="chem">Chemistry</option></select>
+<label for="q">Name</label>
+<input id="q" name="q" type="search" placeholder="Surname">
+<button type="submit" class="btn btn-primary">Search</button>
+</form>
+<table class="directory">
+<caption>Faculty by department</caption>
+<thead><tr><th scope="col">Name</th><th scope="col">Department</th><th scope="col">Office</th></tr></thead>
+<tbody>
+<tr><td><a href="/people/ada">Ada Moreno</a></td><td>Biology</td><td>Lab 2.14</td></tr>
+<tr><td><a href="/people/bo">Bo Lindqvist</a></td><td>Chemistry</td><td>Lab 1.02</td></tr>
+<tr><td><a href="/people/cy">Cy Okafor</a></td><td>Biology</td><td>Lab 2.15</td></tr>
+<tr><td><a href="/people/di">Di Park</a></td><td>Chemistry</td><td>Lab 1.03</td></tr>
+</tbody>
+</table>
+<p class="note">Office hours are posted on each profile. <a href="/help">Need help?</a></p>
+</main>
+<footer><ul class="links"><li><a href="/privacy">Privacy</a></li><li><a href="/contact">Contact</a></li><li><a href="/accessibility">Accessibility</a></li></ul><p>&copy; Hillcrest University</p></footer>
+</body>
+</html>

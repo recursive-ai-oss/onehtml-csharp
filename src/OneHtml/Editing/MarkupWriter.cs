@@ -283,6 +283,9 @@ internal sealed class MarkupWriter
         sb.Append('>');
     }
 
+    /// <summary>Appends text exactly as given, for a text node of a raw text element; fails when the encoding cannot hold it.</summary>
+    public void WriteRawText(string text, StringBuilder sb) => Raw(text, sb);
+
     public void WriteLeaf(int n, StringBuilder sb)
     {
         ReadOnlySpan<char> data = new Node(_doc, n).Data;

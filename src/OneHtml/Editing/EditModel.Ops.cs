@@ -42,7 +42,7 @@ internal sealed partial class EditModel
             case EditOperation.RemoveStyle:
                 return IsElement(t) ? RemoveStyle(t, edit.Name!) : "the target is not an element";
             case EditOperation.ReplaceText:
-                return ReplaceText(t, edit.Value!);
+                return edit.TextSplices is null ? ReplaceText(t, edit.Value!) : ReplaceSplicedText(t, edit.Value!, edit.TextSplices);
             case EditOperation.InsertBefore:
             case EditOperation.InsertAfter:
             case EditOperation.Replace:
@@ -304,6 +304,27 @@ internal sealed partial class EditModel
     }
 
     // ---- text ----
+
+    // The text of a style element, changed at the given stretches only: the tree gets the whole new text, and the
+    // output splices just the stretches, so the bytes between them (their line endings included) stay as they were.
+    private string? ReplaceSplicedText(int t, string text, IReadOnlyList<TextSplice> splices)
+    {
+        if (IsText(t) && A.Parent[t] >= 0 && t < BaseCount && text.Length > 0)
+        {
+            string? bad = ValidateText(text, "the text");
+            if (bad is not null)
+            {
+                return bad;
+            }
+
+            SetData(t, text);
+            TouchText(t);
+            TextSplices[t] = splices;
+            return null;
+        }
+
+        return ReplaceText(t, text);
+    }
 
     private string? ReplaceText(int t, string text)
     {

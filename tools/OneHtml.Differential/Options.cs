@@ -22,6 +22,10 @@ internal sealed class Options
 
     public int MaxReduce { get; private set; } = 100;
 
+    public int Seed { get; private set; } = 1;
+
+    public int PerPage { get; private set; } = 5;
+
     public static Options? Parse(string[] args)
     {
         var o = new Options();
@@ -47,6 +51,8 @@ internal sealed class Options
                 case "--timeout": o.TimeoutSeconds = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--top": o.Top = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--max-reduce": o.MaxReduce = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
+                case "--seed": o.Seed = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
+                case "--per-page": o.PerPage = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 default: return null;
             }
         }
@@ -57,6 +63,7 @@ internal sealed class Options
     public const string Usage = """
         options (after the corpus directory): --out <dir> (default ./out) --jobs <n> (default 2) --limit <n> (first n items in sha256 order)
           --timeout <seconds per item> (default 30) --top <n> (default 20) --max-reduce <classes to minimize> (default 100, angle only)
+          --seed <n> (default 1) --per-page <targets per page> (default 5), replay only
         """;
 }
 

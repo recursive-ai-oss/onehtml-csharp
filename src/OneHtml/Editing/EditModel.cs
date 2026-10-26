@@ -83,6 +83,9 @@ internal sealed partial class EditModel
     /// <summary>Every touched region and the edits that touched it.</summary>
     public Dictionary<RegionKey, List<int>> Regions { get; } = [];
 
+    /// <summary>Text nodes edited by splicing parts of their text (stylesheet text), by node.</summary>
+    public Dictionary<int, IReadOnlyList<TextSplice>> TextSplices { get; } = [];
+
     /// <summary>Elements whose <c>style</c> attribute was changed by a style edit.</summary>
     public HashSet<int> StyleEdited { get; } = [];
 

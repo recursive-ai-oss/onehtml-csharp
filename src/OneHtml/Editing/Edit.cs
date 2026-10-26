@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace RecursiveAI.OneHtml.Editing;
 
@@ -82,6 +83,16 @@ public sealed class Edit
 
     /// <summary>An opaque value the library stores and returns in results but never interprets. Default <see langword="null"/>.</summary>
     public object? Meta { get; init; }
+
+    /// <summary>
+    /// For a stylesheet edit inside a <c>&lt;style&gt;</c> element: the stretches of the element's text that change, so
+    /// that only those are spliced and the rest of the text keeps its bytes. <see cref="Value"/> is the whole new text.
+    /// Set only by the batch applier.
+    /// </summary>
+    internal IReadOnlyList<TextSplice>? TextSplices { get; private init; }
+
+    internal static Edit StyleTextSplices(Node textNodeOrElement, string newText, IReadOnlyList<TextSplice> splices) =>
+        new(EditOperation.ReplaceText, textNodeOrElement) { Value = newText, TextSplices = splices };
 
     /// <summary>Sets an attribute. Names of HTML elements are matched and written in lowercase; the value is escaped for its quotes.</summary>
     /// <param name="element">An element.</param>
@@ -208,6 +219,19 @@ public sealed class Edit
         return new Edit(EditOperation.RemoveStyle, element) { Name = property };
     }
 
+    internal Edit WithMeta(object? meta) => new(Operation, Target)
+    {
+        Name = Name,
+        Value = Value,
+        Important = Important,
+        Count = Count,
+        TextSplices = TextSplices,
+        Meta = meta,
+    };
+
     /// <inheritdoc />
     public override string ToString() => Operation + " " + Target;
 }
+
+/// <summary>A replacement of the text range [Start, End) by Text.</summary>
+internal readonly record struct TextSplice(int Start, int End, string Text);

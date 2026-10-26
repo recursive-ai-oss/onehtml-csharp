@@ -150,4 +150,30 @@ bool styleOk = styles.GetStyle(sp).GetPropertyValue("color") == "red" && styles.
     && styles.GetStyle(sdoc.Root.QuerySelector(".k")).GetPropertyValue("margin-left") == "2px" && focused.GetStyle(sl).GetComputedValue("color") == "rgb(0, 128, 0)"
     && styles.GetStyle(sp).Display.ToCss() == "block" && restyled.Styles.GetStyle(sdoc2.GetElementById("p")).GetComputedValue("color") == "rgb(255, 165, 0)" && !restyled.FullRecompute;
 Console.WriteLine($"style={styleOk} sheets={styles.Sheets.Count} rules={styles.RuleCount} restyled={restyled.RestyledElements.Count}");
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk ? 0 : 1;
+
+// Saved edits: describe an element edit and a stylesheet edit, write the envelope, read it back, replay it on a fresh parse.
+string savedPage = "<!DOCTYPE html><html><head><style>\n.a { color: red }\n.b { margin: 0 }\n</style></head><body><nav id=main-nav><a href=/x>X</a></nav></body></html>";
+RecursiveAI.OneHtml.Document savedDoc = RecursiveAI.OneHtml.Document.Parse(Encoding.UTF8.GetBytes(savedPage));
+RecursiveAI.OneHtml.Editing.InlineStylesheet inline = RecursiveAI.OneHtml.Editing.InlineStylesheets.Of(savedDoc)[0];
+RecursiveAI.OneHtml.Css.CssNode secondRule = default;
+int ruleNumber = 0;
+foreach (RecursiveAI.OneHtml.Css.CssNode rule in inline.Sheet.Rules)
+{
+    if (ruleNumber++ == 1)
+    {
+        secondRule = rule;
+    }
+}
+
+RecursiveAI.OneHtml.Editing.EditEnvelope envelope = RecursiveAI.OneHtml.Editing.EditJson.Create(
+    savedDoc,
+    new[] { RecursiveAI.OneHtml.Editing.Edit.SetAttribute(savedDoc.Root.QuerySelector("nav"), "title", "Main") },
+    new[] { RecursiveAI.OneHtml.Editing.SheetEdit.SetDeclaration(inline.Sheet, secondRule, "padding", "1px") });
+string envelopeJson = RecursiveAI.OneHtml.Editing.EditJson.ToJson(envelope);
+RecursiveAI.OneHtml.Editing.EditEnvelope readBack = RecursiveAI.OneHtml.Editing.EditJson.Parse(envelopeJson);
+RecursiveAI.OneHtml.Editing.ReplayResult replay = RecursiveAI.OneHtml.Editing.EditReplay.Replay(readBack, RecursiveAI.OneHtml.Document.Parse(Encoding.UTF8.GetBytes(savedPage)));
+string replayed = replay.Succeeded ? replay.Batch!.Document!.Source.Text : "";
+bool replayOk = replay.Succeeded && readBack.ToJson() == envelopeJson
+    && replayed.Contains("<nav id=main-nav title=", StringComparison.Ordinal) && replayed.Contains("margin: 0; padding: 1px", StringComparison.Ordinal);
+Console.WriteLine($"replay={replay.Succeeded} json={envelopeJson.Length} ok={replayOk}");
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk ? 0 : 1;

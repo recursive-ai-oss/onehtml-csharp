@@ -219,7 +219,9 @@ public sealed class Edit
         return new Edit(EditOperation.RemoveStyle, element) { Name = property };
     }
 
-    internal Edit WithMeta(object? meta) => new(Operation, Target)
+    /// <summary>Returns a copy of this edit that carries <paramref name="meta"/> as its <see cref="Meta"/>.</summary>
+    /// <param name="meta">The metadata, of a type <see cref="Meta"/> accepts.</param>
+    public Edit WithMeta(object? meta) => new(Operation, Target)
     {
         Name = Name,
         Value = Value,

@@ -1,0 +1,1259 @@
+{
+ "version": 1,
+ "source": {
+  "url": "https://www.w3.org/TR/html-aria/",
+  "sha256": "b80a2a4ae66bdb95910f44682e2f2d0874affb77b39ab8ed5de956f2159b7ee2",
+  "retrieved": "2026-10-25"
+ },
+ "rows": {
+  "el-a": {
+   "label": "a with href",
+   "any": false,
+   "roles": [
+    "button",
+    "checkbox",
+    "doc-backlink",
+    "doc-biblioref",
+    "doc-glossref",
+    "doc-noteref",
+    "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "option",
+    "radio",
+    "switch",
+    "tab",
+    "treeitem"
+   ],
+   "text": "Roles: button, checkbox, menuitem, menuitemcheckbox, menuitemradio, option, radio, switch, tab or treeitem. (link is also allowed, but NOT RECOMMENDED.) DPub Roles: doc-backlink, doc-biblioref, doc-glossref or doc-noteref Global aria-* attributes and any aria-* attributes applicable to the allowed roles. It is NOT RECOMMENDED to use aria-disabled=\"true\" on an a element with an href attribute. Note If a link needs to be programmatically communicated as \"disabled\", remove the href attribute."
+  },
+  "el-a-no-href": {
+   "label": "a without href",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-abbr": {
+   "label": "abbr",
+   "any": true,
+   "roles": [],
+   "text": "Any role Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-address": {
+   "label": "address",
+   "any": true,
+   "roles": [
+    "group"
+   ],
+   "text": "Any role, though group is NOT RECOMMENDED. Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-area": {
+   "label": "area with href",
+   "any": false,
+   "roles": [],
+   "text": "No role other than link, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the link role."
+  },
+  "el-area-no-href": {
+   "label": "area without href",
+   "any": false,
+   "roles": [
+    "button",
+    "link"
+   ],
+   "text": "Roles: button or link. (generic is also allowed, but SHOULD NOT be used.) Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-article": {
+   "label": "article",
+   "any": false,
+   "roles": [
+    "application",
+    "document",
+    "feed",
+    "main",
+    "none",
+    "presentation",
+    "region"
+   ],
+   "text": "Roles: application, document, feed, main, none, presentation or region. (article is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-aside": {
+   "label": "aside",
+   "any": false,
+   "roles": [
+    "doc-dedication",
+    "doc-example",
+    "doc-footnote",
+    "doc-glossary",
+    "doc-pullquote",
+    "doc-tip",
+    "feed",
+    "none",
+    "note",
+    "presentation",
+    "region",
+    "search"
+   ],
+   "text": "Roles: feed, none, note, presentation, region or search. (complementary is also allowed, but NOT RECOMMENDED.) DPub Roles: doc-dedication, doc-example, doc-footnote, doc-glossary, doc-pullquote or doc-tip Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-audio": {
+   "label": "audio",
+   "any": false,
+   "roles": [
+    "application"
+   ],
+   "text": "Role: application Global aria-* attributes and any aria-* attributes applicable to the application role."
+  },
+  "el-autonomous-custom-element": {
+   "label": "autonomous custom element",
+   "any": false,
+   "roles": [
+    "generic"
+   ],
+   "text": "If role defined by ElementInternals, no role Otherwise, any role, though generic SHOULD NOT be used. Naming Prohibited if exposed as the generic role, or if exposed as another role which prohibits naming. Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-b": {
+   "label": "b",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-base": {
+   "label": "base",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-bdi": {
+   "label": "bdi",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-bdo": {
+   "label": "bdo",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-blockquote": {
+   "label": "blockquote",
+   "any": true,
+   "roles": [
+    "blockquote"
+   ],
+   "text": "Any role, though blockquote is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-body": {
+   "label": "body",
+   "any": false,
+   "roles": [
+    "generic"
+   ],
+   "text": "No role other than generic, which SHOULD NOT be used. Naming Prohibited Otherwise, global aria-* attributes allowed for the generic role, with the exception that authors MUST NOT specify aria-hidden=true on the body element."
+  },
+  "el-br": {
+   "label": "br",
+   "any": false,
+   "roles": [
+    "none",
+    "presentation"
+   ],
+   "text": "Roles: none or presentation Authors MAY specify the aria-hidden attribute on the br element. Otherwise, no other allowed aria-* attributes."
+  },
+  "el-button": {
+   "label": "button",
+   "any": false,
+   "roles": [
+    "checkbox",
+    "combobox",
+    "gridcell",
+    "link",
+    "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "option",
+    "radio",
+    "separator",
+    "slider",
+    "switch",
+    "tab",
+    "treeitem"
+   ],
+   "text": "Roles: checkbox, combobox, gridcell, link, menuitem, menuitemcheckbox, menuitemradio, option, radio, separator, slider, switch, tab, or treeitem. (button is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles. If the button is the first child of a select element: No role or aria-* attributes"
+  },
+  "el-canvas": {
+   "label": "canvas",
+   "any": true,
+   "roles": [],
+   "text": "Any role Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-caption": {
+   "label": "caption",
+   "any": false,
+   "roles": [
+    "caption"
+   ],
+   "text": "No role other than caption, which is NOT RECOMMENDED. Naming Prohibited Otherwise, global aria-* attributes."
+  },
+  "el-cite": {
+   "label": "cite",
+   "any": true,
+   "roles": [],
+   "text": "Any role Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-code": {
+   "label": "code",
+   "any": true,
+   "roles": [
+    "code"
+   ],
+   "text": "Any role, though code is NOT RECOMMENDED. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-col": {
+   "label": "col",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-colgroup": {
+   "label": "colgroup",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-data": {
+   "label": "data",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-datalist": {
+   "label": "datalist",
+   "any": false,
+   "roles": [],
+   "text": "No role other than listbox, which is NOT RECOMMENDED. No aria-* attributes."
+  },
+  "el-dd": {
+   "label": "dd",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes and any aria-* attributes applicable to the definition role."
+  },
+  "el-del": {
+   "label": "del",
+   "any": true,
+   "roles": [
+    "deletion"
+   ],
+   "text": "Any role, though deletion is NOT RECOMMENDED. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-details": {
+   "label": "details",
+   "any": false,
+   "roles": [],
+   "text": "No role other than group, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the group role."
+  },
+  "el-dfn": {
+   "label": "dfn",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though term is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-dialog": {
+   "label": "dialog",
+   "any": false,
+   "roles": [
+    "alertdialog"
+   ],
+   "text": "Role: alertdialog. (dialog is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the dialog role."
+  },
+  "el-div": {
+   "label": "div",
+   "any": false,
+   "roles": [
+    "none",
+    "presentation"
+   ],
+   "text": "If a direct child of a dl element, only presentation or none. Otherwise, any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-dl": {
+   "label": "dl",
+   "any": false,
+   "roles": [
+    "group",
+    "list",
+    "none",
+    "presentation"
+   ],
+   "text": "Roles: group, list, none or presentation Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-dt": {
+   "label": "dt",
+   "any": false,
+   "roles": [
+    "listitem"
+   ],
+   "text": "Role: listitem Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-em": {
+   "label": "em",
+   "any": true,
+   "roles": [
+    "emphasis"
+   ],
+   "text": "Any role, though emphasis is NOT RECOMMENDED. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-embed": {
+   "label": "embed",
+   "any": false,
+   "roles": [
+    "application",
+    "document",
+    "image",
+    "img",
+    "none",
+    "presentation"
+   ],
+   "text": "Roles: application, document, img, image, none or presentation. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-fieldset": {
+   "label": "fieldset",
+   "any": false,
+   "roles": [
+    "none",
+    "presentation",
+    "radiogroup"
+   ],
+   "text": "Roles: none, presentation or radiogroup. (group is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-figcaption": {
+   "label": "figcaption",
+   "any": false,
+   "roles": [
+    "group",
+    "none",
+    "presentation"
+   ],
+   "text": "Roles: group, none or presentation Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-figure": {
+   "label": "figure",
+   "any": false,
+   "roles": [
+    "doc-example",
+    "figure"
+   ],
+   "text": "If the figure has a valid figcaption descendant: No role other than figure, which is NOT RECOMMENDED. DPub Role: doc-example. Otherwise, if the figure has no figcaption descendant: Any role, though figure is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-footer": {
+   "label": "footer",
+   "any": false,
+   "roles": [
+    "article",
+    "complementary",
+    "doc-footnote",
+    "generic",
+    "group",
+    "main",
+    "navigation",
+    "none",
+    "presentation",
+    "region",
+    "section"
+   ],
+   "text": "Roles: group, presentation or none. (If not a descendant of an article, aside, main, nav or section element, or an element with role=article, complementary, main, navigation or region, then role=contentinfo is also allowed, but NOT RECOMMENDED. Otherwise, role=generic is also allowed, but SHOULD NOT be used.) DPub Role: doc-footnote Naming Prohibited if exposed as generic. Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-form": {
+   "label": "form",
+   "any": false,
+   "roles": [
+    "none",
+    "presentation",
+    "search"
+   ],
+   "text": "Roles: none, presentation or search. (form is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles. Note A form is not exposed as a landmark region unless it has been provided an accessible name."
+  },
+  "el-form-associated-custom-element": {
+   "label": "form-associated custom element",
+   "any": false,
+   "roles": [
+    "button",
+    "checkbox",
+    "combobox",
+    "generic",
+    "group",
+    "listbox",
+    "progressbar",
+    "radio",
+    "radiogroup",
+    "searchbox",
+    "slider",
+    "spinbutton",
+    "switch",
+    "textbox"
+   ],
+   "text": "If role defined by ElementInternals, no role Otherwise, form-related roles: button, checkbox, combobox, listbox, progressbar, group, radio, radiogroup, searchbox, slider, spinbutton, switch or textbox. (generic is also allowed, but SHOULD NOT be used.) Naming Prohibited if exposed as the generic role. Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-h1-h6": {
+   "label": "h1 to h6",
+   "any": false,
+   "roles": [
+    "doc-subtitle",
+    "none",
+    "presentation",
+    "tab"
+   ],
+   "text": "Roles: none, presentation or tab. (heading is also allowed, but NOT RECOMMENDED.) DPub Role: doc-subtitle Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-head": {
+   "label": "head",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-header": {
+   "label": "header",
+   "any": false,
+   "roles": [
+    "article",
+    "complementary",
+    "generic",
+    "group",
+    "main",
+    "navigation",
+    "none",
+    "presentation",
+    "region",
+    "section"
+   ],
+   "text": "Roles: group, none or presentation. (If not a descendant of an article, aside, main, nav or section element, or an element with role=article, complementary, main, navigation or region, then role=banner is also allowed, but NOT RECOMMENDED. Otherwise, role=generic is also allowed, but SHOULD NOT be used.) Naming Prohibited if exposed as generic. Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-hgroup": {
+   "label": "hgroup",
+   "any": true,
+   "roles": [
+    "group"
+   ],
+   "text": "Any role, though group is NOT RECOMMENDED. Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-hr": {
+   "label": "hr",
+   "any": false,
+   "roles": [
+    "doc-pagebreak",
+    "none",
+    "presentation"
+   ],
+   "text": "Roles: none or presentation. (separator is also allowed, but NOT RECOMMENDED.) DPub Role: doc-pagebreak Global aria-* attributes and any aria-* attributes applicable to the separator role."
+  },
+  "el-html": {
+   "label": "html",
+   "any": false,
+   "roles": [],
+   "text": "No role other than document or generic, which are NOT RECOMMENDED. No aria-* attributes."
+  },
+  "el-i": {
+   "label": "i",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-iframe": {
+   "label": "iframe",
+   "any": false,
+   "roles": [
+    "application",
+    "document",
+    "image",
+    "img",
+    "none",
+    "presentation"
+   ],
+   "text": "Roles: application, document, img, image, none or presentation. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-img": {
+   "label": "img",
+   "any": false,
+   "roles": [
+    "button",
+    "checkbox",
+    "doc-cover",
+    "img",
+    "link",
+    "math",
+    "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "meter",
+    "option",
+    "progressbar",
+    "radio",
+    "scrollbar",
+    "separator",
+    "slider",
+    "switch",
+    "tab",
+    "treeitem"
+   ],
+   "text": "Roles: button, checkbox, link, math, menuitem, menuitemcheckbox, menuitemradio, meter, option, progressbar, radio, scrollbar, separator, slider, switch, tab or treeitem. (img or image is also allowed, but NOT RECOMMENDED.) DPub Role: doc-cover Global aria-* attributes and any aria-* attributes applicable to the allowed roles. If the img has no alt attribute or no accessible name: No role other than the role=none or presentation roles. (role=img or image is also allowed, but NOT RECOMMENDED.)"
+  },
+  "el-img-no-name": {
+   "label": "img with empty alt and no accessible name",
+   "any": false,
+   "roles": [],
+   "text": "No role other than the role=none or presentation roles, which are NOT RECOMMENDED. No aria-* attributes except aria-hidden=\"true\"."
+  },
+  "el-input-button": {
+   "label": "input type=button",
+   "any": false,
+   "roles": [
+    "checkbox",
+    "combobox",
+    "gridcell",
+    "link",
+    "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "option",
+    "radio",
+    "separator",
+    "slider",
+    "switch",
+    "tab",
+    "treeitem"
+   ],
+   "text": "Roles: checkbox, combobox, gridcell, link, menuitem, menuitemcheckbox, menuitemradio, option, radio, separator, slider, switch, tab, or treeitem. (button is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-input-checkbox": {
+   "label": "input type=checkbox",
+   "any": false,
+   "roles": [
+    "button",
+    "menuitemcheckbox",
+    "option",
+    "switch"
+   ],
+   "text": "Roles: menuitemcheckbox, option or switch; button if used with aria-pressed. (checkbox is also allowed, but NOT RECOMMENDED.) Authors MUST NOT use the aria-checked attribute on input type=checkbox elements. Otherwise, any Global aria-* attributes and any aria-* attributes applicable to the allowed roles. Note The HTML checked attribute can be used instead of the aria-checked attribute for menuitemcheckbox, option or switch roles when used on type=checkbox."
+  },
+  "el-input-color": {
+   "label": "input type=color",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes and aria-disabled attribute."
+  },
+  "el-input-date": {
+   "label": "input type=date",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-input-datetime-local": {
+   "label": "input type=datetime-local",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-input-email": {
+   "label": "input type=email with no list attribute",
+   "any": false,
+   "roles": [],
+   "text": "No role other than textbox, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-input-file": {
+   "label": "input type=file",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes, aria-disabled, aria-invalid and aria-required attributes."
+  },
+  "el-input-hidden": {
+   "label": "input type=hidden",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-input-image": {
+   "label": "input type=image",
+   "any": false,
+   "roles": [
+    "button",
+    "checkbox",
+    "gridcell",
+    "link",
+    "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "option",
+    "radio",
+    "separator",
+    "slider",
+    "switch",
+    "tab",
+    "treeitem"
+   ],
+   "text": "The following roles are allowed, but are NOT RECOMMENDED: button, checkbox, gridcell, link, menuitem, menuitemcheckbox, menuitemradio, option, radio, separator, slider, switch, tab or treeitem. Global aria-* attributes and any aria-* attributes applicable to the allowed roles. If possible, authors SHOULD consider using a different HTML element which allows the specified role, such as the button element."
+  },
+  "el-input-month": {
+   "label": "input type=month",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-input-number": {
+   "label": "input type=number",
+   "any": false,
+   "roles": [],
+   "text": "No role other than spinbutton, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the spinbutton role."
+  },
+  "el-input-password": {
+   "label": "input type=password",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-input-radio": {
+   "label": "input type=radio",
+   "any": false,
+   "roles": [
+    "menuitemradio"
+   ],
+   "text": "Role: menuitemradio. (radio is also allowed, but NOT RECOMMENDED.) Authors MUST NOT use the aria-checked attribute on input type=radio elements. Otherwise, any Global aria-* attributes and any aria-* attributes applicable to the allowed roles. Note The HTML checked attribute can be used instead of the aria-checked attribute for the menuitemradio role when used on type=radio."
+  },
+  "el-input-range": {
+   "label": "input type=range",
+   "any": false,
+   "roles": [
+    "slider"
+   ],
+   "text": "No role other than slider, which is NOT RECOMMENDED. Authors SHOULD NOT use the aria-valuemax or aria-valuemin attributes on input type=range. Otherwise, any global aria-* attributes and any other aria-* attributes applicable to the slider role."
+  },
+  "el-input-reset": {
+   "label": "input type=reset",
+   "any": false,
+   "roles": [
+    "button",
+    "checkbox",
+    "combobox",
+    "gridcell",
+    "link",
+    "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "option",
+    "radio",
+    "separator",
+    "slider",
+    "switch",
+    "tab",
+    "treeitem"
+   ],
+   "text": "The following roles are allowed, but are NOT RECOMMENDED: button, checkbox, combobox, gridcell, link, menuitem, menuitemcheckbox, menuitemradio, option, radio, separator, slider, switch, tab or treeitem. Global aria-* attributes and any aria-* attributes applicable to the allowed roles. If possible, authors SHOULD consider using a different HTML element which allows the specified role, such as the button element."
+  },
+  "el-input-search": {
+   "label": "input type=search, with no list attribute",
+   "any": false,
+   "roles": [],
+   "text": "No role other than searchbox, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the searchbox role."
+  },
+  "el-input-submit": {
+   "label": "input type=submit",
+   "any": false,
+   "roles": [
+    "button",
+    "checkbox",
+    "combobox",
+    "gridcell",
+    "link",
+    "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "option",
+    "radio",
+    "separator",
+    "slider",
+    "switch",
+    "tab",
+    "treeitem"
+   ],
+   "text": "The following roles are allowed, but are NOT RECOMMENDED: button, checkbox, combobox, gridcell, link, menuitem, menuitemcheckbox, menuitemradio, option, radio, separator, slider, switch, tab or treeitem. Global aria-* attributes and any aria-* attributes applicable to the allowed roles. If possible, authors SHOULD consider using a different HTML element which allows the specified role, such as the button element."
+  },
+  "el-input-tel": {
+   "label": "input type=tel, with no list attribute",
+   "any": false,
+   "roles": [],
+   "text": "No role other than textbox, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-input-text": {
+   "label": "input type=text or with a missing or invalid type, with no list attribute",
+   "any": false,
+   "roles": [
+    "combobox",
+    "searchbox",
+    "spinbutton"
+   ],
+   "text": "Roles: combobox, searchbox or spinbutton. (textbox is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-input-text-list": {
+   "label": "input type=text, search, tel, url, email, or with a missing or invalid type, with a list attribute",
+   "any": false,
+   "roles": [
+    "combobox",
+    "input",
+    "list"
+   ],
+   "text": "No role other than combobox, which is NOT RECOMMENDED. Authors SHOULD NOT use the aria-haspopup attribute on the indicated inputs with a list attribute. Otherwise, any global aria-* attributes and any other aria-* attributes applicable to the combobox role."
+  },
+  "el-input-time": {
+   "label": "input type=time",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-input-url": {
+   "label": "input type=url with no list attribute",
+   "any": false,
+   "roles": [],
+   "text": "No role other than textbox, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-input-week": {
+   "label": "input type=week",
+   "any": false,
+   "roles": [],
+   "text": "No role Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-ins": {
+   "label": "ins",
+   "any": true,
+   "roles": [
+    "insertion"
+   ],
+   "text": "Any role, though insertion is NOT RECOMMENDED. Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-kbd": {
+   "label": "kbd",
+   "any": true,
+   "roles": [],
+   "text": "Any role Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-label": {
+   "label": "label",
+   "any": false,
+   "roles": [
+    "generic"
+   ],
+   "text": "If a label element is implicitly or explicitly associated with a labelable element then no role Otherwise, if the label is not associated with an element then any role, though generic SHOULD NOT be used. Naming Prohibited if exposed as the generic role, or if exposed as another role which prohibits naming. Otherwise, global aria-* attributes."
+  },
+  "el-legend": {
+   "label": "legend",
+   "any": false,
+   "roles": [],
+   "text": "No role Naming Prohibited Otherwise, global aria-* attributes."
+  },
+  "el-li": {
+   "label": "li",
+   "any": false,
+   "roles": [
+    "doc-biblioentry",
+    "doc-endnote",
+    "list"
+   ],
+   "text": "No role other than listitem, which is NOT RECOMMENDED, if the parent list element has an implicit or explicit list role. Otherwise, any role if the parent list element does not expose an implicit or explicit list role. Note See ul, ol, or menu for allowed roles for list elements. Globalaria-* attributes and any aria-* attributes applicable to the allowed roles. Authors SHOULD NOT use the following deprecated DPub Roles: doc-biblioentry, doc-endnote."
+  },
+  "el-link": {
+   "label": "link",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-main": {
+   "label": "main",
+   "any": false,
+   "roles": [],
+   "text": "No role other than main, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the main role."
+  },
+  "el-map": {
+   "label": "map",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-mark": {
+   "label": "mark",
+   "any": true,
+   "roles": [],
+   "text": "Any role Naming Prohibited Otherwise, global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-math": {
+   "label": "math",
+   "any": false,
+   "roles": [],
+   "text": "No role other than math, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the math role."
+  },
+  "el-menu": {
+   "label": "menu",
+   "any": false,
+   "roles": [
+    "directory",
+    "group",
+    "listbox",
+    "menu",
+    "menubar",
+    "none",
+    "presentation",
+    "radiogroup",
+    "tablist",
+    "toolbar",
+    "tree"
+   ],
+   "text": "Roles: group, listbox, menu, menubar, none, presentation, radiogroup, tablist, toolbar or tree. (list is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles. Authors SHOULD NOT use deprecated directory role."
+  },
+  "el-meta": {
+   "label": "meta",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-meter": {
+   "label": "meter",
+   "any": false,
+   "roles": [
+    "meter"
+   ],
+   "text": "No role other than meter, which is NOT RECOMMENDED. Authors SHOULD NOT use the aria-valuemax or aria-valuemin attributes on meter elements. Otherwise, any global aria-* attributes and any other aria-* attributes applicable to the meter role."
+  },
+  "el-nav": {
+   "label": "nav",
+   "any": false,
+   "roles": [
+    "doc-index",
+    "doc-pagelist",
+    "doc-toc",
+    "menu",
+    "menubar",
+    "none",
+    "presentation",
+    "tablist"
+   ],
+   "text": "Roles: menu, menubar, none, presentation or tablist. (navigation is also allowed, but NOT RECOMMENDED.) DPub Roles: doc-index, doc-pagelist or doc-toc Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-noscript": {
+   "label": "noscript",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-object": {
+   "label": "object",
+   "any": false,
+   "roles": [
+    "application",
+    "document",
+    "image",
+    "img"
+   ],
+   "text": "Roles: application, document, img or image. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-ol": {
+   "label": "ol",
+   "any": false,
+   "roles": [
+    "directory",
+    "group",
+    "listbox",
+    "menu",
+    "menubar",
+    "none",
+    "presentation",
+    "radiogroup",
+    "tablist",
+    "toolbar",
+    "tree"
+   ],
+   "text": "Roles: group, listbox, menu, menubar, none, presentation, radiogroup, tablist, toolbar or tree. (list is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles. Authors SHOULD NOT use deprecated directory role."
+  },
+  "el-optgroup": {
+   "label": "optgroup",
+   "any": false,
+   "roles": [],
+   "text": "No role other than group, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the group role."
+  },
+  "el-option": {
+   "label": "option element that is in a list of options or that represents a suggestion in a datalist",
+   "any": false,
+   "roles": [
+    "option"
+   ],
+   "text": "No role other than option, which is NOT RECOMMENDED. Authors SHOULD NOT use the aria-selected attribute on the option element. Global aria-* attributes and any other aria-* attributes applicable to the option role."
+  },
+  "el-output": {
+   "label": "output",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though status is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-p": {
+   "label": "p",
+   "any": true,
+   "roles": [
+    "paragraph"
+   ],
+   "text": "Any role, though paragraph is NOT RECOMMENDED. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-param": {
+   "label": "param",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-picture": {
+   "label": "picture",
+   "any": false,
+   "roles": [],
+   "text": "No role Authors MAY specify the aria-hidden attribute on the picture element. Otherwise, no other allowed aria-* attributes."
+  },
+  "el-pre": {
+   "label": "pre",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-progress": {
+   "label": "progress",
+   "any": false,
+   "roles": [],
+   "text": "No role other than progressbar, which is NOT RECOMMENDED. Authors SHOULD NOT use the aria-valuemax attribute on progress elements. Otherwise, any Global aria-* attributes and any other aria-* attributes applicable to the progressbar role."
+  },
+  "el-q": {
+   "label": "q",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-rp": {
+   "label": "rp",
+   "any": true,
+   "roles": [],
+   "text": "Any role Naming Prohibited Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-rt": {
+   "label": "rt",
+   "any": true,
+   "roles": [],
+   "text": "Any role Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-ruby": {
+   "label": "ruby",
+   "any": true,
+   "roles": [],
+   "text": "Any role Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-s": {
+   "label": "s",
+   "any": true,
+   "roles": [
+    "deletion"
+   ],
+   "text": "Any role, though deletion is NOT RECOMMENDED. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-samp": {
+   "label": "samp",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-script": {
+   "label": "script",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-search": {
+   "label": "search",
+   "any": false,
+   "roles": [
+    "form",
+    "group",
+    "none",
+    "presentation",
+    "region"
+   ],
+   "text": "Roles: form, group, none, presentation or region. (search is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-section": {
+   "label": "section",
+   "any": false,
+   "roles": [
+    "alert",
+    "alertdialog",
+    "application",
+    "banner",
+    "complementary",
+    "contentinfo",
+    "dialog",
+    "doc-abstract",
+    "doc-acknowledgments",
+    "doc-afterword",
+    "doc-appendix",
+    "doc-bibliography",
+    "doc-chapter",
+    "doc-colophon",
+    "doc-conclusion",
+    "doc-credit",
+    "doc-credits",
+    "doc-dedication",
+    "doc-endnotes",
+    "doc-epigraph",
+    "doc-epilogue",
+    "doc-errata",
+    "doc-example",
+    "doc-foreword",
+    "doc-glossary",
+    "doc-index",
+    "doc-introduction",
+    "doc-notice",
+    "doc-pagelist",
+    "doc-part",
+    "doc-preface",
+    "doc-prologue",
+    "doc-pullquote",
+    "doc-qna",
+    "doc-toc",
+    "document",
+    "feed",
+    "group",
+    "log",
+    "main",
+    "marquee",
+    "navigation",
+    "none",
+    "note",
+    "presentation",
+    "search",
+    "status",
+    "tabpanel"
+   ],
+   "text": "Roles: alert, alertdialog, application, banner, complementary, contentinfo, dialog, document, feed, group, log, main, marquee, navigation, none, note, presentation, search, status or tabpanel. (role=region is also allowed, but NOT RECOMMENDED. role=generic SHOULD NOT be used.) DPub Roles: doc-abstract, doc-acknowledgments, doc-afterword, doc-appendix, doc-bibliography, doc-chapter, doc-colophon, doc-conclusion, doc-credit, doc-credits, doc-dedication, doc-endnotes, doc-epigraph, doc-epilogue, doc-errata, doc-example, doc-foreword, doc-glossary, doc-index, doc-introduction, doc-notice, doc-pagelist, doc-part, doc-preface, doc-prologue, doc-pullquote, doc-qna, doc-toc Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-select": {
+   "label": "select (rendered as a drop-down box)",
+   "any": false,
+   "roles": [
+    "menu"
+   ],
+   "text": "Role: menu. (combobox is also allowed, but NOT RECOMMENDED.) Authors SHOULD NOT use the aria-multiselectable attribute on a select element. Otherwise, any Global aria-* attributes and any other aria-* attributes applicable to the combobox or menu role."
+  },
+  "el-select-multiple-or-size-greater-1": {
+   "label": "select (rendered as a list box)",
+   "any": false,
+   "roles": [
+    "select"
+   ],
+   "text": "No role other than listbox, which is NOT RECOMMENDED. Authors SHOULD NOT use the aria-multiselectable attribute on a select element. Otherwise, any Global aria-* attributes and any other aria-* attributes applicable to the listbox role."
+  },
+  "el-selectedcontent": {
+   "label": "selectedcontent",
+   "any": false,
+   "roles": [
+    "button",
+    "select"
+   ],
+   "text": "If used as a valid descendant of a select element: no role or aria-* attributes Otherwise, any role if the element is used outside of its intended context as a child of the button part of a customizable select element, though generic is NOT RECOMMENDED. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-slot": {
+   "label": "slot",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-small": {
+   "label": "small",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-source": {
+   "label": "source",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-span": {
+   "label": "span",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-strong": {
+   "label": "strong",
+   "any": true,
+   "roles": [
+    "strong"
+   ],
+   "text": "Any role, though strong is NOT RECOMMENDED. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-style": {
+   "label": "style",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-sub": {
+   "label": "sub",
+   "any": true,
+   "roles": [
+    "subscript"
+   ],
+   "text": "Any role, though subscript is NOT RECOMMENDED. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-summary": {
+   "label": "summary",
+   "any": false,
+   "roles": [],
+   "text": "No role if the summary element is a summary for its parent details element. Global aria-* attributes, aria-disabled, and aria-haspopup attributes. Otherwise, if the summary element is not a summary for its parent details element, authors MAY specify any role, and any Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-sup": {
+   "label": "sup",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though superscript is NOT RECOMMENDED. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-svg": {
+   "label": "SVG",
+   "any": true,
+   "roles": [
+    "graphics-document"
+   ],
+   "text": "Any role, though graphics-document is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-table": {
+   "label": "table",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though table is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-tbody": {
+   "label": "tbody",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though rowgroup is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-td": {
+   "label": "td",
+   "any": false,
+   "roles": [
+    "grid",
+    "table",
+    "treegrid"
+   ],
+   "text": "If the ancestor table element has role=table, grid, or treegrid, no role other than the following: If the ancestor table element is exposed as a role=table, then cell is allowed, but NOT RECOMMENDED. If the ancestor table element is exposed as a role=grid or treegrid, then gridcell is allowed, but NOT RECOMMENDED. Otherwise, if the ancestor table element is not exposed as a role=table, grid or treegrid, any role. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-template": {
+   "label": "template",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-textarea": {
+   "label": "textarea",
+   "any": false,
+   "roles": [],
+   "text": "No role other than textbox, which is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the textbox role."
+  },
+  "el-tfoot": {
+   "label": "tfoot",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though rowgroup is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-th": {
+   "label": "th",
+   "any": false,
+   "roles": [
+    "grid",
+    "table",
+    "treegrid"
+   ],
+   "text": "If the ancestor table element has role=table, grid, or treegrid, no role other than the following: If the ancestor table element is exposed as a role=table, then columnheader, rowheader and cell are allowed, but NOT RECOMMENDED. If the ancestor table element is exposed as a role=grid or treegrid, then columnheader, rowheader or gridcell are allowed, but NOT RECOMMENDED. Otherwise, if the ancestor table element is not exposed as a role=table, grid or treegrid, any role. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-thead": {
+   "label": "thead",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though rowgroup is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-time": {
+   "label": "time",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though time is NOT RECOMMENDED. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-title": {
+   "label": "title",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-tr": {
+   "label": "tr",
+   "any": false,
+   "roles": [
+    "grid",
+    "table",
+    "treegrid"
+   ],
+   "text": "If the ancestor table element has role=table, grid, or treegrid, no role other than row, which is NOT RECOMMENDED; otherwise any role, though row is NOT RECOMMENDED. Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-track": {
+   "label": "track",
+   "any": false,
+   "roles": [],
+   "text": "No role or aria-* attributes"
+  },
+  "el-u": {
+   "label": "u",
+   "any": true,
+   "roles": [],
+   "text": "Any role, though generic SHOULD NOT be used. Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-ul": {
+   "label": "ul",
+   "any": false,
+   "roles": [
+    "directory",
+    "group",
+    "listbox",
+    "menu",
+    "menubar",
+    "none",
+    "presentation",
+    "radiogroup",
+    "tablist",
+    "toolbar",
+    "tree"
+   ],
+   "text": "Roles: group, listbox, menu, menubar, none, presentation, radiogroup, tablist, toolbar or tree. (list is also allowed, but NOT RECOMMENDED.) Global aria-* attributes and any aria-* attributes applicable to the allowed roles. Authors SHOULD NOT use the deprecated directory role."
+  },
+  "el-var": {
+   "label": "var",
+   "any": true,
+   "roles": [],
+   "text": "Any role Naming Prohibited Otherwise, Global aria-* attributes and any aria-* attributes applicable to the allowed roles."
+  },
+  "el-video": {
+   "label": "video",
+   "any": false,
+   "roles": [
+    "application"
+   ],
+   "text": "Role: application Global aria-* attributes and any aria-* attributes applicable to the application role."
+  },
+  "el-wbr": {
+   "label": "wbr",
+   "any": false,
+   "roles": [
+    "none",
+    "presentation"
+   ],
+   "text": "Roles: none or presentation Authors MAY specify the aria-hidden attribute on the wbr element. Otherwise, no other allowed aria-* attributes."
+  }
+ }
+}

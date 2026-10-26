@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <IsTestProject>true</IsTestProject>
     <RootNamespace>RecursiveAI.OneHtml.Accessibility.Validation.Tests</RootNamespace>
-    <NoWarn>$(NoWarn);CA1707</NoWarn>
+    <NoWarn>$(NoWarn);CA1707;xUnit1051</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="xunit.v3" />

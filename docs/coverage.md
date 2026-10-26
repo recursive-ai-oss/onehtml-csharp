@@ -5,8 +5,8 @@ Validation tests with `ONEHTML_UPDATE_DOCS=1`. The sources and their pins are in
 
 How to read it: *In WCAG* gives the first version with the criterion (`2.0+` means that version and every later one).
 *ACT rules* are the W3C ACT rules that list the criterion as a requirement (any status; deprecated ones are marked).
-*axe-core rules* are the rules whose `wcagNNN` tag names the criterion in axe-core 4.14.0. *Other rules* lists the
-catalogue's own rules, none yet. *Automation* (fully, partly or not automatable) is not assessed yet.
+*axe-core rules* are the rules whose `wcagNNN` tag names the criterion in axe-core 4.14.0. *Implemented* lists the
+rules this package implements. *Automation* (fully, partly or not automatable) is not assessed yet.
 
 Criteria with at least one rule: 42 of 87.
 
@@ -16,9 +16,9 @@ Criteria with at least one rule: 42 of 87.
 | 2.1 | 30 | 20 | 28 | 78 |
 | 2.2 | 31 | 24 | 31 | 86 |
 
-| Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Other rules | Automation |
+| Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation |
 |---|---|---|---|---|---|---|---|
-| 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt |  | unassessed |
+| 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt | aria-meter-name, aria-progressbar-name | unassessed |
 | 1.2.1 | Audio-only and Video-only (Prerecorded) | A | 2.0+ | 1a02b0, c3232f, e7aa44, ee13b5, f51b46 | audio-caption (deprecated) |  | unassessed |
 | 1.2.2 | Captions (Prerecorded) | A | 2.0+ | eac66b | video-caption |  | unassessed |
 | 1.2.3 | Audio Description or Media Alternative (Prerecorded) | A | 2.0+ | c5a4ea |  |  | unassessed |
@@ -28,7 +28,7 @@ Criteria with at least one rule: 42 of 87.
 | 1.2.7 | Extended Audio Description (Prerecorded) | AAA | 2.0+ |  |  |  | unassessed |
 | 1.2.8 | Media Alternative (Prerecorded) | AAA | 2.0+ | 1a02b0, c5a4ea |  |  | unassessed |
 | 1.2.9 | Audio-only (Live) | AAA | 2.0+ |  |  |  | unassessed |
-| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells |  | unassessed |
+| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent | unassessed |
 | 1.3.2 | Meaningful Sequence | A | 2.0+ |  |  |  | unassessed |
 | 1.3.3 | Sensory Characteristics | A | 2.0+ | 9bd38c |  |  | unassessed |
 | 1.3.4 | Orientation | AA | 2.1+ | b33eff | css-orientation-lock |  | unassessed |
@@ -103,5 +103,7 @@ Criteria with at least one rule: 42 of 87.
 | 3.3.8 | Accessible Authentication (Minimum) | AA | 2.2+ |  |  |  | unassessed |
 | 3.3.9 | Accessible Authentication (Enhanced) | AAA | 2.2+ |  |  |  | unassessed |
 | 4.1.1 | Parsing | A | 2.0 (removed in 2.2) | 3ea0c8 (deprecated), e6952f (deprecated) | duplicate-id (deprecated), duplicate-id-active (deprecated) |  | unassessed |
-| 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name |  | unassessed |
+| 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, presentational-children-focusable | unassessed |
 | 4.1.3 | Status Messages | AA | 2.1+ |  |  |  | unassessed |
+
+Implemented best-practice rules, which check no criterion: aria-allowed-role, aria-dialog-name, aria-text, aria-treeitem-name, presentation-role-conflict.

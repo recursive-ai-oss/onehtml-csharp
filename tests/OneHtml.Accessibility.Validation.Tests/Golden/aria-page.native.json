@@ -1,0 +1,2401 @@
+{
+  "format": "onehtml-results",
+  "version": 1,
+  "document": {
+    "sha256": "e72046b545a8b6c1575101bc39d75c55cecf454790a41a976034a31a80fcafba",
+    "url": "https://example.test/page"
+  },
+  "styleContext": {
+    "viewportWidth": 1280,
+    "viewportHeight": 720,
+    "media": "screen",
+    "colorScheme": "light",
+    "reducedMotion": "no-preference",
+    "contrast": "no-preference",
+    "forcedColors": false,
+    "cssOnly": false
+  },
+  "profile": null,
+  "limitReached": false,
+  "rules": [
+    {
+      "id": "aria-allowed-attr",
+      "description": "Each WAI-ARIA state or property on an element must be one that the element's role supports.",
+      "help": "Remove the attribute, or give the element the role that supports it.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-allowed-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The attribute may be right and the role wrong (or the reverse); choosing between changing the role and dropping the attribute is a judgement."
+    },
+    {
+      "id": "aria-allowed-role",
+      "description": "The role attribute of an element should be one that ARIA in HTML allows on that element.",
+      "help": "Remove the role, or use an element that suits the role.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-allowed-role"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Changing the role changes what the element means to users, and which meaning is intended is the author's call."
+    },
+    {
+      "id": "aria-braille-equivalent",
+      "description": "aria-braillelabel needs an accessible name and aria-brailleroledescription needs an aria-roledescription to refine.",
+      "help": "Add the ordinary label or role description that the braille text abbreviates.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-braille-equivalent"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The missing text is content, which only the author can supply."
+    },
+    {
+      "id": "aria-command-name",
+      "description": "A button, link or menu item given its role by the role attribute must have an accessible name.",
+      "help": "Give the control a visible text label, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-command-name"
+        },
+        {
+          "kind": "act",
+          "id": "m6b1q3"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-conditional-attr",
+      "description": "A native checkbox must not carry an aria-checked value that disagrees with its checked state.",
+      "help": "Drop aria-checked and let the checked attribute carry the state.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-conditional-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove aria-checked from a native checkbox whose value disagrees with the checked attribute. The native state is the one assistive technology reports.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-deprecated-role",
+      "description": "The role that applies to an element must not be one that WAI-ARIA or its digital publishing module has deprecated.",
+      "help": "Replace the deprecated role with the role the specification recommends in its place.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-deprecated-role"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Replace the role directory with list, the replacement WAI-ARIA 1.2 names.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-dialog-name",
+      "description": "A dialog or alert dialog given its role by the role attribute should have an accessible name.",
+      "help": "Name the dialog with aria-labelledby pointing at its title, or with aria-label.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-dialog-name"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-hidden-body",
+      "description": "The body element must not have aria-hidden=\"true\", which hides the whole page from assistive technology.",
+      "help": "Remove aria-hidden from body; hide only the parts of the page that need hiding.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-hidden-body"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-10.8.1"
+      ],
+      "fix": "Remove aria-hidden=\"true\" from body. No reading of the page is served by hiding all of it.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-hidden-focus",
+      "description": "An element with aria-hidden=\"true\" must not contain anything that can receive focus through the Tab key.",
+      "help": "Make the hidden content non-focusable (tabindex=\"-1\" or disabled), or stop hiding it.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-hidden-focus"
+        },
+        {
+          "kind": "act",
+          "id": "6cfa84"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-10.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Hiding it from assistive technology, making it unfocusable and showing it are three different outcomes, and the author must choose."
+    },
+    {
+      "id": "aria-input-field-name",
+      "description": "A combo box, list box, search box, slider, spin button or text box given its role by the role attribute must have an accessible name.",
+      "help": "Label the field with a visible label, aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-input-field-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-meter-name",
+      "description": "A meter given its role by the role attribute must have an accessible name.",
+      "help": "Say what the meter measures with aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-meter-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag111",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-progressbar-name",
+      "description": "A progress bar given its role by the role attribute must have an accessible name.",
+      "help": "Say what is progressing with aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-progressbar-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag111",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-prohibited-attr",
+      "description": "A WAI-ARIA attribute must not be used on a role that prohibits it, such as aria-label on an element with no role.",
+      "help": "Remove the attribute, or give the element a role that can be named.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-prohibited-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        },
+        {
+          "kind": "act",
+          "id": "kb1m8s"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove the prohibited attribute. Authors may not set it on this role, and removing it leaves the element with the semantics the rest of its markup gives.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-required-attr",
+      "description": "An element with an explicit role must set the states and properties that role requires.",
+      "help": "Add the required attribute with a value that matches the element's state.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-attr"
+        },
+        {
+          "kind": "act",
+          "id": "4e8ab6"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The value of a required state (checked, the current value of a slider) is the page's own data, so the library cannot choose it."
+    },
+    {
+      "id": "aria-required-children",
+      "description": "An element whose role needs owned elements (a list needs items, a table needs rows) must contain them.",
+      "help": "Add the required child elements, or use a role that needs none.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-children"
+        },
+        {
+          "kind": "act",
+          "id": "bc4a75"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Adding rows, items or options is content, and wrapping existing children can change the page's structure, so the right edit is the author's."
+    },
+    {
+      "id": "aria-required-parent",
+      "description": "An element whose role needs a parent role (a list item needs a list, a tab needs a tab list) must be inside one.",
+      "help": "Put the element inside an element with the required role, or use a role that needs no parent.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-parent"
+        },
+        {
+          "kind": "act",
+          "id": "ff89c9"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Wrapping orphans in a container changes layout and styling, and which container role is right depends on the content."
+    },
+    {
+      "id": "aria-roles",
+      "description": "A role attribute must contain at least one token that names a WAI-ARIA role authors may use.",
+      "help": "Correct the role name, or remove the attribute and use an element that already has the meaning.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-roles"
+        },
+        {
+          "kind": "act",
+          "id": "674b10"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "Passing a list of tokens when one of them is valid is allowed (fallback roles), so a failure means no token is usable and the intended role is unknown."
+    },
+    {
+      "id": "aria-tab-name",
+      "description": "A tab given its role by the role attribute must have an accessible name.",
+      "help": "Give the tab text, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-tab-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-text",
+      "description": "An element with role=\"text\" must not contain focusable elements.",
+      "help": "Move the focusable element out of the role=\"text\" element, or remove the role.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-text"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a control or dropping the role changes the page's structure, which is an authoring decision."
+    },
+    {
+      "id": "aria-toggle-field-name",
+      "description": "A checkbox, radio button, switch, option or toggling menu item given its role by the role attribute must have an accessible name.",
+      "help": "Label the control with text, aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-toggle-field-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-tooltip-name",
+      "description": "A tooltip given its role by the role attribute must have an accessible name.",
+      "help": "Give the tooltip text content, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-tooltip-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-treeitem-name",
+      "description": "A tree item given its role by the role attribute should have an accessible name.",
+      "help": "Give the tree item text, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-treeitem-name"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-valid-attr",
+      "description": "Every attribute that starts with aria- must be a state or property defined by WAI-ARIA.",
+      "help": "Fix the spelling of the attribute, or remove it if WAI-ARIA has no such state or property.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-valid-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5f99a7"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove the aria- attribute that WAI-ARIA does not define. A browser ignores it, so removing it changes nothing a user perceives.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-valid-attr-value",
+      "description": "Every non-empty WAI-ARIA state or property must have a value of its type, and a required ID reference must name an element in the page.",
+      "help": "Use one of the values WAI-ARIA allows for the attribute, or point the required reference at an element that exists.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-valid-attr-value"
+        },
+        {
+          "kind": "act",
+          "id": "6a7281"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove an attribute whose value is outside its type when the role does not require that attribute. A browser already falls back to the attribute's default, so removing it changes nothing a user perceives.",
+      "noFixReason": null
+    },
+    {
+      "id": "presentation-role-conflict",
+      "description": "An element marked as decorative must really be presentational: it may not be focusable or carry a global WAI-ARIA attribute.",
+      "help": "Either make the element non-interactive without WAI-ARIA attributes, or drop the presentational role and give it a real one.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "presentation-role-conflict"
+        },
+        {
+          "kind": "act",
+          "id": "46ca7f"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice",
+        "ACT"
+      ],
+      "fix": null,
+      "noFixReason": "Two fixes exist (remove the role or remove what conflicts with it) and which one is right depends on the author's intent."
+    },
+    {
+      "id": "presentational-children-focusable",
+      "description": "An element whose role makes its children presentational (a button, a tab, an image) must not contain anything reachable with the Tab key.",
+      "help": "Move the focusable element out, or change the outer role to one that exposes its children.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "307n5z"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Removing the focusable child, moving it or changing the outer role each change the page; the author must choose."
+    }
+  ],
+  "results": [
+    {
+      "rule": "aria-allowed-attr",
+      "outcome": "failed",
+      "message": "The element has a WAI-ARIA attribute its role does not allow.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [
+        {
+          "attribute": "aria-valuenow",
+          "value": "x",
+          "message": "aria-valuenow is not allowed on the role textbox. The role does not support this state or property."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-attr",
+      "outcome": "passed",
+      "message": "Every WAI-ARIA attribute is allowed on the element's role.",
+      "target": {
+        "tag": "input",
+        "locator": "input",
+        "source": {
+          "start": 395,
+          "end": 438
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"checkbox\"]",
+        "source": {
+          "start": 162,
+          "end": 196
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"list\"]",
+        "source": {
+          "start": 274,
+          "end": 291
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "span",
+        "locator": "[role=\"link\"]",
+        "source": {
+          "start": 291,
+          "end": 309
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"menuitem\"]",
+        "source": {
+          "start": 367,
+          "end": 388
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"directory\"]",
+        "source": {
+          "start": 477,
+          "end": 499
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"listitem\"]",
+        "source": {
+          "start": 499,
+          "end": 520
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-braille-equivalent",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-command-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "span",
+        "locator": "[role=\"link\"]",
+        "source": {
+          "start": 291,
+          "end": 309
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-command-name",
+      "outcome": "failed",
+      "message": "The menuitem has no accessible name.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"menuitem\"]",
+        "source": {
+          "start": 367,
+          "end": 388
+        }
+      },
+      "findings": [
+        {
+          "attribute": "role",
+          "value": "menuitem",
+          "message": "No accessible name could be computed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-conditional-attr",
+      "outcome": "failed",
+      "message": "aria-checked disagrees with the checked attribute.",
+      "target": {
+        "tag": "input",
+        "locator": "input",
+        "source": {
+          "start": 395,
+          "end": 438
+        }
+      },
+      "findings": [
+        {
+          "attribute": "aria-checked",
+          "value": "true",
+          "message": "The checkbox is natively unchecked."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": [
+        {
+          "description": "Remove the aria-checked attribute.",
+          "edit": 0
+        }
+      ]
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"checkbox\"]",
+        "source": {
+          "start": 162,
+          "end": 196
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"list\"]",
+        "source": {
+          "start": 274,
+          "end": 291
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "span",
+        "locator": "[role=\"link\"]",
+        "source": {
+          "start": 291,
+          "end": 309
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"menuitem\"]",
+        "source": {
+          "start": 367,
+          "end": 388
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "failed",
+      "message": "The role directory is deprecated.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"directory\"]",
+        "source": {
+          "start": 477,
+          "end": 499
+        }
+      },
+      "findings": [
+        {
+          "attribute": "role",
+          "value": "directory",
+          "message": "directory is deprecated."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": [
+        {
+          "description": "Use the role list instead of directory.",
+          "edit": 1
+        }
+      ]
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"listitem\"]",
+        "source": {
+          "start": 499,
+          "end": 520
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-dialog-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-hidden-body",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "body",
+        "locator": "body",
+        "source": {
+          "start": 73,
+          "end": 79
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-hidden-focus",
+      "outcome": "failed",
+      "message": "The element is hidden with aria-hidden but contains something reachable with the Tab key.",
+      "target": {
+        "tag": "button",
+        "locator": "button",
+        "source": {
+          "start": 324,
+          "end": 351
+        }
+      },
+      "findings": [
+        {
+          "attribute": "aria-hidden",
+          "value": "true",
+          "message": "A focusable element is inside."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-input-field-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-meter-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-progressbar-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-prohibited-attr",
+      "outcome": "passed",
+      "message": "Every WAI-ARIA attribute is allowed on the element's role.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-prohibited-attr",
+      "outcome": "passed",
+      "message": "Every WAI-ARIA attribute is allowed on the element's role.",
+      "target": {
+        "tag": "input",
+        "locator": "input",
+        "source": {
+          "start": 395,
+          "end": 438
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "failed",
+      "message": "The role checkbox is missing required states or properties.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"checkbox\"]",
+        "source": {
+          "start": 162,
+          "end": 196
+        }
+      },
+      "findings": [
+        {
+          "attribute": "aria-checked",
+          "value": null,
+          "message": "The checkbox role requires this attribute."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"list\"]",
+        "source": {
+          "start": 274,
+          "end": 291
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "span",
+        "locator": "[role=\"link\"]",
+        "source": {
+          "start": 291,
+          "end": 309
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"menuitem\"]",
+        "source": {
+          "start": 367,
+          "end": 388
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"directory\"]",
+        "source": {
+          "start": 477,
+          "end": 499
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"listitem\"]",
+        "source": {
+          "start": 499,
+          "end": 520
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-children",
+      "outcome": "failed",
+      "message": "The role list owns an element with the role link, which is not one of its required owned roles (group, listitem).",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"list\"]",
+        "source": {
+          "start": 274,
+          "end": 291
+        }
+      },
+      "findings": [
+        {
+          "attribute": "role",
+          "value": "list",
+          "message": "The role list owns an element with the role link, which is not one of its required owned roles (group, listitem)."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-parent",
+      "outcome": "failed",
+      "message": "The role menuitem requires a parent with the role group or menu or menubar.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"menuitem\"]",
+        "source": {
+          "start": 367,
+          "end": 388
+        }
+      },
+      "findings": [
+        {
+          "attribute": "role",
+          "value": "menuitem",
+          "message": "The role menuitem requires a parent with the role group or menu or menubar."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-parent",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"listitem\"]",
+        "source": {
+          "start": 499,
+          "end": 520
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "passed",
+      "message": "The role attribute has a usable token.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "passed",
+      "message": "The role attribute has a usable token.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"checkbox\"]",
+        "source": {
+          "start": 162,
+          "end": 196
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "failed",
+      "message": "No token of the role attribute names a usable role.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"lnik\"]",
+        "source": {
+          "start": 216,
+          "end": 233
+        }
+      },
+      "findings": [
+        {
+          "attribute": "role",
+          "value": "lnik",
+          "message": "lnik is not a WAI-ARIA role."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "passed",
+      "message": "The role attribute has a usable token.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"list\"]",
+        "source": {
+          "start": 274,
+          "end": 291
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "passed",
+      "message": "The role attribute has a usable token.",
+      "target": {
+        "tag": "span",
+        "locator": "[role=\"link\"]",
+        "source": {
+          "start": 291,
+          "end": 309
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "passed",
+      "message": "The role attribute has a usable token.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"menuitem\"]",
+        "source": {
+          "start": 367,
+          "end": 388
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "passed",
+      "message": "The role attribute has a usable token.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"directory\"]",
+        "source": {
+          "start": 477,
+          "end": 499
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "passed",
+      "message": "The role attribute has a usable token.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"listitem\"]",
+        "source": {
+          "start": 499,
+          "end": 520
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-tab-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-text",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-toggle-field-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"checkbox\"]",
+        "source": {
+          "start": 162,
+          "end": 196
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-tooltip-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-treeitem-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr",
+      "outcome": "passed",
+      "message": "Every aria- attribute is defined by WAI-ARIA.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr",
+      "outcome": "failed",
+      "message": "The element has an aria- attribute that WAI-ARIA does not define.",
+      "target": {
+        "tag": "p",
+        "locator": "p",
+        "source": {
+          "start": 244,
+          "end": 265
+        }
+      },
+      "findings": [
+        {
+          "attribute": "aria-labelled",
+          "value": "x",
+          "message": "aria-labelled is not a state or property defined by WAI-ARIA."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": [
+        {
+          "description": "Remove the aria-labelled attribute.",
+          "edit": 2
+        }
+      ]
+    },
+    {
+      "rule": "aria-valid-attr",
+      "outcome": "passed",
+      "message": "Every aria- attribute is defined by WAI-ARIA.",
+      "target": {
+        "tag": "button",
+        "locator": "button",
+        "source": {
+          "start": 324,
+          "end": 351
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr",
+      "outcome": "passed",
+      "message": "Every aria- attribute is defined by WAI-ARIA.",
+      "target": {
+        "tag": "input",
+        "locator": "input",
+        "source": {
+          "start": 395,
+          "end": 438
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr-value",
+      "outcome": "failed",
+      "message": "A WAI-ARIA state or property has a value it cannot have.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [
+        {
+          "attribute": "aria-valuenow",
+          "value": "x",
+          "message": "Not a valid value for this attribute."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": [
+        {
+          "description": "Remove the aria-valuenow attribute.",
+          "edit": 3
+        }
+      ]
+    },
+    {
+      "rule": "aria-valid-attr-value",
+      "outcome": "passed",
+      "message": "Every non-empty state and property has a valid value.",
+      "target": {
+        "tag": "button",
+        "locator": "button",
+        "source": {
+          "start": 324,
+          "end": 351
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr-value",
+      "outcome": "passed",
+      "message": "Every non-empty state and property has a valid value.",
+      "target": {
+        "tag": "input",
+        "locator": "input",
+        "source": {
+          "start": 395,
+          "end": 438
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentation-role-conflict",
+      "outcome": "failed",
+      "message": "The element is marked as decorative but has the role img because it is focusable.",
+      "target": {
+        "tag": "img",
+        "locator": "img",
+        "source": {
+          "start": 439,
+          "end": 476
+        }
+      },
+      "findings": [
+        {
+          "attribute": "role",
+          "value": null,
+          "message": "The presentational role is ignored because it is focusable."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"checkbox\"]",
+        "source": {
+          "start": 162,
+          "end": 196
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "button",
+        "source": {
+          "start": 324,
+          "end": 351
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentational-children-focusable",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "input",
+        "locator": "input",
+        "source": {
+          "start": 395,
+          "end": 438
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    }
+  ],
+  "suggestedEdits": {
+    "format": "onehtml-edits",
+    "version": 1,
+    "document": {
+      "sha256": "e72046b545a8b6c1575101bc39d75c55cecf454790a41a976034a31a80fcafba"
+    },
+    "edits": [
+      {
+        "op": "removeAttribute",
+        "target": {
+          "locator": "input",
+          "fingerprint": {
+            "tag": "input",
+            "attrs": {
+              "type": "checkbox"
+            },
+            "text": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "path": "sha256:101bc4ad6f670cc0a5826e38610856e690b5cc2cd286c8e8367b5cad33be9f9c"
+          },
+          "anchor": {
+            "start": 395,
+            "end": 438,
+            "bytes": "sha256:e9d996fc53b2d3257a8b67e04c5016353a416b1b79c106e44cb4420811db7896"
+          }
+        },
+        "name": "aria-checked",
+        "meta": {
+          "rule": "aria-conditional-attr",
+          "criteria": [
+            "4.1.2"
+          ],
+          "suggested": true
+        }
+      },
+      {
+        "op": "setAttribute",
+        "target": {
+          "locator": "[role=\"directory\"]",
+          "fingerprint": {
+            "tag": "div",
+            "attrs": {
+              "role": "directory"
+            },
+            "text": "sha256:de7d1b721a1e0632b7cf04edf5032c8ecffa9f9a08492152b926f1a5a7e765d7",
+            "path": "sha256:dcbdde5351ef62d5309ba98ae5418e3817c40877a096bec6ded6e1984b3d2a27"
+          },
+          "anchor": {
+            "start": 477,
+            "end": 533,
+            "bytes": "sha256:326d55d31ac0ab25015673c3b870ca539334721b65714fb708aa0effc12ea321"
+          }
+        },
+        "name": "role",
+        "value": "list",
+        "meta": {
+          "rule": "aria-deprecated-role",
+          "criteria": [
+            "4.1.2"
+          ],
+          "suggested": true
+        }
+      },
+      {
+        "op": "removeAttribute",
+        "target": {
+          "locator": "p",
+          "fingerprint": {
+            "tag": "p",
+            "text": "sha256:a1974688cdc37e17be7363ccff2279e35553c1f968fe7012c709c9a52978c562",
+            "path": "sha256:25d2be79122524c440a076a18cbbf9993ab07d3c8ffe4fd0c256a6b50c6ae709"
+          },
+          "anchor": {
+            "start": 244,
+            "end": 273,
+            "bytes": "sha256:025639eeb127a6381aa352fe2b05b9cdb0a82abd2bb132603c97a0e9a443f119"
+          }
+        },
+        "name": "aria-labelled",
+        "meta": {
+          "rule": "aria-valid-attr",
+          "criteria": [
+            "4.1.2"
+          ],
+          "suggested": true
+        }
+      },
+      {
+        "op": "removeAttribute",
+        "target": {
+          "locator": "#f1",
+          "fingerprint": {
+            "tag": "div",
+            "attrs": {
+              "id": "f1",
+              "role": "textbox"
+            },
+            "text": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "path": "sha256:ddc93ea0f4d9c25de1b3bfc9c4457c6828f4c5d3872aac2313e950375f9bcf2f"
+          },
+          "anchor": {
+            "start": 89,
+            "end": 159,
+            "bytes": "sha256:8dce4d1cedf6a0101e8f89b10fd9816d38fdc28511585b3703eddb84be89785b"
+          }
+        },
+        "name": "aria-valuenow",
+        "meta": {
+          "rule": "aria-valid-attr-value",
+          "criteria": [
+            "4.1.2"
+          ],
+          "suggested": true
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,1695 @@
+{
+  "testEngine": {
+    "name": "onehtml-validation",
+    "version": "1"
+  },
+  "testRunner": {
+    "name": "onehtml-validation"
+  },
+  "testEnvironment": {
+    "windowWidth": 1280,
+    "windowHeight": 720
+  },
+  "toolOptions": {},
+  "url": "https://example.test/page",
+  "inapplicable": [
+    {
+      "id": "aria-braille-equivalent",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "description": "aria-braillelabel needs an accessible name and aria-brailleroledescription needs an aria-roledescription to refine.",
+      "help": "Add the ordinary label or role description that the braille text abbreviates.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-braille-equivalent",
+      "nodes": []
+    },
+    {
+      "id": "aria-dialog-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "description": "A dialog or alert dialog given its role by the role attribute should have an accessible name.",
+      "help": "Name the dialog with aria-labelledby pointing at its title, or with aria-label.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-dialog-name",
+      "nodes": []
+    },
+    {
+      "id": "aria-meter-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag111",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "description": "A meter given its role by the role attribute must have an accessible name.",
+      "help": "Say what the meter measures with aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-meter-name",
+      "nodes": []
+    },
+    {
+      "id": "aria-progressbar-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag111",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "description": "A progress bar given its role by the role attribute must have an accessible name.",
+      "help": "Say what is progressing with aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-progressbar-name",
+      "nodes": []
+    },
+    {
+      "id": "aria-tab-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "A tab given its role by the role attribute must have an accessible name.",
+      "help": "Give the tab text, an aria-label or an aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-tab-name",
+      "nodes": []
+    },
+    {
+      "id": "aria-text",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "description": "An element with role=\"text\" must not contain focusable elements.",
+      "help": "Move the focusable element out of the role=\"text\" element, or remove the role.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-text",
+      "nodes": []
+    },
+    {
+      "id": "aria-tooltip-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "description": "A tooltip given its role by the role attribute must have an accessible name.",
+      "help": "Give the tooltip text content, an aria-label or an aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-tooltip-name",
+      "nodes": []
+    },
+    {
+      "id": "aria-treeitem-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "description": "A tree item given its role by the role attribute should have an accessible name.",
+      "help": "Give the tree item text, an aria-label or an aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-treeitem-name",
+      "nodes": []
+    }
+  ],
+  "passes": [
+    {
+      "id": "aria-allowed-attr",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "Each WAI-ARIA state or property on an element must be one that the element's role supports.",
+      "help": "Remove the attribute, or give the element the role that supports it.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-allowed-attr",
+      "nodes": [
+        {
+          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
+          "impact": null,
+          "target": [
+            "input"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-allowed-role",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "description": "The role attribute of an element should be one that ARIA in HTML allows on that element.",
+      "help": "Remove the role, or use an element that suits the role.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-allowed-role",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": null,
+          "target": [
+            "#f1"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"checkbox\" tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "[role=\"checkbox\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"list\">",
+          "impact": null,
+          "target": [
+            "[role=\"list\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<span role=\"link\">",
+          "impact": null,
+          "target": [
+            "[role=\"link\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"menuitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"menuitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"directory\">",
+          "impact": null,
+          "target": [
+            "[role=\"directory\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"listitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"listitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-command-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "description": "A button, link or menu item given its role by the role attribute must have an accessible name.",
+      "help": "Give the control a visible text label, an aria-label or an aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-command-name",
+      "nodes": [
+        {
+          "html": "<span role=\"link\">",
+          "impact": null,
+          "target": [
+            "[role=\"link\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-deprecated-role",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "The role that applies to an element must not be one that WAI-ARIA or its digital publishing module has deprecated.",
+      "help": "Replace the deprecated role with the role the specification recommends in its place.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-deprecated-role",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": null,
+          "target": [
+            "#f1"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"checkbox\" tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "[role=\"checkbox\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"list\">",
+          "impact": null,
+          "target": [
+            "[role=\"list\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<span role=\"link\">",
+          "impact": null,
+          "target": [
+            "[role=\"link\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"menuitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"menuitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"listitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"listitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-hidden-body",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-10.8.1"
+      ],
+      "description": "The body element must not have aria-hidden=\"true\", which hides the whole page from assistive technology.",
+      "help": "Remove aria-hidden from body; hide only the parts of the page that need hiding.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-hidden-body",
+      "nodes": [
+        {
+          "html": "<body>",
+          "impact": null,
+          "target": [
+            "body"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-input-field-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "description": "A combo box, list box, search box, slider, spin button or text box given its role by the role attribute must have an accessible name.",
+      "help": "Label the field with a visible label, aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-input-field-name",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": null,
+          "target": [
+            "#f1"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-prohibited-attr",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "A WAI-ARIA attribute must not be used on a role that prohibits it, such as aria-label on an element with no role.",
+      "help": "Remove the attribute, or give the element a role that can be named.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-prohibited-attr",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": null,
+          "target": [
+            "#f1"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
+          "impact": null,
+          "target": [
+            "input"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-required-attr",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "An element with an explicit role must set the states and properties that role requires.",
+      "help": "Add the required attribute with a value that matches the element's state.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-required-attr",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": null,
+          "target": [
+            "#f1"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"list\">",
+          "impact": null,
+          "target": [
+            "[role=\"list\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<span role=\"link\">",
+          "impact": null,
+          "target": [
+            "[role=\"link\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"menuitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"menuitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"directory\">",
+          "impact": null,
+          "target": [
+            "[role=\"directory\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"listitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"listitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-required-parent",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "description": "An element whose role needs a parent role (a list item needs a list, a tab needs a tab list) must be inside one.",
+      "help": "Put the element inside an element with the required role, or use a role that needs no parent.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-required-parent",
+      "nodes": [
+        {
+          "html": "<div role=\"listitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"listitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-roles",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "A role attribute must contain at least one token that names a WAI-ARIA role authors may use.",
+      "help": "Correct the role name, or remove the attribute and use an element that already has the meaning.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-roles",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": null,
+          "target": [
+            "#f1"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"checkbox\" tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "[role=\"checkbox\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"list\">",
+          "impact": null,
+          "target": [
+            "[role=\"list\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<span role=\"link\">",
+          "impact": null,
+          "target": [
+            "[role=\"link\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"menuitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"menuitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"directory\">",
+          "impact": null,
+          "target": [
+            "[role=\"directory\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div role=\"listitem\">",
+          "impact": null,
+          "target": [
+            "[role=\"listitem\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-toggle-field-name",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "A checkbox, radio button, switch, option or toggling menu item given its role by the role attribute must have an accessible name.",
+      "help": "Label the control with text, aria-label or aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-toggle-field-name",
+      "nodes": [
+        {
+          "html": "<div role=\"checkbox\" tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "[role=\"checkbox\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-valid-attr",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "Every attribute that starts with aria- must be a state or property defined by WAI-ARIA.",
+      "help": "Fix the spelling of the attribute, or remove it if WAI-ARIA has no such state or property.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": null,
+          "target": [
+            "#f1"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button aria-hidden=\"true\">",
+          "impact": null,
+          "target": [
+            "button"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
+          "impact": null,
+          "target": [
+            "input"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-valid-attr-value",
+      "impact": null,
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "Every non-empty WAI-ARIA state or property must have a value of its type, and a required ID reference must name an element in the page.",
+      "help": "Use one of the values WAI-ARIA allows for the attribute, or point the required reference at an element that exists.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value",
+      "nodes": [
+        {
+          "html": "<button aria-hidden=\"true\">",
+          "impact": null,
+          "target": [
+            "button"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
+          "impact": null,
+          "target": [
+            "input"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentational-children-focusable",
+      "impact": null,
+      "tags": [],
+      "description": "An element whose role makes its children presentational (a button, a tab, an image) must not contain anything reachable with the Tab key.",
+      "help": "Move the focusable element out, or change the outer role to one that exposes its children.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<div role=\"checkbox\" tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "[role=\"checkbox\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button aria-hidden=\"true\">",
+          "impact": null,
+          "target": [
+            "button"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
+          "impact": null,
+          "target": [
+            "input"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    }
+  ],
+  "incomplete": [],
+  "violations": [
+    {
+      "id": "aria-allowed-attr",
+      "impact": "critical",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "Each WAI-ARIA state or property on an element must be one that the element's role supports.",
+      "help": "Remove the attribute, or give the element the role that supports it.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-allowed-attr",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": "critical",
+          "target": [
+            "#f1"
+          ],
+          "any": [
+            {
+              "id": "aria-allowed-attr",
+              "data": [
+                {
+                  "attribute": "aria-valuenow",
+                  "value": "x"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "The element has a WAI-ARIA attribute its role does not allow."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The element has a WAI-ARIA attribute its role does not allow.\naria-valuenow is not allowed on the role textbox. The role does not support this state or property.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-command-name",
+      "impact": "serious",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "description": "A button, link or menu item given its role by the role attribute must have an accessible name.",
+      "help": "Give the control a visible text label, an aria-label or an aria-labelledby.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-command-name",
+      "nodes": [
+        {
+          "html": "<div role=\"menuitem\">",
+          "impact": "serious",
+          "target": [
+            "[role=\"menuitem\"]"
+          ],
+          "any": [
+            {
+              "id": "aria-command-name",
+              "data": [
+                {
+                  "attribute": "role",
+                  "value": "menuitem"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The menuitem has no accessible name."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The menuitem has no accessible name.\nNo accessible name could be computed.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-conditional-attr",
+      "impact": "serious",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "A native checkbox must not carry an aria-checked value that disagrees with its checked state.",
+      "help": "Drop aria-checked and let the checked attribute carry the state.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-conditional-attr",
+      "nodes": [
+        {
+          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
+          "impact": "serious",
+          "target": [
+            "input"
+          ],
+          "any": [
+            {
+              "id": "aria-conditional-attr",
+              "data": [
+                {
+                  "attribute": "aria-checked",
+                  "value": "true"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "aria-checked disagrees with the checked attribute."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "aria-checked disagrees with the checked attribute.\nThe checkbox is natively unchecked.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-deprecated-role",
+      "impact": "minor",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "The role that applies to an element must not be one that WAI-ARIA or its digital publishing module has deprecated.",
+      "help": "Replace the deprecated role with the role the specification recommends in its place.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-deprecated-role",
+      "nodes": [
+        {
+          "html": "<div role=\"directory\">",
+          "impact": "minor",
+          "target": [
+            "[role=\"directory\"]"
+          ],
+          "any": [
+            {
+              "id": "aria-deprecated-role",
+              "data": [
+                {
+                  "attribute": "role",
+                  "value": "directory"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "minor",
+              "message": "The role directory is deprecated."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The role directory is deprecated.\ndirectory is deprecated.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-hidden-focus",
+      "impact": "serious",
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-10.8.1"
+      ],
+      "description": "An element with aria-hidden=\"true\" must not contain anything that can receive focus through the Tab key.",
+      "help": "Make the hidden content non-focusable (tabindex=\"-1\" or disabled), or stop hiding it.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-hidden-focus",
+      "nodes": [
+        {
+          "html": "<button aria-hidden=\"true\">",
+          "impact": "serious",
+          "target": [
+            "button"
+          ],
+          "any": [
+            {
+              "id": "aria-hidden-focus",
+              "data": [
+                {
+                  "attribute": "aria-hidden",
+                  "value": "true"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The element is hidden with aria-hidden but contains something reachable with the Tab key."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The element is hidden with aria-hidden but contains something reachable with the Tab key.\nA focusable element is inside.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-required-attr",
+      "impact": "critical",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "An element with an explicit role must set the states and properties that role requires.",
+      "help": "Add the required attribute with a value that matches the element's state.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-required-attr",
+      "nodes": [
+        {
+          "html": "<div role=\"checkbox\" tabindex=\"0\">",
+          "impact": "critical",
+          "target": [
+            "[role=\"checkbox\"]"
+          ],
+          "any": [
+            {
+              "id": "aria-required-attr",
+              "data": [
+                {
+                  "attribute": "aria-checked",
+                  "value": null
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "The role checkbox is missing required states or properties."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The role checkbox is missing required states or properties.\nThe checkbox role requires this attribute.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-required-children",
+      "impact": "critical",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "description": "An element whose role needs owned elements (a list needs items, a table needs rows) must contain them.",
+      "help": "Add the required child elements, or use a role that needs none.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-required-children",
+      "nodes": [
+        {
+          "html": "<div role=\"list\">",
+          "impact": "critical",
+          "target": [
+            "[role=\"list\"]"
+          ],
+          "any": [
+            {
+              "id": "aria-required-children",
+              "data": [
+                {
+                  "attribute": "role",
+                  "value": "list"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "The role list owns an element with the role link, which is not one of its required owned roles (group, listitem)."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The role list owns an element with the role link, which is not one of its required owned roles (group, listitem).\nThe role list owns an element with the role link, which is not one of its required owned roles (group, listitem).",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-required-parent",
+      "impact": "critical",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "description": "An element whose role needs a parent role (a list item needs a list, a tab needs a tab list) must be inside one.",
+      "help": "Put the element inside an element with the required role, or use a role that needs no parent.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-required-parent",
+      "nodes": [
+        {
+          "html": "<div role=\"menuitem\">",
+          "impact": "critical",
+          "target": [
+            "[role=\"menuitem\"]"
+          ],
+          "any": [
+            {
+              "id": "aria-required-parent",
+              "data": [
+                {
+                  "attribute": "role",
+                  "value": "menuitem"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "The role menuitem requires a parent with the role group or menu or menubar."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The role menuitem requires a parent with the role group or menu or menubar.\nThe role menuitem requires a parent with the role group or menu or menubar.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-roles",
+      "impact": "critical",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "A role attribute must contain at least one token that names a WAI-ARIA role authors may use.",
+      "help": "Correct the role name, or remove the attribute and use an element that already has the meaning.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-roles",
+      "nodes": [
+        {
+          "html": "<div role=\"lnik\">",
+          "impact": "critical",
+          "target": [
+            "[role=\"lnik\"]"
+          ],
+          "any": [
+            {
+              "id": "aria-roles",
+              "data": [
+                {
+                  "attribute": "role",
+                  "value": "lnik"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "No token of the role attribute names a usable role."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "No token of the role attribute names a usable role.\nlnik is not a WAI-ARIA role.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-valid-attr",
+      "impact": "critical",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "Every attribute that starts with aria- must be a state or property defined by WAI-ARIA.",
+      "help": "Fix the spelling of the attribute, or remove it if WAI-ARIA has no such state or property.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr",
+      "nodes": [
+        {
+          "html": "<p aria-labelled=\"x\">",
+          "impact": "critical",
+          "target": [
+            "p"
+          ],
+          "any": [
+            {
+              "id": "aria-valid-attr",
+              "data": [
+                {
+                  "attribute": "aria-labelled",
+                  "value": "x"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "The element has an aria- attribute that WAI-ARIA does not define."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The element has an aria- attribute that WAI-ARIA does not define.\naria-labelled is not a state or property defined by WAI-ARIA.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "aria-valid-attr-value",
+      "impact": "critical",
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "description": "Every non-empty WAI-ARIA state or property must have a value of its type, and a required ID reference must name an element in the page.",
+      "help": "Use one of the values WAI-ARIA allows for the attribute, or point the required reference at an element that exists.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value",
+      "nodes": [
+        {
+          "html": "<div id=\"f1\" role=\"textbox\" aria-valuenow=\"x\" aria-label=\"Name\">",
+          "impact": "critical",
+          "target": [
+            "#f1"
+          ],
+          "any": [
+            {
+              "id": "aria-valid-attr-value",
+              "data": [
+                {
+                  "attribute": "aria-valuenow",
+                  "value": "x"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "critical",
+              "message": "A WAI-ARIA state or property has a value it cannot have."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "A WAI-ARIA state or property has a value it cannot have.\nNot a valid value for this attribute.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "presentation-role-conflict",
+      "impact": "minor",
+      "tags": [
+        "cat.aria",
+        "best-practice",
+        "ACT"
+      ],
+      "description": "An element marked as decorative must really be presentational: it may not be focusable or carry a global WAI-ARIA attribute.",
+      "help": "Either make the element non-interactive without WAI-ARIA attributes, or drop the presentational role and give it a real one.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/presentation-role-conflict",
+      "nodes": [
+        {
+          "html": "<img src=\"a.png\" alt=\"\" tabindex=\"0\">",
+          "impact": "minor",
+          "target": [
+            "img"
+          ],
+          "any": [
+            {
+              "id": "presentation-role-conflict",
+              "data": [
+                {
+                  "attribute": "role",
+                  "value": null
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "minor",
+              "message": "The element is marked as decorative but has the role img because it is focusable."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The element is marked as decorative but has the role img because it is focusable.\nThe presentational role is ignored because it is focusable.",
+          "onehtml": {
+            "outcome": "failed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    }
+  ]
+}

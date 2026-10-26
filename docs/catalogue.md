@@ -83,7 +83,9 @@ every best practice. A rule is in a profile when any criterion it checks is; a r
    edit) or a `NoFixReason`. Write the description in our own words.
 2. If it has an ACT source, its id must exist in `act-rules.json`; the ACT cases in `testdata/act/` are its acceptance
    tests.
-3. Refresh `docs/coverage.md` with `ONEHTML_UPDATE_DOCS=1` when running the Validation tests.
+3. Implement `IAccessibilityRule` with that descriptor and add it to `BuiltInRules` (see [checker.md](checker.md); the ARIA
+   rules are in [rules/aria.md](rules/aria.md)).
+4. Refresh `docs/coverage.md` with `ONEHTML_UPDATE_DOCS=1` when running the Validation tests.
 
 ## Refreshing the data
 

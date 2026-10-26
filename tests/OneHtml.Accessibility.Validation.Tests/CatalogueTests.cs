@@ -198,7 +198,7 @@ public class CatalogueTests
         "Validation tests with `ONEHTML_UPDATE_DOCS=1`. The sources and their pins are in `docs/catalogue.md`.\n\n" +
         "How to read it: *In WCAG* gives the first version with the criterion (`2.0+` means that version and every later one).\n" +
         "*ACT rules* are the W3C ACT rules that list the criterion as a requirement (any status; deprecated ones are marked).\n" +
-        "*axe-core rules* are the rules whose `wcagNNN` tag names the criterion in axe-core 4.14.0. *Other rules* lists the\n" +
-        "catalogue's own rules, none yet. *Automation* (fully, partly or not automatable) is not assessed yet.\n\n" +
-        CoverageMatrix.ToMarkdown();
+        "*axe-core rules* are the rules whose `wcagNNN` tag names the criterion in axe-core 4.14.0. *Implemented* lists the\n" +
+        "rules this package implements. *Automation* (fully, partly or not automatable) is not assessed yet.\n\n" +
+        CoverageMatrix.ToMarkdown(BuiltInRules.All.Select(r => r.Descriptor));
 }

@@ -12,10 +12,10 @@ public static class CoverageMatrix
     /// <summary>
     /// Renders the matrix as Markdown with Unix line endings. Rows are criteria in number order. The columns list the
     /// versions and level, then ACT rules (from the W3C list), axe-core rules (from their <c>wcagNNN</c> tags) and
-    /// any extra catalogue rules passed in. Automation is "unassessed" until a criterion has been assessed.
+    /// the rules this library implements. Automation is "unassessed" until a criterion has been assessed.
     /// </summary>
-    /// <param name="extraRules">Catalogue rules beyond the ACT and axe data; may be <see langword="null"/>.</param>
-    public static string ToMarkdown(IEnumerable<RuleDescriptor>? extraRules = null)
+    /// <param name="implementedRules">The descriptors of the implemented rules; may be <see langword="null"/>.</param>
+    public static string ToMarkdown(IEnumerable<RuleDescriptor>? implementedRules = null)
     {
         var act = new Dictionary<string, List<string>>(StringComparer.Ordinal);
         foreach (ActRule rule in ActRules.All)
@@ -36,10 +36,16 @@ public static class CoverageMatrix
         }
 
         var other = new Dictionary<string, List<string>>(StringComparer.Ordinal);
-        if (extraRules is not null)
+        var noCriterion = new List<string>();
+        if (implementedRules is not null)
         {
-            foreach (RuleDescriptor rule in extraRules)
+            foreach (RuleDescriptor rule in implementedRules)
             {
+                if (rule.Criteria.Count == 0)
+                {
+                    noCriterion.Add(rule.Id);
+                }
+
                 foreach (SuccessCriterion criterion in rule.Criteria)
                 {
                     Add(other, criterion.Number, rule.Id);
@@ -48,7 +54,7 @@ public static class CoverageMatrix
         }
 
         var sb = new StringBuilder();
-        sb.Append("| Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Other rules | Automation |\n");
+        sb.Append("| Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation |\n");
         sb.Append("|---|---|---|---|---|---|---|---|\n");
         int withAny = 0;
         foreach (SuccessCriterion c in WcagCriteria.All)
@@ -93,6 +99,12 @@ public static class CoverageMatrix
         }
 
         head.Append('\n');
+        sb.Append('\n');
+        if (noCriterion.Count > 0)
+        {
+            sb.Append("Implemented best-practice rules, which check no criterion: ").Append(string.Join(", ", noCriterion.Order(StringComparer.Ordinal))).Append(".\n");
+        }
+
         return head.Append(sb).ToString();
     }
 

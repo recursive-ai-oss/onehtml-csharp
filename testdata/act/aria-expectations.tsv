@@ -1,0 +1,5 @@
+# ACT test cases the static ARIA rules cannot judge. Columns: case id, status, reason.
+# A case listed here must still be wrong (or the test says the entry is stale).
+b86943f7a563dbd10ea493ce437ae7ea9a572119	n/a	ff89c9 Passed Example 6: the list items are put into a shadow root by a script, which is inert here
+289c7bc0b1fb7ac0bfe22337f428db57d50bc599	n/a	ff89c9 Failed Example 4: aria-owns names elements that a script puts into a shadow root
+4cfb71fcbfb617bb32540826847a8d6af7890fd4	n/a	6cfa84 Passed Example 4: passes only because a focus listener (script) moves focus away from the hidden link at once

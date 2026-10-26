@@ -227,4 +227,16 @@ bool factsOk = mapped.Succeeded && mapped.Accounting!.IsComplete
     && !refused.Succeeded && refused.Refusal!.Reason == RecursiveAI.OneHtml.Accessibility.Rendered.RefusalReason.NodeCountMismatch;
 Console.WriteLine($"rendered facts: {factsOk}");
 
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk && factsOk ? 0 : 1;
+
+// Validation: run the ARIA rules, read both exports, apply a suggested edit and check again.
+RecursiveAI.OneHtml.Document vdoc = RecursiveAI.OneHtml.Document.Parse("<body><div role=lnik id=a>x</div><p aria-foo=1 id=p>y</p><ul role=list><span role=link>z</span></ul><button aria-hidden=true>h</button></body>");
+RecursiveAI.OneHtml.Accessibility.Validation.CheckReport vreport = new RecursiveAI.OneHtml.Accessibility.Validation.Checker().Check(vdoc);
+string nativeJson = RecursiveAI.OneHtml.Accessibility.Validation.ResultsExport.ToNativeJson(vreport);
+string axeJson = RecursiveAI.OneHtml.Accessibility.Validation.ResultsExport.ToAxeJson(vreport);
+RecursiveAI.OneHtml.Editing.EditResult fixedResult = RecursiveAI.OneHtml.DocumentEditing.Apply(vdoc, vreport.SuggestedEditList());
+RecursiveAI.OneHtml.Accessibility.Validation.CheckReport vafter = new RecursiveAI.OneHtml.Accessibility.Validation.Checker().Check(fixedResult.Document!);
+bool validationOk = vreport.Count(RecursiveAI.OneHtml.Accessibility.Validation.Outcome.Failed) >= 3
+    && nativeJson.Contains("\"onehtml-results\"", StringComparison.Ordinal) && axeJson.Contains("\"violations\"", StringComparison.Ordinal)
+    && fixedResult.Succeeded && vafter.Count(RecursiveAI.OneHtml.Accessibility.Validation.Outcome.Failed) == vreport.Count(RecursiveAI.OneHtml.Accessibility.Validation.Outcome.Failed) - 1;
+Console.WriteLine($"validation={validationOk} results={vreport.Results.Count} native={nativeJson.Length} axe={axeJson.Length}");
+return validationOk && htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk && factsOk ? 0 : 1;

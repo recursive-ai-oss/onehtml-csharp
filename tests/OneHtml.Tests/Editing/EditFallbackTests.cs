@@ -53,6 +53,28 @@ public class EditFallbackTests
     }
 
     [Fact]
+    public void A_transaction_that_cannot_be_verified_fails_at_the_verification_budget()
+    {
+        Assert.Equal(64, new EditOptions().MaxVerifications);
+
+        // Text cannot sit directly in a table, and no enclosing element's rewrite changes that, so the widening climbs one
+        // ancestor per re-parse until the budget is spent.
+        Document d = Parse(string.Concat(System.Linq.Enumerable.Repeat("<div>", 80)) + "<table><tbody><tr><td>x</td></tr></tbody></table>" + string.Concat(System.Linq.Enumerable.Repeat("</div>", 80)));
+        EditResult r = d.Apply([Edit.Append(Find(d, "table"), "hello")], new EditOptions { MaxVerifications = 6 });
+        Assert.False(r.Succeeded);
+        Assert.Null(r.Document);
+        Assert.Equal(EditStatus.Failed, r.Outcomes[0].Status);
+        Assert.Contains("re-parsed 6 times without matching", r.Outcomes[0].Reason, StringComparison.Ordinal);
+        Assert.Contains("re-parsed 6 times", r.Failure, StringComparison.Ordinal);
+
+        // With the default budget it stops at 64 re-parses instead of walking all 80 levels.
+        r = d.Apply([Edit.Append(Find(d, "table"), "hello")]);
+        Assert.False(r.Succeeded);
+        Assert.Equal(EditStatus.Failed, r.Outcomes[0].Status);
+        Assert.Contains("re-parsed 64 times without matching", r.Outcomes[0].Reason, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Parser_copies_are_never_edited_directly()
     {
         Document d = Parse("<select><button><selectedcontent></selectedcontent></button><option selected><b>a</b></option></select>");

@@ -33,7 +33,7 @@ public sealed class SupportsCondition
     /// <summary>False when the text is not a valid <c>&lt;supports-condition&gt;</c>; such a condition evaluates to false.</summary>
     public bool IsValid => _root is not null;
 
-    /// <summary>The condition text, trimmed.</summary>
+    /// <summary>The condition text, trimmed of whitespace. A condition that ends in a string broken by a newline keeps that one newline, so that the text tokenizes the same way when parsed again.</summary>
     public string Text { get; }
 
     /// <summary>Parses a condition. A bare declaration (<c>display: grid</c>) is accepted too, as <c>CSS.supports()</c> does.</summary>
@@ -53,6 +53,14 @@ public sealed class SupportsCondition
         options ??= SupportsOptions.Default;
         TokenRange r = TokenRange.Of(values).Trim();
         string text = r.RawText();
+        if (!r.IsEmpty && r.Kind(r.To - 1) == CssTokenKind.BadString && r.Tree.Tokens[r.To - 1].End < r.Tree.Text.Length)
+        {
+            // CSS Syntax 4.3.5: a string ends at a newline, which is not part of it and makes it a bad-string. The newline
+            // is the whitespace the trim just dropped; without it the text ends in an ordinary string cut off by the end
+            // of the input, a different token, and the condition would read back differently.
+            text += r.Tree.Text[r.Tree.Tokens[r.To - 1].End];
+        }
+
         if (r.IsEmpty)
         {
             return new SupportsCondition(null, text);

@@ -159,7 +159,18 @@ internal static class ValueTarget
 
     private static void Supports(string text, ComponentValueList value)
     {
-        _ = SupportsCondition.Parse(text).Evaluate();
+        SupportsCondition condition = SupportsCondition.Parse(text);
+        bool result = condition.Evaluate();
+
+        // The condition text parses again to the same text, validity and answer (the @supports counterpart of the media
+        // query list check: what is written out must read back as the same condition).
+        string css = condition.Text;
+        SupportsCondition again = SupportsCondition.Parse(css);
+        if (again.Text != css || again.IsValid != condition.IsValid || again.Evaluate() != result)
+        {
+            throw new InvalidOperationException("supports condition does not round-trip: " + css);
+        }
+
         _ = SupportsCondition.Parse(value, new SupportsOptions { SelectorSupported = static s => s.Length % 2 == 0 }).Evaluate();
         _ = DeclarationSupport.IsSupported("color", value);
         _ = DeclarationSupport.IsSupported("margin", value);

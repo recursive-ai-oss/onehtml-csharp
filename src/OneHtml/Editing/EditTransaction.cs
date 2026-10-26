@@ -19,9 +19,12 @@ public sealed class EditOptions
     /// <summary>
     /// The most times the edited document may be re-parsed while looking for the smallest region that has to be
     /// re-serialized (see <see cref="EditResult.Fallbacks"/>). One re-parse always happens; more only happen when
-    /// the first check fails. Default 1,024.
+    /// the first check fails. When the budget runs out the transaction fails (nothing is applied) and the edit that was
+    /// being widened reports <see cref="EditStatus.Failed"/> with a reason saying the output was re-parsed that many
+    /// times without matching. Each step re-parses the whole document, so on a large page a transaction that cannot be
+    /// verified is expensive to keep trying; real transactions settle within a handful of steps. Default 64.
     /// </summary>
-    public int MaxVerifications { get; init; } = 1024;
+    public int MaxVerifications { get; init; } = 64;
 
     /// <summary>
     /// For stylesheet edits: parse the whole edited stylesheet to verify the result. By default only the stretch of

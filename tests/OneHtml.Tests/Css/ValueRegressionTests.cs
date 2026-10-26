@@ -158,4 +158,60 @@ public class ValueRegressionTests
             Assert.True(css == MediaQueryList.Parse(css).ToCss(), "unstable for: " + q);
         }
     }
+
+    [Fact]
+    public void Supports_condition_text_reads_back_as_the_same_condition_on_random_token_soup()
+    {
+        string[] pieces = ["(", ")", "(", ")", "[", "]", "{", "}", "'", "\"", "\\", "\\\n", "/*", "*/", " ", "\n", "url(", "url(\"", "f(", "not ", "and ", "or ", "selector(", "font-format(", "font-tech(", "at-rule(", "@media", "woff2", "display", ":", "grid", "!important", "!", "1px", "\0", ",", "/", "x", "\\31 ", "\\ ", ";", "#a", "u+1", "\u00e9"];
+        var rnd = new Random(11);
+        var sb = new System.Text.StringBuilder();
+        for (int it = 0; it < 200_000; it++)
+        {
+            sb.Clear();
+            int n = rnd.Next(1, 40);
+            for (int k = 0; k < n; k++)
+            {
+                sb.Append(pieces[rnd.Next(pieces.Length)]);
+            }
+
+            AssertSupportsStable(sb.ToString());
+        }
+    }
+
+    [Theory]
+    [InlineData(257, "")]
+    [InlineData(257, ")\u0001")]
+    [InlineData(300, "display: grid")]
+    [InlineData(260, ") and (display: grid)")]
+    public void Supports_condition_nested_past_the_depth_limit_reads_back_as_the_same_condition(int depth, string tail)
+    {
+        AssertSupportsStable(new string('(', depth) + tail);
+        AssertSupportsStable("(display: grid) and " + new string('(', depth) + tail);
+    }
+
+    [Theory]
+    [InlineData("(url(")]
+    [InlineData("(display: url(")]
+    [InlineData("(display: \"a")]
+    [InlineData("selector(a\\")]
+    [InlineData("not (foo(x))")]
+    [InlineData("((foo(x)) or (y))")]
+    [InlineData("(display: grid) and (a\\ ")]
+    [InlineData("(a /* open")]
+    [InlineData("font-tech(")]
+    [InlineData("(display: grid) '\f")]
+    [InlineData("(display: grid) \"a\n")]
+    [InlineData("not (display: grid) \"a\r\n  ")]
+    [InlineData("'\n'\f")]
+    public void Supports_condition_with_a_block_cut_off_by_the_end_of_input_reads_back_as_the_same_condition(string condition)
+    {
+        AssertSupportsStable(condition);
+    }
+
+    private static void AssertSupportsStable(string text)
+    {
+        SupportsCondition first = SupportsCondition.Parse(text);
+        SupportsCondition again = SupportsCondition.Parse(first.Text);
+        Assert.True(again.Text == first.Text && again.IsValid == first.IsValid && again.Evaluate() == first.Evaluate(), "unstable for: " + text);
+    }
 }

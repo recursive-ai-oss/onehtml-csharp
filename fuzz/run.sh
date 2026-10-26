@@ -1,13 +1,16 @@
 #!/bin/bash
 # Runs one fuzz target under SharpFuzz with the libFuzzer driver. Usage:
 #   fuzz/run.sh <target> <seconds> <seed-dir> <out-dir>
-# Targets are the names OneHtml.Fuzz lists (tokenize, treebuilder, css). Run fuzz/setup-worker.sh once first.
+# Targets are the names OneHtml.Fuzz --list prints (css, domsnapshot, edit, editjson, noop, selectors, style, tokenize,
+# treebuilder, values). Run fuzz/setup-worker.sh once first.
 # The seed directory is only read; libFuzzer works on a copy in <out-dir>/corpus. Crashes, timeouts and out-of-memory
 # inputs land in <out-dir>/crashes; the log and a few headline numbers (executions, coverage features, crash count)
 # in <out-dir>/fuzz.log and <out-dir>/result.txt.
 # One process. Runs over 300 s take ~/WORKER-BENCH.lock and exit with status 3 at once when it is held; the
 # duration is capped at 7200 s per call (split longer campaigns, reusing <out-dir>/corpus).
-# Environment: FUZZ_MAX_LEN (default 65536), FUZZ_SEED (default 1), SKIP_BUILD=1 to reuse the last build.
+# Everything is built and installed under $ONEHTML_U7_HOME (default ~/onehtml/u7), including the published build that every
+# call replaces: parallel users must set ONEHTML_U7_HOME to separate directories.
+# Environment: ONEHTML_U7_HOME, FUZZ_MAX_LEN (default 65536), FUZZ_SEED (default 1), SKIP_BUILD=1 to reuse the last build.
 
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)

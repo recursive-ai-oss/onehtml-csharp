@@ -8,7 +8,7 @@ Normative behaviour of `Document.Apply` and `DocumentEditor` in `RecursiveAI.One
 - Edit targets are `Node` handles into the snapshot being edited. Edits in one transaction all refer to that snapshot, and are applied in order; an edit may target a node created by an earlier edit of the same transaction.
 - An empty transaction returns bytes identical to the input.
 - Each `EditOutcome` is `Applied`, `Invalid` (the operation does not fit the target or its input is unusable: `unwrap` on a text node, an edit to a synthesized `selectedcontent` clone, NUL in text), `Failed` (the result cannot be expressed in HTML: no enclosing region re-parses to the expected tree), or `NotAttempted` (an earlier edit stopped the transaction). A no-op such as removing an absent attribute is `Applied`.
-- Limits, checked before the work they guard: `MaxEdits` (100,000), `MaxInsertedLength` (16 MiB of inserted markup and text), `MaxVerifications` (1,024 re-parses in one-at-a-time fallback). Exceeding one fails the transaction cleanly.
+- Limits, checked before the work they guard: `MaxEdits` (100,000), `MaxInsertedLength` (16 MiB of inserted markup and text), `MaxVerifications` (64 re-parses in one-at-a-time fallback; each re-parse covers the whole document, so a hopeless transaction on a large page must not climb the ladder for long). Exceeding one fails the transaction cleanly: nothing is applied, and the edit being widened is `Failed` with the reason "the output was re-parsed N times without matching".
 
 ## Operations
 

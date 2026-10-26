@@ -515,6 +515,15 @@
       "nodes": []
     },
     {
+      "id": "document-title-descriptive",
+      "impact": null,
+      "tags": [],
+      "description": "The title of the page should describe its topic or purpose.",
+      "help": "Reword the title element so that it says what the page is for.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
       "id": "duplicate-id",
       "impact": null,
       "tags": [
@@ -581,6 +590,15 @@
       "description": "A frame removed from the tab order must not contain focusable content.",
       "help": "Remove the negative tabindex from the frame, or remove the focusable content.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/frame-focusable-content",
+      "nodes": []
+    },
+    {
+      "id": "heading-descriptive",
+      "impact": null,
+      "tags": [],
+      "description": "A heading should describe the topic or purpose of the section it introduces.",
+      "help": "Reword the heading so that it says what the section is about.",
+      "helpUrl": "",
       "nodes": []
     },
     {
@@ -1976,6 +1994,271 @@
       ]
     },
     {
+      "id": "focus-visible-indicator",
+      "impact": null,
+      "tags": [],
+      "description": "An element that can be reached with the keyboard must show that it has focus.",
+      "help": "Do not remove the browser's focus outline without replacing it; give :focus-visible a visible outline, background or border change.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<a href=\"/contact\">",
+          "impact": null,
+          "target": [
+            "body > p:nth-of-type(1) > a:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/about/contact\">",
+          "impact": null,
+          "target": [
+            "body > p:nth-of-type(1) > a:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/empty\">",
+          "impact": null,
+          "target": [
+            "body > p:nth-of-type(1) > a:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button type=\"button\">",
+          "impact": null,
+          "target": [
+            "body > button:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button type=\"button\" aria-label=\"Close dialog\">",
+          "impact": null,
+          "target": [
+            "[aria-label=\"Close dialog\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button type=\"button\" aria-label=\"Next\">",
+          "impact": null,
+          "target": [
+            "[aria-label=\"Next\"]"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input id=\"first\" name=\"first\">",
+          "impact": null,
+          "target": [
+            "#first"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input id=\"city\" name=\"city\" title=\"City\">",
+          "impact": null,
+          "target": [
+            "#city"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input id=\"zip\" name=\"zip\">",
+          "impact": null,
+          "target": [
+            "#zip"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<select id=\"colour\">",
+          "impact": null,
+          "target": [
+            "#colour"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input type=\"image\" src=\"go.png\">",
+          "impact": null,
+          "target": [
+            "form > input:nth-of-type(4)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<iframe src=\"/a.html\" title=\"Contributors\">",
+          "impact": null,
+          "target": [
+            "body > iframe:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<iframe src=\"/b.html\" title=\"Contributors\">",
+          "impact": null,
+          "target": [
+            "body > iframe:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<iframe src=\"/c.html\">",
+          "impact": null,
+          "target": [
+            "body > iframe:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<summary>",
+          "impact": null,
+          "target": [
+            "summary"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
       "id": "frame-title",
       "impact": null,
       "tags": [
@@ -2818,6 +3101,78 @@
       ]
     },
     {
+      "id": "identical-links-same-context",
+      "impact": "moderate",
+      "tags": [],
+      "description": "Links with the same name in the same context should serve the same purpose.",
+      "help": "Give links that go to different places different names, or send the identical names in one context to the same resource.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<a href=\"/contact\">",
+          "impact": "moderate",
+          "target": [
+            "body > p:nth-of-type(1) > a:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "identical-links-same-context",
+              "data": [
+                {
+                  "attribute": "href",
+                  "value": "/contact"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Links named \"Contact us\" in the same context go to different resources; check that they serve the same purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Links named \"Contact us\" in the same context go to different resources; check that they serve the same purpose.\nWhere the link points.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/about/contact\">",
+          "impact": "moderate",
+          "target": [
+            "body > p:nth-of-type(1) > a:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "identical-links-same-context",
+              "data": [
+                {
+                  "attribute": "href",
+                  "value": "/about/contact"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Links named \"Contact us\" in the same context go to different resources; check that they serve the same purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Links named \"Contact us\" in the same context go to different resources; check that they serve the same purpose.\nWhere the link points.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
       "id": "identical-links-same-purpose",
       "impact": "minor",
       "tags": [
@@ -2894,6 +3249,42 @@
       ]
     },
     {
+      "id": "image-decorative",
+      "impact": "moderate",
+      "tags": [],
+      "description": "A picture that is left out of the accessibility tree must be purely decorative.",
+      "help": "Give the picture alternative text if it carries information, or keep it hidden if it is only decoration.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<img src=\"rule.png\" alt=\"\">",
+          "impact": "moderate",
+          "target": [
+            "body > p:nth-of-type(2) > img:nth-of-type(3)"
+          ],
+          "any": [
+            {
+              "id": "image-decorative",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the picture is purely decorative: it adds no information that the page does not give in text."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the picture is purely decorative: it adds no information that the page does not give in text.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
       "id": "image-name-descriptive",
       "impact": "moderate",
       "tags": [
@@ -2929,6 +3320,292 @@
           "onehtml": {
             "outcome": "needs-review",
             "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "image-of-text",
+      "impact": "moderate",
+      "tags": [],
+      "description": "An image should not contain text, unless the look of the text is essential.",
+      "help": "Put the text in the page as real text styled with CSS, or leave it in the image only when its exact look is essential (such as a logo).",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<img src=\"logo.png\">",
+          "impact": "moderate",
+          "target": [
+            "body > p:nth-of-type(2) > img:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "image-of-text",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<img src=\"team.jpg\" alt=\"The team on the steps\">",
+          "impact": "moderate",
+          "target": [
+            "body > p:nth-of-type(2) > img:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "image-of-text",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<img src=\"rule.png\" alt=\"\">",
+          "impact": "moderate",
+          "target": [
+            "body > p:nth-of-type(2) > img:nth-of-type(3)"
+          ],
+          "any": [
+            {
+              "id": "image-of-text",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<input type=\"image\" src=\"go.png\">",
+          "impact": "moderate",
+          "target": [
+            "form > input:nth-of-type(4)"
+          ],
+          "any": [
+            {
+              "id": "image-of-text",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<object data=\"movie.mp4\">",
+          "impact": "moderate",
+          "target": [
+            "object"
+          ],
+          "any": [
+            {
+              "id": "image-of-text",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "label-descriptive",
+      "impact": "moderate",
+      "tags": [],
+      "description": "The visible label of a form field should describe its purpose.",
+      "help": "Reword the label so that it says what to enter or choose.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<label for=\"first\">",
+          "impact": "moderate",
+          "target": [
+            "form > label:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "label-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "First name"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the label, with its visual context, describes the purpose of the field."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the label, with its visual context, describes the purpose of the field.\nThe label text.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<label for=\"first\">",
+          "impact": "moderate",
+          "target": [
+            "form > label:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "label-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Given"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the label, with its visual context, describes the purpose of the field."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the label, with its visual context, describes the purpose of the field.\nThe label text.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "link-descriptive",
+      "impact": "moderate",
+      "tags": [
+        "needs-review-only"
+      ],
+      "description": "A link's name should describe where it goes.",
+      "help": "Reword the link so that its own text says what it leads to.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<a href=\"/contact\">",
+          "impact": "moderate",
+          "target": [
+            "body > p:nth-of-type(1) > a:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Contact us"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/about/contact\">",
+          "impact": "moderate",
+          "target": [
+            "body > p:nth-of-type(1) > a:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Contact us"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
             "cssOnly": false,
             "factsMissing": [],
             "suggestedEdits": 0

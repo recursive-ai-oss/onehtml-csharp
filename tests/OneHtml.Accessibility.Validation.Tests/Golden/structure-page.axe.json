@@ -631,6 +631,15 @@
       "nodes": []
     },
     {
+      "id": "identical-links-same-context",
+      "impact": null,
+      "tags": [],
+      "description": "Links with the same name in the same context should serve the same purpose.",
+      "help": "Give links that go to different places different names, or send the identical names in one context to the same resource.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
       "id": "identical-links-same-purpose",
       "impact": null,
       "tags": [
@@ -641,6 +650,15 @@
       "description": "Links with the same accessible name should serve the same purpose.",
       "help": "Give links that go to different places different names, or send the identical names to the same resource.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/identical-links-same-purpose",
+      "nodes": []
+    },
+    {
+      "id": "image-decorative",
+      "impact": null,
+      "tags": [],
+      "description": "A picture that is left out of the accessibility tree must be purely decorative.",
+      "help": "Give the picture alternative text if it carries information, or keep it hidden if it is only decoration.",
+      "helpUrl": "",
       "nodes": []
     },
     {
@@ -727,6 +745,15 @@
       "description": "The accessible name of a control must contain the text visible on it.",
       "help": "Start or include the visible text in the aria-label or aria-labelledby that names the control.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label-content-name-mismatch",
+      "nodes": []
+    },
+    {
+      "id": "label-descriptive",
+      "impact": null,
+      "tags": [],
+      "description": "The visible label of a form field should describe its purpose.",
+      "help": "Reword the label so that it says what to enter or choose.",
+      "helpUrl": "",
       "nodes": []
     },
     {
@@ -2568,6 +2595,220 @@
       ]
     },
     {
+      "id": "focus-visible-indicator",
+      "impact": null,
+      "tags": [],
+      "description": "An element that can be reached with the keyboard must show that it has focus.",
+      "help": "Do not remove the browser's focus outline without replacing it; give :focus-visible a visible outline, background or border change.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<a href=\"#content\">",
+          "impact": null,
+          "target": [
+            "body > a:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"#missing\">",
+          "impact": null,
+          "target": [
+            "body > a:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button id=\"go\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button id=\"go\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/x\" tabindex=\"1\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/y\" tabindex=\"2\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(4)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/k\" accesskey=\"k\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button accesskey=\"K\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button>",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(4)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/inner\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(4) > a"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/map\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(4)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
       "id": "heading-order",
       "impact": null,
       "tags": [
@@ -3378,6 +3619,119 @@
   ],
   "incomplete": [
     {
+      "id": "document-title-descriptive",
+      "impact": "moderate",
+      "tags": [],
+      "description": "The title of the page should describe its topic or purpose.",
+      "help": "Reword the title element so that it says what the page is for.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<title>",
+          "impact": "moderate",
+          "target": [
+            "title"
+          ],
+          "any": [
+            {
+              "id": "document-title-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Structure page"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the title describes the topic or purpose of the page."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the title describes the topic or purpose of the page.\nThe title text.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "heading-descriptive",
+      "impact": "moderate",
+      "tags": [],
+      "description": "A heading should describe the topic or purpose of the section it introduces.",
+      "help": "Reword the heading so that it says what the section is about.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<h2>",
+          "impact": "moderate",
+          "target": [
+            "h2"
+          ],
+          "any": [
+            {
+              "id": "heading-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Starts at two"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the heading describes the topic or purpose of its section."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the heading describes the topic or purpose of its section.\nThe heading text.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<h4>",
+          "impact": "moderate",
+          "target": [
+            "h4"
+          ],
+          "any": [
+            {
+              "id": "heading-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Skips a level"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the heading describes the topic or purpose of its section."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the heading describes the topic or purpose of its section.\nThe heading text.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
       "id": "hidden-content",
       "impact": "minor",
       "tags": [
@@ -3500,6 +3854,271 @@
           "onehtml": {
             "outcome": "needs-review",
             "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "image-of-text",
+      "impact": "moderate",
+      "tags": [],
+      "description": "An image should not contain text, unless the look of the text is essential.",
+      "help": "Put the text in the page as real text styled with CSS, or leave it in the image only when its exact look is essential (such as a logo).",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<img src=\"map.png\" alt=\"Map\" ismap>",
+          "impact": "moderate",
+          "target": [
+            "img"
+          ],
+          "any": [
+            {
+              "id": "image-of-text",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "link-descriptive",
+      "impact": "moderate",
+      "tags": [
+        "needs-review-only"
+      ],
+      "description": "A link's name should describe where it goes.",
+      "help": "Reword the link so that its own text says what it leads to.",
+      "helpUrl": "",
+      "nodes": [
+        {
+          "html": "<a href=\"#content\">",
+          "impact": "moderate",
+          "target": [
+            "body > a:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Skip to content"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"#missing\">",
+          "impact": "moderate",
+          "target": [
+            "body > a:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Skip to nowhere"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/x\" tabindex=\"1\">",
+          "impact": "moderate",
+          "target": [
+            "#content > a:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "first"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/y\" tabindex=\"2\">",
+          "impact": "moderate",
+          "target": [
+            "#content > a:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "second"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/k\" accesskey=\"k\">",
+          "impact": "moderate",
+          "target": [
+            "#content > a:nth-of-type(3)"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "k"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/inner\">",
+          "impact": "moderate",
+          "target": [
+            "#content > button:nth-of-type(4) > a"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "nested"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/map\">",
+          "impact": "moderate",
+          "target": [
+            "#content > a:nth-of-type(4)"
+          ],
+          "any": [
+            {
+              "id": "link-descriptive",
+              "data": [
+                {
+                  "attribute": null,
+                  "value": "Map"
+                }
+              ],
+              "relatedNodes": [],
+              "impact": "moderate",
+              "message": "Check that the link's name alone describes its purpose."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "Check that the link's name alone describes its purpose.\nThe accessible name.",
+          "onehtml": {
+            "outcome": "needs-review",
+            "blocksTask": true,
             "cssOnly": false,
             "factsMissing": [],
             "suggestedEdits": 0

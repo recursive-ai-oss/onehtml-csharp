@@ -59,6 +59,7 @@ public static class BuiltInRules
         list.AddRange(StructureRuleSet.Create());
         list.AddRange(VisualRuleSet.Create());
         list.AddRange(MediaRuleSet.Create());
+        list.AddRange(ActGapRuleSet.Create());
         list.Sort((a, b) => string.CompareOrdinal(a.Descriptor.Id, b.Descriptor.Id));
         return [.. list];
     }

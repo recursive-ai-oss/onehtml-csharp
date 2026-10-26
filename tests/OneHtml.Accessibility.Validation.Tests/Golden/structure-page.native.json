@@ -1453,6 +1453,31 @@
       "noFixReason": "The title is content: only the author knows what the page is called."
     },
     {
+      "id": "document-title-descriptive",
+      "description": "The title of the page should describe its topic or purpose.",
+      "help": "Reword the title element so that it says what the page is for.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "c4a8a4"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.2",
+          "handle": "Page Titled",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether a title describes the page is a judgement about content."
+    },
+    {
       "id": "duplicate-id",
       "description": "An id value should be used by one element only.",
       "help": "Give each element its own id.",
@@ -1653,6 +1678,31 @@
       "noFixReason": "Which role fits the element depends on what it does, which only the author knows."
     },
     {
+      "id": "focus-visible-indicator",
+      "description": "An element that can be reached with the keyboard must show that it has focus.",
+      "help": "Do not remove the browser's focus outline without replacing it; give :focus-visible a visible outline, background or border change.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "oj04fd"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.7",
+          "handle": "Focus Visible",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "How the focus should look is a design decision."
+    },
+    {
       "id": "form-field-multiple-labels",
       "description": "A form field should not have more than one label element.",
       "help": "Use one label element for the field and put the extra text inside it.",
@@ -1805,6 +1855,31 @@
       ],
       "fix": null,
       "noFixReason": "Naming a frame is a content decision."
+    },
+    {
+      "id": "heading-descriptive",
+      "description": "A heading should describe the topic or purpose of the section it introduces.",
+      "help": "Reword the heading so that it says what the section is about.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "b49b2e"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.6",
+          "handle": "Headings and Labels",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether a heading describes its section is a judgement about content."
     },
     {
       "id": "heading-order",
@@ -1994,6 +2069,37 @@
       "noFixReason": "Which of the two values is right is content; removing xml:lang would also discard it for XML consumers."
     },
     {
+      "id": "identical-links-same-context",
+      "description": "Links with the same name in the same context should serve the same purpose.",
+      "help": "Give links that go to different places different names, or send the identical names in one context to the same resource.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "fd3a94"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.4",
+          "handle": "Link Purpose (In Context)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "2.4.9",
+          "handle": "Link Purpose (Link Only)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Naming a link is a content decision."
+    },
+    {
       "id": "identical-links-same-purpose",
       "description": "Links with the same accessible name should serve the same purpose.",
       "help": "Give links that go to different places different names, or send the identical names to the same resource.",
@@ -2070,6 +2176,31 @@
       "noFixReason": "Whether the image is informative or decorative, and what it shows, is content only the author knows."
     },
     {
+      "id": "image-decorative",
+      "description": "A picture that is left out of the accessibility tree must be purely decorative.",
+      "help": "Give the picture alternative text if it carries information, or keep it hidden if it is only decoration.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "e88epe"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether a picture is decoration depends on what it shows and what the page says next to it."
+    },
+    {
       "id": "image-name-descriptive",
       "description": "The accessible name of an image should describe it.",
       "help": "Reword the name so that it says what the image shows or does.",
@@ -2095,6 +2226,37 @@
       ],
       "fix": null,
       "noFixReason": "Whether the text is descriptive is a judgement about content; there is no single correct replacement."
+    },
+    {
+      "id": "image-of-text",
+      "description": "An image should not contain text, unless the look of the text is essential.",
+      "help": "Put the text in the page as real text styled with CSS, or leave it in the image only when its exact look is essential (such as a logo).",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "0va7u6"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.5",
+          "handle": "Images of Text",
+          "level": "AA",
+          "version": "2.0"
+        },
+        {
+          "number": "1.4.9",
+          "handle": "Images of Text (No Exception)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether an image holds text, and whether its look is essential, depends on what the picture shows."
     },
     {
       "id": "image-redundant-alt",
@@ -2288,6 +2450,31 @@
       ],
       "fix": null,
       "noFixReason": "The name is content: the fix is to reword it around the visible text, which is the author's call."
+    },
+    {
+      "id": "label-descriptive",
+      "description": "The visible label of a form field should describe its purpose.",
+      "help": "Reword the label so that it says what to enter or choose.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "cc0f0a"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.6",
+          "handle": "Headings and Labels",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether a label describes its field is a judgement about content."
     },
     {
       "id": "label-title-only",
@@ -2499,6 +2686,33 @@
       ],
       "fix": null,
       "noFixReason": "The names are content: only the author knows what to call each landmark."
+    },
+    {
+      "id": "link-descriptive",
+      "description": "A link's name should describe where it goes.",
+      "help": "Reword the link so that its own text says what it leads to.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "aizyf1"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.9",
+          "handle": "Link Purpose (Link Only)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "needs-review-only"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the text is descriptive is a judgement about content; there is no single correct replacement."
     },
     {
       "id": "link-in-context-descriptive",
@@ -3302,6 +3516,10 @@
         {
           "kind": "axe",
           "id": "summary-name"
+        },
+        {
+          "kind": "act",
+          "id": "2t702h"
         }
       ],
       "criteria": [
@@ -6092,6 +6310,34 @@
       "suggested": []
     },
     {
+      "rule": "document-title-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the title describes the topic or purpose of the page.",
+      "target": {
+        "tag": "title",
+        "locator": "title",
+        "source": {
+          "start": 63,
+          "end": 70
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "Structure page",
+          "message": "The title text."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "duplicate-id",
       "outcome": "passed",
       "message": "Meets the rule.",
@@ -6343,6 +6589,270 @@
       "suggested": []
     },
     {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(1)",
+        "source": {
+          "start": 230,
+          "end": 249
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(2)",
+        "source": {
+          "start": 269,
+          "end": 288
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(1)",
+        "source": {
+          "start": 741,
+          "end": 757
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(2)",
+        "source": {
+          "start": 768,
+          "end": 784
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(1)",
+        "source": {
+          "start": 804,
+          "end": 830
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(2)",
+        "source": {
+          "start": 839,
+          "end": 865
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "div",
+        "locator": "#content > div:nth-of-type(4)",
+        "source": {
+          "start": 878,
+          "end": 896
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(3)",
+        "source": {
+          "start": 923,
+          "end": 950
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(3)",
+        "source": {
+          "start": 955,
+          "end": 977
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(4)",
+        "source": {
+          "start": 990,
+          "end": 998
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > button:nth-of-type(4) > a",
+        "source": {
+          "start": 998,
+          "end": 1015
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-visible-indicator",
+      "outcome": "passed",
+      "message": "The element's painted style changes when it has keyboard focus.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(4)",
+        "source": {
+          "start": 1124,
+          "end": 1139
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "form-field-multiple-labels",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
@@ -6400,6 +6910,62 @@
       "message": "The rule found nothing to check.",
       "target": null,
       "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "heading-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the heading describes the topic or purpose of its section.",
+      "target": {
+        "tag": "h2",
+        "locator": "h2",
+        "source": {
+          "start": 388,
+          "end": 392
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "Starts at two",
+          "message": "The heading text."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "heading-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the heading describes the topic or purpose of its section.",
+      "target": {
+        "tag": "h4",
+        "locator": "h4",
+        "source": {
+          "start": 413,
+          "end": 417
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "Skips a level",
+          "message": "The heading text."
+        }
+      ],
       "taskImpact": {
         "blocksTask": false,
         "reason": null
@@ -6575,6 +7141,21 @@
       "suggested": []
     },
     {
+      "rule": "identical-links-same-context",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "identical-links-same-purpose",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
@@ -6612,6 +7193,21 @@
       "suggested": []
     },
     {
+      "rule": "image-decorative",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "image-name-descriptive",
       "outcome": "needs-review",
       "message": "Check that the image's name describes it.",
@@ -6630,6 +7226,28 @@
           "message": "The accessible name."
         }
       ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-of-text",
+      "outcome": "needs-review",
+      "message": "Check that the image holds no text, or only text whose look is essential, or text that is a small part of the picture.",
+      "target": {
+        "tag": "img",
+        "locator": "img",
+        "source": {
+          "start": 1139,
+          "end": 1174
+        }
+      },
+      "findings": [],
       "taskImpact": {
         "blocksTask": false,
         "reason": null
@@ -6708,6 +7326,21 @@
     },
     {
       "rule": "label-content-name-mismatch",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label-descriptive",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,
@@ -7111,6 +7744,202 @@
       "taskImpact": {
         "blocksTask": false,
         "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's name alone describes its purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(1)",
+        "source": {
+          "start": 230,
+          "end": 249
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "Skip to content",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's name alone describes its purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(2)",
+        "source": {
+          "start": 269,
+          "end": 288
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "Skip to nowhere",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's name alone describes its purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(1)",
+        "source": {
+          "start": 804,
+          "end": 830
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "first",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's name alone describes its purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(2)",
+        "source": {
+          "start": 839,
+          "end": 865
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "second",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's name alone describes its purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(3)",
+        "source": {
+          "start": 923,
+          "end": 950
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "k",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's name alone describes its purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > button:nth-of-type(4) > a",
+        "source": {
+          "start": 998,
+          "end": 1015
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "nested",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's name alone describes its purpose.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(4)",
+        "source": {
+          "start": 1124,
+          "end": 1139
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "Map",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
       },
       "cssOnly": false,
       "factsUsed": [],

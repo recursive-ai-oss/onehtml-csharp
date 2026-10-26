@@ -1,0 +1,7 @@
+# ACT test cases of the gap-closing rules that a static check cannot judge. Columns: case id, status, reason.
+# A case listed here must still be wrong (or the test says the entry is stale).
+a4cd21db636880a4f6f074307bf8307a07edf51e	n/a	oj04fd Failed Example 1: the indicator is removed by a stylesheet that is not vendored with the case, so the page parses with the default focus outline
+4ae2a7b651a21179c0a61890268d86014e269f6a	n/a	cc0f0a Inapplicable Example 2: the label is moved off-screen with position: absolute; telling it is not visible needs layout (rendered facts)
+3cb6585fa0024becb2c0738f723073a1283ddd88	n/a	e88epe Inapplicable Example 3: the image is moved off-screen with position: absolute; telling it is not visible needs layout (rendered facts)
+357d6afecdc6360f342bd3307e4ee71bb9d03397	n/a	e88epe Inapplicable Example 6: a canvas nothing was drawn on is blank; whether it paints anything is known only after scripts run
+99e3d033665b0a89ed706113576df48b41f0ac5a	n/a	e88epe Inapplicable Example 10: the image file does not exist; whether the image loaded is known only to a browser

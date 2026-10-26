@@ -47,7 +47,7 @@ internal static class NameRuleSet
             (c, n) => NameSupport.Is(n.DomNode, "select") && n.AriaRole is { Name: not ("none" or "presentation") }, ["e086e5"]);
         yield return new SubjectNameRule("summary-name", "The summary of a details element must have an accessible name.",
             "Put text in the summary, or add an aria-label or aria-labelledby.", "summary",
-            (c, n) => IsDetailsSummary(n.DomNode));
+            (c, n) => IsDetailsSummary(n.DomNode), ["2t702h"]);
         yield return new SubjectNameRule("label", "A form field must have a label.",
             "Associate a visible label element with the field, or add an aria-label or aria-labelledby.", "form field",
             (c, n) => FormFields.IsField(c, n) && !NameSupport.Is(n.DomNode, "select"), ["e086e5"]);

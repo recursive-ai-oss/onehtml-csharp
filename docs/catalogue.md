@@ -34,7 +34,7 @@ reflection, trim- and AOT-safe. The library does not fetch anything.
   `techniques` are the `wcag-technique:` keys; `otherRequirements` keeps the rest (for example `aria12:…`) as published.
 - `inputAspects` are normalised to DOM Tree, CSS Styling, Accessibility Tree, Language, Audio output, Visual output and
   Source code. Composite rules list `inputRules` instead of aspects.
-- The ACT test cases are in `testdata/act/`: the index `testcases.json` (1134 cases for 91 rules) and the case files.
+- The ACT test cases are in `testdata/act/`: the index `testcases.json` (1134 cases for 91 rules) and the case files. [act-coverage.md](act-coverage.md) lists every ACT rule with the rule that implements it, or the reason none does, and how its cases came out.
   Their SHA-256 values are in `testdata/SHA256SUMS`, and a test checks them. `ActTestCases.Parse` reads the index text
   the caller supplies. Media and other assets that cases refer to are not copied (see `testdata/MANIFEST.md`).
 

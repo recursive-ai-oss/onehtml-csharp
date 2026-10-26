@@ -53,8 +53,7 @@ public sealed class StructureActTests
         return report.Results.Any(r => r.Outcome is Outcome.NeedsReview or Outcome.NeedsRender) ? "incomplete" : "inapplicable";
     }
 
-    [Fact]
-    public void Structure_act_cases_match_their_expectations()
+    internal static (string Rows, List<string> Problems) Evaluate()
     {
         IReadOnlyList<Catalogue.ActTestCase> cases = Catalogue.ActTestCases.Parse(File.ReadAllText(Path.Combine(AriaActTests.Repo, "testdata", "act", "testcases.json")));
         var known = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -108,7 +107,13 @@ public sealed class StructureActTests
             sb.AppendLine(act + "\tnot a rule\tn/a " + cases.Count(c => c.RuleId == act) + "\t" + reason);
         }
 
-        File.WriteAllText(Path.Combine(Environment.GetEnvironmentVariable("TMPDIR") ?? Path.GetTempPath(), "act-structure-summary.tsv"), sb.ToString() + string.Join("\n", problems));
-        Assert.True(problems.Count == 0, sb.ToString() + string.Join("\n", problems));
+        return (sb.ToString(), problems);
+    }
+
+    [Fact]
+    public void Structure_act_cases_match_their_expectations()
+    {
+        (string rows, List<string> problems) = Evaluate();
+        Assert.True(problems.Count == 0, rows + "\n" + string.Join("\n", problems));
     }
 }

@@ -23,14 +23,14 @@ Profile summaries (criteria in the profile; the automation columns split them by
 
 | Profile | Criteria | Implemented | Implemented, fully | Implemented, partly | Implemented, not | Not automatable | Gaps (fully or partly, no rule) | Some ACT or axe-core rule, none ours |
 |---|---|---|---|---|---|---|---|---|
-| wcag-2.0-aa | 38 | 21 | 1 | 20 | 0 | 12 | 5 | 6 |
-| wcag-2.1-aa | 50 | 25 | 1 | 24 | 0 | 18 | 7 | 9 |
-| wcag-2.2-aa | 55 | 25 | 0 | 25 | 0 | 21 | 9 | 9 |
-| all | 87 | 32 | 1 | 31 | 0 | 41 | 14 | 10 |
+| wcag-2.0-aa | 38 | 24 | 1 | 22 | 1 | 12 | 3 | 3 |
+| wcag-2.1-aa | 50 | 28 | 1 | 26 | 1 | 18 | 5 | 6 |
+| wcag-2.2-aa | 55 | 28 | 0 | 27 | 1 | 21 | 7 | 6 |
+| all | 87 | 36 | 1 | 33 | 2 | 41 | 12 | 6 |
 
 | Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation | Basis |
 |---|---|---|---|---|---|---|---|---|
-| 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt | aria-meter-name, aria-progressbar-name, image-alt, image-name-descriptive, input-image-alt, object-alt, role-img-alt, svg-img-alt | partly | Whether an image, input, object or SVG has a text alternative or name is mechanical; whether the text serves the same purpose is judgement. |
+| 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt | aria-meter-name, aria-progressbar-name, image-alt, image-decorative, image-name-descriptive, input-image-alt, object-alt, role-img-alt, svg-img-alt | partly | Whether an image, input, object or SVG has a text alternative or name is mechanical; whether the text serves the same purpose is judgement. |
 | 1.2.1 | Audio-only and Video-only (Prerecorded) | A | 2.0+ | 1a02b0, c3232f, e7aa44, ee13b5, f51b46 | audio-caption (deprecated) | audio-alternative, audio-caption, video-captions, video-only-alternative, video-only-audio-track, video-only-description-track, video-only-media-alternative, video-only-transcript, video-transcript | partly | Whether an alternative or track exists is mechanical; whether it is equivalent is judgement. |
 | 1.2.2 | Captions (Prerecorded) | A | 2.0+ | eac66b | video-caption | video-caption, video-captions | partly | Whether a captions track exists is mechanical; whether it is accurate and synchronised is judgement. |
 | 1.2.3 | Audio Description or Media Alternative (Prerecorded) | A | 2.0+ | c5a4ea |  | video-media-alternative, video-visual-alternative | partly | Whether a description track or media alternative exists is mechanical; whether it conveys the visual content is judgement. |
@@ -50,11 +50,11 @@ Profile summaries (criteria in the profile; the automation columns split them by
 | 1.4.2 | Audio Control | A | 2.0+ | 80f0bf | no-autoplay-audio | autoplay-audio-control, autoplay-audio-duration, no-autoplay-audio | partly | Autoplaying media markup is detectable; audio started by script is invisible. |
 | 1.4.3 | Contrast (Minimum) | AA | 2.0+ | 09o5cg, afw4f7 | color-contrast | color-contrast | partly | Contrast is exact where the foreground and a solid background are known; images, gradients and overlaps need rendered facts or review. |
 | 1.4.4 | Resize Text | AA | 2.0+ | 59br37, b4f0c3 | meta-viewport | meta-viewport | partly | Markup that blocks zoom is detectable; whether content survives 200% zoom needs rendering. |
-| 1.4.5 | Images of Text | AA | 2.0+ | 0va7u6 |  |  | not | Recognising text rendered as an image, and whether it is essential, is judgement. |
+| 1.4.5 | Images of Text | AA | 2.0+ | 0va7u6 |  | image-of-text | not | Recognising text rendered as an image, and whether it is essential, is judgement. |
 | 1.4.6 | Contrast (Enhanced) | AAA | 2.0+ | 09o5cg, afw4f7 | color-contrast-enhanced | color-contrast-enhanced | partly | As 1.4.3, with the higher thresholds. |
 | 1.4.7 | Low or No Background Audio | AAA | 2.0+ |  |  |  | not | Background audio levels need listening. |
 | 1.4.8 | Visual Presentation | AAA | 2.0+ |  |  |  | partly | Computed line height, width, alignment and spacing are measurable; colour selection and the reading experience are judgement. |
-| 1.4.9 | Images of Text (No Exception) | AAA | 2.0+ | 0va7u6 |  |  | not | As 1.4.5, without the exceptions. |
+| 1.4.9 | Images of Text (No Exception) | AAA | 2.0+ | 0va7u6 |  | image-of-text | not | As 1.4.5, without the exceptions. |
 | 1.4.10 | Reflow | AA | 2.1+ | b4f0c3 |  |  | partly | Overflow and clipping at 320 CSS pixels are measurable from a layout at that viewport; whether lost content matters is judgement. |
 | 1.4.11 | Non-text Contrast | AA | 2.1+ |  |  |  | partly | Contrast of boundaries and graphics is measurable where colours are known; which parts are needed to identify a component is judgement. |
 | 1.4.12 | Text Spacing | AA | 2.1+ | 24afc2, 78fd32, 9e45ec | avoid-inline-spacing | avoid-inline-spacing | partly | Inline declarations that stop text spacing overrides are detectable; whether content survives the overrides needs rendering. |
@@ -73,14 +73,14 @@ Profile summaries (criteria in the profile; the automation columns split them by
 | 2.3.2 | Three Flashes | AAA | 2.0+ |  |  |  | not | Flash analysis needs the rendered frames of the content. |
 | 2.3.3 | Animation from Interactions | AAA | 2.1+ |  |  |  | not | Motion triggered by interaction is script-driven. |
 | 2.4.1 | Bypass Blocks | A | 2.0+ | cf77f2 | bypass | bypass | partly | Skip links and landmarks are detectable; whether they bypass the right blocks is judgement. |
-| 2.4.2 | Page Titled | A | 2.0+ | 2779a5, c4a8a4 | document-title | document-title | partly | A missing or empty title is detectable; whether it describes the page is judgement. |
+| 2.4.2 | Page Titled | A | 2.0+ | 2779a5, c4a8a4 | document-title | document-title, document-title-descriptive | partly | A missing or empty title is detectable; whether it describes the page is judgement. |
 | 2.4.3 | Focus Order | A | 2.0+ |  |  |  | partly | Positive tabindex and focusable elements without a role are detectable; whether the order is meaningful is judgement. |
-| 2.4.4 | Link Purpose (In Context) | A | 2.0+ | 5effbb, c487ae, fd3a94 | area-alt, link-name | area-alt, link-in-context-descriptive, link-name | partly | Links without a name are detectable; whether the name and context state the purpose is judgement. |
+| 2.4.4 | Link Purpose (In Context) | A | 2.0+ | 5effbb, c487ae, fd3a94 | area-alt, link-name | area-alt, identical-links-same-context, link-in-context-descriptive, link-name | partly | Links without a name are detectable; whether the name and context state the purpose is judgement. |
 | 2.4.5 | Multiple Ways | AA | 2.0+ |  |  |  | not | Whether a site offers more than one way to find pages is a property of the whole site. |
-| 2.4.6 | Headings and Labels | AA | 2.0+ | b49b2e, cc0f0a |  |  | partly | Empty headings and labels are detectable; whether they describe their content is judgement. |
-| 2.4.7 | Focus Visible | AA | 2.0+ | oj04fd |  |  | partly | Rules that remove the focus outline are detectable under a focus context; whether another indicator is visible needs rendering. |
+| 2.4.6 | Headings and Labels | AA | 2.0+ | b49b2e, cc0f0a |  | heading-descriptive, label-descriptive | partly | Empty headings and labels are detectable; whether they describe their content is judgement. |
+| 2.4.7 | Focus Visible | AA | 2.0+ | oj04fd |  | focus-visible-indicator | partly | Rules that remove the focus outline are detectable under a focus context; whether another indicator is visible needs rendering. |
 | 2.4.8 | Location | AAA | 2.0+ |  |  |  | not | Whether a page tells the user where they are is judgement of the whole site. |
-| 2.4.9 | Link Purpose (Link Only) | AAA | 2.0+ | 5effbb, aizyf1, b20e66, c487ae, fd3a94 | identical-links-same-purpose | identical-links-same-purpose, link-in-context-descriptive | partly | Identical link names with different targets are detectable; whether a name alone states the purpose is judgement. |
+| 2.4.9 | Link Purpose (Link Only) | AAA | 2.0+ | 5effbb, aizyf1, b20e66, c487ae, fd3a94 | identical-links-same-purpose | identical-links-same-context, identical-links-same-purpose, link-descriptive, link-in-context-descriptive | partly | Identical link names with different targets are detectable; whether a name alone states the purpose is judgement. |
 | 2.4.10 | Section Headings | AAA | 2.0+ |  |  |  | not | Whether sections need headings is judgement. |
 | 2.4.11 | Focus Not Obscured (Minimum) | AA | 2.2+ |  |  |  | partly | Needs layout and paint order to know what covers the focused element; mechanical with rendered facts. |
 | 2.4.12 | Focus Not Obscured (Enhanced) | AAA | 2.2+ |  |  |  | partly | As 2.4.11, with the stricter condition. |

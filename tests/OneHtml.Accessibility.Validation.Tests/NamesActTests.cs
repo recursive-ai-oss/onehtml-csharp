@@ -56,8 +56,7 @@ public sealed class NamesActTests
         return kept.Any(r => r.Outcome is Outcome.NeedsReview or Outcome.NeedsRender) ? "incomplete" : "inapplicable";
     }
 
-    [Fact]
-    public void Names_act_cases_match_their_expectations()
+    internal static (string Rows, List<string> Problems) Evaluate()
     {
         IReadOnlyList<Catalogue.ActTestCase> cases = Catalogue.ActTestCases.Parse(File.ReadAllText(Path.Combine(AriaActTests.Repo, "testdata", "act", "testcases.json")));
         var known = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -111,7 +110,13 @@ public sealed class NamesActTests
             sb.AppendLine(act + "\t" + string.Join(",", rules) + "\tpass " + pass + "\tjudgement " + judged + "\tn/a " + na + "\tfail " + fail);
         }
 
-        File.WriteAllText(Path.Combine(Environment.GetEnvironmentVariable("TMPDIR") ?? Path.GetTempPath(), "act-names-summary.tsv"), sb.ToString() + string.Join("\n", problems));
-        Assert.True(problems.Count == 0, sb.ToString() + string.Join("\n", problems));
+        return (sb.ToString(), problems);
+    }
+
+    [Fact]
+    public void Names_act_cases_match_their_expectations()
+    {
+        (string rows, List<string> problems) = Evaluate();
+        Assert.True(problems.Count == 0, rows + "\n" + string.Join("\n", problems));
     }
 }

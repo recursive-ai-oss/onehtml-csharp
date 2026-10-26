@@ -76,8 +76,7 @@ public sealed class AriaActTests
         return map;
     }
 
-    [Fact]
-    public void Aria_act_cases_match_their_expectations()
+    internal static (string Rows, List<string> Problems) Evaluate()
     {
         IReadOnlyList<ActTestCase> cases = ActTestCases.Parse(File.ReadAllText(Path.Combine(Repo, "testdata", "act", "testcases.json")));
         Dictionary<string, (string Status, string Reason)> known = LoadExpectations();
@@ -123,7 +122,14 @@ public sealed class AriaActTests
             sb.AppendLine(kv.Key + "\tpass " + kv.Value[0] + "\tn/a " + kv.Value[1] + "\tfail " + kv.Value[2]);
         }
 
-        File.WriteAllText(Path.Combine(Environment.GetEnvironmentVariable("TMPDIR") ?? Path.GetTempPath(), "act-aria-summary.tsv"), sb.ToString() + string.Join("\n", mismatches));
-        Assert.True(mismatches.Count == 0 && stale.Count == 0, string.Join("\n", mismatches) + "\n" + string.Join("\n", stale));
+        mismatches.AddRange(stale);
+        return (sb.ToString(), mismatches);
+    }
+
+    [Fact]
+    public void Aria_act_cases_match_their_expectations()
+    {
+        (string rows, List<string> problems) = Evaluate();
+        Assert.True(problems.Count == 0, rows + "\n" + string.Join("\n", problems));
     }
 }

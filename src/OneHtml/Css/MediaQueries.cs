@@ -26,7 +26,10 @@ public sealed class MediaQueryList
 
     /// <summary>Parses a media query list from component values.</summary>
     /// <param name="values">The prelude's values.</param>
-    public static MediaQueryList Parse(ComponentValueList values)
+    public static MediaQueryList Parse(ComponentValueList values) => Parse(values, verify: true);
+
+    // `verify` is off only for the re-parse that checks a query's text (see MediaQueryParser.ParseQuery).
+    internal static MediaQueryList Parse(ComponentValueList values, bool verify)
     {
         TokenRange all = TokenRange.Of(values).Trim();
         var queries = new List<MediaQuery>();
@@ -45,7 +48,7 @@ public sealed class MediaQueryList
                 // what a closer inside them would close is not what it closes in the text written back out. A query that
                 // holds such a block is an error, which Media Queries 4 §2.3 makes `not all`.
                 int overflow = all.Tree.NestingOverflowAt;
-                queries.Add(overflow >= start && overflow < i ? MediaQueryParser.ParseQuery(all.Sub(start, start)) : MediaQueryParser.ParseQuery(all.Sub(start, i).Trim()));
+                queries.Add(overflow >= start && overflow < i ? MediaQueryParser.ParseQuery(all.Sub(start, start), verify) : MediaQueryParser.ParseQuery(all.Sub(start, i).Trim(), verify));
                 if (i >= all.To)
                 {
                     break;
@@ -278,7 +281,51 @@ internal static class MediaQueryParser
 
     // ---- queries ----------------------------------------------------------------------------------------------------------------
 
-    public static MediaQuery ParseQuery(TokenRange r)
+    // The text a query is written back as must read back as that same query. Newlines are normalized in the raw text and
+    // the blocks and tokens cut off by the end of the input are closed when it is written, which makes this hold for
+    // ordinary input. For the rest (the input is hostile, and the tokenizer has many corners at the end of input), a
+    // query whose text still reads back differently is an error, `not all`: stable output matters more than keeping an
+    // exotic query. Only queries with something the end of input can cut off are re-read, so ordinary queries pay nothing.
+    public static MediaQuery ParseQuery(TokenRange r, bool verify = true)
+    {
+        MediaQuery q = ParseQueryCore(r);
+        if (!verify || !q.IsValid || !NeedsReadBackCheck(r))
+        {
+            return q;
+        }
+
+        MediaQueryList again = MediaQueryList.Parse(CssTree.ParseComponentValueList(q.Text).Values, verify: false);
+        return again.Queries.Count == 1 && again.Queries[0].IsValid && again.Queries[0].Text == q.Text ? q : new(false, true, false, "all", null, "not all");
+    }
+
+    // True when a token in the range can read differently once what follows it changes: an open block, a string or url
+    // that did not end, a backslash, an escape, or a newline form that the writer normalizes.
+    private static bool NeedsReadBackCheck(TokenRange r)
+    {
+        for (int i = r.From; i < r.To; i++)
+        {
+            ref readonly Token t = ref r.Tree.Tokens[i];
+            bool risky = t.Kind switch
+            {
+                CssTokenKind.LeftParen or CssTokenKind.Function or CssTokenKind.LeftBracket or CssTokenKind.LeftBrace =>
+                    r.Tree.Match[i] < 0 || r.Tree.Match[i] >= r.To,
+                CssTokenKind.QuotedString or CssTokenKind.Url => (t.Flags & Token.Terminated) == 0 || (t.Flags & Token.HasEscape) != 0,
+                CssTokenKind.BadString or CssTokenKind.BadUrl => true,
+                CssTokenKind.Ident or CssTokenKind.Function or CssTokenKind.AtKeyword or CssTokenKind.Hash => (t.Flags & Token.HasEscape) != 0,
+                CssTokenKind.Delim => r.Tree.Text[t.Start] == '\\',
+                CssTokenKind.Whitespace => r.Tree.Text.AsSpan(t.Start, t.End - t.Start).IndexOfAny('\r', '\f') >= 0,
+                _ => false,
+            };
+            if (risky)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static MediaQuery ParseQueryCore(TokenRange r)
     {
         MediaQuery Invalid() => new(false, true, false, "all", null, "not all");
         if (r.IsEmpty)
@@ -511,7 +558,9 @@ internal static class MediaQueryParser
             lastIndex--;
         }
 
-        string raw = r.Tree.Text.Substring(r.Tree.Tokens[from].Start, r.Tree.Tokens[lastIndex].End - r.Tree.Tokens[from].Start);
+        // CSS Syntax 3.3 turns CR, FF and CRLF into one LF before tokenizing. The text is written that way, so that a line
+        // feed added after a CR (to end a bad string) cannot join it into a CRLF that is one newline instead of two.
+        string raw = NormalizeNewlines(r.Tree.Text.Substring(r.Tree.Tokens[from].Start, r.Tree.Tokens[lastIndex].End - r.Tree.Tokens[from].Start));
 
         // CSS Syntax 5: blocks and functions still open at the end of the input are closed there. The serialization writes
         // those closers out, so that it parses back to the same query.
@@ -565,6 +614,9 @@ internal static class MediaQueryParser
         // A lone backslash at the end of the input is a delimiter; a closer right after it would be escaped by it.
         return raw + (raw.EndsWith('\\') ? "\n" : string.Empty) + new string([.. open]);
     }
+
+    internal static string NormalizeNewlines(string s) =>
+        s.AsSpan().IndexOfAny('\r', '\f') < 0 ? s : s.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n').Replace('\f', '\n');
 
     private static bool OddBackslashes(string s)
     {

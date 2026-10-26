@@ -214,4 +214,62 @@ public class ValueRegressionTests
         SupportsCondition again = SupportsCondition.Parse(first.Text);
         Assert.True(again.Text == first.Text && again.IsValid == first.IsValid && again.Evaluate() == first.Evaluate(), "unstable for: " + text);
     }
+
+    // Everything the end of input can cut off, at the end of a query: strings, urls, identifiers and escapes, a backslash
+    // by itself, a comment, and the newline forms (CR, FF, CRLF) that a string or an escape can end on.
+    private static readonly string[] EofTails =
+    [
+        "\"a\\", "'a\\", "\"a", "'a", "url(a\\", "url(\"a\\", "url(a", "url(a b", "a\\", "\\", "\\31", "\\3", "/*c",
+        "\"\\\r", "\"\\\r\r", "\"\\\r\n", "\"\\\n\n", "\"a\n", "url(a\\\n", "a\\ ", "\\\f", "\"\\\\", "\"\\\\\\",
+        "\\7(\"\\^1-\\\r\r", "'\\\r\r\r",
+    ];
+
+    private static readonly string[] EofHeads =
+    [
+        "(", "((", "(x ", "f(", new string('(', 60), new string('(', 255), "screen and (", "not (", "(a) and (", "x, (", "(\"\\(\"\\(\"\\",
+    ];
+
+    [Fact]
+    public void Media_query_cut_off_by_the_end_of_input_is_kept_and_reads_back_as_itself()
+    {
+        // A string, url, escape, comment or backslash cut off at the end of input inside a general-enclosed term, at several
+        // depths: written back with its closers, the text must read as the same query, and the query must not degrade.
+        foreach (string head in EofHeads)
+        {
+            foreach (string tail in EofTails)
+            {
+                string query = head + tail;
+                string css = MediaQueryList.Parse(query).ToCss();
+                Assert.True(css == MediaQueryList.Parse(css).ToCss(), "unstable for: " + query);
+                Assert.True(!css.Contains("not all", StringComparison.Ordinal) || query.StartsWith("not", StringComparison.Ordinal), "degraded: " + query);
+                Assert.DoesNotContain('\r', css);
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("(\"\\\r\r", "(\"\\\n\n)")]
+    [InlineData("((\"\\\r\n", "((\"\\\n\"))")]
+    public void Media_query_with_a_bad_string_ending_on_a_carriage_return_is_written_with_line_feeds(string query, string expected)
+    {
+        // CR LF is one newline and CR CR is two, so the writer cannot add a line feed after a CR; it writes LF only.
+        string css = MediaQueryList.Parse(query).ToCss();
+        Assert.Equal(expected, css);
+        Assert.Equal(css, MediaQueryList.Parse(css).ToCss());
+        Assert.DoesNotContain('\r', css);
+    }
+
+    [Fact]
+    public void Supports_condition_cut_off_by_the_end_of_input_reads_back_as_the_same_condition()
+    {
+        foreach (string head in EofHeads)
+        {
+            foreach (string tail in EofTails)
+            {
+                AssertSupportsStable(head + tail);
+                AssertSupportsStable("(display: grid) and " + head + tail);
+                AssertSupportsStable("selector(" + head + tail);
+            }
+        }
+    }
 }

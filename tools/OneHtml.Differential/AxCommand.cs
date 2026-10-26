@@ -281,6 +281,18 @@ internal static class AxCommand
         foreach (AxEntry c in chrome.Entries)
         {
             c.Path = "chrome#" + c.Backend.ToString(CultureInfo.InvariantCulture) + " " + c.Role;
+            if (dump && c.Dom >= 0 && rendered is not null)
+            {
+                try
+                {
+                    Node dn = doc.GetNode(c.Dom);
+                    c.Extra = " dom=" + DomPath(dn) + (dn.Kind == NodeKind.Text ? TextNote(rendered, dn) : FactsNote(rendered, dn));
+                }
+                catch (InvalidOperationException)
+                {
+                    c.Extra = " dom=?";
+                }
+            }
         }
 
         AxPageDiff Run(RenderedFacts? withFacts, bool wantDump)
@@ -291,6 +303,18 @@ internal static class AxCommand
             foreach (AxEntry o in ours.Entries)
             {
                 o.Path = o.Dom >= 0 ? DomPath(doc.GetNode(o.Dom)) : "#document";
+                if (dump && withFacts is not null && o.Dom >= 0)
+                {
+                    try
+                    {
+                        Node on = doc.GetNode(o.Dom);
+                        o.Extra = on.Kind == NodeKind.Text ? TextNote(withFacts, on) : FactsNote(withFacts, on);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        o.Extra = " [note failed: " + ex.Message + "]";
+                    }
+                }
             }
 
             return AxComparer.Compare(chrome, ours, wantDump);
@@ -310,6 +334,79 @@ internal static class AxCommand
         }
 
         return r;
+    }
+
+    /// <summary>The layout facts that decide pruning questions, for the dump: display, position, float, generated text and child kinds.</summary>
+    private static string FactsNote(RenderedFacts facts, Node node)
+    {
+        if (!node.IsElement || !facts.TryGet(node, out NodeFacts f) || !f.HasLayout)
+        {
+            return string.Empty;
+        }
+
+        var sb = new StringBuilder(" [");
+        sb.Append("d=").Append(f.GetStyle("display")).Append(" p=").Append(f.GetStyle("position")).Append(" f=").Append(f.GetStyle("float"));
+        foreach (GeneratedBox g in f.GeneratedBoxes)
+        {
+            sb.Append(' ').Append(g.PseudoType).Append(g.HasLayout ? "=" : "~").Append('\'').Append(g.Text.Length > 12 ? g.Text[..12] : g.Text).Append('\'');
+            if (g.HasLayout)
+            {
+                sb.Append('(').Append(g.Layout.GetStyle("display")).Append('/').Append(g.Layout.GetStyle("position")).Append('/').Append(g.Layout.GetStyle("float")).Append(')');
+            }
+        }
+
+        int el = 0;
+        int tx = 0;
+        int ws = 0;
+        for (Node c = node.FirstChild; !c.IsNull; c = c.NextSibling)
+        {
+            if (c.IsElement)
+            {
+                el++;
+            }
+            else if (c.Kind == NodeKind.Text)
+            {
+                if (c.Data.Trim().Length > 0)
+                {
+                    tx++;
+                }
+                else
+                {
+                    ws++;
+                }
+            }
+        }
+
+        sb.Append(" kids=e").Append(el).Append("/t").Append(tx).Append("/w").Append(ws);
+        if (node.ParentElement is { IsNull: false } pe && facts.TryGet(pe, out NodeFacts pf))
+        {
+            sb.Append(" pd=").Append(pf.GetStyle("display"));
+        }
+
+        return sb.Append(']').ToString();
+    }
+
+    private static string TextNote(RenderedFacts facts, Node text)
+    {
+        string Sib(Node n)
+        {
+            if (n.IsNull)
+            {
+                return "-";
+            }
+
+            if (n.Kind == NodeKind.Text)
+            {
+                return "text";
+            }
+
+            string d = facts.TryGet(n, out NodeFacts nf) && nf.HasLayout ? nf.GetStyle("display") ?? "?" : "nobox";
+            return n.LocalName + ":" + d;
+        }
+
+        bool box = facts.TryGet(text, out NodeFacts f) && f.HasLayout;
+        string pd = text.ParentElement is { IsNull: false } pe && facts.TryGet(pe, out NodeFacts pf) ? pf.GetStyle("display") ?? "?" : "-";
+        return " [text ws=" + (text.Data.Trim().Length == 0 ? "1" : "0") + " box=" + (box ? f.Layout.TextBoxes.Length : -1) + " prev=" + Sib(text.PreviousSibling) + " next=" + Sib(text.NextSibling) + " pd=" + pd + "]";
     }
 
     private static double Num(JsonElement o, string name, double fallback) =>

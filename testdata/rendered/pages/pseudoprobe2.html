@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Generated content probe, display values</title>
+<style>
+  body { margin: 8px; font: 16px sans-serif; }
+  .t::before { content: ""; display: table; }
+  .t::after { content: ""; display: table; clear: both; }
+  .tx::after { content: "x"; display: table; }
+  .tc::before { content: "c"; display: table-cell; }
+  .fl::before { content: "f"; display: flex; }
+  .gr::before { content: "g"; display: grid; }
+  .li::before { content: "l"; display: list-item; }
+  .ab::before { content: "a"; position: absolute; }
+  .abe::before { content: ""; position: absolute; width: 5px; height: 5px; }
+  .fo::before { content: "o"; float: left; }
+  .foe::before { content: ""; float: left; width: 5px; height: 5px; }
+  .bz::before { content: ""; display: block; width: 0; height: 0; }
+  .bs::before { content: " "; display: block; }
+  .is::before { content: " "; }
+  .ib::before { content: "ib"; display: inline-block; }
+  .ibe::before { content: ""; display: inline-block; width: 4px; height: 4px; }
+  .ibz::before { content: ""; display: inline-block; }
+  .co::before { content: "co"; display: contents; }
+  .ie::before { content: ""; display: inline; }
+  .it::before { content: "it"; display: inline; }
+  .ti::before { content: ""; display: table; }
+</style>
+</head>
+<body>
+<div class="t">clearfix div</div>
+<div class="tx">table after text</div>
+<div class="tc">table-cell before</div>
+<div class="fl">flex before</div>
+<div class="gr">grid before</div>
+<div class="li">list-item before</div>
+<div class="ab" style="position: relative">abs before text</div>
+<div class="abe" style="position: relative">abs before empty</div>
+<div class="fo">float before text</div>
+<div class="foe">float before empty</div>
+<div class="bz">block zero</div>
+<div class="bs">block space</div>
+<div class="is">inline space</div>
+<div class="ib">inline-block text</div>
+<div class="ibe">inline-block empty sized</div>
+<div class="ibz">inline-block empty</div>
+<div class="co">contents text</div>
+<div class="ie">inline empty</div>
+<div class="it">inline text</div>
+<p><a href="/a" class="t">link clearfix</a></p>
+</body>
+</html>

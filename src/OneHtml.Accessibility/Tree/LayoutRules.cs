@@ -47,13 +47,14 @@ internal sealed class LayoutRules
         }
 
         string tag = el.LocalName;
-        if (tag is "section" or "header" or "footer" or "aside" or "a" || HasInterestingAttribute(el))
+        if (tag is "section" or "header" or "footer" or "aside" || HasInterestingAttribute(el))
         {
             return false;
         }
 
         string display = f.GetStyle("display") ?? string.Empty;
-        if (tag == "span" || display == "inline")
+        bool inlineLevel = display.StartsWith("inline-", StringComparison.Ordinal) || display.StartsWith("-webkit-inline", StringComparison.Ordinal);
+        if (display == "inline" || (tag == "span" && !inlineLevel))
         {
             return true;
         }
@@ -63,7 +64,7 @@ internal sealed class LayoutRules
             return false;
         }
 
-        if (display.StartsWith("inline-", StringComparison.Ordinal) || display.StartsWith("-webkit-inline", StringComparison.Ordinal))
+        if (inlineLevel)
         {
             return false;
         }
@@ -138,6 +139,26 @@ internal sealed class LayoutRules
     private bool HasInlineContent(Node el)
     {
         bool content = false;
+        for (int side = 0; side < 2; side++)
+        {
+            // Generated boxes are children too: a block-level one is an in-flow block child, an inline one with text is inline content.
+            if (TryGetPseudo(el, side == 0, out string ptext, out bool pinline, out bool pout, out _, out _))
+            {
+                if (pout)
+                {
+                    content = true;
+                }
+                else if (!pinline)
+                {
+                    return false;
+                }
+                else if (ptext.Length > 0)
+                {
+                    content = true;
+                }
+            }
+        }
+
         Node n = el.FirstChild;
         while (!n.IsNull)
         {
@@ -215,6 +236,49 @@ internal sealed class LayoutRules
     }
 
     private bool IsInlineSibling(Node n) => n.IsElement && _facts.TryGet(n, out NodeFacts f) && f.HasLayout && f.GetStyle("display") == "inline" && f.GetStyle("position") is not ("absolute" or "fixed") && f.GetStyle("float") is null or "none";
+
+    // ---- generated text (profile entry generated-text-node) ----
+
+    /// <summary>
+    /// True when the element has a visible <c>::before</c> (or <c>::after</c>) box. <paramref name="text"/> is its text, empty when it
+    /// has none or only white space; <paramref name="inlineBox"/> says whether the box is a plain inline one; <paramref name="outOfFlow"/>
+    /// whether it is floated or positioned out of the flow; <paramref name="hostInline"/> whether the element's own box is inline-level.
+    /// </summary>
+    public bool TryGetPseudo(Node el, bool before, out string text, out bool inlineBox, out bool outOfFlow, out bool hostInline, out bool inlineLevel)
+    {
+        text = string.Empty;
+        inlineBox = true;
+        outOfFlow = false;
+        hostInline = false;
+        inlineLevel = false;
+        if (!_facts.TryGet(el, out NodeFacts f) || !f.HasLayout || f.GetStyle("visibility") is "hidden" or "collapse")
+        {
+            return false;
+        }
+
+        hostInline = IsInlineLevel(f.GetStyle("display"));
+        string want = before ? "before" : "after";
+        foreach (GeneratedBox g in f.GeneratedBoxes)
+        {
+            if (g.PseudoType == want && g.HasLayout)
+            {
+                BoxFacts box = g.Layout;
+                string? display = box.GetStyle("display");
+                inlineBox = display is null or "inline" or "contents";
+                inlineLevel = !inlineBox && IsInlineLevel(display);
+                string? pos = box.GetStyle("position");
+                string? flt = box.GetStyle("float");
+                outOfFlow = pos is "absolute" or "fixed" || (flt is not null && flt != "none");
+                text = TreeText.IsBlank(g.Text) ? string.Empty : g.Text;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>True when the element has a <c>::before</c> or <c>::after</c> box that was laid out, whatever it holds.</summary>
+    public bool HasPseudoBox(Node el) => TryGetPseudo(el, true, out _, out _, out _, out _, out _) || TryGetPseudo(el, false, out _, out _, out _, out _, out _);
 
     // ---- list markers (profile entry list-marker-node) ----
 

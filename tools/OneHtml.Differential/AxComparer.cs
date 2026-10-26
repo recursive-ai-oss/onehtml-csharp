@@ -285,17 +285,18 @@ internal static class AxComparer
                 string where = string.Empty;
                 if (oi >= 0)
                 {
-                    where = "  @ " + ours.Entries[oi].Path;
+                    where = "  @ " + ours.Entries[oi].Path + ours.Entries[oi].Extra;
                 }
                 else
                 {
+                    where = c.Extra;
                     // For a Chrome node with no counterpart: where it sits, as the path of its nearest paired ancestor.
                     int guard = 0;
                     for (int a = c.Parent; a >= 0 && guard++ < 1024; a = chrome.Entries[a].Parent)
                     {
                         if (c2o[a] >= 0)
                         {
-                            where = "  under " + Describe("O", ours.Entries[c2o[a]]) + " @ " + ours.Entries[c2o[a]].Path;
+                            where = c.Extra + "  under " + Describe("O", ours.Entries[c2o[a]]) + " @ " + ours.Entries[c2o[a]].Path + ours.Entries[c2o[a]].Extra;
                             break;
                         }
                     }
@@ -317,7 +318,7 @@ internal static class AxComparer
                     }
                 }
 
-                diff.Dump.Add("(none)  <=>  " + Describe("O", o) + "  @ " + o.Path + under);
+                diff.Dump.Add("(none)  <=>  " + Describe("O", o) + "  @ " + o.Path + o.Extra + under);
             }
         }
 

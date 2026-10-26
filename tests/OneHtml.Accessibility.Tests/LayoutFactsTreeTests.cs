@@ -63,6 +63,11 @@ public sealed class LayoutFactsTreeTests
                 lines.Add(new string(' ', depth) + (n.InternalRole ?? n.Role));
             }
 
+            if (n.Role == "textbox")
+            {
+                continue; // the inner editor is shadow content, which the Chrome outline leaves out too
+            }
+
             for (int i = n.Children.Count - 1; i >= 0; i--)
             {
                 stack.Push((n.Children[i], depth + (n.IsIgnored ? 0 : 1)));

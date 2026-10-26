@@ -849,7 +849,8 @@ internal sealed class NameComputer
         if (role is not null)
         {
             // A row is not named from its cells: the cells carry the text (profile entry row-name).
-            return role.NameFromContents && role.Name != "row";
+            // Profile entry name-from-contents-roles: Chromium names a dt (a term) from its contents, which WPT html-aam does not expect of a dfn, and a time not at all.
+            return (role.Name == "term" && f.Node.LocalName == "dt") || (role.NameFromContents && role.Name is not ("row" or "time"));
         }
 
         // HTML-AAM: summary has no role of its own but is named from its contents.
@@ -985,6 +986,12 @@ internal sealed class NameComputer
             return false;
         }
 
+        // SVG 2 (Rendering): style and script elements are never rendered, so their text is no content (profile entry svg-unrendered-elements).
+        if (c.Namespace == ElementNamespace.Svg && c.LocalName is "style" or "script")
+        {
+            return false;
+        }
+
         if (c.Namespace == ElementNamespace.Html && c.LocalName == "br")
         {
             _sb.Append(' ');
@@ -1010,10 +1017,30 @@ internal sealed class NameComputer
         return parent.IsElement ? TreeText.ApplyTextTransform(data, _styles.GetStyle(parent).GetPropertyValue("text-transform")) : data;
     }
 
+    /// <summary>
+    /// True when the element's box is a plain inline one, whose text runs on with its neighbours. Profile entry
+    /// <c>name-block-spacing</c>: a <c>display: contents</c> element and a child of a flex or grid container (blockified, CSS Display 3
+    /// section 2.7) are set off by spaces like blocks.
+    /// </summary>
     private bool IsInline(Node el)
     {
         DisplayValue d = _styles.GetStyle(el).Display;
-        return d.Kind == DisplayKind.Contents || (d.Kind == DisplayKind.Box && d.Outside == DisplayOutside.Inline && d.Inside == DisplayInside.Flow && !d.IsListItem);
+        if (d.Kind != DisplayKind.Box || d.Outside != DisplayOutside.Inline || d.Inside != DisplayInside.Flow || d.IsListItem)
+        {
+            return false;
+        }
+
+        Node parent = el.Parent;
+        if (parent.IsElement)
+        {
+            DisplayValue pd = _styles.GetStyle(parent).Display;
+            if (pd.Kind == DisplayKind.Box && pd.Inside is DisplayInside.Flex or DisplayInside.Grid)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void AppendPseudo(Node el, PseudoElementKind kind)

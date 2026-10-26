@@ -224,7 +224,32 @@ public sealed class ChromeFixTests
     }
 
     [Fact]
-    public void Positioned_and_floated_elements_are_blocks_for_the_spaces_in_a_name_but_flex_items_are_not()
+    public void A_label_that_wraps_a_checkbox_with_only_text_is_ignored_but_not_one_with_an_element_inside()
+    {
+        (Document doc, AccessibilityTree tree, _) = Build(
+            "<label id=a>text <input type=checkbox></label><label id=b><input type=radio> text</label>" +
+            "<label id=c>text <b>bold</b> <input type=checkbox></label><label id=d>text <input type=text></label>");
+        Assert.Equal(["labelFor"], Find(doc, tree, "#a").IgnoredReasons);
+        Assert.Equal(["labelFor"], Find(doc, tree, "#b").IgnoredReasons);
+        Assert.False(Find(doc, tree, "#c").IsIgnored);
+        Assert.False(Find(doc, tree, "#d").IsIgnored);
+        Assert.False(Find(doc, tree, "#a > input").IsIgnored);
+    }
+
+    [Fact]
+    public void A_dt_is_named_from_its_contents_a_dfn_and_a_time_are_not_and_svg_style_text_is_no_content()
+    {
+        (Document doc, AccessibilityTree tree, _) = Build(
+            "<dl><dt id=t>Term</dt><dd>x</dd></dl><dfn id=f>Defined</dfn><time id=m datetime=2024-01-01>Jan</time>" +
+            "<a id=l href=/x><svg><style>.a{fill:red}</style><title>Logo</title></svg>Home</a>");
+        Assert.Equal("Term", Find(doc, tree, "#t").Name.Value);
+        Assert.True(Find(doc, tree, "#f").Name.IsEmpty);
+        Assert.True(Find(doc, tree, "#m").Name.IsEmpty);
+        Assert.DoesNotContain("fill", Find(doc, tree, "#l").Name.Value);
+    }
+
+    [Fact]
+    public void Positioned_and_floated_elements_and_flex_items_are_blocks_for_the_spaces_in_a_name()
     {
         (Document doc, AccessibilityTree tree, _) = Build(
             "<a id=a href=/x>one<span style='position:absolute'>two</span>three</a>" +
@@ -234,7 +259,7 @@ public sealed class ChromeFixTests
         Assert.Equal("one two three", Find(doc, tree, "#a").Name.Value);
         Assert.Equal("one two three", Find(doc, tree, "#b").Name.Value);
         Assert.Equal("onetwothree", Find(doc, tree, "#c").Name.Value);
-        Assert.Equal("onetwothree", Find(doc, tree, "#d").Name.Value);
+        Assert.Equal("one two three", Find(doc, tree, "#d").Name.Value);
     }
 
     [Fact]

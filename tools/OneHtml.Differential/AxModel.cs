@@ -18,6 +18,9 @@ internal sealed class AxEntry
     /// <summary>Index in the side's list.</summary>
     public int Index { get; init; }
 
+    /// <summary>Layout facts of the node's element, written to the dump only.</summary>
+    public string Extra { get; set; } = string.Empty;
+
     /// <summary>The protocol node id (Chrome) or the tree node id (ours), for messages.</summary>
     public string NodeId { get; init; } = string.Empty;
 

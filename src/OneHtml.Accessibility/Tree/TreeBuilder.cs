@@ -147,7 +147,7 @@ internal sealed class TreeBuilder
     /// children belong to its nearest ancestor that has a node.
     /// </summary>
     private bool OmittedByLayout(Node el) =>
-        _layout is not null && el.Namespace == ElementNamespace.Html && _roles[el].Role is { Name: "generic" } && _layout.IsUninterestingGeneric(el) && _layout.IsInlineBox(el);
+        _layout is not null && el.Namespace == ElementNamespace.Html && _roles[el].Role is { Name: "generic" } && _layout.IsUninterestingGeneric(el) && _layout.IsInlineBox(el) && !_layout.HasPseudoBox(el);
 
     /// <summary>HTML section 4.11.1: the summary element that is the first summary child of a details element.</summary>
     private static bool IsFirstSummary(Node el)
@@ -323,6 +323,7 @@ internal sealed class TreeBuilder
 
             if (!_layout.TryGetListMarker(host.DomNode, out string text))
             {
+                AddGeneratedText(host, false);
                 continue;
             }
 
@@ -365,8 +366,156 @@ internal sealed class TreeBuilder
             var children = new List<AxNode>(host.Children.Count + 1) { marker };
             children.AddRange(host.Children);
             host.Children = children;
+            AddGeneratedText(host, true);
         }
     }
+
+    /// <summary>
+    /// Profile entry <c>generated-content-node</c>: each <c>::before</c> and <c>::after</c> box is a node of its own under the element,
+    /// first and last (after a list marker): an ignored node (uninteresting) for an inline box, a generic node for any other display,
+    /// holding the static text of the generated text when there is some. Profile entry <c>control-text-node</c> does the same for the
+    /// text a form control draws inside itself.
+    /// </summary>
+    private void AddGeneratedText(AxNode host, bool afterMarker)
+    {
+        bool hasBefore = _layout!.TryGetPseudo(host.DomNode, true, out string beforeText, out bool beforeInline, out bool beforeOut, out bool hostInline, out bool beforeIb);
+        bool hasAfter = _layout.TryGetPseudo(host.DomNode, false, out string afterText, out bool afterInline, out bool afterOut, out _, out bool afterIb);
+        // An empty block-level box (out of flow or not) gets a node only inside an inline-level host; an empty inline-block box always does (observed).
+        hasBefore &= beforeInline || beforeText.Length > 0 || beforeIb || hostInline;
+        hasAfter &= afterInline || afterText.Length > 0 || afterIb || hostInline;
+        List<AxNode> control = ControlNodes(host);
+        if (!hasBefore && !hasAfter && control.Count == 0)
+        {
+            return;
+        }
+
+        var children = new List<AxNode>(host.Children.Count + 3);
+        int keep = afterMarker && host.Children.Count > 0 ? 1 : 0;
+        for (int i = 0; i < keep; i++)
+        {
+            children.Add(host.Children[i]);
+        }
+
+        children.AddRange(control);
+
+        if (hasBefore)
+        {
+            children.Add(PseudoNode(host, beforeText, beforeInline));
+        }
+
+        for (int i = keep; i < host.Children.Count; i++)
+        {
+            children.Add(host.Children[i]);
+        }
+
+        if (hasAfter)
+        {
+            children.Add(PseudoNode(host, afterText, afterInline));
+        }
+
+        host.Children = children;
+    }
+
+    private AxNode PseudoNode(AxNode host, string text, bool inlineBox)
+    {
+        var node = new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode)
+        {
+            Role = inlineBox ? "none" : "generic",
+            IsIgnored = inlineBox,
+            IgnoredReasons = inlineBox ? ["uninteresting"] : [],
+            Parent = host,
+            States = new AxStates(),
+        };
+        node.Children = text.Length == 0 ? [] : [GeneratedStaticText(node, text)];
+        return node;
+    }
+
+    /// <summary>
+    /// Profile entry <c>control-text-node</c>: what a rendered form control shows inside itself. A text-entry <c>input</c> and a
+    /// <c>textarea</c> have a generic child with the editable state (the inner editor) holding the static text of the value (a password's
+    /// is bullets; a placeholder is not a value); an <c>input</c> button has the static text of its <c>value</c>, or of the default label
+    /// of a submit or reset button. Null when the host has none.
+    /// </summary>
+    private List<AxNode> ControlNodes(AxNode host)
+    {
+        Node el = host.DomNode;
+        List<AxNode> none = [];
+        if (el.Namespace != ElementNamespace.Html || host.Kind != AxNodeKind.Element || !_layout!.HasBox(el))
+        {
+            return none;
+        }
+
+        if (el.LocalName == "textarea")
+        {
+            return _roles[el].Role?.Name == "textbox" ? [EditorNode(host, el.TextContent ?? string.Empty)] : none;
+        }
+
+        if (el.LocalName != "input")
+        {
+            return none;
+        }
+
+        string type = TreeText.AsciiLower(el.GetAttribute("type") ?? string.Empty);
+        string? value = el.GetAttribute("value");
+        switch (_roles[el].Role?.Name)
+        {
+            case "textbox" or "searchbox" or "spinbutton":
+                AxNode editor = EditorNode(host, type == "password" ? new string('\u2022', value?.Length ?? 0) : value ?? string.Empty);
+                if (type is not ("search" or "number") && string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(el.GetAttribute("placeholder")))
+                {
+                    // The placeholder text is an ignored leaf before the inner editor.
+                    return [new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode) { Role = "none", IsIgnored = true, IgnoredReasons = [], Parent = host, States = new AxStates(), Children = [] }, editor];
+                }
+
+                if (type is "search" or "number")
+                {
+                    // The inner editor of these controls sits in an ignored node with no reason (a search field's cancel button, a
+                    // number field's spin button).
+                    var wrapper = new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode) { Role = "none", IsIgnored = true, IgnoredReasons = [], Parent = host, States = new AxStates() };
+                    editor.Parent = wrapper;
+                    wrapper.Children = [editor];
+                    return [wrapper];
+                }
+
+                return [editor];
+            case "button" when type is "submit" or "button" or "reset":
+                string label = !string.IsNullOrEmpty(value) ? value : type == "submit" ? "Submit" : type == "reset" ? "Reset" : string.Empty;
+                return label.Length == 0 ? none : [GeneratedStaticText(host, label)];
+            default:
+                return none;
+        }
+    }
+
+    private AxNode EditorNode(AxNode host, string text)
+    {
+        var editor = new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode)
+        {
+            Role = "generic",
+            Parent = host,
+            States = new AxStates { Editable = "plaintext" },
+        };
+        if (text.Length > 0 && !text.Contains('\n', StringComparison.Ordinal))
+        {
+            AxNode t = GeneratedStaticText(editor, text);
+            t.States.Editable = "plaintext";
+            editor.Children = [t];
+        }
+        else
+        {
+            editor.Children = [];
+        }
+
+        return editor;
+    }
+
+    private AxNode GeneratedStaticText(AxNode parent, string text) => new(_tree, -1, AxNodeKind.Generated, parent.DomNode)
+    {
+        Role = "StaticText",
+        InternalRole = "StaticText",
+        Name = new AxText(text, AxTextSource.TextNode, null, []),
+        Parent = parent,
+        States = new AxStates(),
+    };
 
     private static void Add(Dictionary<AxNode, List<AxNode>> lists, AxNode parent, AxNode child)
     {
@@ -472,7 +621,7 @@ internal sealed class TreeBuilder
 
             foreach (Node label in n.NativeLabels)
             {
-                if (_byDom[label.Index] is not { } l || l.IsIgnored || l.InternalRole != "LabelText" || !HoldsOnlyText(l))
+                if (_byDom[label.Index] is not { } l || l.IsIgnored || l.InternalRole != "LabelText" || !HoldsOnlyText(l, n))
                 {
                     continue;
                 }
@@ -481,6 +630,11 @@ internal sealed class TreeBuilder
                 l.IgnoredReasons = ["labelFor"];
                 foreach (AxNode c in l.Children)
                 {
+                    if (c == n)
+                    {
+                        continue;
+                    }
+
                     c.IsIgnored = true;
                     c.IgnoredReasons = ["presentationalRole"];
                 }
@@ -488,22 +642,35 @@ internal sealed class TreeBuilder
         }
     }
 
-    private static bool HoldsOnlyText(AxNode label)
+    /// <summary>True when the label's children are text (and the labelled control itself, for a label that wraps it) with some text among them.</summary>
+    private static bool HoldsOnlyText(AxNode label, AxNode control)
     {
-        if (label.Children.Count == 0)
+        // An element child other than the control (a b whose node was left out, say) makes it a label with content.
+        for (Node d = label.DomNode.FirstChild; !d.IsNull; d = d.NextSibling)
         {
-            return false;
-        }
-
-        foreach (AxNode c in label.Children)
-        {
-            if (c.Kind != AxNodeKind.Text || c.IsIgnored)
+            if (d.IsElement && d.Index != control.DomNode.Index)
             {
                 return false;
             }
         }
 
-        return true;
+        int texts = 0;
+        foreach (AxNode c in label.Children)
+        {
+            if (c == control)
+            {
+                continue;
+            }
+
+            if (c.Kind != AxNodeKind.Text || c.IsIgnored)
+            {
+                return false;
+            }
+
+            texts++;
+        }
+
+        return texts > 0;
     }
 
     private static bool HasExposedContent(AxNode root)

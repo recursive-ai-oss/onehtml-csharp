@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Generated content probe</title>
+<style>
+  body { margin: 8px; font: 16px sans-serif; }
+  .bt::before { content: "\00BB"; }
+  .at::after { content: "!"; }
+  .be::before { content: ""; }
+  .ae::after { content: ""; }
+  .bb::before { content: "B"; display: block; }
+  .bib::before { content: "I"; display: inline-block; }
+  .beb::before { content: ""; display: block; }
+  .bebw::before { content: ""; display: block; width: 10px; height: 10px; background: #999; }
+  .fx { display: flex; }
+</style>
+</head>
+<body>
+<p><a href="/1" class="bt">before text</a></p>
+<p><a href="/2" class="at">after text</a></p>
+<p><a href="/3" class="be">before empty</a></p>
+<p><a href="/4" class="ae">after empty</a></p>
+<p><a href="/5" class="bb">before block text</a></p>
+<p><a href="/6" class="bib">before inline-block text</a></p>
+<p><a href="/7" class="beb">before block empty</a></p>
+<p><a href="/8" class="bebw">before block empty sized</a></p>
+<p><a href="/9"><span class="bt"></span>icon span then text</a></p>
+<p><a href="/10"><i class="bt"></i>icon i then text</a></p>
+<p><a href="/11"><span class="bt">kid</span></a></p>
+<div class="fx"><div class="bt"></div><div>flex kid</div></div>
+<div><div class="at"></div></div>
+<button class="bt">btn before</button>
+<ul><li class="bt">li before</li><li class="at">li after</li></ul>
+<h2 class="bt">heading before</h2>
+<div class="be">div before empty</div>
+<div class="ae">div after empty</div>
+<span class="bt">span before text</span>
+<span class="be">span before empty</span>
+</body>
+</html>

@@ -9,6 +9,19 @@ internal static class TreeText
 {
     public static bool IsWs(char c) => c is ' ' or '\t' or '\n' or '\f' or '\r';
 
+    public static bool IsBlank(ReadOnlySpan<char> s)
+    {
+        foreach (char c in s)
+        {
+            if (!IsWs(c))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static string AsciiLower(string s)
     {
         int i = 0;

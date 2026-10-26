@@ -436,7 +436,7 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `layout-generic-pruning`
 
 - **Topic:** Which generic containers Chromium leaves out (with facts)
-- **Choice:** A generic container (div, span, li, p without a better role, unknown elements, body, b, i) is ignored with the reason uninteresting unless one of these holds: it is a section, header, footer, aside or a (kept as before); it has an id, title, tabindex, role or any aria-* attribute; it is positioned; it scrolls (overflow auto or scroll and more content than room); its display is inline-block, inline-flex or another inline-level non-inline value; or it is a block, flow-root or list-item box whose own children are inline content (laid-out text, inline boxes, floats or out-of-flow boxes) with no in-flow block-level child. A span, any display: inline box, and flex, grid and table containers are ignored unless an attribute keeps them. A p is ignored the same way when it has no inline content. A plain inline box that is ignored has no node at all (its children belong to the nearest ancestor with a node); a block one stays as an ignored node.
+- **Choice:** A generic container (div, span, li, p without a better role, unknown elements, body, b, i) is ignored with the reason uninteresting unless one of these holds: it is a section, header, footer or aside; it has an id, title, tabindex, role or any aria-* attribute; it is positioned; it scrolls (overflow auto or scroll and more content than room); its display is inline-block, inline-flex or another inline-level non-inline value; or it is a block, flow-root or list-item box whose own children are inline content (laid-out text, inline boxes, floats or out-of-flow boxes) with no in-flow block-level child. A display: inline box (an a with no href is one) and a span whose display is not inline-level, and flex, grid and table containers, are ignored unless an attribute keeps them; a span that is inline-block or inline-flex stays. A ::before or ::after block-level box is a block-level child, an inline one with text is inline content (profile entry generated-content-node); an inline box that has a ::before or ::after box is not left out. A p is ignored the same way when it has no inline content. A plain inline box that is ignored has no node at all (its children belong to the nearest ancestor with a node); a block one stays as an ignored node.
 - **Matches:** Chrome 156 output on 634 corpus pages (two samples, one used to find the rule and one held out) and the layout fixture, where the exposed structure equals Chrome's. Over the paired nodes the ignored flag differs for 0.9% of them on each sample, against 12% to 15% without facts. On 240 pages, of 15,681 blocks without id or attributes whose children were all blocks Chrome ignored 15,667, and of 2,947 holding only text or inline boxes it ignored none; of 12,589 static spans without attributes it ignored 12,542. Not explained: blocks whose only children are floats (48 exposed, 22 ignored), a handful of positioned boxes, generics inside video elements, and a share of the paragraphs that Chrome ignores.
 - **Evidence:** **observed in Chrome output**
 
@@ -617,9 +617,9 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 
 ## `positioned-blockification`
 
-- **Topic:** display of positioned and floated elements
-- **Choice:** An absolutely or fixed positioned or floated element has its display blockified (CSS Display 3 section 2.7) before names add spaces around inline-level text. Children of flex and grid containers are not, because Chromium adds no space for them.
-- **Matches:** Chrome 156 output on the corpus (hidden-text spans in links); CSS Display 3 section 2.7.
+- **Topic:** display of positioned and floated elements, flex and grid items, and contents elements
+- **Choice:** An absolutely or fixed positioned or floated element has its display blockified (CSS Display 3 section 2.7) before names add spaces around inline-level text, and so does a child of a flex or grid container (CSS Display 3 section 2.7 blockifies flex and grid items too). A display: contents element counts as a block for the spaces. Spaces are added on each side of such a child; plain inline children run together.
+- **Matches:** Chrome 156 output on the corpus (hidden-text spans in links) and on a generated probe page of 150 links (10 parent displays by 15 child displays) and 20 flex, grid and inline-flex links mixing text and spans: all agree with this rule (testdata/rendered/pages/nameprobe.html); CSS Display 3 section 2.7.
 - **Evidence:** **observed in Chrome output**
 
 ## `list-item-in-widget`
@@ -632,7 +632,7 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `label-for`
 
 - **Topic:** text-only label of a checkbox or radio
-- **Choice:** A label that holds only text and labels a checkbox or a radio button is ignored with the reason labelFor, and its text nodes are ignored as presentational. A label with an element child, or a label of any other control, stays a LabelText.
+- **Choice:** A label that holds only text, and the checkbox or radio button it labels when it wraps it, and labels a checkbox or a radio button, whether it wraps the control or names it with for, before or after it, is ignored with the reason labelFor, and its text nodes are ignored as presentational. A label with an element child, or a label of any other control, stays a LabelText.
 - **Matches:** Chrome 156 output on 300 corpus captures: all 65 text-only labels of checkboxes and radios are ignored as labelFor, all 66 labels with element children are LabelText, and text labels of text fields, selects and textareas are LabelText.
 - **Evidence:** **observed in Chrome output**
 
@@ -641,4 +641,32 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 - **Topic:** wbr
 - **Choice:** A wbr element is ignored with the reason notRendered.
 - **Matches:** Chrome 156 output on the corpus: every wbr in 600 captures (5,021 nodes).
+- **Evidence:** **observed in Chrome output**
+
+## `generated-content-node`
+
+- **Topic:** ::before and ::after boxes
+- **Choice:** With rendered facts, each ::before and ::after box that was laid out is a node under its element (first, after a list marker; last), holding the static text of its generated text when it has some. A box whose display is inline (or contents) is ignored with the reason uninteresting. Any other display is a generic node. An empty block-level box is a node only inside an inline-level host (a link, an inline-block); an empty inline-block box is always one; an empty block box in a block host has none. A container with no children but generated inline text is kept like one with text (it has inline content), and an inline element with a box of generated content is a node (ignored) rather than left out. Not matched: pseudo boxes whose display is table, flex, grid, table-cell or list-item (Chromium nests them differently).
+- **Matches:** Chrome 156 output on two generated probe pages (testdata/rendered/pages/pseudoprobe.html and pseudoprobe2.html: inline, block, inline-block, empty, sized, absolute and floated boxes in links, divs, buttons, headings and list items) and 2,095 corpus captures, where chromeOnly nodes fell from 1.98% to 0.9%.
+- **Evidence:** **observed in Chrome output**
+
+## `control-text-node`
+
+- **Topic:** what a form control draws inside itself
+- **Choice:** With rendered facts, a text field (an input exposed as textbox, searchbox or spinbutton, and a textarea) has a generic child with the editable state holding a static text of the value (a password shows bullets; text with a line break is left out); a search or number field, and a text field showing a placeholder, add an ignored node with no reason (the placeholder is a leaf before the editor, for a search or number field the editor sits inside it). An input of type submit, button or reset has a static text of its value, or Submit or Reset. Not matched: date and time inputs (several spinbuttons and a picker button), type image, select and range.
+- **Matches:** Chrome 156 output on a generated probe page (testdata/rendered/pages/controlprobe.html) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `svg-unrendered-elements`
+
+- **Topic:** style and script inside svg
+- **Choice:** The text of an SVG style or script element is never part of a name from contents: the elements are not rendered (SVG 2, rendering model).
+- **Matches:** Chrome 156 output: 176 links on 26 corpus pages whose svg held a style element; SVG 2 section Rendering order and elements that are never rendered.
+- **Evidence:** **observed in Chrome output**
+
+## `name-from-contents-roles`
+
+- **Topic:** roles named from contents
+- **Choice:** A dt (role term) is named from its contents although WAI-ARIA 1.2 allows only an author name for term; a dfn is not (WPT html-aam phrasing-elements expects that). A time element is not named from its contents.
+- **Matches:** Chrome 156 output: 929 dt on 98 corpus pages have their text as the name, 114 time elements on 13 pages have none; WPT html-aam/accname-computation-by-element/phrasing-elements.html for dfn.
 - **Evidence:** **observed in Chrome output**

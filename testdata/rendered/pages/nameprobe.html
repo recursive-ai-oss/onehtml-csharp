@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Name spacing probe</title>
+<style>
+  body { margin: 8px; font: 16px sans-serif; }
+  .row { margin: 2px 0; }
+</style>
+</head>
+<body>
+<!-- Generated: each link holds two spans; its name shows whether Chrome puts a space between them. -->
+<div class="row"><a href="/p1" style="display:block"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p2" style="display:block"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p3" style="display:block"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p4" style="display:block"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p5" style="display:block"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p6" style="display:block"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p7" style="display:block"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p8" style="display:block"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p9" style="display:block"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p10" style="display:block"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p11" style="display:block"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p12" style="display:block"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p13" style="display:block"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p14" style="display:block"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p15" style="display:block"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p16" style="display:inline"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p17" style="display:inline"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p18" style="display:inline"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p19" style="display:inline"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p20" style="display:inline"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p21" style="display:inline"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p22" style="display:inline"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p23" style="display:inline"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p24" style="display:inline"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p25" style="display:inline"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p26" style="display:inline"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p27" style="display:inline"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p28" style="display:inline"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p29" style="display:inline"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p30" style="display:inline"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p31" style="display:flex"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p32" style="display:flex"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p33" style="display:flex"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p34" style="display:flex"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p35" style="display:flex"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p36" style="display:flex"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p37" style="display:flex"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p38" style="display:flex"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p39" style="display:flex"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p40" style="display:flex"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p41" style="display:flex"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p42" style="display:flex"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p43" style="display:flex"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p44" style="display:flex"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p45" style="display:flex"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p46" style="display:inline-flex"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p47" style="display:inline-flex"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p48" style="display:inline-flex"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p49" style="display:inline-flex"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p50" style="display:inline-flex"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p51" style="display:inline-flex"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p52" style="display:inline-flex"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p53" style="display:inline-flex"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p54" style="display:inline-flex"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p55" style="display:inline-flex"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p56" style="display:inline-flex"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p57" style="display:inline-flex"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p58" style="display:inline-flex"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p59" style="display:inline-flex"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p60" style="display:inline-flex"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p61" style="display:grid"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p62" style="display:grid"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p63" style="display:grid"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p64" style="display:grid"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p65" style="display:grid"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p66" style="display:grid"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p67" style="display:grid"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p68" style="display:grid"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p69" style="display:grid"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p70" style="display:grid"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p71" style="display:grid"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p72" style="display:grid"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p73" style="display:grid"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p74" style="display:grid"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p75" style="display:grid"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p76" style="display:inline-grid"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p77" style="display:inline-grid"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p78" style="display:inline-grid"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p79" style="display:inline-grid"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p80" style="display:inline-grid"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p81" style="display:inline-grid"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p82" style="display:inline-grid"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p83" style="display:inline-grid"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p84" style="display:inline-grid"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p85" style="display:inline-grid"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p86" style="display:inline-grid"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p87" style="display:inline-grid"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p88" style="display:inline-grid"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p89" style="display:inline-grid"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p90" style="display:inline-grid"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p91" style="display:inline-block"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p92" style="display:inline-block"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p93" style="display:inline-block"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p94" style="display:inline-block"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p95" style="display:inline-block"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p96" style="display:inline-block"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p97" style="display:inline-block"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p98" style="display:inline-block"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p99" style="display:inline-block"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p100" style="display:inline-block"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p101" style="display:inline-block"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p102" style="display:inline-block"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p103" style="display:inline-block"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p104" style="display:inline-block"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p105" style="display:inline-block"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p106" style="display:flow-root"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p107" style="display:flow-root"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p108" style="display:flow-root"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p109" style="display:flow-root"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p110" style="display:flow-root"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p111" style="display:flow-root"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p112" style="display:flow-root"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p113" style="display:flow-root"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p114" style="display:flow-root"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p115" style="display:flow-root"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p116" style="display:flow-root"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p117" style="display:flow-root"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p118" style="display:flow-root"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p119" style="display:flow-root"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p120" style="display:flow-root"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p121" style="display:list-item"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p122" style="display:list-item"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p123" style="display:list-item"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p124" style="display:list-item"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p125" style="display:list-item"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p126" style="display:list-item"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p127" style="display:list-item"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p128" style="display:list-item"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p129" style="display:list-item"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p130" style="display:list-item"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p131" style="display:list-item"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p132" style="display:list-item"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p133" style="display:list-item"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p134" style="display:list-item"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p135" style="display:list-item"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/p136" style="display:table"><span style="display:inline">A</span><span style="display:inline">B</span></a></div>
+<div class="row"><a href="/p137" style="display:table"><span style="display:block">A</span><span style="display:block">B</span></a></div>
+<div class="row"><a href="/p138" style="display:table"><span style="display:inline-block">A</span><span style="display:inline-block">B</span></a></div>
+<div class="row"><a href="/p139" style="display:table"><span style="display:flex">A</span><span style="display:flex">B</span></a></div>
+<div class="row"><a href="/p140" style="display:table"><span style="display:inline-flex">A</span><span style="display:inline-flex">B</span></a></div>
+<div class="row"><a href="/p141" style="display:table"><span style="display:grid">A</span><span style="display:grid">B</span></a></div>
+<div class="row"><a href="/p142" style="display:table"><span style="display:inline-grid">A</span><span style="display:inline-grid">B</span></a></div>
+<div class="row"><a href="/p143" style="display:table"><span style="display:table">A</span><span style="display:table">B</span></a></div>
+<div class="row"><a href="/p144" style="display:table"><span style="display:flow-root">A</span><span style="display:flow-root">B</span></a></div>
+<div class="row"><a href="/p145" style="display:table"><span style="display:list-item">A</span><span style="display:list-item">B</span></a></div>
+<div class="row"><a href="/p146" style="display:table"><span style="display:contents">A</span><span style="display:contents">B</span></a></div>
+<div class="row"><a href="/p147" style="display:table"><span style="position:absolute">A</span><span style="position:absolute">B</span></a></div>
+<div class="row"><a href="/p148" style="display:table"><span style="float:left">A</span><span style="float:left">B</span></a></div>
+<div class="row"><a href="/p149" style="display:table"><span style="position:relative">A</span><span style="position:relative">B</span></a></div>
+<div class="row"><a href="/p150" style="display:table"><span style="display:inline;position:fixed">A</span><span style="display:inline;position:fixed">B</span></a></div>
+<div class="row"><a href="/m1001" style="display:block">one<span>two</span>three</a></div>
+<div class="row"><a href="/m1002" style="display:block"><span>one</span>two</a></div>
+<div class="row"><a href="/m1003" style="display:block">one<span>two</span></a></div>
+<div class="row"><a href="/m1004" style="display:block">one<b>two</b>three</a></div>
+<div class="row"><a href="/m1005" style="display:block"><span>one</span><span><span>two</span></span></a></div>
+<div class="row"><a href="/m1006" style="display:flex">one<span>two</span>three</a></div>
+<div class="row"><a href="/m1007" style="display:flex"><span>one</span>two</a></div>
+<div class="row"><a href="/m1008" style="display:flex">one<span>two</span></a></div>
+<div class="row"><a href="/m1009" style="display:flex">one<b>two</b>three</a></div>
+<div class="row"><a href="/m1010" style="display:flex"><span>one</span><span><span>two</span></span></a></div>
+<div class="row"><a href="/m1011" style="display:grid">one<span>two</span>three</a></div>
+<div class="row"><a href="/m1012" style="display:grid"><span>one</span>two</a></div>
+<div class="row"><a href="/m1013" style="display:grid">one<span>two</span></a></div>
+<div class="row"><a href="/m1014" style="display:grid">one<b>two</b>three</a></div>
+<div class="row"><a href="/m1015" style="display:grid"><span>one</span><span><span>two</span></span></a></div>
+<div class="row"><a href="/m1016" style="display:inline-flex">one<span>two</span>three</a></div>
+<div class="row"><a href="/m1017" style="display:inline-flex"><span>one</span>two</a></div>
+<div class="row"><a href="/m1018" style="display:inline-flex">one<span>two</span></a></div>
+<div class="row"><a href="/m1019" style="display:inline-flex">one<b>two</b>three</a></div>
+<div class="row"><a href="/m1020" style="display:inline-flex"><span>one</span><span><span>two</span></span></a></div>
+</body>
+</html>

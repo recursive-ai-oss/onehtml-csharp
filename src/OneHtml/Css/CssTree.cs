@@ -121,6 +121,9 @@ public sealed class CssTree
     /// </summary>
     public bool NestingLimitReached { get; internal init; }
 
+    /// <summary>The token index of the first opener past the nesting limit, or -1.</summary>
+    internal int NestingOverflowAt { get; init; } = -1;
+
     internal int ValuesFrom { get; }
 
     internal int ValuesTo { get; }

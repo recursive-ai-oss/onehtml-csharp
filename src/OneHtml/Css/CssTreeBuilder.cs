@@ -21,6 +21,7 @@ internal sealed class CssTreeBuilder
     /// <summary>Set when bracket matching stopped at <see cref="CssParseOptions.MaxNestingDepth"/>.</summary>
     internal bool NestingLimitReached;
 
+    private int _firstOverflow = -1; // the first overflow in the text itself, kept for the tree
     private int _overflowAt = -1; // the first opener past the limit; its block is kept as opaque tokens
     private readonly CancellationToken _cancel;
     private Token[] _t = [];
@@ -114,6 +115,7 @@ internal sealed class CssTreeBuilder
         return new CssTree(_text, _t, _n, _match, _comments, _commentInts, _items, _itemCount, error, valuesFrom, valuesTo, groups)
         {
             NestingLimitReached = NestingLimitReached,
+            NestingOverflowAt = _firstOverflow,
         };
     }
 
@@ -153,6 +155,11 @@ internal sealed class CssTreeBuilder
                     // their range. The tree stays lossless and its depth stays bounded, and nothing throws.
                     NestingLimitReached = true;
                     _overflowAt = i;
+                    if (_firstOverflow < 0)
+                    {
+                        _firstOverflow = i;
+                    }
+
                     break;
                 }
 

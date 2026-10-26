@@ -41,7 +41,11 @@ public sealed class MediaQueryList
         {
             if (i >= all.To || all.Kind(i) == CssTokenKind.Comma)
             {
-                queries.Add(MediaQueryParser.ParseQuery(all.Sub(start, i).Trim()));
+                // Past the nesting limit the blocks are not paired (CSS Syntax 5.5.9: unclosed blocks run to the end), so
+                // what a closer inside them would close is not what it closes in the text written back out. A query that
+                // holds such a block is an error, which Media Queries 4 §2.3 makes `not all`.
+                int overflow = all.Tree.NestingOverflowAt;
+                queries.Add(overflow >= start && overflow < i ? MediaQueryParser.ParseQuery(all.Sub(start, start)) : MediaQueryParser.ParseQuery(all.Sub(start, i).Trim()));
                 if (i >= all.To)
                 {
                     break;
@@ -395,8 +399,11 @@ internal static class MediaQueryParser
                 }
 
                 Frame parent = stack.Peek();
-                if (node is null)
+                if (node is null || node.Kind == MqKind.General)
                 {
+                    // Media Queries 4 §3.4: a block that is not a valid condition is a <general-enclosed>, kept as written. A
+                    // single general-enclosed inside parentheses must keep those parentheses too: written without them its
+                    // text can be something else (a stray closer or a leftover token after a group is no longer enclosed).
                     node = new MqNode { Kind = MqKind.General, Text = f.Raw };
                 }
 

@@ -108,6 +108,8 @@ internal sealed class SheetEngine
     private readonly string _text;
     private readonly CancellationToken _ct;
     private readonly List<Op> _ops = [];
+    private int[]? _top;
+    private bool _wholeSheet;
 
     private SheetEngine(Stylesheet sheet, CancellationToken ct)
     {
@@ -118,9 +120,9 @@ internal sealed class SheetEngine
         _ct = ct;
     }
 
-    public static SheetPlan Run(Stylesheet sheet, IReadOnlyList<SheetEdit> edits, int maxVerifications, CancellationToken ct)
+    public static SheetPlan Run(Stylesheet sheet, IReadOnlyList<SheetEdit> edits, int maxVerifications, bool verifyWholeSheet, CancellationToken ct)
     {
-        var engine = new SheetEngine(sheet, ct);
+        var engine = new SheetEngine(sheet, ct) { _wholeSheet = verifyWholeSheet };
         return engine.Execute(edits, maxVerifications);
     }
 
@@ -196,7 +198,8 @@ internal sealed class SheetEngine
     private SheetPlan Attempt(List<Op> ops, int[] tiers, ref int verifications)
     {
         _ct.ThrowIfCancellationRequested();
-        List<Ev> expected = BuildExpected(ops, out Dictionary<int, int> openAt);
+        bool windowed = TryWindow(ops, out int lo, out int hi, out int windowStart, out int windowEnd);
+        List<Ev> expected = BuildExpected(ops, out Dictionary<int, int> openAt, windowed ? lo : -1, hi);
         var pieces = new List<SheetPiece>();
         var roots = new List<int>();
         var rootOps = new Dictionary<int, List<int>>();
@@ -317,21 +320,48 @@ internal sealed class SheetEngine
 
         sb.Append(_text, pos, _text.Length - pos);
         string newText = sb.ToString();
-        verifications++;
-        CssTree reparsed;
-        try
+
+        // Narrow check first: the edits sit inside a window of whole top-level rules, and a rule list parses the same
+        // from any rule boundary, so when the window alone re-parses to the expected rules the whole sheet does too
+        // (see TryWindow). A mismatch proves nothing, so it falls through to the whole-sheet check below.
+        bool verified = false;
+        if (windowed && pieces.Count > 0 && pieces[0].Start >= windowStart && pieces[^1].End <= windowEnd && newText.Length < NarrowLimit)
         {
-            reparsed = CssTree.ParseStylesheet(newText, null, _ct);
-        }
-        catch (CssLimitExceededException ex)
-        {
-            return Bad("the edited stylesheet exceeds a limit: " + ex.Message, -1, invalid: false);
+            verifications++;
+            try
+            {
+                string windowText = newText.Substring(windowStart, newText.Length - windowStart - (_text.Length - windowEnd));
+                verified = Same(expected, EventsOf(CssTree.ParseStylesheet(windowText, null, _ct)), out _);
+            }
+            catch (CssLimitExceededException)
+            {
+                verified = false;
+            }
         }
 
-        List<Ev> actual = EventsOf(reparsed);
-        if (!Same(expected, actual, out string? why))
+        if (!verified)
         {
-            return Bad(why!, -1, invalid: false);
+            if (windowed)
+            {
+                expected = BuildExpected(ops, out _, -1, -1);
+            }
+
+            verifications++;
+            CssTree reparsed;
+            try
+            {
+                reparsed = CssTree.ParseStylesheet(newText, null, _ct);
+            }
+            catch (CssLimitExceededException ex)
+            {
+                return Bad("the edited stylesheet exceeds a limit: " + ex.Message, -1, invalid: false);
+            }
+
+            List<Ev> actual = EventsOf(reparsed);
+            if (!Same(expected, actual, out string? why))
+            {
+                return Bad(why!, -1, invalid: false);
+            }
         }
 
         int[] levels = new int[tiers.Length];
@@ -1000,9 +1030,105 @@ internal sealed class SheetEngine
 
     private static string Shorten(string s) => s.Length <= 50 ? s : s[..50] + "...";
 
+    // ---- the narrow verification window ----
+
+    // Bounds the narrow check by what the whole-sheet parse would have to enforce too (tokens at most one per character).
+    private static readonly int NarrowLimit = Math.Min(CssParseOptions.Default.MaxInputLength, CssParseOptions.Default.MaxTokens);
+
+    private int[] Top()
+    {
+        if (_top is null)
+        {
+            var list = new List<int>();
+            for (int c = _tree.Items[0].FirstChild; c >= 0; c = _tree.Items[c].NextSibling)
+            {
+                list.Add(c);
+            }
+
+            _top = [.. list];
+        }
+
+        return _top;
+    }
+
+    // The position among the top-level rules of an original item (items are numbered in document order).
+    private int TopPosition(int item) => Array.BinarySearch(Top(), item);
+
+    /// <summary>
+    /// The stretch of whole top-level rules that holds every piece of the ops, widened by one rule on each side (positions
+    /// <paramref name="lo"/> to <paramref name="hi"/>), and its text range. Soundness of checking only this stretch: the
+    /// text before it is unchanged and every rule there ended at its own delimiter in the original parse; the text from
+    /// the stretch's last rule on is unchanged too, and the stretch ends either at the end of the sheet or after an
+    /// untouched rule that ended at its delimiter. A CSS rule list is parsed rule by rule, so the full parse equals the
+    /// rules before, the stretch parsed alone, and the rules after, provided the stretch alone gives the expected rules.
+    /// </summary>
+    private bool TryWindow(List<Op> ops, out int lo, out int hi, out int start, out int end)
+    {
+        lo = hi = start = end = 0;
+        int[] top = Top();
+        if (_wholeSheet || top.Length == 0)
+        {
+            return false;
+        }
+
+        int first = int.MaxValue;
+        int last = -1;
+        foreach (Op op in ops)
+        {
+            foreach (SheetPiece p in op.Pieces)
+            {
+                first = Math.Min(first, p.Start);
+                last = Math.Max(last, p.End);
+            }
+
+            // A rule rewritten from the expected events covers its whole top-level rule at most.
+            int x = op.Group;
+            if (x > 0)
+            {
+                while (ParentOf(x) > 0)
+                {
+                    x = ParentOf(x);
+                }
+
+                CssRange r = new CssNode(_tree, x).Range;
+                first = Math.Min(first, r.Start);
+                last = Math.Max(last, r.End);
+            }
+        }
+
+        if (last < 0)
+        {
+            return false;
+        }
+
+        // First rule that ends at or after the first piece; last rule that starts at or before the last piece.
+        int a = 0;
+        while (a < top.Length && new CssNode(_tree, top[a]).Range.End < first)
+        {
+            a++;
+        }
+
+        int b = top.Length - 1;
+        while (b > 0 && new CssNode(_tree, top[b]).Range.Start > last)
+        {
+            b--;
+        }
+
+        lo = Math.Max(0, Math.Min(a, top.Length - 1) - 1);
+        hi = Math.Min(top.Length - 1, b + 1);
+        if (hi < lo)
+        {
+            return false;
+        }
+
+        start = lo == 0 ? 0 : new CssNode(_tree, top[lo]).Range.Start;
+        end = hi == top.Length - 1 ? _text.Length : new CssNode(_tree, top[hi]).Range.End;
+        return true;
+    }
+
     // ---- the expected events ----
 
-    private List<Ev> BuildExpected(List<Op> ops, out Dictionary<int, int> openAt)
+    private List<Ev> BuildExpected(List<Op> ops, out Dictionary<int, int> openAt, int windowLo, int windowHi)
     {
         openAt = [];
         var byGroup = new Dictionary<int, List<Op>>();
@@ -1027,7 +1153,14 @@ internal sealed class SheetEngine
 
         var list = new List<Ev>();
         var frames = new Stack<(List<Entry> Entries, int Pos, int Open, int Item)>();
-        frames.Push((EntriesOf(0, byGroup), 0, -1, 0));
+        List<Entry> top = EntriesOf(0, byGroup);
+        if (windowLo >= 0)
+        {
+            // Only the rules of the window: inserted rules always belong to it, original ones by position.
+            top = top.FindAll(e => e.Kind != EntryKind.Orig || TopPosition(e.Node) is var pos && pos >= windowLo && pos <= windowHi);
+        }
+
+        frames.Push((top, 0, -1, 0));
         while (frames.Count > 0)
         {
             _ct.ThrowIfCancellationRequested();

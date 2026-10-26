@@ -135,6 +135,34 @@ differ. Everything else keeps its style object. A document that uses `:has()` se
 indices differ (`FullRecompute`); so does a change of quirks mode or of the layer structure, and a tree of another shape
 without `OldToNew`.
 
+### From an edit result
+
+`styles.Restyle(EditResult)` and `styles.Restyle(BatchResult)` (extension methods in `RecursiveAI.OneHtml.Css`) take the
+styles of the edited snapshot and the result of `Apply` and return the `RestyleResult` for the new document. The result
+equals `DocumentStyles.Create` on the new document with the same context and options. They build the `StyleChange`:
+
+- `OldToNew[o]` is the change set's `MapToNew` of old node `o`, or -1 when it was removed; its length is the old document's
+  node count. A batch with no document change (only linked or loose sheets) restyles the same document with no map.
+- Each changed element with the `Attributes` flag is an `ElementChange`. Its names are those of the `SetAttribute` and
+  `RemoveAttribute` edits that targeted it, in lower case (`style` for `SetStyle` and `RemoveStyle`); they are null (any
+  attribute) when no such edit explains the flag or the element is not in the HTML namespace.
+- An element with the `Children` flag, and the parent of a text node with the `Data` flag, is an `ElementChange` with an
+  empty name list. Added, removed and moved nodes are left to the restyle's own tree comparison.
+- `SheetsChanged` is set when a sheet update of the batch has edits, when a `style`, `link` or `base` element or a doctype
+  was added, removed or changed, or when the text of a `style` element changed. Narrowing a sheet change is the restyle's
+  own: it gathers the sheets again and restyles the elements matched by the rules between the common prefix and suffix of the
+  old and new rule lists (the rules of the `StylesheetChangeSet`, found by comparison).
+- A linked sheet the batch edited is served from its new text: the new resolver returns it for `LinkedStylesheet.Url`
+  (which must be the absolute URL the cascade asks for) and delegates every other URL to the resolver the styles were made
+  with. The old styles keep the old sheet.
+
+The restyle keeps an old style object for an element whose recomputed values are textually equal only when it still hangs
+below the same parent style object: `em`, `%`, `currentcolor` and `bolder` resolve through the parent chain, so a
+replaced parent replaces every descendant style that the new rules reach.
+
+Measured on a 3,600-node page with 300 rules: a class change restyles 3 elements in 1.7 ms against 11 ms for a full
+compute of the new document; a declaration change in the `style` element takes 3.6 ms against 8 ms.
+
 ## Limits
 
 `StyleSourceOptions`: `MaxImportDepth` 16, `MaxSheets` 4096, `MaxRules` 2,000,000, `MaxLayers` 65,536. Reaching one is

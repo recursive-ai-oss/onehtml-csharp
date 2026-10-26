@@ -253,7 +253,7 @@ public sealed class EditBatch
                 list.Add(SheetEdits[i]);
             }
 
-            g.Plan = SheetEngine.Run(g.Sheet, list, options.MaxVerifications, cancellationToken);
+            g.Plan = SheetEngine.Run(g.Sheet, list, options.MaxVerifications, options.VerifyWholeStylesheet, cancellationToken);
             if (!g.Plan.Ok)
             {
                 EditStatus status = g.Plan.Invalid ? EditStatus.Invalid : EditStatus.Failed;

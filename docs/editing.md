@@ -19,7 +19,7 @@ Normative behaviour of `Document.Apply` and `DocumentEditor` in `RecursiveAI.One
 | `ReplaceText(target, text)` | On a text node: its data. On an element: all its children become one text node (none for empty text). Escaped for the context: raw text and RCDATA elements get their content verbatim or character-reference escaped as the element's parsing mode requires; foreign content escapes as normal data. |
 | `InsertBefore`, `InsertAfter`, `Prepend`, `Append` | `html` is parsed with the fragment algorithm in the target's context (the parent's, for before/after). |
 | `Wrap(node, html, count)` | `html` must parse to one element. The `count` contiguous siblings from `node` move inside it, **after the wrapper's own children**. |
-| `Unwrap(element)` | Children take its place. |
+| `Unwrap(element)` | Children take its place. A text, comment or doctype target is `Invalid`, as is an element whose parent is the document, and a `template` element. |
 | `Replace(node, html)`, `Remove(node)` | |
 | `SetStyle(element, property, value, important)`, `RemoveStyle(element, property)` | Edit the `style=""` attribute using CSS Syntax declaration ranges. `!important` is kept when the declaration has it and `important` is not given. |
 
@@ -59,6 +59,14 @@ Synthesized `selectedcontent` clones are never editable. Edit the selected `opti
 
 One edit costs about one parse of the document plus about 1 ms (the verification re-parse dominates; the column copy does not). On a 35,011-node page: parse 4.6 ms, one attribute edit 5.8 ms (12.4 MB allocated), 100 attribute edits in one transaction 7.2 ms. Reads on an old snapshot, on a fresh parse and on an edited snapshot cost the same.
 
+## Cost of a stylesheet edit
+
+One edit on a 1,000-rule, 73 KB sheet (parse 0.52 ms, 1.6 MB): `setDeclaration` 2.85 ms / 7.5 MB before the narrow check (5.4 parses of time, 4.7 of allocation), 0.88 ms / 2.7 MB after (1.7 and 1.7). What remains is the parse that produces the new sheet snapshot and the change set's pass over the sheet's rules. An edit set spread over the whole sheet (50 declarations across 1,000 rules) has a window as wide as the sheet and costs what it did.
+
+## Restyle after an edit
+
+To get the styles of the edited document, call `styles.Restyle(result)` with the `EditResult` or `BatchResult`; see `cascade.md`.
+
 ## Statuses
 
 `EditStatus` also has `Stale` (a saved target is gone or no longer looks like it did) and `Ambiguous` (a saved target matches several places). Only replay produces them; see `edit-format.md`.
@@ -72,6 +80,8 @@ One edit costs about one parse of the document plus about 1 ms (the verification
 - **Local format.** New text copies the sheet: the newline sequence (documents and sheets are decoded with newlines normalized to line feed, and the original convention is restored on writing), the indentation unit and the indentation of the line the neighbour starts on, the text before and after a declaration's colon and before `!important`, whether the last declaration of a block ends in a semicolon, and the white space between adjacent rules (taken from the pair around the reference rule, then any pair in the container, then any pair at the top level). With no evidence the defaults are: one line feed between rules, two spaces of indentation, `: ` after a property, a semicolon after the last declaration. Removing an item removes the white space that separated it from its neighbour (after it, or before it for the last item of a block); comments between rules stay.
 - **Inserted CSS** must parse as exactly one rule (CSS Syntax 3 §5.3 "consume a rule"); leading and trailing white space is dropped, a block-less at-rule gets its semicolon, and later lines are re-indented. An insertion at the end of a stylesheet whose last item is an incomplete prelude cannot be written and is `Failed`.
 - **Verification.** The edited text is parsed again and its rule events (rule kind, name, normalized prelude, declarations with normalized values and importance, in order) must equal the events derived from the original tree and the edits. The expected events never come from the new text.
+  - **Narrow check first.** The check covers a stretch of whole top-level rules: the rules the edits touch, plus one on each side, to the end of the sheet when that is nearer. Only that stretch of the new text is parsed, and only its expected events are built. This is sound because a rule list is parsed rule by rule from any rule boundary: the text before the stretch is unchanged and its rules ended at their own delimiters in the original parse; the stretch ends at the end of the sheet or after an untouched rule that ended at its delimiter. When the stretch alone gives the expected rules, the whole sheet does.
+  - **Whole-sheet check as the fallback.** A narrow mismatch proves nothing, so the whole new text is parsed and compared to the whole expected list; that result decides. The same happens when the new text is longer than the token or input limit, or when the pieces do not lie inside the stretch. `EditOptions.VerifyWholeStylesheet` skips the narrow check; the two give the same output.
 - **Fallback.** If they differ, the rule containing the edit is rewritten from the expected events; if that still differs, the next enclosing rule is rewritten, up to the stylesheet's top level. Each rewrite is reported in the `StylesheetChangeSet.Ranges` with its level (0 is a local splice).
 - **Limits.** The `EditOptions` limits apply to the whole batch: the count of edits, the inserted length, and the number of verification parses.
 - **Change set.** `StylesheetChangeSet` lists rules `Added`, `Removed` and `Changed` (new-snapshot nodes for added and changed, old-snapshot nodes for removed) and the rewritten ranges, each with old and new range, the edits that produced it and its fallback level. A cascade consumer restyles the elements matched by the rules in the change set. An edit of an embedded sheet is also in the document's change set as a text change.

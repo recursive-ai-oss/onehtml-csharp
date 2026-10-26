@@ -212,6 +212,17 @@ public class EditOperationTests
     }
 
     [Fact]
+    public void Unwrap_of_a_text_or_comment_node_is_invalid()
+    {
+        Document d = Parse("<p>a<!--c--><b>x</b></p>");
+        EditResult r = d.Apply([Edit.Unwrap(FindText(d, "a"))]);
+        Assert.False(r.Succeeded);
+        Assert.Equal(EditStatus.Invalid, r.Outcomes[0].Status);
+        r = d.Apply([Edit.Unwrap(Find(d, "p").FirstChild.NextSibling)]);
+        Assert.Equal(EditStatus.Invalid, r.Outcomes[0].Status);
+    }
+
+    [Fact]
     public void The_old_snapshot_is_untouched()
     {
         Document d = Parse("<p class=a>one</p>");

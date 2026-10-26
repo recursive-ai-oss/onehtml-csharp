@@ -761,6 +761,11 @@ internal sealed partial class EditModel
 
     private string? Unwrap(int t)
     {
+        if (A.Kind[t] != (byte)NodeKind.Element)
+        {
+            return "unwrap needs an element, not a text, comment or other node";
+        }
+
         int parent = A.Parent[t];
         if (parent < 0)
         {

@@ -81,6 +81,19 @@ public sealed class StyleSourceOptions
 
     /// <summary>The most cascade layers per origin. Default 65,536.</summary>
     public int MaxLayers { get; init; } = 1 << 16;
+
+    internal StyleSourceOptions WithResolver(StylesheetResolver? resolver) => new()
+    {
+        BaseUrl = BaseUrl,
+        Resolver = resolver,
+        UserSheets = UserSheets,
+        IncludeUserAgentSheet = IncludeUserAgentSheet,
+        ParseOptions = ParseOptions,
+        MaxImportDepth = MaxImportDepth,
+        MaxSheets = MaxSheets,
+        MaxRules = MaxRules,
+        MaxLayers = MaxLayers,
+    };
 }
 
 /// <summary>What the style-source gatherer could not do.</summary>

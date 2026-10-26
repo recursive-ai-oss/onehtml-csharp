@@ -523,6 +523,62 @@ public class SheetEditPropertyTests
         Assert.True(refused == 0, $"refused {refused} of {total}");
     }
 
+    /// <summary>
+    /// The narrow verification (only the stretch of rules around the edits is re-parsed) must give exactly what parsing
+    /// the whole sheet gives: same success, same text, same ranges and levels, on messy sheets, with several edits per
+    /// transaction so the stretches are wide.
+    /// </summary>
+    [Fact]
+    public void Narrow_verification_equals_whole_sheet_verification()
+    {
+        var rng = new Random(777);
+        var whole = new EditOptions { VerifyWholeStylesheet = true };
+        int transactions = 0, ok = 0;
+        for (int iter = 0; iter < 1500; iter++)
+        {
+            Stylesheet s = Stylesheet.Parse(iter % 3 == 0 ? Generate(rng) : GenerateMessy(rng));
+            for (int round = 0; round < 5; round++)
+            {
+                List<CssNode> items = Items(s);
+                var edits = new List<SheetEdit>();
+                int n = 1 + (rng.Next(3) == 0 ? rng.Next(6) : 0);
+                for (int k = 0; k < n; k++)
+                {
+                    SheetEdit? e = RandomEdit(s, items, rng, out _);
+                    if (e is not null)
+                    {
+                        edits.Add(e);
+                    }
+                }
+
+                if (edits.Count == 0)
+                {
+                    continue;
+                }
+
+                transactions++;
+                BatchResult narrow = s.Apply(edits);
+                BatchResult full = s.Apply(edits, whole);
+                Assert.Equal(full.Succeeded, narrow.Succeeded);
+                if (!narrow.Succeeded)
+                {
+                    Assert.Equal(full.Outcomes.Select(o => o.Status), narrow.Outcomes.Select(o => o.Status));
+                    continue;
+                }
+
+                ok++;
+                StylesheetChangeSet a = narrow.Sheets[0].Changes;
+                StylesheetChangeSet b = full.Sheets[0].Changes;
+                Assert.Equal(b.NewSheet.Text, a.NewSheet.Text);
+                Assert.Equal(b.Ranges.Select(r => (r.OldRange, r.NewRange, r.FallbackLevel)), a.Ranges.Select(r => (r.OldRange, r.NewRange, r.FallbackLevel)));
+                s = a.NewSheet;
+            }
+        }
+
+        TestContext.Current.SendDiagnosticMessage($"narrow vs whole-sheet verification: {transactions} transactions, {ok} applied, identical");
+        Assert.True(ok > transactions / 2);
+    }
+
     [Fact]
     public void Generated_sheets_single_edits_have_exact_inverses()
     {

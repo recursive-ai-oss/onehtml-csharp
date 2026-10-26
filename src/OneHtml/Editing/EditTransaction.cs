@@ -22,6 +22,13 @@ public sealed class EditOptions
     /// the first check fails. Default 1,024.
     /// </summary>
     public int MaxVerifications { get; init; } = 1024;
+
+    /// <summary>
+    /// For stylesheet edits: parse the whole edited stylesheet to verify the result. By default only the stretch of
+    /// whole top-level rules around the edits is parsed and checked, and the whole sheet is parsed only when that check
+    /// cannot confirm the result. Both give the same output; this switch exists to compare them. Default false.
+    /// </summary>
+    public bool VerifyWholeStylesheet { get; init; }
 }
 
 /// <summary>

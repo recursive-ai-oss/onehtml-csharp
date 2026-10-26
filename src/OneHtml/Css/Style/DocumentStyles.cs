@@ -59,6 +59,8 @@ public sealed class DocumentStyles
     /// <summary>The document.</summary>
     public Document Document => _doc;
 
+    internal StyleSourceOptions SourceOptions => _options;
+
     /// <summary>The context the styles were computed under.</summary>
     public StyleContext Context => _context;
 
@@ -282,7 +284,12 @@ public sealed class DocumentStyles
     /// <param name="change">What changed.</param>
     /// <param name="cancellationToken">Cancels the work.</param>
     /// <exception cref="ArgumentNullException">An argument is null.</exception>
-    public RestyleResult Restyle(Document newDocument, StyleChange change, CancellationToken cancellationToken = default)
+    public RestyleResult Restyle(Document newDocument, StyleChange change, CancellationToken cancellationToken = default) =>
+        RestyleWith(newDocument, change, _options, cancellationToken);
+
+    // The options of the new view: the same as this view's, except that an edit of a linked sheet swaps that sheet's text in
+    // the resolver (see DocumentStylesEditing).
+    internal RestyleResult RestyleWith(Document newDocument, StyleChange change, StyleSourceOptions options, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(newDocument);
         ArgumentNullException.ThrowIfNull(change);
@@ -305,7 +312,7 @@ public sealed class DocumentStyles
         bool sameShape = SameShape(_doc, newDocument);
         if (!sameShape && oldToNew is null)
         {
-            return new RestyleResult(Create(newDocument, newContext, _options, cancellationToken), [], true);
+            return new RestyleResult(Create(newDocument, newContext, options, cancellationToken), [], true);
         }
 
         if (oldToNew is not null && IsIdentity(oldToNew, newDocument.NodeCount))
@@ -317,13 +324,13 @@ public sealed class DocumentStyles
         RuleDatabase? newDb = null;
         if (change.SheetsChanged)
         {
-            newDb = new RuleGatherer(newDocument, newContext, _options, cancellationToken).Build();
+            newDb = new RuleGatherer(newDocument, newContext, options, cancellationToken).Build();
             if (newDb.Quirks != _engine.Db.Quirks || newDb.LayerSignature != _engine.Db.LayerSignature)
             {
-                return new RestyleResult(new DocumentStyles(newDocument, newContext, _options, new StyleEngine(newDocument, newContext, newDb, _options), null), [], true);
+                return new RestyleResult(new DocumentStyles(newDocument, newContext, options, new StyleEngine(newDocument, newContext, newDb, options), null), [], true);
             }
 
-            engine = new StyleEngine(newDocument, newContext, newDb, _options);
+            engine = new StyleEngine(newDocument, newContext, newDb, options);
         }
 
         int[]? newToOld = null;
@@ -333,7 +340,7 @@ public sealed class DocumentStyles
             if (engine.UsesHas)
             {
                 // :has() reaches from any descendant to any ancestor and the ancestor's earlier siblings; recompute.
-                return new RestyleResult(Create(newDocument, newContext, _options, cancellationToken), [], true);
+                return new RestyleResult(Create(newDocument, newContext, options, cancellationToken), [], true);
             }
 
             newToOld = new int[newDocument.NodeCount];
@@ -349,7 +356,7 @@ public sealed class DocumentStyles
             fallback = Remapped(newDocument, newContext, engine, newToOld);
         }
 
-        var view = new DocumentStyles(newDocument, newContext, _options, engine, fallback);
+        var view = new DocumentStyles(newDocument, newContext, options, engine, fallback);
         var affected = new HashSet<int>();
         if (newToOld is not null)
         {
@@ -766,7 +773,9 @@ public sealed class DocumentStyles
             ComputedStyle? parent = p >= 0 && a.Kind[p] == (byte)NodeKind.Element ? StyleOf(p) : null;
             ComputedStyle fresh = _engine.Compute(new Node(_doc, idx), parent, _match);
             ComputedStyle old = _fallback!.StyleOf(idx);
-            bool same = ReferenceEquals(fresh, old) || (compareByValue && fresh.FastValueEquals(old));
+            // Typed values (em, %, currentcolor, bolder) resolve through the parent chain, so equal value text is only
+            // enough when the old style still hangs below the same parent object.
+            bool same = ReferenceEquals(fresh, old) || (compareByValue && ReferenceEquals(old.Parent, parent) && fresh.FastValueEquals(old));
             if (same)
             {
                 continue;

@@ -151,6 +151,25 @@ bool styleOk = styles.GetStyle(sp).GetPropertyValue("color") == "red" && styles.
     && styles.GetStyle(sp).Display.ToCss() == "block" && restyled.Styles.GetStyle(sdoc2.GetElementById("p")).GetComputedValue("color") == "rgb(255, 165, 0)" && !restyled.FullRecompute;
 Console.WriteLine($"style={styleOk} sheets={styles.Sheets.Count} rules={styles.RuleCount} restyled={restyled.RestyledElements.Count}");
 
+// An edit followed by a restyle through the one call: a class change on the document and a linked sheet edit.
+RecursiveAI.OneHtml.Editing.LinkedStylesheet linkedSheet = RecursiveAI.OneHtml.Editing.LinkedStylesheet.Create("https://t.test/a.css", Encoding.UTF8.GetBytes("p { color: red }\n.q { color: orange }\n"));
+RecursiveAI.OneHtml.Document editedPage = RecursiveAI.OneHtml.Document.Parse("<link rel=stylesheet href=a.css><div><p id=p>x</p><p id=r>y</p></div>");
+DocumentStyles pageStyles = DocumentStyles.Create(editedPage, null, new StyleSourceOptions { BaseUrl = "https://t.test/", Resolver = _ => new StylesheetResource(Encoding.UTF8.GetBytes("p { color: red }\n.q { color: orange }\n")) });
+RecursiveAI.OneHtml.Editing.EditResult pageEdit = RecursiveAI.OneHtml.DocumentEditing.Apply(editedPage, new[] { RecursiveAI.OneHtml.Editing.Edit.SetAttribute(editedPage.GetElementById("p"), "class", "q") });
+RestyleResult pageRestyle = pageStyles.Restyle(pageEdit);
+RecursiveAI.OneHtml.Css.CssNode firstRule = default;
+foreach (RecursiveAI.OneHtml.Css.CssNode rule in linkedSheet.Sheet.Rules)
+{
+    firstRule = rule;
+    break;
+}
+
+RecursiveAI.OneHtml.Editing.BatchResult sheetBatch = new RecursiveAI.OneHtml.Editing.EditBatch(null, null, new[] { RecursiveAI.OneHtml.Editing.SheetEdit.SetDeclaration(linkedSheet.Sheet, firstRule, "color", "blue") }, new[] { linkedSheet }).Apply();
+RestyleResult sheetRestyle = pageRestyle.Styles.Restyle(sheetBatch);
+bool restyleEditOk = pageEdit.Succeeded && !pageRestyle.FullRecompute && pageRestyle.Styles.GetStyle(pageRestyle.Styles.Document.GetElementById("p")).GetPropertyValue("color") == "orange"
+    && sheetBatch.Succeeded && !sheetRestyle.FullRecompute && sheetRestyle.Styles.GetStyle(sheetRestyle.Styles.Document.GetElementById("r")).GetPropertyValue("color") == "blue";
+Console.WriteLine($"edit+restyle={restyleEditOk} restyled={pageRestyle.RestyledElements.Count}/{sheetRestyle.RestyledElements.Count}");
+
 // Saved edits: describe an element edit and a stylesheet edit, write the envelope, read it back, replay it on a fresh parse.
 string savedPage = "<!DOCTYPE html><html><head><style>\n.a { color: red }\n.b { margin: 0 }\n</style></head><body><nav id=main-nav><a href=/x>X</a></nav></body></html>";
 RecursiveAI.OneHtml.Document savedDoc = RecursiveAI.OneHtml.Document.Parse(Encoding.UTF8.GetBytes(savedPage));
@@ -176,4 +195,4 @@ string replayed = replay.Succeeded ? replay.Batch!.Document!.Source.Text : "";
 bool replayOk = replay.Succeeded && readBack.ToJson() == envelopeJson
     && replayed.Contains("<nav id=main-nav title=", StringComparison.Ordinal) && replayed.Contains("margin: 0; padding: 1px", StringComparison.Ordinal);
 Console.WriteLine($"replay={replay.Succeeded} json={envelopeJson.Length} ok={replayOk}");
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk ? 0 : 1;
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk ? 0 : 1;

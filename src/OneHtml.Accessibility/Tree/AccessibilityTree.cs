@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using RecursiveAI.OneHtml.Accessibility.Aria;
+using RecursiveAI.OneHtml.Accessibility.Rendered;
 using RecursiveAI.OneHtml.Accessibility.Tree;
 using RecursiveAI.OneHtml.Css;
 using RecursiveAI.OneHtml.Editing;
@@ -89,11 +90,34 @@ public sealed class AccessibilityTree
             styles = styles.WithContext(context, cancellationToken);
         }
 
-        return new TreeBuilder(document, styles, options ?? new AccessibilityOptions(), null, cancellationToken).Run();
+        options ??= new AccessibilityOptions();
+        CheckFacts(options.Facts, document, styles);
+        return new TreeBuilder(document, styles, options, null, cancellationToken).Run();
     }
 
+    private static void CheckFacts(RenderedFacts? facts, Document document, DocumentStyles styles)
+    {
+        if (facts is null)
+        {
+            return;
+        }
 
-    /// <summary>What <see cref="Update(EditResult, RestyleResult, CancellationToken)"/> or <see cref="WithContext"/> did to make this tree; null for a tree made by <see cref="Build"/>.</summary>
+        if (facts.DocumentId != document.Id || facts.NodeCount != document.NodeCount)
+        {
+            throw new ArgumentException("The rendered facts were built for another document.", nameof(facts));
+        }
+
+        if (facts.Context is { } captured && !captured.Equals(styles.Context))
+        {
+            throw new ArgumentException("The rendered facts were captured under another style context.", nameof(facts));
+        }
+    }
+
+    /// <summary>The rendered facts the tree was built with (<see cref="AccessibilityOptions.Facts"/>), or null.</summary>
+    public RenderedFacts? Facts => Options.Facts;
+
+
+    /// <summary>What <see cref="Update(EditResult, RestyleResult, CancellationToken)"/> or <see cref="WithContext(StyleContext, CancellationToken)"/> did to make this tree; null for a tree made by <see cref="Build"/>.</summary>
     public TreeUpdateInfo? UpdateInfo { get; internal set; }
 
     internal bool UsedCounters { get; set; }
@@ -136,7 +160,32 @@ public sealed class AccessibilityTree
             throw new ArgumentException("The edit did not succeed, so there is no new document.", nameof(edit));
         }
 
-        return UpdateCore(edit.Document, edit.Changes, restyle, cancellationToken);
+        return UpdateCore(edit.Document, edit.Changes, restyle, null, cancellationToken);
+    }
+
+    /// <summary>
+    /// <see cref="Update(EditResult, RestyleResult, CancellationToken)"/> for a tree built with <see cref="AccessibilityOptions.Facts"/>.
+    /// Rendered facts describe one snapshot of one page, so an edit makes them stale: an update never keeps the previous facts. With
+    /// <paramref name="facts"/> (captured from the edited document under the restyle's context) the tree is built afresh with them,
+    /// equal to <see cref="Build"/> with the same facts; without them the result has no facts, and when this tree had some it is also
+    /// built afresh, so the result equals <see cref="Build"/> without facts. <see cref="UpdateInfo"/> says so.
+    /// </summary>
+    /// <param name="edit">A successful result of <c>Document.Apply</c> on <see cref="Document"/>.</param>
+    /// <param name="restyle">The result of restyling <see cref="Styles"/> with the same edit.</param>
+    /// <param name="facts">Facts captured from the edited document, or <see langword="null"/> for none.</param>
+    /// <param name="cancellationToken">Observed periodically.</param>
+    /// <exception cref="ArgumentNullException">An argument other than <paramref name="facts"/> is null.</exception>
+    /// <exception cref="ArgumentException">As for the overload without facts, or the facts are not of the edited document and the restyle's context.</exception>
+    /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
+    public AccessibilityTree Update(EditResult edit, RestyleResult restyle, RenderedFacts? facts, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(edit);
+        if (!edit.Succeeded || edit.Changes is null || edit.Document is null)
+        {
+            throw new ArgumentException("The edit did not succeed, so there is no new document.", nameof(edit));
+        }
+
+        return UpdateCore(edit.Document, edit.Changes, restyle, facts, cancellationToken);
     }
 
     /// <summary>
@@ -157,7 +206,26 @@ public sealed class AccessibilityTree
             throw new ArgumentException("The batch did not succeed, so there is no new document.", nameof(batch));
         }
 
-        return UpdateCore(batch.Document ?? Document, batch.Changes, restyle, cancellationToken);
+        return UpdateCore(batch.Document ?? Document, batch.Changes, restyle, null, cancellationToken);
+    }
+
+    /// <summary>The batch form of <see cref="Update(EditResult, RestyleResult, RenderedFacts, CancellationToken)"/>.</summary>
+    /// <param name="batch">A successful result of <c>EditBatch.Apply</c> on <see cref="Document"/>.</param>
+    /// <param name="restyle">The result of restyling <see cref="Styles"/> with the same batch.</param>
+    /// <param name="facts">Facts captured from the edited document, or <see langword="null"/> for none.</param>
+    /// <param name="cancellationToken">Observed periodically.</param>
+    /// <exception cref="ArgumentNullException">An argument other than <paramref name="facts"/> is null.</exception>
+    /// <exception cref="ArgumentException">As for the overload without facts, or the facts are not of the edited document and the restyle's context.</exception>
+    /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
+    public AccessibilityTree Update(BatchResult batch, RestyleResult restyle, RenderedFacts? facts, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(batch);
+        if (!batch.Succeeded)
+        {
+            throw new ArgumentException("The batch did not succeed, so there is no new document.", nameof(batch));
+        }
+
+        return UpdateCore(batch.Document ?? Document, batch.Changes, restyle, facts, cancellationToken);
     }
 
     /// <summary>
@@ -170,7 +238,19 @@ public sealed class AccessibilityTree
     /// <exception cref="ArgumentNullException"><paramref name="context"/> is null.</exception>
     /// <exception cref="ArgumentException">The context names a node of another document.</exception>
     /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
-    public AccessibilityTree WithContext(StyleContext context, CancellationToken cancellationToken = default)
+    public AccessibilityTree WithContext(StyleContext context, CancellationToken cancellationToken = default) => WithContext(context, null, cancellationToken);
+
+    /// <summary>
+    /// <see cref="WithContext(StyleContext, CancellationToken)"/> with facts captured under <paramref name="context"/>. Facts belong to
+    /// one context, so the previous facts are never kept; without <paramref name="facts"/> the result has none.
+    /// </summary>
+    /// <param name="context">The context.</param>
+    /// <param name="facts">Facts of this document captured under <paramref name="context"/>, or <see langword="null"/> for none.</param>
+    /// <param name="cancellationToken">Observed periodically.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="context"/> is null.</exception>
+    /// <exception cref="ArgumentException">The context names a node of another document, or the facts are not of this document and context.</exception>
+    /// <exception cref="OperationCanceledException">Cancellation was requested.</exception>
+    public AccessibilityTree WithContext(StyleContext context, RenderedFacts? facts, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
         DocumentStyles styles = Styles.WithContext(context, cancellationToken);
@@ -184,10 +264,10 @@ public sealed class AccessibilityTree
             reason = "a pseudo-element rule reads an interaction state";
         }
 
-        return Next(Document, null, styles, styles.ChangedElements, reason, cancellationToken);
+        return Next(Document, null, styles, styles.ChangedElements, reason, facts, cancellationToken);
     }
 
-    private AccessibilityTree UpdateCore(Document newDocument, ChangeSet? changes, RestyleResult restyle, CancellationToken ct)
+    private AccessibilityTree UpdateCore(Document newDocument, ChangeSet? changes, RestyleResult restyle, RenderedFacts? facts, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(restyle);
         if (!ReferenceEquals(restyle.Styles.Document, newDocument))
@@ -207,21 +287,36 @@ public sealed class AccessibilityTree
             seeds.AddRange(pseudo);
         }
 
-        return Next(newDocument, changes, restyle.Styles, seeds, reason, ct);
+        return Next(newDocument, changes, restyle.Styles, seeds, reason, facts, ct);
     }
 
-    private AccessibilityTree Next(Document newDocument, ChangeSet? changes, DocumentStyles styles, IReadOnlyList<int> seeds, string? fullReason, CancellationToken ct)
+    private AccessibilityTree Next(Document newDocument, ChangeSet? changes, DocumentStyles styles, IReadOnlyList<int> seeds, string? fullReason, RenderedFacts? facts, CancellationToken ct)
     {
+        // Facts describe one snapshot under one context, so none carry over; a tree whose names were computed with facts is not a
+        // base for reuse once they are gone, and one built with new facts is built afresh.
+        AccessibilityOptions options = Options;
+        if (facts is not null)
+        {
+            CheckFacts(facts, newDocument, styles);
+            options = Options.WithFacts(facts);
+            fullReason ??= "rendered facts were supplied";
+        }
+        else if (Options.Facts is not null)
+        {
+            options = Options.WithFacts(null);
+            fullReason ??= "the previous tree used rendered facts, which do not describe the new snapshot";
+        }
+
         fullReason ??= LimitReached ? "the previous tree reached a limit" : UsedCounters ? "CSS counters took part in a name" : null;
         if (fullReason is not null)
         {
-            AccessibilityTree full = new TreeBuilder(newDocument, styles, Options, null, ct).Run();
+            AccessibilityTree full = new TreeBuilder(newDocument, styles, options, null, ct).Run();
             full.UpdateInfo = new TreeUpdateInfo(false, fullReason, CountElements(full), CountElements(full), 0);
             return full;
         }
 
         var plan = new UpdatePlan(this, newDocument, changes, seeds);
-        AccessibilityTree tree = new TreeBuilder(newDocument, styles, Options, plan, ct).Run();
+        AccessibilityTree tree = new TreeBuilder(newDocument, styles, options, plan, ct).Run();
         tree.UpdateInfo = plan.Exhausted
             ? new TreeUpdateInfo(false, "the dependency walk reached its work bound", CountElements(tree), plan.Recomputed, plan.Reused)
             : new TreeUpdateInfo(true, null, CountElements(tree), plan.Recomputed, plan.Reused);

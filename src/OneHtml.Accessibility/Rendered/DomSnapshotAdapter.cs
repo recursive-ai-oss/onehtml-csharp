@@ -548,9 +548,17 @@ public static class DomSnapshotAdapter
             Stats docStats = DocStats(doc);
             if (snap.Elements != docStats.Elements || snap.Texts != docStats.Texts || snap.Comments != docStats.Comments)
             {
-                return Refuse(
-                    RefusalReason.NodeCountMismatch,
-                    $"The snapshot has {snap.Elements} elements, {snap.Texts} text nodes and {snap.Comments} comments; the document has {docStats.Elements}, {docStats.Texts} and {docStats.Comments}.");
+                string counts = $"The snapshot has {snap.Elements} elements, {snap.Texts} text nodes and {snap.Comments} comments; the document has {docStats.Elements}, {docStats.Texts} and {docStats.Comments}.";
+
+                // Pairing the trees finds where they first differ, which says more than the counts do.
+                var earlySnapToDoc = new int[n];
+                Array.Fill(earlySnapToDoc, -1);
+                var earlyDocToSnap = new int[doc.NodeCount];
+                Array.Fill(earlyDocToSnap, -1);
+                SnapshotRefusal? where = Align(doc, earlySnapToDoc, earlyDocToSnap)?.Refusal;
+                return where is null
+                    ? Refuse(RefusalReason.NodeCountMismatch, counts)
+                    : Refuse(RefusalReason.NodeCountMismatch, counts + " First difference: " + where.Message + " At " + where.Path + ".", where.SnapshotNode, where.DocumentNode, where.Path);
             }
 
             // Then pair the trees node by node; this finds the first difference in document order and fills the node map.
@@ -681,7 +689,7 @@ public static class DomSnapshotAdapter
                     }
 
                     string value = snapshot.Str(d.NodeValue.Length == 0 ? -1 : d.NodeValue[s]);
-                    if (!value.AsSpan().SequenceEqual(dn.Data))
+                    if (!SameText(value, dn.Data))
                     {
                         return Refuse(RefusalReason.TextMismatch, $"Text differs: the snapshot has \"{Clip(value)}\"; the document has \"{Clip(dn.Data.ToString())}\".", s, dn.Index, Path(dn));
                     }
@@ -696,6 +704,56 @@ public static class DomSnapshotAdapter
                 default:
                     return Refuse(RefusalReason.MalformedSnapshot, $"Snapshot node {s} has node type {type}, which a parsed HTML document does not contain here.", s, dn.Index, Path(dn));
             }
+        }
+
+        /// <summary>
+        /// Text of the snapshot against text of the document. The document was parsed from markup, and the HTML input stream
+        /// preprocessing turns every CR LF and lone CR into LF (HTML 13.2.3.5). A browser's DOM keeps a CR that came from a
+        /// character reference (&amp;#13;) or from script, and serializes it as a raw CR, which parsing then loses. So the two
+        /// sides are compared with every line break (CR LF, CR, LF) as one.
+        /// </summary>
+        private static bool SameText(string snapshotValue, ReadOnlySpan<char> documentValue)
+        {
+            ReadOnlySpan<char> a = snapshotValue;
+            if (a.SequenceEqual(documentValue))
+            {
+                return true;
+            }
+
+            if (!a.Contains('\r') && !documentValue.Contains('\r'))
+            {
+                return false;
+            }
+
+            ReadOnlySpan<char> b = documentValue;
+            int i = 0;
+            int j = 0;
+            while (i < a.Length && j < b.Length)
+            {
+                bool ba = a[i] is '\r' or '\n';
+                bool bb = b[j] is '\r' or '\n';
+                if (ba != bb)
+                {
+                    return false;
+                }
+
+                if (ba)
+                {
+                    i += a[i] == '\r' && i + 1 < a.Length && a[i + 1] == '\n' ? 2 : 1;
+                    j += b[j] == '\r' && j + 1 < b.Length && b[j + 1] == '\n' ? 2 : 1;
+                    continue;
+                }
+
+                if (a[i] != b[j])
+                {
+                    return false;
+                }
+
+                i++;
+                j++;
+            }
+
+            return i == a.Length && j == b.Length;
         }
 
         private static string Clip(string s)
@@ -839,7 +897,7 @@ public static class DomSnapshotAdapter
                 if (options.Attributes == AttributeCheck.Values)
                 {
                     string snapValue = snapshot.Str(valueIdx);
-                    if (!snapValue.AsSpan().SequenceEqual(attr.Value))
+                    if (!SameText(snapValue, attr.Value))
                     {
                         return $"The attribute \"{Clip(name)}\" is \"{Clip(snapValue)}\" in the snapshot and \"{Clip(attr.Value.ToString())}\" in the document.";
                     }

@@ -10,3 +10,5 @@ Captured with Chrome for Testing **156.0.8078.47** (protocol 1.3), headless, 128
 Text widths and line breaks depend on the fonts installed on the machine that captured them, so tests must not assert exact text metrics. They assert structure: which nodes have boxes, ordering of paint order, number of text boxes, generated content.
 
 These files are the output of a browser run on pages written for this repository. Refresh them on each Chrome upgrade and re-run the tests.
+
+The `layout` and `svgprobe` directories also hold `ax.json.gz`: the `getFullAXTree` result of the same page, one entry per frame, for tests that compare the tree with Chrome's. `svgprobe` is the page behind the svg and header/footer role entries of the Chromium profile.

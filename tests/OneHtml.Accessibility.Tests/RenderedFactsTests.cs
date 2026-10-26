@@ -290,6 +290,17 @@ public sealed class RenderedFactsTests
     }
 
     [Fact]
+    public void A_carriage_return_in_the_snapshot_matches_the_line_feed_the_markup_gives()
+    {
+        // A browser's DOM keeps a CR from a character reference; serialized and parsed again it becomes LF.
+        (Document _, FakeNode root) = Fake("<!DOCTYPE html><p title='a&#13;&#10;b'>x&#13;&#10;y&#13;z</p>", LayoutVisible());
+        Document reparsed = Document.Parse("<!DOCTYPE html><p title='a\r\nb'>x\r\ny\rz</p>");
+        Assert.True(Map(root, reparsed).Succeeded);
+        Document other = Document.Parse("<!DOCTYPE html><p title='a\nB'>x\ny\nz</p>");
+        Assert.Equal(RefusalReason.AttributeMismatch, Map(root, other).Refusal!.Reason);
+    }
+
+    [Fact]
     public void Attribute_changes_are_refused_or_allowed_by_the_documented_rule()
     {
         string a = "<!DOCTYPE html><p id=x class=one>t</p>";

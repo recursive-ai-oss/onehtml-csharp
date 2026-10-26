@@ -74,12 +74,97 @@ public sealed class ChromeObservedTreeTests
         (Document doc, AccessibilityTree tree) = Build("<svg id=s><title>T</title></svg><math id=m><mi id=i>x</mi></math>");
         using JsonDocument export = JsonDocument.Parse(tree.ToChromeJson());
         Assert.Equal("graphics-document", Find(doc, tree, "svg").Role);
-        Assert.Equal("SvgRoot", Find(doc, tree, "svg").InternalRole);
+        Assert.Equal("image", Find(doc, tree, "svg").InternalRole);
         Assert.Equal("MathMLMath", ExportNode(export, Find(doc, tree, "math")).GetProperty("role").GetProperty("value").GetString());
         Assert.Equal("MathMLIdentifier", Find(doc, tree, "mi").InternalRole);
         // The text of an SVG title is not rendered: it has no node, but it still names the svg.
         Assert.Null(tree.Find(doc.Root.QuerySelector("title").FirstChild));
         Assert.Equal("T", Find(doc, tree, "svg").Name.Value);
+    }
+
+    [Theory]
+    [InlineData("<svg id=t><title>T</title></svg>", "image")]
+    [InlineData("<svg id=t><title>T</title><desc>D</desc><path d='M0 0h1v1z'/></svg>", "image")]
+    [InlineData("<svg id=t><g><path d='M0 0h1v1z'/></g></svg>", "image")]
+    [InlineData("<svg id=t><svg><path d='M0 0h1v1z'/></svg></svg>", "image")]
+    [InlineData("<svg id=t><text>hello</text></svg>", "SvgRoot")]
+    [InlineData("<svg id=t><title>T</title><foreignObject><p>x</p></foreignObject></svg>", "SvgRoot")]
+    [InlineData("<svg id=t><a href='#y'><text>lk</text></a></svg>", "SvgRoot")]
+    [InlineData("<svg id=t><g role=group><path d='M0 0h1v1z'/></g></svg>", "SvgRoot")]
+    public void An_svg_is_an_image_unless_something_inside_is_exposed(string html, string expected)
+    {
+        (Document doc, AccessibilityTree tree) = Build(html);
+        Assert.Equal(expected, Find(doc, tree, "#t").InternalRole);
+    }
+
+    [Fact]
+    public void An_svg_with_no_children_and_no_name_is_ignored()
+    {
+        (Document doc, AccessibilityTree tree) = Build("<svg id=a></svg><svg id=b aria-label=L></svg>");
+        Assert.True(Find(doc, tree, "#a").IsIgnored);
+        Assert.False(Find(doc, tree, "#b").IsIgnored);
+    }
+
+    [Fact]
+    public void A_header_and_footer_outside_the_body_scope_are_section_header_and_footer()
+    {
+        (Document doc, AccessibilityTree tree) = Build("<header id=b>x</header><main><header id=h>h</header><footer id=f>f</footer><header id=r role=generic>r</header></main><footer id=c>c</footer>");
+        Assert.Equal("banner", Find(doc, tree, "#b").Role);
+        Assert.Equal("contentinfo", Find(doc, tree, "#c").Role);
+        Assert.Equal("sectionheader", Find(doc, tree, "#h").InternalRole);
+        Assert.Equal("sectionfooter", Find(doc, tree, "#f").InternalRole);
+        Assert.False(Find(doc, tree, "#h").IsIgnored);
+        Assert.Null(Find(doc, tree, "#r").InternalRole);
+    }
+
+    [Fact]
+    public void Svg_header_and_footer_roles_equal_chromes_on_the_probe_page()
+    {
+        string dir = System.IO.Path.Combine(TestPaths.TestData, "rendered", "captures", "svgprobe");
+        static byte[] ReadGz(string path)
+        {
+            using var z = new System.IO.Compression.GZipStream(System.IO.File.OpenRead(path), System.IO.Compression.CompressionMode.Decompress);
+            using var ms = new System.IO.MemoryStream();
+            z.CopyTo(ms);
+            return ms.ToArray();
+        }
+
+        using JsonDocument dom = JsonDocument.Parse(ReadGz(System.IO.Path.Combine(dir, "dom.json.gz")));
+        using JsonDocument ax = JsonDocument.Parse(ReadGz(System.IO.Path.Combine(dir, "ax.json.gz")));
+        string[] watched = ["image", "SvgRoot", "banner", "contentinfo", "sectionheader", "sectionfooter"];
+        // Walk Chrome's nodes in tree order (the array is not).
+        JsonElement nodes = ax.RootElement.GetProperty("frames")[0].GetProperty("nodes");
+        var byId = nodes.EnumerateArray().ToDictionary(n => n.GetProperty("nodeId").GetString()!, StringComparer.Ordinal);
+        var chrome = new System.Collections.Generic.List<string>();
+        var stack = new System.Collections.Generic.Stack<string>();
+        stack.Push(nodes[0].GetProperty("nodeId").GetString()!);
+        while (stack.Count > 0)
+        {
+            JsonElement n = byId[stack.Pop()];
+            string role = n.GetProperty("role").GetProperty("value").GetString()!;
+            if (watched.Contains(role, StringComparer.Ordinal))
+            {
+                chrome.Add(role);
+            }
+
+            if (n.TryGetProperty("childIds", out JsonElement kids))
+            {
+                foreach (JsonElement k in kids.EnumerateArray().Reverse())
+                {
+                    stack.Push(k.GetString()!);
+                }
+            }
+        }
+
+        string html = dom.RootElement.GetProperty("doctype").GetString() + dom.RootElement.GetProperty("outerHTML").GetString();
+        (Document doc, AccessibilityTree tree) = Build(html);
+        var ours = tree.Nodes
+            .Where(n => n.Kind == AxNodeKind.Element && !n.IsIgnored && n.DomNode.LocalName is "svg" or "header" or "footer")
+            .Select(n => n.InternalRole ?? (n.Role == "img" ? "image" : n.Role))
+            .Where(r => watched.Contains(r, StringComparer.Ordinal)).ToList();
+        Assert.True(chrome.SequenceEqual(ours), "chrome: " + string.Join(",", chrome) + " ours: " + string.Join(",", ours));
+        Assert.Contains("SvgRoot", ours);
+        Assert.Contains("sectionfooter", ours);
     }
 
     [Fact]

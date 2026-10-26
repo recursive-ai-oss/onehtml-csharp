@@ -76,8 +76,8 @@ public sealed class TreeDiffTests
                 switch (p.Property)
                 {
                     case "role":
-                        Assert.Equal(c.Before.Role, p.OldValue);
-                        Assert.Equal(c.After.Role, p.NewValue);
+                        Assert.Equal(c.Before.InternalRole ?? c.Before.Role, p.OldValue);
+                        Assert.Equal(c.After.InternalRole ?? c.After.Role, p.NewValue);
                         break;
                     case "name":
                         Assert.Equal(c.Before.Name.Value, p.OldValue);

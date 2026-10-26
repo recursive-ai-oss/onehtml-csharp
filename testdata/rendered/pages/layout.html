@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Layout rules</title>
+<style>
+  body { margin: 8px; font: 14px sans-serif; }
+  .pos { position: relative; }
+  .flex { display: flex; }
+  .grid { display: grid; }
+  .ib { display: inline-block; }
+  .scroll { width: 60px; height: 30px; overflow: auto; }
+  table.bordered td { border: 1px solid #666; }
+  table.one td { border: 1px solid #666; }
+  table.plain td { border: 0; }
+</style>
+</head>
+<body>
+<div class="text-only">Text only block</div>
+<div class="blocks"><div>Nested block one</div><div>Nested block two</div></div>
+<div class="inline-child"><span>Inline child only</span></div>
+<div class="mixed">Mixed <div>block child</div> text</div>
+<div class="empty"></div>
+<div class="positioned pos"><div>Positioned wrapper</div></div>
+<div class="flexbox flex"><div>Flex item</div></div>
+<div class="gridbox grid"><div>Grid item</div></div>
+<div class="with-id" id="has-id"><div>Has an id</div></div>
+<div class="with-title" title="Titled"><div>Has a title</div></div>
+<div class="inline-block ib"><div>Inline block</div></div>
+<div class="scroller scroll">This text is longer than the little box it is in, so the box scrolls.</div>
+<p class="para">Paragraph with text</p>
+<p class="para-empty"></p>
+<p class="formatting">text <b>bold</b> <i>italic</i> <span>span</span> <u>under</u> <small>small</small> end</p>
+<ul class="bullets"><li>One</li><li>Two<ul><li>Nested</li></ul></li></ul>
+<ol class="numbers"><li>First</li><li>Second</li></ol>
+<ul class="unmarked" style="list-style: none"><li>No marker</li></ul>
+<table class="one"><tr><td>one cell</td></tr></table>
+<table class="plain"><tr><td>Left</td><td>Right</td></tr><tr><td>Below left</td><td>Below right</td></tr></table>
+<table class="bordered"><tr><td>A</td><td>B</td></tr><tr><td>C</td><td>D</td></tr></table>
+<table class="captioned"><caption>Caption</caption><tr><td>1</td><td>2</td></tr></table>
+<table class="headed"><tr><th>H1</th><th>H2</th></tr><tr><td>1</td><td>2</td></tr></table>
+<select name="choice"><option>One</option><option>Two</option></select>
+<label>Name <input type="text"></label>
+<div class="shy" style="display: none">Hidden by style</div>
+</body>
+</html>

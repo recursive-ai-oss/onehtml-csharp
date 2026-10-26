@@ -134,7 +134,8 @@ public sealed class TreeDiff
     private static List<AxPropertyChange> Compare(AxNode b, AxNode a)
     {
         var l = new List<AxPropertyChange>();
-        Add(l, AxChangeKind.Role, "role", b.Role, a.Role);
+        // The internal role (SvgRoot, sectionheader, LayoutTable...) is what the export shows, so it counts as the role.
+        Add(l, AxChangeKind.Role, "role", b.InternalRole ?? b.Role, a.InternalRole ?? a.Role);
         Add(l, AxChangeKind.Name, "name", b.Name.Value, a.Name.Value);
         Add(l, AxChangeKind.Description, "description", b.Description.Value, a.Description.Value);
         Add(l, AxChangeKind.Ignored, "ignored", Bool(b.IsIgnored), Bool(a.IsIgnored));
@@ -418,6 +419,7 @@ internal sealed class NodePairing
                 }
             }
 
+            PairGenerated(before, after, p, b => after.Document.GetNode(b.DomNode.Index));
             return p;
         }
 
@@ -441,6 +443,52 @@ internal sealed class NodePairing
             }
         }
 
+        PairGenerated(before, after, p, b => changes.MapToNew(b.DomNode));
         return p;
+    }
+
+    /// <summary>
+    /// Generated nodes (list markers, select popups) have no node of their own; they sit on a host element. They are paired in order
+    /// among the generated nodes of the paired host when role and kind agree, so an unchanged marker is not reported as removed
+    /// and added.
+    /// </summary>
+    private static void PairGenerated(AccessibilityTree before, AccessibilityTree after, NodePairing p, Func<AxNode, Node> mapHost)
+    {
+        var afterByHost = new Dictionary<int, List<AxNode>>();
+        foreach (AxNode a in after.Nodes)
+        {
+            if (a.Kind == AxNodeKind.Generated)
+            {
+                if (!afterByHost.TryGetValue(a.DomNode.Index, out List<AxNode>? l))
+                {
+                    afterByHost[a.DomNode.Index] = l = [];
+                }
+
+                l.Add(a);
+            }
+        }
+
+        var used = new Dictionary<int, int>();
+        foreach (AxNode b in before.Nodes)
+        {
+            if (b.Kind != AxNodeKind.Generated)
+            {
+                continue;
+            }
+
+            Node host = mapHost(b);
+            if (host.IsNull || !afterByHost.TryGetValue(host.Index, out List<AxNode>? candidates))
+            {
+                continue;
+            }
+
+            used.TryGetValue(host.Index, out int at);
+            if (at < candidates.Count && candidates[at].InternalRole == b.InternalRole && candidates[at].IsIgnored == b.IsIgnored)
+            {
+                p.Forward[b] = candidates[at];
+                p.Backward[candidates[at]] = b;
+                used[host.Index] = at + 1;
+            }
+        }
     }
 }

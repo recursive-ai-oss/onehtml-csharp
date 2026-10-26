@@ -81,7 +81,7 @@ Pairing walks both trees in document order, iteratively. Under each pair of pare
 
 A snapshot is refused (`DomSnapshotMapResult.Succeeded` is false, `Refusal` says why, nothing throws) unless the DOM it describes is the document's DOM:
 
-1. **Counts.** The number of elements, text nodes and comments (outside template content and the document prolog) must match. A removed or added node fails here: `NodeCountMismatch`, with both sides' counts.
+1. **Counts.** The number of elements, text nodes and comments (outside template content and the document prolog) must match. A removed or added node fails here: `NodeCountMismatch`, with both sides' counts. The refusal also names the first difference of the walk below and its path, when the walk finds one.
 2. **Walk.** The first difference in document order, with the snapshot node, the document node and a path such as `html[1] > body[2] > div[1] > span[1]` (elements numbered among element siblings): `StructureMismatch` (a different element name or kind, or different child counts), `TextMismatch` (shows both strings, clipped), `AttributeMismatch`.
 3. **Fingerprint.** A 64-bit FNV-1a hash over the pre-order stream of (depth, kind, ASCII-lower-cased element name) for elements and text nodes. Both sides compute it (`DomSnapshotAdapter.StructureFingerprint`); the document's is stored in the facts. After a clean walk the fingerprints must agree (`FingerprintMismatch`; not expected, but never ignored).
 
@@ -92,6 +92,10 @@ A snapshot is refused (`DomSnapshotMapResult.Succeeded` is false, `Refusal` says
 | `Values` (default) | every element has the same attributes (same names, same values, any order). A changed value can change layout, so the facts no longer describe the page |
 | `Names` | the same names; values may differ. For a document whose attribute values were edited where layout is known not to depend on them (for example `aria-*`, `title`) |
 | `None` | attributes are not compared |
+
+**Line breaks.** Text and attribute values are compared with every line break (CR LF, lone CR, LF) as one. The document is parsed from markup, and the HTML input stream preprocessing (HTML 13.2.3.5) turns CR LF and CR into LF. A browser's DOM keeps a CR that came from a character reference (`&#13;`) or from script, and serializes it as a raw CR, which the parser then loses. So a snapshot with CR LF in an attribute or text value is the same DOM as a document with LF there. On the corpus capture this was 38 of 67 refusals.
+
+**What stays refused.** A snapshot that cannot be a re-parse of its own serialized DOM. On the corpus capture, 29 pages of 12,750: about 20 hold a custom element with a shadow root, where Chrome's snapshot lists the shadow tree under the host and leaves out the host's light-DOM children (a `<style>` or white space between the tags); a form element the parser would move or drop (a `form` inside a table or another form) so the re-parse has a `div` or `input` where the DOM has the `form`; text nodes the serialization merges or splits; and attribute values that script generated at random between the two reads (`id`). Facts for such a page would have no counterpart for some nodes, so the refusal is the answer.
 
 Also refused: a snapshot document index that does not exist (`DocumentIndexOutOfRange`), a fragment document (`DocumentIsFragment`), and a snapshot document that does not start with a document node (`MalformedSnapshot`).
 

@@ -15,6 +15,13 @@ public enum AxNodeKind : byte
 
     /// <summary>A text node, exposed as static text.</summary>
     Text,
+
+    /// <summary>
+    /// A node Chromium creates from layout rather than from a DOM node: a list marker. It exists only in a tree built with
+    /// <see cref="AccessibilityOptions.Facts"/>. <see cref="AxNode.DomNode"/> is the element that owns it and <see cref="AccessibilityTree.Find"/>
+    /// never returns it.
+    /// </summary>
+    Generated,
 }
 
 /// <summary>

@@ -111,7 +111,7 @@ internal static class ChromeAxExport
         }
 
         w.WriteEndArray();
-        if (n.Kind != AxNodeKind.Document)
+        if (n.Kind is not (AxNodeKind.Document or AxNodeKind.Generated))
         {
             w.WriteNumber("backendDOMNodeId", n.DomNode.Index);
         }

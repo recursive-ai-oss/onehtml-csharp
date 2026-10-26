@@ -6,7 +6,7 @@ namespace RecursiveAI.OneHtml.Accessibility.Tree;
 
 /// <summary>
 /// Hidden status of every element and text node: what the cascade and the markup hide, computed in one walk with no
-/// recursion. Layout-dependent hiding is not part of it (see <see cref="LayoutHiding"/>).
+/// recursion. Layout-dependent hiding is part of it only when rendered facts are given (see <see cref="LayoutHiding"/>).
 /// </summary>
 internal sealed class HiddenMap
 {
@@ -18,6 +18,7 @@ internal sealed class HiddenMap
     private readonly int[] _hardOrigin;
     private readonly int[] _ariaOrigin;
     private readonly int[] _inertOrigin;
+    private Rendered.RenderedFacts? _facts;
 
     private HiddenMap(Document doc)
     {
@@ -30,9 +31,10 @@ internal sealed class HiddenMap
         _inertOrigin = new int[n];
     }
 
-    public static HiddenMap Compute(Document doc, DocumentStyles styles, System.Threading.CancellationToken ct)
+    public static HiddenMap Compute(Document doc, DocumentStyles styles, System.Threading.CancellationToken ct, Rendered.RenderedFacts? facts = null)
     {
         var map = new HiddenMap(doc);
+        map._facts = facts is not null && new System.Collections.Generic.HashSet<string>(facts.ComputedStyleNames, StringComparer.Ordinal).Contains("display") ? facts : null;
         Node cur = doc.Root.FirstChild;
         int visited = 0;
         while (!cur.IsNull)
@@ -105,6 +107,12 @@ internal sealed class HiddenMap
                 }
             }
 
+            if ((own & NotRenderedMask) == 0 && (inherited & NotRenderedMask) == 0 && NoBoxDespiteStyle(n, style))
+            {
+                // Profile entry layout-hidden: the capture says the element has no box although the cascade renders it.
+                own |= HiddenReasons.DisplayNone;
+            }
+
             if (style.Visibility != VisibilityValue.Visible)
             {
                 own |= HiddenReasons.VisibilityHidden;
@@ -165,6 +173,26 @@ internal sealed class HiddenMap
                 _all[i] |= HiddenReasons.VisibilityHidden;
             }
         }
+    }
+
+    /// <summary>
+    /// True when rendered facts say the element generated no box although its style renders it. Exempt: <c>display: contents</c>
+    /// (it never has one), the options of a select (they live in the control's user-agent tree), image-map areas, and anything
+    /// that is not an HTML element (SVG and MathML internals have no boxes of their own).
+    /// </summary>
+    private bool NoBoxDespiteStyle(Node n, ComputedStyle style)
+    {
+        if (_facts is null || n.Namespace != ElementNamespace.Html || style.Display.Kind == DisplayKind.Contents || !style.Display.IsRendered)
+        {
+            return false;
+        }
+
+        if (n.LocalName is "option" or "optgroup" or "area" or "map" or "slot" or "html" or "body" || !_facts.TryGet(n, out Rendered.NodeFacts f))
+        {
+            return false;
+        }
+
+        return !f.HasLayout;
     }
 
     private static bool HasMapAncestor(Node n)

@@ -282,12 +282,42 @@ internal static class AxComparer
             foreach (AxEntry c in chrome.Entries)
             {
                 int oi = c2o[c.Index];
-                diff.Dump.Add(Describe("C", c) + "  <=>  " + (oi < 0 ? "(none)" : Describe("O", ours.Entries[oi])) + (oi >= 0 ? "  @ " + ours.Entries[oi].Path : string.Empty));
+                string where = string.Empty;
+                if (oi >= 0)
+                {
+                    where = "  @ " + ours.Entries[oi].Path;
+                }
+                else
+                {
+                    // For a Chrome node with no counterpart: where it sits, as the path of its nearest paired ancestor.
+                    int guard = 0;
+                    for (int a = c.Parent; a >= 0 && guard++ < 1024; a = chrome.Entries[a].Parent)
+                    {
+                        if (c2o[a] >= 0)
+                        {
+                            where = "  under " + Describe("O", ours.Entries[c2o[a]]) + " @ " + ours.Entries[c2o[a]].Path;
+                            break;
+                        }
+                    }
+                }
+
+                diff.Dump.Add(Describe("C", c) + "  <=>  " + (oi < 0 ? "(none)" : Describe("O", ours.Entries[oi])) + where);
             }
 
             foreach (AxEntry o in ours.Entries.Where(e => o2c[e.Index] < 0))
             {
-                diff.Dump.Add("(none)  <=>  " + Describe("O", o) + "  @ " + o.Path);
+                string under = string.Empty;
+                int guard2 = 0;
+                for (int a = o.Parent; a >= 0 && guard2++ < 1024; a = ours.Entries[a].Parent)
+                {
+                    if (ours.Entries[a].Dom >= 0)
+                    {
+                        under = "  under " + ours.Entries[a].Path;
+                        break;
+                    }
+                }
+
+                diff.Dump.Add("(none)  <=>  " + Describe("O", o) + "  @ " + o.Path + under);
             }
         }
 

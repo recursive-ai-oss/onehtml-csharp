@@ -15,6 +15,8 @@ internal sealed class TreeBuilder
     private readonly CancellationToken _ct;
     private readonly UpdatePlan? _plan;
     private CounterResolver _counters = null!;
+    private readonly LayoutRules? _layout;
+    private readonly Dictionary<int, bool> _dataTables = [];
 
     private HiddenMap _hidden = null!;
     private OwnsMap _owns = null!;
@@ -33,11 +35,12 @@ internal sealed class TreeBuilder
         _styles = styles;
         _opt = options;
         _ct = ct;
+        _layout = options.Facts is { } facts ? new LayoutRules(facts, styles) : null;
     }
 
     public AccessibilityTree Run()
     {
-        _hidden = HiddenMap.Compute(_doc, _styles, _ct);
+        _hidden = HiddenMap.Compute(_doc, _styles, _ct, _opt.Facts);
         _owns = OwnsMap.Compute(_doc, _hidden, _opt, _ct);
 
         // Roles that depend on a name (a section is a region only when named, a role=region token only when named) need
@@ -53,9 +56,11 @@ internal sealed class TreeBuilder
         _byDom = new AxNode?[_doc.NodeCount];
         CreateNodes();
         LinkChildren();
+        AddGeneratedNodes();
         AssignIds();
         _plan?.Prepare(_hidden, _roles, _owns, _opt.MaxIdReferences, _ct);
         ComputeNodes();
+        ResolveSvgRoots();
         _tree.UsedCounters = _counters.Walked;
         ComputeFocusOrder();
         ComputeChromiumFocusableOptions();
@@ -94,7 +99,11 @@ internal sealed class TreeBuilder
             {
                 if (!_hidden.NotRendered(cur.Index))
                 {
-                    Create(AxNodeKind.Element, cur);
+                    if (!OmittedByLayout(cur))
+                    {
+                        Create(AxNodeKind.Element, cur);
+                    }
+
                     // The text of a textarea or option is the control's value or label, not content a user reads on its own:
                     // Chromium exposes no children for either (profile entry text-control-leaves).
                     descend = !cur.FirstChild.IsNull && !IsLeafControl(cur);
@@ -129,6 +138,14 @@ internal sealed class TreeBuilder
             }
         }
     }
+
+    /// <summary>
+    /// With rendered facts, an inline generic container that Chromium leaves out as uninteresting has no node at all in
+    /// Chromium's tree, as opposed to a block one, which is there but ignored (profile entry <c>layout-generic-pruning</c>). Its
+    /// children belong to its nearest ancestor that has a node.
+    /// </summary>
+    private bool OmittedByLayout(Node el) =>
+        _layout is not null && el.Namespace == ElementNamespace.Html && _roles[el].Role is { Name: "generic" } && _layout.IsUninterestingGeneric(el) && _layout.IsInlineBox(el);
 
     /// <summary>HTML section 4.11.1: the summary element that is the first summary child of a details element.</summary>
     private static bool IsFirstSummary(Node el)
@@ -198,6 +215,12 @@ internal sealed class TreeBuilder
             }
         }
 
+        // With rendered facts, only white space that is drawn between two inline boxes has a static text (profile entry layout-white-space).
+        if (_layout is not null)
+        {
+            return _layout.IsRenderedWhiteSpace(text);
+        }
+
         Node parent = text.Parent;
         return parent.IsElement && IsInline(parent);
     }
@@ -223,7 +246,14 @@ internal sealed class TreeBuilder
             int owner = n.Kind == AxNodeKind.Element ? _owns.OwnerOf(n.DomNode.Index) : -1;
             if (owner < 0)
             {
-                parent = _byDom[n.DomNode.Parent.Index];
+                // The nearest ancestor with a node: the parent unless it was left out (OmittedByLayout).
+                Node up = n.DomNode.Parent;
+                while (!up.IsNull && _byDom[up.Index] is null)
+                {
+                    up = up.Parent;
+                }
+
+                parent = up.IsNull ? null : _byDom[up.Index];
                 if (parent is null)
                 {
                     continue; // cannot happen: a node is only created under a created parent
@@ -257,6 +287,93 @@ internal sealed class TreeBuilder
         }
 
         _tree.Root = root;
+    }
+
+    /// <summary>
+    /// With rendered facts, gives each element whose layout has a list marker a ListMarker node as its first child, holding the
+    /// marker's text, with the ignored text child Chromium puts under it (profile entry <c>list-marker-node</c>; plain static text when
+    /// the element is not a list item), and gives a drop-down
+    /// select its popup node.
+    /// </summary>
+    private void AddGeneratedNodes()
+    {
+        if (_layout is null)
+        {
+            return;
+        }
+
+        foreach (AxNode host in _domOrder)
+        {
+            if (host.Kind != AxNodeKind.Element || _hidden.Reasons(host.DomNode.Index) != HiddenReasons.None)
+            {
+                continue;
+            }
+
+            if (_roles[host.DomNode].Role is { Name: "combobox" } && host.DomNode.Namespace == ElementNamespace.Html && host.DomNode.LocalName == "select" && _layout.HasBox(host.DomNode))
+            {
+                // Profile entry layout-select-popup: a drop-down select has one MenuListPopup child that holds the options.
+                var popup = new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode)
+                {
+                    Role = "MenuListPopup",
+                    InternalRole = "MenuListPopup",
+                    Parent = host,
+                    Children = host.Children,
+                    States = new AxStates(),
+                };
+                foreach (AxNode option in popup.Children)
+                {
+                    option.Parent = popup;
+                }
+
+                host.Children = [popup];
+                continue;
+            }
+
+            if (!_layout.TryGetListMarker(host.DomNode, out string text))
+            {
+                continue;
+            }
+
+            AxNode marker;
+            if (_roles[host.DomNode].Role is { Name: "listitem" })
+            {
+                marker = new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode)
+                {
+                    Role = "ListMarker",
+                    InternalRole = "ListMarker",
+                    Name = new AxText(text, AxTextSource.Contents, null, []),
+                    Parent = host,
+                    States = new AxStates(),
+                };
+                marker.Children =
+                [
+                    new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode)
+                    {
+                        Role = "none",
+                        IsIgnored = true,
+                        IgnoredReasons = ["presentationalRole"],
+                        Parent = marker,
+                        States = new AxStates(),
+                    },
+                ];
+            }
+            else
+            {
+                // An item that is not a list item for assistive technology keeps the marker as plain static text.
+                marker = new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode)
+                {
+                    Role = "StaticText",
+                    InternalRole = "StaticText",
+                    Name = new AxText(text, AxTextSource.TextNode, null, []),
+                    Parent = host,
+                    States = new AxStates(),
+                };
+            }
+
+            var children = new List<AxNode>(host.Children.Count + 1) { marker };
+            children.AddRange(host.Children);
+            host.Children = children;
+        }
     }
 
     private static void Add(Dictionary<AxNode, List<AxNode>> lists, AxNode parent, AxNode child)
@@ -310,11 +427,68 @@ internal sealed class TreeBuilder
                 case AxNodeKind.Text:
                     ComputeText(n);
                     break;
+                case AxNodeKind.Generated:
+                    break; // fully set when created (AddGeneratedNodes)
                 default:
                     ComputeElement(n);
                     break;
             }
         }
+    }
+
+    /// <summary>
+    /// Profile entry svg-root-role: Chromium exposes an svg as an image, and as SvgRoot (a container) when something inside it is
+    /// exposed: rendered text, a link, a foreignObject, a role. Graphics elements and nested svg elements do not count. An svg with no
+    /// children and no name is ignored.
+    /// </summary>
+    private void ResolveSvgRoots()
+    {
+        foreach (AxNode n in _tree.Nodes)
+        {
+            if (n.Kind != AxNodeKind.Element || n.InternalRole != "image" || n.IsIgnored)
+            {
+                continue;
+            }
+
+            bool nested = n.DomNode.ParentElement is { IsNull: false } parent && parent.Namespace == ElementNamespace.Svg;
+            if ((n.DomNode.FirstChild.IsNull || nested) && n.Name.IsEmpty)
+            {
+                // An svg with nothing in it, or one nested in another svg, and no name has no node in Chromium's tree.
+                n.InternalRole = null;
+                n.IsIgnored = true;
+                n.IgnoredReasons = ["uninteresting"];
+            }
+            else if (HasExposedContent(n))
+            {
+                n.InternalRole = "SvgRoot";
+            }
+        }
+    }
+
+    private static bool HasExposedContent(AxNode root)
+    {
+        var stack = new Stack<AxNode>();
+        foreach (AxNode c in root.Children)
+        {
+            stack.Push(c);
+        }
+
+        while (stack.Count > 0)
+        {
+            AxNode c = stack.Pop();
+            bool nestedSvg = c.Kind == AxNodeKind.Element && c.DomNode.Namespace == ElementNamespace.Svg && c.DomNode.LocalName == "svg";
+            if (!c.IsIgnored && !nestedSvg)
+            {
+                return true;
+            }
+
+            foreach (AxNode g in c.Children)
+            {
+                stack.Push(g);
+            }
+        }
+
+        return false;
     }
 
     private void ComputeDocument(AxNode n)
@@ -377,7 +551,7 @@ internal sealed class TreeBuilder
         n.Name = new AxText(text, AxTextSource.TextNode, null, []);
         var reasons = new List<string>();
         AddHiddenReasons(n, reasons);
-        if (TreeText.Collapse(d).Length == 0 && reasons.Count == 0)
+        if (TreeText.Collapse(d).Length == 0 && reasons.Count == 0 && _layout is null)
         {
             reasons.Add("uninteresting");
         }
@@ -447,20 +621,69 @@ internal sealed class TreeBuilder
             AddDiagnostic(n, new AxDiagnostic(AxDiagnosticKind.Role, el, d.Attribute, d.Value, d.Message, d.Kind));
         }
 
-        n.InternalRole = InternalRoleOf(el, role, IsFirstSummary(el));
+        n.InternalRole = InternalRoleOf(el, role, nr.Origin, IsFirstSummary(el)) ?? LayoutTableRole(el, nr);
         ComputeIgnored(n, nr);
+    }
+
+    /// <summary>
+    /// With rendered facts, the internal role Chromium gives a table it judges to be for layout, and its rows and cells (profile entry
+    /// <c>layout-table</c>); null otherwise. Only elements whose role is the implicit one of the HTML table, row or cell qualify.
+    /// </summary>
+    private string? LayoutTableRole(Node el, NodeRole nr)
+    {
+        if (_layout is null || nr.Origin != RoleOrigin.Implicit || nr.Role is null || el.Namespace != ElementNamespace.Html)
+        {
+            return null;
+        }
+
+        // A generic element laid out as a CSS table, row or cell.
+        if (nr.Role.Name == "generic")
+        {
+            return _layout.CssTableKind(el);
+        }
+
+        string? kind = el.LocalName switch
+        {
+            "table" => "LayoutTable",
+            "tr" => "LayoutTableRow",
+            "td" or "th" => "LayoutTableCell",
+            _ => null,
+        };
+        if (kind is null)
+        {
+            return null;
+        }
+
+        Node table = el;
+        while (!table.IsNull && !(table.IsElement && table.Namespace == ElementNamespace.Html && table.LocalName == "table"))
+        {
+            table = table.Parent;
+        }
+
+        if (table.IsNull)
+        {
+            return null;
+        }
+
+        if (!_dataTables.TryGetValue(table.Index, out bool data))
+        {
+            _dataTables[table.Index] = data = _layout.IsDataTable(table);
+        }
+
+        return data ? null : kind;
     }
 
     /// <summary>
     /// The role Chromium exposes for elements WAI-ARIA has no role for (profile entry internal-roles). Elements that have a WAI-ARIA
     /// role keep it, except the SVG and MathML elements Chromium names after the element.
     /// </summary>
-    private static string? InternalRoleOf(Node el, AriaRole? role, bool firstSummary)
+    private static string? InternalRoleOf(Node el, AriaRole? role, RoleOrigin origin, bool firstSummary)
     {
         switch (el.Namespace)
         {
             case ElementNamespace.Svg:
-                return el.LocalName == "svg" && el.ParentElement is { IsNull: false } sp && sp.Namespace != ElementNamespace.Svg ? "SvgRoot" : null;
+                // Profile entry svg-root-role: image until ResolveSvgRoots finds exposed content inside.
+                return el.LocalName == "svg" && origin == RoleOrigin.Implicit ? "image" : null;
             case ElementNamespace.MathMl:
                 return el.LocalName switch
                 {
@@ -470,6 +693,20 @@ internal sealed class TreeBuilder
                     "mn" => "MathMLNumber",
                     _ => null,
                 };
+        }
+
+        if (origin == RoleOrigin.Implicit && role is { Name: "generic" } && el.Namespace == ElementNamespace.Html)
+        {
+            // Profile entry section-header-footer: a header or footer outside the body scope is not a landmark.
+            if (el.LocalName == "header")
+            {
+                return "sectionheader";
+            }
+
+            if (el.LocalName == "footer")
+            {
+                return "sectionfooter";
+            }
         }
 
         if (role is not null)
@@ -531,8 +768,18 @@ internal sealed class TreeBuilder
                 reasons.Add(n.DomNode.Namespace == ElementNamespace.Svg && n.DomNode.LocalName == "foreignObject" ? "presentationalRole" : "uninteresting");
             }
         }
-        else if (role.Name == "generic" && IsRootWrapper(n.DomNode))
+        else if (role.Name == "generic" && IsRootWrapper(n.DomNode) && !(_layout is not null && n.DomNode.LocalName is "b" or "i" or "body" && _layout.HasBox(n.DomNode)))
         {
+            reasons.Add("uninteresting");
+        }
+        else if (role.Name == "generic" && _layout is not null && n.DomNode.Namespace == ElementNamespace.Html && n.InternalRole is null && _layout.IsUninterestingGeneric(n.DomNode))
+        {
+            // Profile entry layout-generic-pruning.
+            reasons.Add("uninteresting");
+        }
+        else if (role.Name == "paragraph" && _layout is not null && n.DomNode.Namespace == ElementNamespace.Html && n.DomNode.LocalName == "p" && _layout.IsUninterestingParagraph(n.DomNode))
+        {
+            // Profile entry layout-generic-pruning: a paragraph with no inline content.
             reasons.Add("uninteresting");
         }
         else if (role.Name == "rowgroup" && n.RoleOrigin == RoleOrigin.Implicit && n.DomNode.LocalName == "tbody")
@@ -710,7 +957,7 @@ internal sealed class TreeBuilder
         foreach (AxNode n in _domOrder)
         {
             if (n.Kind == AxNodeKind.Element && !n.Focus.IsFocusable && n.Role == "option" && n.DomNode.Namespace == ElementNamespace.Html
-                && n.DomNode.LocalName == "option" && !n.States.Disabled && !n.IsIgnored && n.Parent is { } p && p.Role is "combobox" or "listbox" or "group")
+                && n.DomNode.LocalName == "option" && !n.States.Disabled && !n.IsIgnored && n.Parent is { } p && p.Role is "combobox" or "listbox" or "group" or "MenuListPopup")
             {
                 n.Focus = n.Focus with { IsFocusable = true };
             }

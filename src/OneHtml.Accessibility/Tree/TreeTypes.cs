@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RecursiveAI.OneHtml.Accessibility.Rendered;
 
 namespace RecursiveAI.OneHtml.Accessibility;
 
@@ -367,6 +368,28 @@ public sealed class AccessibilityOptions
 
     /// <summary>The most steps all <c>aria-owns</c> ancestor checks together may take; past it, further <c>aria-owns</c> references are ignored. Default 16 million.</summary>
     public int MaxOwnsWork { get; init; } = 16_000_000;
+
+    /// <summary>
+    /// What a browser's layout engine said about this exact document under this exact style context, or <see langword="null"/> (the
+    /// default) to compute the tree from markup and style alone. With facts the tree applies the choices Chromium makes once layout is
+    /// known: which generic containers are left out as uninteresting, layout tables, list markers and layout-dependent hiding
+    /// (profile entries <c>layout-generic-pruning</c>, <c>layout-table</c>, <c>list-marker-node</c>, <c>layout-hidden</c>).
+    /// Without facts the tree is exactly what it was before facts existed.
+    /// <see cref="AccessibilityTree.Build"/> throws <see cref="ArgumentException"/> when the facts were built for another document
+    /// or another style context. Facts describe one snapshot: <see cref="AccessibilityTree.Update(Editing.EditResult, Css.RestyleResult, System.Threading.CancellationToken)"/>
+    /// and <see cref="AccessibilityTree.WithContext(Css.StyleContext, System.Threading.CancellationToken)"/> never carry them over.
+    /// </summary>
+    public RenderedFacts? Facts { get; init; }
+
+    internal AccessibilityOptions WithFacts(RenderedFacts? facts) => new()
+    {
+        BaseUrl = BaseUrl,
+        MaxNameWork = MaxNameWork,
+        MaxNameLength = MaxNameLength,
+        MaxIdReferences = MaxIdReferences,
+        MaxOwnsWork = MaxOwnsWork,
+        Facts = facts,
+    };
 }
 
 /// <summary>What an <see cref="AccessibilityTree.Update(Editing.EditResult, Css.RestyleResult, System.Threading.CancellationToken)"/> did.</summary>

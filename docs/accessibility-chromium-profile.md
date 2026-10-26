@@ -47,9 +47,9 @@ name computation, states and focus.
 ## `section-header-footer`
 
 - **Topic:** header and footer outside the body scope
-- **Choice:** generic. The HTML-AAM draft's sectionheader and sectionfooter roles are not produced.
-- **Matches:** The matching tentative wpt pages expect the draft roles and are listed as known failures.
-- **Evidence:** **unverified until the Chrome differential**
+- **Choice:** Role generic with the internal role sectionheader or sectionfooter, exposed (not ignored), exported under those names. A header or footer whose role is explicit keeps that role.
+- **Matches:** Chrome 156 output on the svg probe fixture (header and footer in main, section and article are sectionheader and sectionfooter; the body-level ones are banner and contentinfo) and 96 such elements on 240 corpus pages. The HTML-AAM draft names the roles; the wpt pages that expect them stay known failures because the role API reports generic.
+- **Evidence:** **observed in Chrome output**
 
 ## `landmark-scope`
 
@@ -338,8 +338,15 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `internal-roles`
 
 - **Topic:** Roles that are not WAI-ARIA roles
-- **Choice:** Elements WAI-ARIA has no role for, and that Chrome exposes, have AxNode.InternalRole and are not ignored: label (LabelText), legend (Legend), br (LineBreak), iframe (Iframe), the first summary of a details (DisclosureTriangle), input type=date (Date) and type=color (ColorWell), which also state their value. svg (SvgRoot) and the MathML elements math, mi, mo and mn (MathMLMath, MathMLIdentifier, MathMLOperator, MathMLNumber) keep their WAI-ARIA role and are exported under these names. Other date and time input types, other MathML elements and the SVG graphics elements are not covered.
+- **Choice:** Elements WAI-ARIA has no role for, and that Chrome exposes, have AxNode.InternalRole and are not ignored: label (LabelText), legend (Legend), br (LineBreak), iframe (Iframe), the first summary of a details (DisclosureTriangle), input type=date (Date) and type=color (ColorWell), which also state their value. The MathML elements math, mi, mo and mn (MathMLMath, MathMLIdentifier, MathMLOperator, MathMLNumber) keep their WAI-ARIA role and are exported under these names; svg is covered by svg-root-role. Other date and time input types, other MathML elements and the SVG graphics elements are not covered.
 - **Matches:** Chrome 156 output on the forms, implied and iframe fixture pages (label, iframe, summary, date, colour, svg, math, mi, mo, mn); legend and br are inferred from the same naming.
+- **Evidence:** **observed in Chrome output**
+
+## `svg-root-role`
+
+- **Topic:** Role of an svg element
+- **Choice:** An svg with an implicit role keeps graphics-document and has the internal role image, exported as image. When something inside it is exposed (rendered text, a link, a foreignObject, an element with a role; graphics elements and nested svg elements do not count) the internal role is SvgRoot instead. An svg with no children, or nested in another svg, and no name is ignored (uninteresting). An svg with an explicit role keeps it.
+- **Matches:** Chrome 156 output on the svg probe fixture: title, desc, path, g, use, nested, tabindex and aria-label svgs are image and an empty svg has no node; text, foreignObject, a link, a role=group child make SvgRoot, with or without a name; 1,381 image and 3 SvgRoot svg elements on 240 corpus pages.
 - **Evidence:** **observed in Chrome output**
 
 ## `input-password-file`
@@ -417,4 +424,53 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 - **Topic:** url of links and images
 - **Choice:** The url property is the href of a link or area, or the src of an img, resolved against AccessibilityOptions.BaseUrl (and a base element). Without a base URL it is the attribute as written.
 - **Matches:** Chrome 156 output on the fixture pages: absolute URLs for links and the image.
+- **Evidence:** **observed in Chrome output**
+
+## `layout-facts-scope`
+
+- **Topic:** What rendered facts change
+- **Choice:** Facts are optional (AccessibilityOptions.Facts). Without them every choice below is off and the tree is what it is without layout. With them, only the choices in the entries layout-generic-pruning, layout-table, list-marker-node, layout-select-popup, layout-white-space and layout-hidden apply. Facts must describe the same document under the same style context, or the build is refused; an update never keeps them (a new snapshot needs new facts, so the update builds afresh and equals Build with those facts).
+- **Matches:** Facts are one capture of one page (DOMSnapshot.captureSnapshot), so a changed document or context makes them stale; reusing them would put Chrome's layout of the old page on the new one.
+- **Evidence:** specification
+
+## `layout-generic-pruning`
+
+- **Topic:** Which generic containers Chromium leaves out (with facts)
+- **Choice:** A generic container (div, span, li, p without a better role, unknown elements, body, b, i) is ignored with the reason uninteresting unless one of these holds: it is a section, header, footer, aside or a (kept as before); it has an id, title, tabindex, role or any aria-* attribute; it is positioned; it scrolls (overflow auto or scroll and more content than room); its display is inline-block, inline-flex or another inline-level non-inline value; or it is a block, flow-root or list-item box whose own children are inline content (laid-out text, inline boxes, floats or out-of-flow boxes) with no in-flow block-level child. A span, any display: inline box, and flex, grid and table containers are ignored unless an attribute keeps them. A p is ignored the same way when it has no inline content. A plain inline box that is ignored has no node at all (its children belong to the nearest ancestor with a node); a block one stays as an ignored node.
+- **Matches:** Chrome 156 output on 634 corpus pages (two samples, one used to find the rule and one held out) and the layout fixture, where the exposed structure equals Chrome's. Over the paired nodes the ignored flag differs for 0.9% of them on each sample, against 12% to 15% without facts. On 240 pages, of 15,681 blocks without id or attributes whose children were all blocks Chrome ignored 15,667, and of 2,947 holding only text or inline boxes it ignored none; of 12,589 static spans without attributes it ignored 12,542. Not explained: blocks whose only children are floats (48 exposed, 22 ignored), a handful of positioned boxes, generics inside video elements, and a share of the paragraphs that Chrome ignores.
+- **Evidence:** **observed in Chrome output**
+
+## `layout-table`
+
+- **Topic:** Layout tables (with facts)
+- **Choice:** An HTML table is a data table (role table, its rows and cells row and cell) when it has a summary attribute, any aria-* attribute, a caption or a cell with scope; or, when it has more than one cell (td or th), a th, a thead, or a visible border on the table or on its first cell; or, whatever else it has, 20 or more rows (tr). Cells, captions, headers and rows of a table nested inside it belong to the nested table. Any other table is a layout table: its internal role is LayoutTable, its rows LayoutTableRow, its cells (td and th) LayoutTableCell; the Core-AAM role stays table, row and cell. The evidence scan is bounded (20,000 elements). A generic element laid out as display: table, table-row or table-cell has the same internal roles.
+- **Matches:** Chrome 156 output on 171 tables of 240 corpus pages (162 judged as Chrome did: 6 layout tables looked like data tables, 3 data tables like layout tables) and the layout and table fixtures. A table with one cell is a layout table even with borders or a th (the table fixture; 12 of 12 one-cell tables with a th and no aria, summary or scope attribute on 6,000 corpus pages), while a caption makes even a one-cell table a data table (3 of 3). Among 1,604 tables with none of this evidence and no nested table, 35 of the 88 that Chrome called data tables had 20 or more rows and no table with that many rows was a layout table (at 16 rows: 9 layout tables); the other 53 data tables are small ones whose cause is not known (a background colour on the first cell is 8 times as common among them). The large layout tables that had header cells were holding nested tables whose header cells they had counted, which is why nested tables are not scanned.
+- **Evidence:** **observed in Chrome output**
+
+## `list-marker-node`
+
+- **Topic:** List markers (with facts)
+- **Choice:** An element whose layout has a ::marker box with text (a list item with a visible marker, not summary, not hidden or visibility: hidden) gets a ListMarker node as its first child, named by the marker text ("• ", "1. "), with one ignored child (none, presentationalRole). The node has no DOM node of its own: its kind is Generated and the export gives it no backendDOMNodeId.
+- **Matches:** Chrome 156 output on 634 corpus pages and the whitespace, layout and implied fixtures: the node is named by the marker text and has one ignored child. An item whose role is not listitem (a list item made presentational) has the marker as plain static text instead. A marker is also absent when the item is hidden.
+- **Evidence:** **observed in Chrome output**
+
+## `layout-select-popup`
+
+- **Topic:** Drop-down select popup (with facts)
+- **Choice:** A select with the combobox role that has a box has one MenuListPopup child (a Generated node), and its options and option groups are children of that node. Options are focusable as before.
+- **Matches:** Chrome 156 output on 27 corpus pages (3,400 options) and the layout fixture. Not reproduced: the extra ignored node Chrome puts between the popup and the options of a select that has an option group (forms fixture, 3 nodes).
+- **Evidence:** **observed in Chrome output**
+
+## `layout-white-space`
+
+- **Topic:** Static text of white space (with facts)
+- **Choice:** A text node of white space only has a static text when it was drawn (it has a text box) between two elements that are display: inline; any other white space has none. Text with characters is unchanged. Such a static text is not ignored.
+- **Matches:** Chrome 156 output on 240 corpus pages: of 2,099 drawn spaces between two display: inline elements Chrome has a static text for 1,485; of 1,377 drawn elsewhere it has one for 33; of 24,339 collapsed spaces (no text box) it has one for 34. The 614 spaces between inline elements that have none are not explained by position, line, parent role or display.
+- **Evidence:** **observed in Chrome output**
+
+## `layout-hidden`
+
+- **Topic:** Hiding that depends on layout (with facts)
+- **Choice:** An HTML element whose style renders it but whose capture has no box is hidden as not rendered, except display: contents, option, optgroup, area, map, slot, html and body; SVG and MathML elements are never hidden this way. Zero size, clipping and an off-screen position do not hide anything: Chrome keeps such nodes in the tree. Chrome reports no bounding box, off-screen state or scrollable state in Accessibility.getFullAXTree, so the export has none.
+- **Matches:** Chrome 156 output on the overflow and positioned fixtures (clipped, rect-clipped and off-screen elements are exposed) and the corpus: of about 220,000 nodes with a box on 240 pages, 2 are notRendered; none of 121,682 nodes of 120 pages has a bounding-box, off-screen or scrollable property.
 - **Evidence:** **observed in Chrome output**

@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang=en><head><title>svg probe</title></head><body>
+<p>case empty</p>
+<svg></svg>
+<p>case path</p>
+<svg viewBox="0 0 10 10"><path d="M0 0h10v10z"/></svg>
+<p>case title</p>
+<svg><title>T</title></svg>
+<p>case title-path</p>
+<svg><title>T</title><path d="M0 0h10v10z"/></svg>
+<p>case label-path</p>
+<svg aria-label="L"><path d="M0 0h10v10z"/></svg>
+<p>case g</p>
+<svg><g><path d="M0 0h10v10z"/></g></svg>
+<p>case text</p>
+<svg><text x="1" y="10">hello</text></svg>
+<p>case fo</p>
+<svg><foreignObject width="50" height="20"><p>in fo</p></foreignObject></svg>
+<p>case title-fo</p>
+<svg><title>T</title><foreignObject width="50" height="20"><p>in fo</p></foreignObject></svg>
+<p>case a</p>
+<a href="#x"><svg><path d="M0 0h10v10z"/></svg></a>
+<p>case a-fo</p>
+<a href="#x"><svg><foreignObject width="50" height="20"><span>x</span></foreignObject></svg></a>
+<p>case a-text</p>
+<a href="#x"><svg><text>t</text></svg></a>
+<p>case link-svg</p>
+<svg><a href="#y"><text>lk</text></a></svg>
+<p>case nested</p>
+<svg><svg><path d="M0 0h10v10z"/></svg></svg>
+<p>case role-img</p>
+<svg role="img"><path d="M0 0h10v10z"/></svg>
+<p>case focusable</p>
+<svg tabindex="0"><path d="M0 0h10v10z"/></svg>
+<p>case use</p>
+<svg><use href="#nothing"/></svg>
+<p>case desc</p>
+<svg><desc>D</desc><path d="M0 0h10v10z"/></svg>
+<p>case title-attr</p>
+<svg title="TT"><path d="M0 0h10v10z"/></svg>
+<p>case group-role</p>
+<svg><g role="group"><path d="M0 0h10v10z"/></g></svg>
+<p>case aria-hidden</p>
+<svg aria-hidden="true"><path d="M0 0h10v10z"/></svg>
+<header>top</header><main><header id=h2>h</header><footer id=f2>f</footer><section><header id=h3>sh</header></section><article><footer id=f3>af</footer></article></main><footer>bot</footer></body></html>

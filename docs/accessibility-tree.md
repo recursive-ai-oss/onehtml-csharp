@@ -46,13 +46,15 @@ the set of `HiddenReasons`, the element that causes the strongest one (`Origin`)
 | `Inert` | the `inert` attribute on the element or an ancestor | node present, ignored, not focusable |
 
 `Primary` orders them: not-rendered kinds, then `AriaHidden`, `Inert`, `VisibilityHidden`. Hiding that depends on layout
-(zero size, clipping, off-screen) is not known without layout: `HiddenInfo.LayoutDependent` is `LayoutHiding.Unknown`.
+(zero size, clipping, off-screen) is not known without layout: `HiddenInfo.LayoutDependent` is `LayoutHiding.Unknown`. With
+rendered facts the only layout-dependent hiding is an element that has no box although its style renders it (profile entry
+`layout-hidden`); Chrome does not hide zero-size, clipped or off-screen content.
 An `area` inside a `map` is not hidden although the rendering rules give it `display: none`.
 
 ## The tree
 
 `Nodes` lists every node in tree order (`AxNode.Id` is the index; `Root` is the document). Each node is one of
-`Document`, `Element` (rendered) or `Text`.
+`Document`, `Element` (rendered), `Text` or, in a tree built with rendered facts, `Generated` (a node Chromium creates from layout: a list marker or a drop-down select's popup; its `DomNode` is the owning element and `Find` never returns it).
 
 - **`aria-owns`** (WAI-ARIA 1.2 6.6.6, Core-AAM 5.2): owners are processed in document order; the first owner of an element
   wins; an element never owns itself, the root element, or an ancestor of the owner in the tree as built so far (a cycle);
@@ -142,6 +144,31 @@ disabled), the parsed `TabIndex`, and `SequentialIndex` (position in `Accessibil
 | `EmptyNameRequired` | an included node whose role requires a name has none |
 | `AriaOwnsIgnored` | an `aria-owns` reference was not honoured (reason in the message) |
 | `LimitExceeded` | a limit was reached |
+
+## Rendered facts
+
+`AccessibilityOptions.Facts` takes the `RenderedFacts` of a Chrome `DOMSnapshot.captureSnapshot` of the same document under the
+same style context (`docs/rendered-facts.md`). `Build` throws `ArgumentException` for facts of another document (id and node count)
+or another context. With facts the tree applies the choices Chromium makes once layout is known, each a profile entry:
+
+| Choice | Entry |
+|---|---|
+| which generic containers (and empty or block-only paragraphs) are left out as uninteresting; plain inline ones have no node | `layout-generic-pruning` |
+| data tables against layout tables (`LayoutTable`, `LayoutTableRow`, `LayoutTableCell` internal roles) | `layout-table` |
+| a `ListMarker` node with the marker text (or plain static text for a non-list item) | `list-marker-node` |
+| a `MenuListPopup` node between a drop-down select and its options | `layout-select-popup` |
+| static text of drawn white space | `layout-white-space` |
+| elements with no box that the cascade renders are hidden | `layout-hidden` |
+
+The Chrome-shaped export of such a tree has the extra nodes (without `backendDOMNodeId`). Without facts none of this happens
+and the tree is exactly what it is without layout. Chrome's `getFullAXTree` has no bounding box, off-screen state or scrollable
+property, so the export has none either. A scroll container is kept as an exposed generic when it has more content than room
+(four nodes in the corpus sample; the keyboard-focusable-scroller behaviour is not visible in the `focusable` property).
+
+Facts describe one snapshot, so nothing carries them over: `Update(edit, restyle)` and `WithContext(context)` return a tree with
+no facts, built afresh (`UpdateInfo.FullRebuildReason` says so) when the tree had them; `Update(edit, restyle, facts)` and
+`WithContext(context, facts)` take facts captured from the edited document or the new context and build afresh with them, equal
+to `Build` with those facts. A tree without facts updates incrementally as before.
 
 ## Updating after an edit
 

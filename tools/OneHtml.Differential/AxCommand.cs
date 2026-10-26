@@ -38,7 +38,11 @@ internal static class AxCommand
 
         public string Detail { get; set; } = string.Empty;
 
+        /// <summary>The comparison the report is about: with facts for modes <c>on</c> and <c>both</c>, without for <c>off</c>.</summary>
         public AxPageDiff? Diff { get; set; }
+
+        /// <summary>The same page's comparison without facts, in mode <c>both</c> only.</summary>
+        public AxPageDiff? Baseline { get; set; }
     }
 
     public static int Run(Options o)
@@ -58,7 +62,7 @@ internal static class AxCommand
         int done = 0;
         Parallel.ForEach(captures, new ParallelOptions { MaxDegreeOfParallelism = o.Jobs }, cap =>
         {
-            CaptureResult r = RunCapture(cap, styles, o.TimeoutSeconds, o.Dump);
+            CaptureResult r = RunCapture(cap, styles, o.TimeoutSeconds, o.Dump, facts);
             lock (results)
             {
                 results.Add(r);
@@ -78,7 +82,7 @@ internal static class AxCommand
             Directory.CreateDirectory(System.IO.Path.Combine(o.Out, "dump"));
             foreach (CaptureResult r in results.Where(r => r.Diff is not null))
             {
-                File.WriteAllLines(System.IO.Path.Combine(o.Out, "dump", r.Ref.Sha[..Math.Min(12, r.Ref.Sha.Length)] + "-" + r.Ref.Viewport + ".txt"), r.Diff!.Dump);
+                File.WriteAllLines(System.IO.Path.Combine(o.Out, "dump", r.Ref.Sha[..Math.Min(12, r.Ref.Sha.Length)] + "-" + r.Ref.Viewport + ".txt"), r.Diff!.Dump, new UTF8Encoding(false, false));
             }
         }
 
@@ -167,10 +171,10 @@ internal static class AxCommand
         return File.Exists(plain) ? File.ReadAllBytes(plain) : null;
     }
 
-    private static CaptureResult RunCapture(CaptureRef cap, StylesheetStore? sheets, int timeoutSeconds, bool dump)
+    private static CaptureResult RunCapture(CaptureRef cap, StylesheetStore? sheets, int timeoutSeconds, bool dump, string factsMode)
     {
         var r = new CaptureResult { Ref = cap };
-        (CaptureResult? res, string? failure) = Guard.Run(ct => Compare(cap, sheets, r, dump, ct), timeoutSeconds);
+        (CaptureResult? res, string? failure) = Guard.Run(ct => Compare(cap, sheets, r, dump, factsMode, ct), timeoutSeconds);
         if (failure is not null)
         {
             r.Status = "error";
@@ -181,7 +185,7 @@ internal static class AxCommand
         return res!;
     }
 
-    private static CaptureResult Compare(CaptureRef cap, StylesheetStore? sheets, CaptureResult r, bool dump, CancellationToken ct)
+    private static CaptureResult Compare(CaptureRef cap, StylesheetStore? sheets, CaptureResult r, bool dump, string factsMode, CancellationToken ct)
     {
         byte[]? meta = ReadFile(cap.Dir, "meta");
         if (meta is null)
@@ -274,15 +278,32 @@ internal static class AxCommand
             c.Path = "chrome#" + c.Backend.ToString(CultureInfo.InvariantCulture) + " " + c.Role;
         }
 
-        AccessibilityTree tree = AccessibilityTree.Build(doc, styles, null, new AccessibilityOptions { BaseUrl = baseUrl }, ct);
-        using JsonDocument oursDoc = JsonDocument.Parse(tree.ToChromeJson());
-        AxSide ours = AxReader.Read(oursDoc.RootElement.GetProperty("nodes"), static b => b > int.MaxValue ? -1 : (int)b, tree);
-        foreach (AxEntry o in ours.Entries)
+        AxPageDiff Run(RenderedFacts? withFacts, bool wantDump)
         {
-            o.Path = o.Dom >= 0 ? DomPath(doc.GetNode(o.Dom)) : "#document";
+            AccessibilityTree tree = AccessibilityTree.Build(doc, styles, null, new AccessibilityOptions { BaseUrl = baseUrl, Facts = withFacts }, ct);
+            using JsonDocument oursDoc = JsonDocument.Parse(tree.ToChromeJson());
+            AxSide ours = AxReader.Read(oursDoc.RootElement.GetProperty("nodes"), static b => b > int.MaxValue ? -1 : (int)b, tree);
+            foreach (AxEntry o in ours.Entries)
+            {
+                o.Path = o.Dom >= 0 ? DomPath(doc.GetNode(o.Dom)) : "#document";
+            }
+
+            return AxComparer.Compare(chrome, ours, wantDump);
         }
 
-        r.Diff = AxComparer.Compare(chrome, ours, dump);
+        if (factsMode == "off")
+        {
+            r.Diff = Run(null, dump);
+        }
+        else
+        {
+            r.Diff = Run(rendered, dump);
+            if (factsMode == "both")
+            {
+                r.Baseline = Run(null, false);
+            }
+        }
+
         return r;
     }
 

@@ -13,7 +13,7 @@ OneHtml.Differential ax <capture-dir> [--corpus <dir>] [--out <dir>] [--jobs n] 
 | `--out` | Output directory, default `./out`. |
 | `--jobs`, `--limit`, `--timeout`, `--top` | As for the other commands: parallel captures (default 2), the first n captures in sha256 order, seconds per capture (default 30), classes shown in `summary.md` (default 20). |
 | `--facts` | `on`, `off` or `both` (default). See "Rendered facts". |
-| `--dump` | Also writes `dump/<sha12>-<viewport>.txt`: one line per Chrome node with its counterpart, then our unpaired nodes. For finding out why a class exists. |
+| `--dump` | Also writes `dump/<sha12>-<viewport>.txt`: one line per Chrome node with its counterpart, then our unpaired nodes. For finding out why a class exists. A Chrome node with no counterpart also shows where it sits (`under` its nearest paired ancestor), and one of ours shows its parent's path. |
 
 Exit status is 0 whatever the rates are; the numbers are the result.
 
@@ -73,7 +73,13 @@ Nothing else is normalized: no role aliases, no case folding, no Unicode normali
 
 ### Rendered facts
 
-`--facts` selects whether our tree is built with the capture's rendered facts. The tree computation does not read facts yet, so the two runs build the same tree and give the same numbers; the summary still carries the with/without table so that the comparison is ready when the tree does. The facts are always used for the mapping in step 2, in both modes. Layout-dependent differences (generated content, list markers, layout tables, text of user-agent shadow trees) show up in the classes below and are the first thing facts would close.
+`--facts` selects whether our tree is built with the capture's rendered facts (`AccessibilityOptions.Facts`). The facts are always used for the mapping in step 2, in both modes.
+
+- `off`: one run without facts.
+- `on`: one run with facts; the report is that run.
+- `both` (default): each page is compared twice, with and without facts, over the same Chrome nodes. The per-field table and the classes are the run with facts; the section "With and without rendered facts" prints both rates side by side (with the number of mismatching nodes in brackets).
+
+A capture whose snapshot does not map onto its DOM is refused in every mode.
 
 ## Output
 
@@ -99,14 +105,48 @@ The command takes the worker's shared-job lock like the other corpus commands an
 bash tools/OneHtml.Differential/run-worker.sh ax ~/onehtml/capture-out/<version> ~/onehtml/out/ax --corpus ~/onehtml/corpus/<version> --jobs 8
 ```
 
+## Results with and without rendered facts
+
+Chrome for Testing 156.0.8078.47 (protocol 1.3), headless, 1280x800, page script off; .NET 10 runtime; run with `--facts both --jobs 2` on an AMD Ryzen 9 7950X3D worker (32 threads), about 90 seconds per 2,100 pages. Sample C is 2,133 corpus captures (every 6th by hash, starting at the 1st) and sample D is 2,129 others (every 6th, starting at the 4th); the rules in the `layout-*` entries were fitted on about 640 other captures and, for the table rule, on the tables of 6,000 pages that overlap C and D, so the rates are not a clean held-out test of the table rule. The fixtures are the 16 hand-written pages of `testdata/rendered/pages` (the earlier ones plus `layout.html` and `svgprobe.html`). Rates are mismatching nodes over the times the field was compared; the node counts are in the report. The full capture set of 12,750 pages has not been run with this version.
+
+| field | C without | C with | D without | D with | fixtures without | fixtures with |
+|---|---:|---:|---:|---:|---:|---:|
+| ignored | 14.0% | 0.66% | 15.7% | 0.76% | 2.9% | 2.8% |
+| hidden | 0.17% | 0.13% | 0.19% | 0.16% | 0% | 0% |
+| ignoredReasons | 16.7% | 4.0% | 19.1% | 3.9% | 4.8% | 4.3% |
+| role | 0.63% | 0.20% | 0.64% | 0.17% | 3.6% | 0% |
+| name | 4.9% | 4.4% | 4.7% | 4.2% | 0.6% | 0.5% |
+| parent | 9.8% | 2.0% | 9.6% | 2.0% | 2.7% | 1.7% |
+| exposedParent | 31.3% | 1.0% | 29.9% | 1.1% | 3.6% | 2.6% |
+| chromeOnly | 10.3% | 1.9% | 10.6% | 2.0% | 8.8% | 7.0% |
+| oursOnly | 7.4% | 0.48% | 7.4% | 0.52% | 0.3% | 0.3% |
+| prop.focusable | 0.17% | 0.17% | 0.16% | 0.16% | 6.3% | 6.3% |
+| prop.level | 0.28% | 0.24% | 0.55% | 0.53% | 0% | 0% |
+
+No field is worse with facts. The facts-free role rate also falls (about 1.7% to 0.6% on the earlier sample) because `svg` and the non-landmark `header` and `footer` now take Chrome's roles without facts (profile entries `svg-root-role`, `section-header-footer`). What is left:
+
+| Class | Verdict |
+|---|---|
+| `oursOnlyIgnored`: `visibility: hidden`, `aria-hidden` and plain inline or block containers | **Representation.** We keep ignored nodes that Chrome does not list at all (an exposed tree is the same without them). Plain inline containers Chrome ignores are no longer nodes of ours (profile entry `layout-generic-pruning`); the others stay. |
+| `chromeOnlyIgnored`: `notRendered`, `aria-hidden` subtree | **Representation.** Chrome lists nodes that are not rendered or hidden; ours have no node (not rendered) or are listed elsewhere. |
+| `chromeOnly`: `StaticText` | **Chrome**, unexplained for 614 drawn spaces between inline elements; the rest is generated content, `::before` and `::after` text, and text of user-agent shadow trees (form controls, `video`). Generated text boxes could supply the first; not done. |
+| `chromeOnly`: `generic` | **Needs the user-agent shadow tree**: the inner editor of a text field and the controls of `video` and `audio`. |
+| `role`: `cell`, `row`, `table` against `LayoutTableCell`, `LayoutTableRow`, `LayoutTable` | **Chrome**, partly open: the data-table versus layout-table rule (profile entry `layout-table`) now reads only a table's own cells (nested tables were being counted) and treats 20 or more rows as a data table. About 50 small tables of 4,500 with no evidence of any kind are still data tables in Chrome; a background colour on the first cell is the only feature that separates them, and weakly. |
+| `role`: `image` against `SvgRoot` | **Fixed, not layout dependent** (profile entry `svg-root-role`): Chrome gives an `svg` the role `image`, and `SvgRoot` only when something inside it is exposed. The `svgprobe` fixture separates the cases. |
+| `sectionheader`, `sectionfooter` | **Fixed, not layout dependent** (profile entry `section-header-footer`): a `header` or `footer` that is not a landmark is `sectionheader` or `sectionfooter`. |
+| `prop.focusable` on `iframe` | **Chrome** does not report an iframe as focusable (51 nodes). Unchanged. |
+| `parent`: options under `none` | **Chrome** puts an ignored node between the popup and the options of a select with option groups (3 nodes in `forms.html`). |
+
+Chrome's `getFullAXTree` carries no bounding box, off-screen state or scrollable property (none of 121,682 nodes on 120 corpus pages), so the export has none; clipped, zero-size and off-screen elements stay in the tree (the `overflow` and `positioned` fixtures).
+
 ## Findings on the fixture pages
 
 The fixture pages (`testdata/rendered/pages`) were captured with Chrome 156 (headless, script off, 1280×800). After the fixes listed in the profile, what is left is below, each with a verdict. "Chrome" means Chrome's choice where the specifications leave room or are silent; "ours" means we do not yet do what Chrome does and no specification says otherwise. Evidence is Chrome's output on the page named.
 
 | Class | Verdict |
 |---|---|
-| `chromeOnly`: `ListMarker`, generated `StaticText` (`::before`/`::after` content), `LineBreak`, `MenuListPopup`, the shadow content of date, number, textarea and select controls, the `StaticText` of a submit button's value | **Needs rendering.** Chrome creates these from layout objects and user-agent shadow trees. They have no DOM node in the document. With facts the generated boxes (`GeneratedBox.Text`) could supply the text of list markers and generated content; not done. HTML-AAM and CSS Content give generated content a place in names (done in the name computation) but not in the tree. |
-| `role`: `LayoutTable`, `LayoutTableRow`, `LayoutTableCell` against `table`, `row`, `cell`, `generic` | **Chrome.** Chrome gives the internal layout-table roles to tables it judges to be for layout (a one-cell table, `display: table` boxes) and keeps `table`, `row` and `cell` for data tables. HTML-AAM maps `table` to `table`. The heuristic is not reproduced; three table elements and one CSS table on the table, implied and whitespace fixtures are all the evidence, too few to infer it. |
+| `chromeOnly`: `ListMarker`, generated `StaticText` (`::before`/`::after` content), `LineBreak`, `MenuListPopup`, the shadow content of date, number, textarea and select controls, the `StaticText` of a submit button's value | **Needs rendering.** Chrome creates these from layout objects and user-agent shadow trees. They have no DOM node in the document. With facts the list marker is a node of ours (profile entry `list-marker-node`) and the select popup too (`layout-select-popup`); generated `::before` and `::after` text and shadow content are still not nodes. HTML-AAM and CSS Content give generated content a place in names (done in the name computation) but not in the tree. |
+| `role`: `LayoutTable`, `LayoutTableRow`, `LayoutTableCell` against `table`, `row`, `cell`, `generic` | **Chrome.** Chrome gives the internal layout-table roles to tables it judges to be for layout (a one-cell table, `display: table` boxes) and keeps `table`, `row` and `cell` for data tables. HTML-AAM maps `table` to `table`. Without facts the heuristic is not reproduced. With facts it is (profile entry `layout-table`), fitted on 171 tables of the corpus sample. |
 | `ignored`/`ignoredReasons`: a `label` whose control is a checkbox or radio button is ignored with `labelFor`, and its text is `presentationalRole` | **Chrome**, observed on three labels, all of them checkbox or radio labels with the control first. `label` elements around text fields (control after the text) are `LabelText`. Which of "checkbox or radio" and "control first" decides is not determined by the fixtures. A capture of `<label>text <input type=checkbox></label>` and `<label><input type=text> text</label>` would settle it. |
 | `ignored`, `ignoredReasons`, `role`: cells and rows of a table with `role=presentation` | **Chrome** differs from the inherited-presentational rule we follow (WAI-ARIA 1.2 section 5.2.7): its `tbody` and `tr` are ignored as `uninteresting` and its `td` are `generic` and exposed. We make them all `presentationalRole`. Observed on one table. |
 | `ignored`: `template` | **Chrome**, unexplained: a `template` directly in the body is `generic`, a `template` in a `ul` is ignored. We ignore both (a template has no rendering). |

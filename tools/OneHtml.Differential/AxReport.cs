@@ -53,6 +53,8 @@ internal static class AxReport
         return f.StartsWith("prop.", StringComparison.Ordinal) ? 100 : 200;
     }
 
+    private static Dictionary<string, FieldAgg>? BaselineFields;
+
     public static void Write(Options o, List<AxCommand.CaptureResult> results, string environment, string factsMode, double seconds)
     {
         var fields = new Dictionary<string, FieldAgg>(StringComparer.Ordinal);
@@ -95,6 +97,26 @@ internal static class AxReport
             }
         }
 
+        // Mode both: the same pages compared without facts, for the with/without table.
+        Dictionary<string, FieldAgg>? baseFields = null;
+        if (results.Any(r => r.Baseline is not null))
+        {
+            baseFields = new Dictionary<string, FieldAgg>(StringComparer.Ordinal);
+            foreach (AxCommand.CaptureResult r in results.Where(r => r.Baseline is not null))
+            {
+                foreach ((string f, long n) in r.Baseline!.Compared)
+                {
+                    Get(baseFields, f).Compared += n;
+                }
+
+                foreach (AxMismatch m in r.Baseline.Mismatches)
+                {
+                    Get(baseFields, m.Field).Occurrences++;
+                }
+            }
+        }
+
+        BaselineFields = baseFields;
         List<ClassAgg> ranked = [.. classes.Values.OrderByDescending(c => c.Occurrences).ThenBy(c => c.Field, StringComparer.Ordinal).ThenBy(c => c.Pattern, StringComparer.Ordinal)];
         List<string> fieldNames = [.. fields.Keys.OrderBy(FieldRank).ThenBy(f => f, StringComparer.Ordinal)];
         var totals = new Totals(comparedPages.Count, chromeNodes, oursNodes, matched, anonymous);
@@ -163,13 +185,20 @@ internal static class AxReport
         }
 
         sb.Append("\n## With and without rendered facts\n\n");
-        sb.Append("Nodes are matched through the snapshot's backend node ids in both runs. The tree computation does not read rendered facts yet, so the two runs build the same tree and their rates are identical. The table is kept so the runs can be compared when it does.\n\n");
-        sb.Append("| field | without facts | with facts |\n|---|---:|---:|\n");
-        foreach (string f in fieldNames.Where(f => f is "role" or "name" or "nameSource" or "description" or "ignored" or "hidden" or "parent" or "exposedParent" or "chromeOnly" or "oursOnly" or "chromeOnlyIgnored" or "oursOnlyIgnored" || f.StartsWith("prop.", StringComparison.Ordinal)))
+        if (BaselineFields is null)
         {
-            FieldAgg a = fields[f];
-            string r = Corpus.Pct(a.Occurrences, a.Compared);
-            sb.Append("| ").Append(f).Append(" | ").Append(r).Append(" | ").Append(r).Append(" |\n");
+            sb.Append("Mode ").Append(factsMode).Append(": one run only, ").Append(factsMode == "on" ? "with" : "without").Append(" rendered facts; the per-field table above is that run. Use `--facts both` for the comparison.\n");
+        }
+        else
+        {
+            sb.Append("The same pages compared twice, nodes matched through the snapshot's backend node ids in both: the tree built from markup and style alone, and the tree built with the capture's rendered facts (`AccessibilityOptions.Facts`). The per-field table above is the run with facts.\n\n");
+            sb.Append("| field | without facts | with facts |\n|---|---:|---:|\n");
+            foreach (string f in fieldNames.Where(f => f is "role" or "name" or "nameSource" or "description" or "ignored" or "hidden" or "ignoredReasons" or "parent" or "exposedParent" or "chromeOnly" or "oursOnly" or "chromeOnlyIgnored" or "oursOnlyIgnored" || f.StartsWith("prop.", StringComparison.Ordinal)))
+            {
+                FieldAgg a = fields[f];
+                FieldAgg b = BaselineFields.TryGetValue(f, out FieldAgg? bf) ? bf : new FieldAgg();
+                sb.Append("| ").Append(f).Append(" | ").Append(Corpus.Pct(b.Occurrences, b.Compared)).Append(" (").Append(b.Occurrences).Append(") | ").Append(Corpus.Pct(a.Occurrences, a.Compared)).Append(" (").Append(a.Occurrences).Append(") |\n");
+            }
         }
 
         sb.Append("\n## Top mismatch classes\n\n");

@@ -50,6 +50,7 @@ public class EditRestyleTests
         ":is(.c0,.c1) .c4{color:red !important}", "@media (min-width:600px){.c3{color:green}}", "@layer x{.c0{color:red}} .c0{color:blue}",
         "[title]{display:inline-block}", "[hidden]{visibility:hidden}", "p{margin:1px 2px}", ".c3{--k:7px;width:var(--k)}", "td{color:blue}",
         "a:hover{color:red}", "div:focus-within{background-color:blue}", "[lang=en] .c2{font-weight:bold}",
+        "li:last-child span{color:green}", ".c2:nth-last-child(2) .c3{color:red}", "div:empty ~ p b{color:blue}",
     ];
 
     private static readonly string[] Colors = ["red", "blue", "green"];

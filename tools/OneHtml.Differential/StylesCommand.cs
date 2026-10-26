@@ -66,13 +66,30 @@ internal static class StylesCommand
         report.Count("pages");
         report.Count("elements", doc.Root.DescendantElements.Count());
 
+        var clock = System.Diagnostics.Stopwatch.StartNew();
         DocumentStyles baseStyles = DocumentStyles.Create(doc, null, options, ct);
+        long tCreate = clock.ElapsedMilliseconds;
         baseStyles.ComputeAll(ct);
+        if (GateRunner.Trace)
+        {
+            Console.Error.WriteLine("TRACE time create ms=" + tCreate + " computeAll ms=" + (clock.ElapsedMilliseconds - tCreate) + " rules=" + baseStyles.RuleCount + " distinct-styles=" + baseStyles.DistinctStyleCount + " sheets=" + baseStyles.Sheets.Count + " input-bytes=" + bytes.Length);
+        }
         report.Count("linked-sheets-resolved", recorder.Requested.Count);
 
         var failed = new HashSet<string>(StringComparer.Ordinal);
+        clock.Restart();
         OverlayChecks(o, item, doc, baseStyles, options, rng, report, failed, ct);
+        if (GateRunner.Trace)
+        {
+            Console.Error.WriteLine("TRACE time overlays ms=" + clock.ElapsedMilliseconds);
+        }
+
+        clock.Restart();
         RestyleChecks(o, item, doc, baseStyles, options, recorder, rng, report, failed, ct);
+        if (GateRunner.Trace)
+        {
+            Console.Error.WriteLine("TRACE time restyle ms=" + clock.ElapsedMilliseconds);
+        }
     }
 
     // ---- (a) overlays ----
@@ -92,10 +109,16 @@ internal static class StylesCommand
             (StyleContext ctx, string cause) = RandomContext(rng, elements, focusable);
             try
             {
+                var oc = System.Diagnostics.Stopwatch.StartNew();
                 DocumentStyles overlay = baseStyles.WithContext(ctx, ct);
+                long tOverlay = oc.ElapsedMilliseconds;
                 DocumentStyles full = DocumentStyles.Create(doc, ctx, options, ct);
                 report.Count("overlay-contexts");
                 Compare(overlay, full, "overlay:" + cause, item, report, failed, ct);
+                if (GateRunner.Trace)
+                {
+                    Console.Error.WriteLine("TRACE overlay-time " + cause + " overlay ms=" + tOverlay + " overlay+full+compare ms=" + oc.ElapsedMilliseconds + " changed=" + overlay.ChangedElements.Count);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -237,6 +260,7 @@ internal static class StylesCommand
 
                 if (GateRunner.Trace)
                 {
+                    Console.Error.WriteLine("TRACE step " + step + " " + kind);
                     foreach (Edit te in docEdits)
                     {
                         Console.Error.WriteLine("TRACE " + kind + " " + te.Operation + " #" + te.Target.Index + " <" + te.Target.LocalName + "> name=" + te.Name + " value=" + te.Value);
@@ -255,6 +279,7 @@ internal static class StylesCommand
                     continue;
                 }
 
+                var stepClock = System.Diagnostics.Stopwatch.StartNew();
                 RestyleResult res;
                 if (sheetEdits.Count == 0 && rng.Next(2) == 0)
                 {
@@ -271,6 +296,11 @@ internal static class StylesCommand
                 else
                 {
                     res = styles.Restyle(batch, ct);
+                }
+
+                if (GateRunner.Trace)
+                {
+                    Console.Error.WriteLine("TRACE step-time restyle ms=" + stepClock.ElapsedMilliseconds + " full=" + res.FullRecompute + " restyled=" + res.RestyledElements.Count);
                 }
 
                 foreach (SheetUpdate su in batch.Sheets)
@@ -320,6 +350,11 @@ internal static class StylesCommand
     private static bool Compare(DocumentStyles actual, DocumentStyles expected, string cause, CorpusItem item, GateReport report, HashSet<string> failed, CancellationToken ct)
     {
         bool equal = true;
+
+        // Both sides compute every element's style anyway; doing the two at once halves the time on the largest pages.
+        System.Threading.Tasks.Task.WaitAll(
+            System.Threading.Tasks.Task.Run(() => actual.ComputeAll(ct), ct),
+            System.Threading.Tasks.Task.Run(() => expected.ComputeAll(ct), ct));
         foreach (Node e in expected.Document.Root.DescendantElements)
         {
             ct.ThrowIfCancellationRequested();

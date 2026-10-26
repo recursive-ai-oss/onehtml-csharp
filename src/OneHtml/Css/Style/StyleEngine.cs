@@ -157,12 +157,56 @@ internal sealed class StyleEngine
             SelectorDependencies deps = r.Selectors!.Dependencies;
             UsesHas |= (deps & SelectorDependencies.Has) != 0;
             UsesStructure |= (deps & (SelectorDependencies.Structural | SelectorDependencies.SiblingCombinator | SelectorDependencies.Empty | SelectorDependencies.Has)) != 0;
-            if ((r.Selectors!.Dependencies & (SelectorDependencies.Has | SelectorDependencies.Structural)) != 0)
+            UsesBulkCaches |= (deps & (SelectorDependencies.Has | SelectorDependencies.Structural)) != 0;
+            if (!UsesStructureBelow)
             {
-                UsesBulkCaches = true;
-                break;
+                foreach (ComplexSelector cs in r.Selectors.Items)
+                {
+                    if (StructureReachesBelow(cs))
+                    {
+                        UsesStructureBelow = true;
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    private const SelectorDependencies PositionDeps = SelectorDependencies.Structural | SelectorDependencies.SiblingCombinator | SelectorDependencies.Empty;
+
+    // A selector like "li:last-child a" or "li + li > a" reads the position of an element it then reaches below; inserting or
+    // removing a sibling changes what the descendants of the siblings match, not just what the siblings match. A position
+    // test on the subject alone ("li:last-child") has no such reach. Nested selector arguments count (":is(li + li a)").
+    private static bool StructureReachesBelow(ComplexSelector cs)
+    {
+        if ((cs.Deps & PositionDeps) == 0)
+        {
+            return false;
+        }
+
+        if (cs.Compounds.Length > 1)
+        {
+            return true;
+        }
+
+        foreach (Compound c in cs.Compounds)
+        {
+            foreach (Simple part in c.Parts)
+            {
+                if (part.Sub is { } sub)
+                {
+                    foreach (ComplexSelector item in sub.Items)
+                    {
+                        if (StructureReachesBelow(item))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     public Document Doc { get; }
@@ -183,6 +227,9 @@ internal sealed class StyleEngine
 
     /// <summary>True when some selector reads siblings, positions, emptiness or descendants, so a change of the tree shape reaches neighbours.</summary>
     public bool UsesStructure { get; }
+
+    /// <summary>True when some selector reads positions or siblings and then reaches below the element, so a change of the tree shape can change what the descendants of neighbours match.</summary>
+    public bool UsesStructureBelow { get; }
 
     public int StyleCount => _cache.Count;
 

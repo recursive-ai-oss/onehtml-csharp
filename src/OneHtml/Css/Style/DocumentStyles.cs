@@ -561,7 +561,7 @@ public sealed class DocumentStyles
         var affected = new HashSet<int>();
         if (newToOld is not null)
         {
-            AddShapeChanges(newDocument, oldToNew!, newToOld, engine.UsesStructure, affected);
+            AddShapeChanges(newDocument, oldToNew!, newToOld, engine.UsesStructure, engine.UsesStructureBelow || _engine.UsesStructureBelow, affected);
         }
 
         // Pseudo-element rules are not part of an element's own style, so the reach below skips them. The elements they
@@ -649,7 +649,7 @@ public sealed class DocumentStyles
 
     // Elements the tree edit itself touches: new, moved, or next to something that was added, removed or moved (CSS Selectors 4
     // sibling combinators and position pseudo-classes), and the parents whose child list changed (:empty).
-    private void AddShapeChanges(Document newDoc, int[] oldToNew, int[] newToOld, bool structural, HashSet<int> affected)
+    private void AddShapeChanges(Document newDoc, int[] oldToNew, int[] newToOld, bool structural, bool below, HashSet<int> affected)
     {
         Arena na = newDoc.Arena;
         Arena oa = _doc.Arena;
@@ -689,6 +689,11 @@ public sealed class DocumentStyles
             }
         }
 
+        // With "below", everything under a touched parent is affected too: a selector such as "li:last-child a" or
+        // "li + li > a" matches the descendants of a sibling by that sibling's position (Selectors 4 sections 14 and 16).
+        // Each element is visited once, however many touched parents it sits under.
+        HashSet<int>? seen = below ? [] : null;
+        var stack = new Stack<int>();
         foreach (int p in parentsTouched)
         {
             if (na.Kind[p] == (byte)NodeKind.Element)
@@ -696,13 +701,31 @@ public sealed class DocumentStyles
                 affected.Add(p);
             }
 
-            if (structural)
+            if (!structural)
             {
-                for (int c = na.First[p]; c >= 0; c = na.Next[c])
+                continue;
+            }
+
+            if (seen is not null && !seen.Add(p))
+            {
+                continue;
+            }
+
+            stack.Push(p);
+            while (stack.Count > 0)
+            {
+                int q = stack.Pop();
+                for (int c = na.First[q]; c >= 0; c = na.Next[c])
                 {
-                    if (na.Kind[c] == (byte)NodeKind.Element)
+                    if (na.Kind[c] != (byte)NodeKind.Element)
                     {
-                        affected.Add(c);
+                        continue;
+                    }
+
+                    affected.Add(c);
+                    if (seen is not null && seen.Add(c))
+                    {
+                        stack.Push(c);
                     }
                 }
             }

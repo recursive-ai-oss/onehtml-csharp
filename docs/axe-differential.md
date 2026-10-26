@@ -148,7 +148,7 @@ outcomes of the element-id'd cases are in `testdata/axe/expectations.tsv` and ar
 
 ## Results
 
-Sample: the first 1,000 captures of corpus 2026-10a in sha256 order (13,857 pages exist; the full-corpus run is below under "Not done"),
+Sample: the first 1,000 captures of corpus 2026-10a in sha256 order (the full-corpus run follows),
 one viewport, stylesheets served from the corpus, compared with `--jobs 2 --timeout 120 --corpus <the corpus>`. Checker and tree as in this repository
 at the commit that holds this file; Chrome for Testing 156.0.8078.47, axe-core 4.14.0, SDK 10.0.402, run on a 7950X3D worker (16 cores, 32 threads,
 load 2 to 17 from other work while it ran). Ratios are over nodes, as defined above. Pages that carry a corpus stylesheet served with a
@@ -164,6 +164,31 @@ non-CSS content type do not get that stylesheet: Chrome ignored it in the captur
 Before this work the same pages agreed on 95.48 % (without facts) and 95.17 % (with: 962,485 agreeing, 48,816 mismatching nodes). With facts there
 are more mismatches than without because the rules that need layout (`target-size`, `link-in-text-block`, contrast) produce verdicts only there; the
 rate is over compared nodes, and needs-render nodes are not compared. With facts 5,656 `color-contrast` nodes are needs-render and not compared; without facts nearly all contrast and target-size nodes are.
+
+### Full corpus
+
+All 12,821 captures of corpus 2026-10a (one viewport; 10 axe errors and 4 failed captures skipped; 29 snapshots refused for the
+facts mode), `--jobs 8 --timeout 300`, same pins and checker, on the same worker at load 1 to 2. Agreement is over nodes as above,
+summed from each rule's Agree %.
+
+| | Without facts | With facts |
+|---|---:|---:|
+| Pages compared | 12,807 | 12,778 |
+| Agreeing nodes (agree + contained + collapsed) | 10,130,665 | 11,789,751 |
+| Mismatching nodes | about 259,000 | about 400,000 |
+| Agreement | 97.51 % | 96.72 % |
+
+Lowest rules with facts: `aria-required-parent` 89.2 %, `hidden-content` 89.7 %, `label-content-name-mismatch` 91.2 %,
+`link-in-text-block` 91.7 %, `color-contrast` 93.4 %, `color-contrast-enhanced` 93.8 %, `target-size` 95.5 %, `aria-allowed-role`
+96.0 %; their classes are the ones described under "Differences" and in the rule pages. The largest classes on the full corpus are the
+kept ones: contrast `pass|incomplete` and `none|incomplete` (axe stops where we have the stacking or the text is symbols only) and
+`target-size` `pass|violation` for user-agent controls (WCAG 2.5.8 exempts them).
+
+Two axe rules have no counterpart here, on purpose:
+
+- `aria-roledescription` is in axe's deprecated group.
+- `frame-tested` reports whether axe itself could run inside each frame. A checker that reads a document has no frames to run in;
+  a frame's own document is checked by checking that document.
 
 ### Per rule
 
@@ -402,6 +427,5 @@ and the rest of `testdata/axe/pages`; 19 pages, 960 matched nodes). New classes,
 
 - Frames and shadow roots: nested targets are counted, not compared.
 - Partial obscuring in `target-size`, and the open classes above.
-- The full-corpus run (13,857 pages; needs a gate window and claims the worker lock; `--timeout 300` because the largest pages exceed 30 s with all rules):
-  `bash tools/OneHtml.Differential/run-worker.sh axe ~/onehtml/capture-out/2026-10a ~/onehtml/out/axe --corpus ~/onehtml/corpus/2026-10a --jobs 8 --timeout 300`.
-  It is resumable (run it again, or use `--max-seconds`); add `--facts on` or `off` to run one mode.
+- Re-running the full corpus after a rule change (see "Full corpus"; `--timeout 300`, resumable, `--facts on|off` for one mode):
+  `bash tools/OneHtml.Differential/run-worker.sh axe <capture-dir> <out> --corpus <corpus> --jobs 8 --timeout 300`.

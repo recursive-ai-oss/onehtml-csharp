@@ -1,0 +1,444 @@
+{
+ "version": 1,
+ "source": {
+  "notes": "Assessed from the criterion text in WCAG 2.2 and the techniques it lists as failures, the W3C ACT rules listed for the criterion, and the rules this package implements. 'fully': every failure condition can be decided mechanically; 'partly': some conditions can, the rest need a person; 'not': it needs human judgement or running behaviour a static check cannot see.",
+  "assessed": "2026-10-25"
+ },
+ "criteria": [
+  {
+   "num": "1.1.1",
+   "automation": "partly",
+   "basis": "Whether an image, input, object or SVG has a text alternative or name is mechanical; whether the text serves the same purpose is judgement."
+  },
+  {
+   "num": "1.2.1",
+   "automation": "partly",
+   "basis": "Whether an alternative or track exists is mechanical; whether it is equivalent is judgement."
+  },
+  {
+   "num": "1.2.2",
+   "automation": "partly",
+   "basis": "Whether a captions track exists is mechanical; whether it is accurate and synchronised is judgement."
+  },
+  {
+   "num": "1.2.3",
+   "automation": "partly",
+   "basis": "Whether a description track or media alternative exists is mechanical; whether it conveys the visual content is judgement."
+  },
+  {
+   "num": "1.2.4",
+   "automation": "not",
+   "basis": "Live captions can only be judged by watching a live event."
+  },
+  {
+   "num": "1.2.5",
+   "automation": "partly",
+   "basis": "Whether a description track or alternative exists is mechanical; its adequacy is judgement."
+  },
+  {
+   "num": "1.2.6",
+   "automation": "not",
+   "basis": "A sign-language video cannot be recognised mechanically."
+  },
+  {
+   "num": "1.2.7",
+   "automation": "not",
+   "basis": "Whether extended description is needed and sufficient is judgement."
+  },
+  {
+   "num": "1.2.8",
+   "automation": "partly",
+   "basis": "Whether a transcript or alternative is linked is mechanical; its completeness is judgement."
+  },
+  {
+   "num": "1.2.9",
+   "automation": "not",
+   "basis": "Live audio can only be judged by listening to a live event."
+  },
+  {
+   "num": "1.3.1",
+   "automation": "partly",
+   "basis": "Markup that breaks structure (lists, tables, required ARIA parents and children, fake headings) is detectable; whether visual structure is also in the markup is judgement."
+  },
+  {
+   "num": "1.3.2",
+   "automation": "not",
+   "basis": "Whether the reading order is meaningful is judgement; a layout comparison only finds candidates."
+  },
+  {
+   "num": "1.3.3",
+   "automation": "not",
+   "basis": "Instructions that rely on shape, size or location are found by reading them."
+  },
+  {
+   "num": "1.3.4",
+   "automation": "partly",
+   "basis": "CSS orientation locks are detectable; locks made by script are invisible to a static check."
+  },
+  {
+   "num": "1.3.5",
+   "automation": "partly",
+   "basis": "Invalid autocomplete tokens are detectable; whether a field's purpose matches its token is judgement."
+  },
+  {
+   "num": "1.3.6",
+   "automation": "not",
+   "basis": "Whether a component's purpose is programmatically identified needs judgement about purpose."
+  },
+  {
+   "num": "1.4.1",
+   "automation": "partly",
+   "basis": "Links distinguished only by colour inside text are detectable; other uses of colour to convey meaning are judgement."
+  },
+  {
+   "num": "1.4.2",
+   "automation": "partly",
+   "basis": "Autoplaying media markup is detectable; audio started by script is invisible."
+  },
+  {
+   "num": "1.4.3",
+   "automation": "partly",
+   "basis": "Contrast is exact where the foreground and a solid background are known; images, gradients and overlaps need rendered facts or review."
+  },
+  {
+   "num": "1.4.4",
+   "automation": "partly",
+   "basis": "Markup that blocks zoom is detectable; whether content survives 200% zoom needs rendering."
+  },
+  {
+   "num": "1.4.5",
+   "automation": "not",
+   "basis": "Recognising text rendered as an image, and whether it is essential, is judgement."
+  },
+  {
+   "num": "1.4.6",
+   "automation": "partly",
+   "basis": "As 1.4.3, with the higher thresholds."
+  },
+  {
+   "num": "1.4.7",
+   "automation": "not",
+   "basis": "Background audio levels need listening."
+  },
+  {
+   "num": "1.4.8",
+   "automation": "partly",
+   "basis": "Computed line height, width, alignment and spacing are measurable; colour selection and the reading experience are judgement."
+  },
+  {
+   "num": "1.4.9",
+   "automation": "not",
+   "basis": "As 1.4.5, without the exceptions."
+  },
+  {
+   "num": "1.4.10",
+   "automation": "partly",
+   "basis": "Overflow and clipping at 320 CSS pixels are measurable from a layout at that viewport; whether lost content matters is judgement."
+  },
+  {
+   "num": "1.4.11",
+   "automation": "partly",
+   "basis": "Contrast of boundaries and graphics is measurable where colours are known; which parts are needed to identify a component is judgement."
+  },
+  {
+   "num": "1.4.12",
+   "automation": "partly",
+   "basis": "Inline declarations that stop text spacing overrides are detectable; whether content survives the overrides needs rendering."
+  },
+  {
+   "num": "1.4.13",
+   "automation": "not",
+   "basis": "Content revealed on hover or focus is usually script-driven; whether it is dismissible, hoverable and persistent needs interaction."
+  },
+  {
+   "num": "2.1.1",
+   "automation": "partly",
+   "basis": "Scrollable regions and frames a keyboard cannot reach are detectable; handlers added by script are invisible."
+  },
+  {
+   "num": "2.1.2",
+   "automation": "not",
+   "basis": "A keyboard trap shows only while tabbing through a running page."
+  },
+  {
+   "num": "2.1.3",
+   "automation": "partly",
+   "basis": "As 2.1.1."
+  },
+  {
+   "num": "2.1.4",
+   "automation": "not",
+   "basis": "Single-key shortcuts are installed by script."
+  },
+  {
+   "num": "2.2.1",
+   "automation": "partly",
+   "basis": "Meta refresh time limits are detectable; timers in script are invisible."
+  },
+  {
+   "num": "2.2.2",
+   "automation": "partly",
+   "basis": "Blinking and scrolling markup is detectable; other moving content needs judgement and timing."
+  },
+  {
+   "num": "2.2.3",
+   "automation": "not",
+   "basis": "Whether time limits are essential is judgement."
+  },
+  {
+   "num": "2.2.4",
+   "automation": "partly",
+   "basis": "Automatic page refresh is detectable; other interruptions come from script."
+  },
+  {
+   "num": "2.2.5",
+   "automation": "not",
+   "basis": "Session expiry is server behaviour."
+  },
+  {
+   "num": "2.2.6",
+   "automation": "not",
+   "basis": "Whether users are warned about data loss is judgement of content."
+  },
+  {
+   "num": "2.3.1",
+   "automation": "not",
+   "basis": "Flash analysis needs the rendered frames of the content."
+  },
+  {
+   "num": "2.3.2",
+   "automation": "not",
+   "basis": "Flash analysis needs the rendered frames of the content."
+  },
+  {
+   "num": "2.3.3",
+   "automation": "not",
+   "basis": "Motion triggered by interaction is script-driven."
+  },
+  {
+   "num": "2.4.1",
+   "automation": "partly",
+   "basis": "Skip links and landmarks are detectable; whether they bypass the right blocks is judgement."
+  },
+  {
+   "num": "2.4.2",
+   "automation": "partly",
+   "basis": "A missing or empty title is detectable; whether it describes the page is judgement."
+  },
+  {
+   "num": "2.4.3",
+   "automation": "partly",
+   "basis": "Positive tabindex and focusable elements without a role are detectable; whether the order is meaningful is judgement."
+  },
+  {
+   "num": "2.4.4",
+   "automation": "partly",
+   "basis": "Links without a name are detectable; whether the name and context state the purpose is judgement."
+  },
+  {
+   "num": "2.4.5",
+   "automation": "not",
+   "basis": "Whether a site offers more than one way to find pages is a property of the whole site."
+  },
+  {
+   "num": "2.4.6",
+   "automation": "partly",
+   "basis": "Empty headings and labels are detectable; whether they describe their content is judgement."
+  },
+  {
+   "num": "2.4.7",
+   "automation": "partly",
+   "basis": "Rules that remove the focus outline are detectable under a focus context; whether another indicator is visible needs rendering."
+  },
+  {
+   "num": "2.4.8",
+   "automation": "not",
+   "basis": "Whether a page tells the user where they are is judgement of the whole site."
+  },
+  {
+   "num": "2.4.9",
+   "automation": "partly",
+   "basis": "Identical link names with different targets are detectable; whether a name alone states the purpose is judgement."
+  },
+  {
+   "num": "2.4.10",
+   "automation": "not",
+   "basis": "Whether sections need headings is judgement."
+  },
+  {
+   "num": "2.4.11",
+   "automation": "partly",
+   "basis": "Needs layout and paint order to know what covers the focused element; mechanical with rendered facts."
+  },
+  {
+   "num": "2.4.12",
+   "automation": "partly",
+   "basis": "As 2.4.11, with the stricter condition."
+  },
+  {
+   "num": "2.4.13",
+   "automation": "partly",
+   "basis": "Indicator size and contrast are measurable with rendered facts; whether a custom indicator is distinguishable is judgement."
+  },
+  {
+   "num": "2.5.1",
+   "automation": "not",
+   "basis": "Multipoint and path gestures are handled by script."
+  },
+  {
+   "num": "2.5.2",
+   "automation": "not",
+   "basis": "Pointer event handling is script behaviour."
+  },
+  {
+   "num": "2.5.3",
+   "automation": "partly",
+   "basis": "Comparing visible label text with the accessible name is mechanical for text labels; labels made of images are judgement."
+  },
+  {
+   "num": "2.5.4",
+   "automation": "not",
+   "basis": "Motion actuation is script behaviour."
+  },
+  {
+   "num": "2.5.5",
+   "automation": "partly",
+   "basis": "Target size is measurable with rendered facts; the exceptions are judgement."
+  },
+  {
+   "num": "2.5.6",
+   "automation": "not",
+   "basis": "Input mechanisms are script behaviour."
+  },
+  {
+   "num": "2.5.7",
+   "automation": "not",
+   "basis": "Dragging interactions are script behaviour."
+  },
+  {
+   "num": "2.5.8",
+   "automation": "partly",
+   "basis": "Target size and spacing are measurable; the exceptions (inline, equivalent control, essential) are judgement."
+  },
+  {
+   "num": "3.1.1",
+   "automation": "partly",
+   "basis": "A missing or malformed lang is detectable; whether it is the right language needs language identification."
+  },
+  {
+   "num": "3.1.2",
+   "automation": "partly",
+   "basis": "Malformed lang on parts is detectable; whether passages are in the declared language needs language identification."
+  },
+  {
+   "num": "3.1.3",
+   "automation": "not",
+   "basis": "Unusual words and their definitions are judgement."
+  },
+  {
+   "num": "3.1.4",
+   "automation": "not",
+   "basis": "Abbreviations and their expansions are judgement."
+  },
+  {
+   "num": "3.1.5",
+   "automation": "not",
+   "basis": "Reading level is judgement."
+  },
+  {
+   "num": "3.1.6",
+   "automation": "not",
+   "basis": "Ambiguous pronunciation is judgement."
+  },
+  {
+   "num": "3.2.1",
+   "automation": "not",
+   "basis": "Context changes on focus come from script."
+  },
+  {
+   "num": "3.2.2",
+   "automation": "partly",
+   "basis": "Forms without a submit control are detectable; changes of context on input come from script."
+  },
+  {
+   "num": "3.2.3",
+   "automation": "not",
+   "basis": "Consistency is a property of several pages."
+  },
+  {
+   "num": "3.2.4",
+   "automation": "not",
+   "basis": "Consistency is a property of several pages."
+  },
+  {
+   "num": "3.2.5",
+   "automation": "partly",
+   "basis": "Automatic refresh is detectable; other changes of context come from script."
+  },
+  {
+   "num": "3.2.6",
+   "automation": "not",
+   "basis": "Consistency of help is a property of several pages."
+  },
+  {
+   "num": "3.3.1",
+   "automation": "partly",
+   "basis": "Invalid-state and error-message association markup is detectable; whether an error is identified in text depends on runtime validation."
+  },
+  {
+   "num": "3.3.2",
+   "automation": "partly",
+   "basis": "Controls without labels are detectable; whether labels and instructions are sufficient is judgement."
+  },
+  {
+   "num": "3.3.3",
+   "automation": "not",
+   "basis": "Error suggestions are runtime content."
+  },
+  {
+   "num": "3.3.4",
+   "automation": "not",
+   "basis": "Whether a page is legal or financial, and its safeguards, are judgement."
+  },
+  {
+   "num": "3.3.5",
+   "automation": "not",
+   "basis": "Whether help is available is judgement."
+  },
+  {
+   "num": "3.3.6",
+   "automation": "not",
+   "basis": "Submission safeguards are runtime behaviour."
+  },
+  {
+   "num": "3.3.7",
+   "automation": "not",
+   "basis": "Redundant entry spans steps of a process."
+  },
+  {
+   "num": "3.3.8",
+   "automation": "partly",
+   "basis": "Missing autocomplete on authentication fields is detectable; script blocking of paste is invisible and the alternatives are judgement."
+  },
+  {
+   "num": "3.3.9",
+   "automation": "partly",
+   "basis": "As 3.3.8."
+  },
+  {
+   "num": "4.1.1",
+   "automation": "fully",
+   "basis": "Duplicate ids and malformed nesting are decided by the parser and the document; the criterion is obsolete from WCAG 2.2."
+  },
+  {
+   "num": "4.1.2",
+   "automation": "partly",
+   "basis": "Roles, names and states in markup and ARIA are decided mechanically; values changed by script are invisible."
+  },
+  {
+   "num": "4.1.3",
+   "automation": "not",
+   "basis": "Status messages are announced at runtime; markup alone cannot show that a message appears."
+  }
+ ]
+}

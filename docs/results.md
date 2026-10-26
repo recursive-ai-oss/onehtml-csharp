@@ -81,7 +81,11 @@ The mapping is lossy, and these are its rules:
 A rule appears once per group it has results in; a rule with failures and passes is in both `violations` and `passes`.
 Within a group rules are in id order and nodes in document order.
 
+## SARIF
+
+`ToSarifJson` writes SARIF 2.1.0; the mapping is in `sarif.md`.
+
 ## Not provided yet
 
-SARIF and EARL exports. There is no reader for the native JSON; consumers read it with any JSON parser, and the edit
+An EARL export. There is no reader for the native JSON; consumers read it with any JSON parser, and the edit
 envelopes inside it are read with `EditJson.Parse`.

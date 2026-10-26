@@ -6,7 +6,10 @@ Validation tests with `ONEHTML_UPDATE_DOCS=1`. The sources and their pins are in
 How to read it: *In WCAG* gives the first version with the criterion (`2.0+` means that version and every later one).
 *ACT rules* are the W3C ACT rules that list the criterion as a requirement (any status; deprecated ones are marked).
 *axe-core rules* are the rules whose `wcagNNN` tag names the criterion in axe-core 4.14.0. *Implemented* lists the
-rules this package implements. *Automation* (fully, partly or not automatable) is not assessed yet.
+rules this package implements. *Automation* says how far a machine can decide the criterion: *fully* when every failure
+condition can be decided mechanically, *partly* when some can and the rest need a person, *not* when it needs human
+judgement or running behaviour a static check cannot see. *Basis* gives the reason. The assessments are data in
+`Catalogue/Data/automation.json`.
 
 Criteria with at least one rule: 42 of 87.
 
@@ -16,94 +19,103 @@ Criteria with at least one rule: 42 of 87.
 | 2.1 | 30 | 20 | 28 | 78 |
 | 2.2 | 31 | 24 | 31 | 86 |
 
-| Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation |
-|---|---|---|---|---|---|---|---|
-| 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt | aria-meter-name, aria-progressbar-name, image-alt, image-name-descriptive, input-image-alt, object-alt, role-img-alt, svg-img-alt | unassessed |
-| 1.2.1 | Audio-only and Video-only (Prerecorded) | A | 2.0+ | 1a02b0, c3232f, e7aa44, ee13b5, f51b46 | audio-caption (deprecated) | audio-alternative, audio-caption, video-captions, video-only-alternative, video-only-audio-track, video-only-description-track, video-only-media-alternative, video-only-transcript, video-transcript | unassessed |
-| 1.2.2 | Captions (Prerecorded) | A | 2.0+ | eac66b | video-caption | video-caption, video-captions | unassessed |
-| 1.2.3 | Audio Description or Media Alternative (Prerecorded) | A | 2.0+ | c5a4ea |  | video-media-alternative, video-visual-alternative | unassessed |
-| 1.2.4 | Captions (Live) | AA | 2.0+ |  |  |  | unassessed |
-| 1.2.5 | Audio Description (Prerecorded) | AA | 2.0+ | 1ec09b, c5a4ea |  | video-audio-description, video-description-track, video-strict-alternative, video-visual-alternative | unassessed |
-| 1.2.6 | Sign Language (Prerecorded) | AAA | 2.0+ |  |  |  | unassessed |
-| 1.2.7 | Extended Audio Description (Prerecorded) | AAA | 2.0+ |  |  |  | unassessed |
-| 1.2.8 | Media Alternative (Prerecorded) | AAA | 2.0+ | 1a02b0, c5a4ea |  | video-transcript, video-visual-alternative | unassessed |
-| 1.2.9 | Audio-only (Live) | AAA | 2.0+ |  |  |  | unassessed |
-| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells, video-only-transcript, video-transcript | unassessed |
-| 1.3.2 | Meaningful Sequence | A | 2.0+ |  |  |  | unassessed |
-| 1.3.3 | Sensory Characteristics | A | 2.0+ | 9bd38c |  |  | unassessed |
-| 1.3.4 | Orientation | AA | 2.1+ | b33eff | css-orientation-lock | css-orientation-lock | unassessed |
-| 1.3.5 | Identify Input Purpose | AA | 2.1+ | 73f2c2 | autocomplete-valid | autocomplete-valid | unassessed |
-| 1.3.6 | Identify Purpose | AAA | 2.1+ |  |  |  | unassessed |
-| 1.4.1 | Use of Color | A | 2.0+ |  | link-in-text-block | link-in-text-block | unassessed |
-| 1.4.2 | Audio Control | A | 2.0+ | 80f0bf | no-autoplay-audio | autoplay-audio-control, autoplay-audio-duration, no-autoplay-audio | unassessed |
-| 1.4.3 | Contrast (Minimum) | AA | 2.0+ | 09o5cg, afw4f7 | color-contrast | color-contrast | unassessed |
-| 1.4.4 | Resize Text | AA | 2.0+ | 59br37, b4f0c3 | meta-viewport | meta-viewport | unassessed |
-| 1.4.5 | Images of Text | AA | 2.0+ | 0va7u6 |  |  | unassessed |
-| 1.4.6 | Contrast (Enhanced) | AAA | 2.0+ | 09o5cg, afw4f7 | color-contrast-enhanced | color-contrast-enhanced | unassessed |
-| 1.4.7 | Low or No Background Audio | AAA | 2.0+ |  |  |  | unassessed |
-| 1.4.8 | Visual Presentation | AAA | 2.0+ |  |  |  | unassessed |
-| 1.4.9 | Images of Text (No Exception) | AAA | 2.0+ | 0va7u6 |  |  | unassessed |
-| 1.4.10 | Reflow | AA | 2.1+ | b4f0c3 |  |  | unassessed |
-| 1.4.11 | Non-text Contrast | AA | 2.1+ |  |  |  | unassessed |
-| 1.4.12 | Text Spacing | AA | 2.1+ | 24afc2, 78fd32, 9e45ec | avoid-inline-spacing | avoid-inline-spacing | unassessed |
-| 1.4.13 | Content on Hover or Focus | AA | 2.1+ |  |  |  | unassessed |
-| 2.1.1 | Keyboard | A | 2.0+ | 0ssw9k, akn7bn | frame-focusable-content, scrollable-region-focusable, server-side-image-map | frame-focusable-content, scrollable-region-focusable, server-side-image-map | unassessed |
-| 2.1.2 | No Keyboard Trap | A | 2.0+ | 80af7b |  |  | unassessed |
-| 2.1.3 | Keyboard (No Exception) | AAA | 2.0+ | 0ssw9k, akn7bn | scrollable-region-focusable | scrollable-region-focusable | unassessed |
-| 2.1.4 | Character Key Shortcuts | A | 2.1+ | ffbc54 |  |  | unassessed |
-| 2.2.1 | Timing Adjustable | A | 2.0+ | bc659a, bisz58 | meta-refresh | meta-refresh | unassessed |
-| 2.2.2 | Pause, Stop, Hide | A | 2.0+ | efbfc7 | blink, marquee | blink, marquee | unassessed |
-| 2.2.3 | No Timing | AAA | 2.0+ |  |  |  | unassessed |
-| 2.2.4 | Interruptions | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions | meta-refresh-no-exceptions | unassessed |
-| 2.2.5 | Re-authenticating | AAA | 2.0+ |  |  |  | unassessed |
-| 2.2.6 | Timeouts | AAA | 2.1+ |  |  |  | unassessed |
-| 2.3.1 | Three Flashes or Below Threshold | A | 2.0+ |  |  |  | unassessed |
-| 2.3.2 | Three Flashes | AAA | 2.0+ |  |  |  | unassessed |
-| 2.3.3 | Animation from Interactions | AAA | 2.1+ |  |  |  | unassessed |
-| 2.4.1 | Bypass Blocks | A | 2.0+ | cf77f2 | bypass | bypass | unassessed |
-| 2.4.2 | Page Titled | A | 2.0+ | 2779a5, c4a8a4 | document-title | document-title | unassessed |
-| 2.4.3 | Focus Order | A | 2.0+ |  |  |  | unassessed |
-| 2.4.4 | Link Purpose (In Context) | A | 2.0+ | 5effbb, c487ae, fd3a94 | area-alt, link-name | area-alt, link-in-context-descriptive, link-name | unassessed |
-| 2.4.5 | Multiple Ways | AA | 2.0+ |  |  |  | unassessed |
-| 2.4.6 | Headings and Labels | AA | 2.0+ | b49b2e, cc0f0a |  |  | unassessed |
-| 2.4.7 | Focus Visible | AA | 2.0+ | oj04fd |  |  | unassessed |
-| 2.4.8 | Location | AAA | 2.0+ |  |  |  | unassessed |
-| 2.4.9 | Link Purpose (Link Only) | AAA | 2.0+ | 5effbb, aizyf1, b20e66, c487ae, fd3a94 | identical-links-same-purpose | identical-links-same-purpose, link-in-context-descriptive | unassessed |
-| 2.4.10 | Section Headings | AAA | 2.0+ |  |  |  | unassessed |
-| 2.4.11 | Focus Not Obscured (Minimum) | AA | 2.2+ |  |  |  | unassessed |
-| 2.4.12 | Focus Not Obscured (Enhanced) | AAA | 2.2+ |  |  |  | unassessed |
-| 2.4.13 | Focus Appearance | AAA | 2.2+ |  |  |  | unassessed |
-| 2.5.1 | Pointer Gestures | A | 2.1+ |  |  |  | unassessed |
-| 2.5.2 | Pointer Cancellation | A | 2.1+ |  |  |  | unassessed |
-| 2.5.3 | Label in Name | A | 2.1+ | 2ee8b8, e086e5 | label-content-name-mismatch | label-content-name-mismatch | unassessed |
-| 2.5.4 | Motion Actuation | A | 2.1+ | 7677a9, c249d5 |  |  | unassessed |
-| 2.5.5 | Target Size (Enhanced) | AAA | 2.1+ |  |  |  | unassessed |
-| 2.5.6 | Concurrent Input Mechanisms | AAA | 2.1+ |  |  |  | unassessed |
-| 2.5.7 | Dragging Movements | AA | 2.2+ |  |  |  | unassessed |
-| 2.5.8 | Target Size (Minimum) | AA | 2.2+ |  | target-size | target-size | unassessed |
-| 3.1.1 | Language of Page | A | 2.0+ | 5b7ae0 (deprecated), b5c3f8, bf051a, ucwvc8 | html-has-lang, html-lang-valid, html-xml-lang-mismatch | html-has-lang, html-lang-matches-content, html-lang-valid, html-xml-lang-mismatch | unassessed |
-| 3.1.2 | Language of Parts | AA | 2.0+ | de46e4, off6ek | valid-lang | element-lang-matches-content, valid-lang | unassessed |
-| 3.1.3 | Unusual Words | AAA | 2.0+ |  |  |  | unassessed |
-| 3.1.4 | Abbreviations | AAA | 2.0+ |  |  |  | unassessed |
-| 3.1.5 | Reading Level | AAA | 2.0+ |  |  |  | unassessed |
-| 3.1.6 | Pronunciation | AAA | 2.0+ |  |  |  | unassessed |
-| 3.2.1 | On Focus | A | 2.0+ |  |  |  | unassessed |
-| 3.2.2 | On Input | A | 2.0+ |  |  |  | unassessed |
-| 3.2.3 | Consistent Navigation | AA | 2.0+ |  |  |  | unassessed |
-| 3.2.4 | Consistent Identification | AA | 2.0+ |  |  |  | unassessed |
-| 3.2.5 | Change on Request | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions | meta-refresh-no-exceptions | unassessed |
-| 3.2.6 | Consistent Help | A | 2.2+ |  |  |  | unassessed |
-| 3.3.1 | Error Identification | A | 2.0+ | 36b590 |  |  | unassessed |
-| 3.3.2 | Labels or Instructions | A | 2.0+ |  | form-field-multiple-labels | form-field-multiple-labels | unassessed |
-| 3.3.3 | Error Suggestion | AA | 2.0+ |  |  |  | unassessed |
-| 3.3.4 | Error Prevention (Legal, Financial, Data) | AA | 2.0+ |  |  |  | unassessed |
-| 3.3.5 | Help | AAA | 2.0+ |  |  |  | unassessed |
-| 3.3.6 | Error Prevention (All) | AAA | 2.0+ |  |  |  | unassessed |
-| 3.3.7 | Redundant Entry | A | 2.2+ |  |  |  | unassessed |
-| 3.3.8 | Accessible Authentication (Minimum) | AA | 2.2+ |  |  |  | unassessed |
-| 3.3.9 | Accessible Authentication (Enhanced) | AAA | 2.2+ |  |  |  | unassessed |
-| 4.1.1 | Parsing | A | 2.0 (removed in 2.2) | 3ea0c8 (deprecated), e6952f (deprecated) | duplicate-id (deprecated), duplicate-id-active (deprecated) | duplicate-id, duplicate-id-active | unassessed |
-| 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | unassessed |
-| 4.1.3 | Status Messages | AA | 2.1+ |  |  |  | unassessed |
+Profile summaries (criteria in the profile; the automation columns split them by assessment; *Implemented* counts criteria that have at least one rule in this package; *Gaps* counts criteria assessed fully or partly automatable that have none):
+
+| Profile | Criteria | Implemented | Implemented, fully | Implemented, partly | Implemented, not | Not automatable | Gaps (fully or partly, no rule) | Some ACT or axe-core rule, none ours |
+|---|---|---|---|---|---|---|---|---|
+| wcag-2.0-aa | 38 | 21 | 1 | 20 | 0 | 12 | 5 | 6 |
+| wcag-2.1-aa | 50 | 25 | 1 | 24 | 0 | 18 | 7 | 9 |
+| wcag-2.2-aa | 55 | 25 | 0 | 25 | 0 | 21 | 9 | 9 |
+| all | 87 | 32 | 1 | 31 | 0 | 41 | 14 | 10 |
+
+| Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation | Basis |
+|---|---|---|---|---|---|---|---|---|
+| 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt | aria-meter-name, aria-progressbar-name, image-alt, image-name-descriptive, input-image-alt, object-alt, role-img-alt, svg-img-alt | partly | Whether an image, input, object or SVG has a text alternative or name is mechanical; whether the text serves the same purpose is judgement. |
+| 1.2.1 | Audio-only and Video-only (Prerecorded) | A | 2.0+ | 1a02b0, c3232f, e7aa44, ee13b5, f51b46 | audio-caption (deprecated) | audio-alternative, audio-caption, video-captions, video-only-alternative, video-only-audio-track, video-only-description-track, video-only-media-alternative, video-only-transcript, video-transcript | partly | Whether an alternative or track exists is mechanical; whether it is equivalent is judgement. |
+| 1.2.2 | Captions (Prerecorded) | A | 2.0+ | eac66b | video-caption | video-caption, video-captions | partly | Whether a captions track exists is mechanical; whether it is accurate and synchronised is judgement. |
+| 1.2.3 | Audio Description or Media Alternative (Prerecorded) | A | 2.0+ | c5a4ea |  | video-media-alternative, video-visual-alternative | partly | Whether a description track or media alternative exists is mechanical; whether it conveys the visual content is judgement. |
+| 1.2.4 | Captions (Live) | AA | 2.0+ |  |  |  | not | Live captions can only be judged by watching a live event. |
+| 1.2.5 | Audio Description (Prerecorded) | AA | 2.0+ | 1ec09b, c5a4ea |  | video-audio-description, video-description-track, video-strict-alternative, video-visual-alternative | partly | Whether a description track or alternative exists is mechanical; its adequacy is judgement. |
+| 1.2.6 | Sign Language (Prerecorded) | AAA | 2.0+ |  |  |  | not | A sign-language video cannot be recognised mechanically. |
+| 1.2.7 | Extended Audio Description (Prerecorded) | AAA | 2.0+ |  |  |  | not | Whether extended description is needed and sufficient is judgement. |
+| 1.2.8 | Media Alternative (Prerecorded) | AAA | 2.0+ | 1a02b0, c5a4ea |  | video-transcript, video-visual-alternative | partly | Whether a transcript or alternative is linked is mechanical; its completeness is judgement. |
+| 1.2.9 | Audio-only (Live) | AAA | 2.0+ |  |  |  | not | Live audio can only be judged by listening to a live event. |
+| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells, video-only-transcript, video-transcript | partly | Markup that breaks structure (lists, tables, required ARIA parents and children, fake headings) is detectable; whether visual structure is also in the markup is judgement. |
+| 1.3.2 | Meaningful Sequence | A | 2.0+ |  |  |  | not | Whether the reading order is meaningful is judgement; a layout comparison only finds candidates. |
+| 1.3.3 | Sensory Characteristics | A | 2.0+ | 9bd38c |  |  | not | Instructions that rely on shape, size or location are found by reading them. |
+| 1.3.4 | Orientation | AA | 2.1+ | b33eff | css-orientation-lock | css-orientation-lock | partly | CSS orientation locks are detectable; locks made by script are invisible to a static check. |
+| 1.3.5 | Identify Input Purpose | AA | 2.1+ | 73f2c2 | autocomplete-valid | autocomplete-valid | partly | Invalid autocomplete tokens are detectable; whether a field's purpose matches its token is judgement. |
+| 1.3.6 | Identify Purpose | AAA | 2.1+ |  |  |  | not | Whether a component's purpose is programmatically identified needs judgement about purpose. |
+| 1.4.1 | Use of Color | A | 2.0+ |  | link-in-text-block | link-in-text-block | partly | Links distinguished only by colour inside text are detectable; other uses of colour to convey meaning are judgement. |
+| 1.4.2 | Audio Control | A | 2.0+ | 80f0bf | no-autoplay-audio | autoplay-audio-control, autoplay-audio-duration, no-autoplay-audio | partly | Autoplaying media markup is detectable; audio started by script is invisible. |
+| 1.4.3 | Contrast (Minimum) | AA | 2.0+ | 09o5cg, afw4f7 | color-contrast | color-contrast | partly | Contrast is exact where the foreground and a solid background are known; images, gradients and overlaps need rendered facts or review. |
+| 1.4.4 | Resize Text | AA | 2.0+ | 59br37, b4f0c3 | meta-viewport | meta-viewport | partly | Markup that blocks zoom is detectable; whether content survives 200% zoom needs rendering. |
+| 1.4.5 | Images of Text | AA | 2.0+ | 0va7u6 |  |  | not | Recognising text rendered as an image, and whether it is essential, is judgement. |
+| 1.4.6 | Contrast (Enhanced) | AAA | 2.0+ | 09o5cg, afw4f7 | color-contrast-enhanced | color-contrast-enhanced | partly | As 1.4.3, with the higher thresholds. |
+| 1.4.7 | Low or No Background Audio | AAA | 2.0+ |  |  |  | not | Background audio levels need listening. |
+| 1.4.8 | Visual Presentation | AAA | 2.0+ |  |  |  | partly | Computed line height, width, alignment and spacing are measurable; colour selection and the reading experience are judgement. |
+| 1.4.9 | Images of Text (No Exception) | AAA | 2.0+ | 0va7u6 |  |  | not | As 1.4.5, without the exceptions. |
+| 1.4.10 | Reflow | AA | 2.1+ | b4f0c3 |  |  | partly | Overflow and clipping at 320 CSS pixels are measurable from a layout at that viewport; whether lost content matters is judgement. |
+| 1.4.11 | Non-text Contrast | AA | 2.1+ |  |  |  | partly | Contrast of boundaries and graphics is measurable where colours are known; which parts are needed to identify a component is judgement. |
+| 1.4.12 | Text Spacing | AA | 2.1+ | 24afc2, 78fd32, 9e45ec | avoid-inline-spacing | avoid-inline-spacing | partly | Inline declarations that stop text spacing overrides are detectable; whether content survives the overrides needs rendering. |
+| 1.4.13 | Content on Hover or Focus | AA | 2.1+ |  |  |  | not | Content revealed on hover or focus is usually script-driven; whether it is dismissible, hoverable and persistent needs interaction. |
+| 2.1.1 | Keyboard | A | 2.0+ | 0ssw9k, akn7bn | frame-focusable-content, scrollable-region-focusable, server-side-image-map | frame-focusable-content, scrollable-region-focusable, server-side-image-map | partly | Scrollable regions and frames a keyboard cannot reach are detectable; handlers added by script are invisible. |
+| 2.1.2 | No Keyboard Trap | A | 2.0+ | 80af7b |  |  | not | A keyboard trap shows only while tabbing through a running page. |
+| 2.1.3 | Keyboard (No Exception) | AAA | 2.0+ | 0ssw9k, akn7bn | scrollable-region-focusable | scrollable-region-focusable | partly | As 2.1.1. |
+| 2.1.4 | Character Key Shortcuts | A | 2.1+ | ffbc54 |  |  | not | Single-key shortcuts are installed by script. |
+| 2.2.1 | Timing Adjustable | A | 2.0+ | bc659a, bisz58 | meta-refresh | meta-refresh | partly | Meta refresh time limits are detectable; timers in script are invisible. |
+| 2.2.2 | Pause, Stop, Hide | A | 2.0+ | efbfc7 | blink, marquee | blink, marquee | partly | Blinking and scrolling markup is detectable; other moving content needs judgement and timing. |
+| 2.2.3 | No Timing | AAA | 2.0+ |  |  |  | not | Whether time limits are essential is judgement. |
+| 2.2.4 | Interruptions | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions | meta-refresh-no-exceptions | partly | Automatic page refresh is detectable; other interruptions come from script. |
+| 2.2.5 | Re-authenticating | AAA | 2.0+ |  |  |  | not | Session expiry is server behaviour. |
+| 2.2.6 | Timeouts | AAA | 2.1+ |  |  |  | not | Whether users are warned about data loss is judgement of content. |
+| 2.3.1 | Three Flashes or Below Threshold | A | 2.0+ |  |  |  | not | Flash analysis needs the rendered frames of the content. |
+| 2.3.2 | Three Flashes | AAA | 2.0+ |  |  |  | not | Flash analysis needs the rendered frames of the content. |
+| 2.3.3 | Animation from Interactions | AAA | 2.1+ |  |  |  | not | Motion triggered by interaction is script-driven. |
+| 2.4.1 | Bypass Blocks | A | 2.0+ | cf77f2 | bypass | bypass | partly | Skip links and landmarks are detectable; whether they bypass the right blocks is judgement. |
+| 2.4.2 | Page Titled | A | 2.0+ | 2779a5, c4a8a4 | document-title | document-title | partly | A missing or empty title is detectable; whether it describes the page is judgement. |
+| 2.4.3 | Focus Order | A | 2.0+ |  |  |  | partly | Positive tabindex and focusable elements without a role are detectable; whether the order is meaningful is judgement. |
+| 2.4.4 | Link Purpose (In Context) | A | 2.0+ | 5effbb, c487ae, fd3a94 | area-alt, link-name | area-alt, link-in-context-descriptive, link-name | partly | Links without a name are detectable; whether the name and context state the purpose is judgement. |
+| 2.4.5 | Multiple Ways | AA | 2.0+ |  |  |  | not | Whether a site offers more than one way to find pages is a property of the whole site. |
+| 2.4.6 | Headings and Labels | AA | 2.0+ | b49b2e, cc0f0a |  |  | partly | Empty headings and labels are detectable; whether they describe their content is judgement. |
+| 2.4.7 | Focus Visible | AA | 2.0+ | oj04fd |  |  | partly | Rules that remove the focus outline are detectable under a focus context; whether another indicator is visible needs rendering. |
+| 2.4.8 | Location | AAA | 2.0+ |  |  |  | not | Whether a page tells the user where they are is judgement of the whole site. |
+| 2.4.9 | Link Purpose (Link Only) | AAA | 2.0+ | 5effbb, aizyf1, b20e66, c487ae, fd3a94 | identical-links-same-purpose | identical-links-same-purpose, link-in-context-descriptive | partly | Identical link names with different targets are detectable; whether a name alone states the purpose is judgement. |
+| 2.4.10 | Section Headings | AAA | 2.0+ |  |  |  | not | Whether sections need headings is judgement. |
+| 2.4.11 | Focus Not Obscured (Minimum) | AA | 2.2+ |  |  |  | partly | Needs layout and paint order to know what covers the focused element; mechanical with rendered facts. |
+| 2.4.12 | Focus Not Obscured (Enhanced) | AAA | 2.2+ |  |  |  | partly | As 2.4.11, with the stricter condition. |
+| 2.4.13 | Focus Appearance | AAA | 2.2+ |  |  |  | partly | Indicator size and contrast are measurable with rendered facts; whether a custom indicator is distinguishable is judgement. |
+| 2.5.1 | Pointer Gestures | A | 2.1+ |  |  |  | not | Multipoint and path gestures are handled by script. |
+| 2.5.2 | Pointer Cancellation | A | 2.1+ |  |  |  | not | Pointer event handling is script behaviour. |
+| 2.5.3 | Label in Name | A | 2.1+ | 2ee8b8, e086e5 | label-content-name-mismatch | label-content-name-mismatch | partly | Comparing visible label text with the accessible name is mechanical for text labels; labels made of images are judgement. |
+| 2.5.4 | Motion Actuation | A | 2.1+ | 7677a9, c249d5 |  |  | not | Motion actuation is script behaviour. |
+| 2.5.5 | Target Size (Enhanced) | AAA | 2.1+ |  |  |  | partly | Target size is measurable with rendered facts; the exceptions are judgement. |
+| 2.5.6 | Concurrent Input Mechanisms | AAA | 2.1+ |  |  |  | not | Input mechanisms are script behaviour. |
+| 2.5.7 | Dragging Movements | AA | 2.2+ |  |  |  | not | Dragging interactions are script behaviour. |
+| 2.5.8 | Target Size (Minimum) | AA | 2.2+ |  | target-size | target-size | partly | Target size and spacing are measurable; the exceptions (inline, equivalent control, essential) are judgement. |
+| 3.1.1 | Language of Page | A | 2.0+ | 5b7ae0 (deprecated), b5c3f8, bf051a, ucwvc8 | html-has-lang, html-lang-valid, html-xml-lang-mismatch | html-has-lang, html-lang-matches-content, html-lang-valid, html-xml-lang-mismatch | partly | A missing or malformed lang is detectable; whether it is the right language needs language identification. |
+| 3.1.2 | Language of Parts | AA | 2.0+ | de46e4, off6ek | valid-lang | element-lang-matches-content, valid-lang | partly | Malformed lang on parts is detectable; whether passages are in the declared language needs language identification. |
+| 3.1.3 | Unusual Words | AAA | 2.0+ |  |  |  | not | Unusual words and their definitions are judgement. |
+| 3.1.4 | Abbreviations | AAA | 2.0+ |  |  |  | not | Abbreviations and their expansions are judgement. |
+| 3.1.5 | Reading Level | AAA | 2.0+ |  |  |  | not | Reading level is judgement. |
+| 3.1.6 | Pronunciation | AAA | 2.0+ |  |  |  | not | Ambiguous pronunciation is judgement. |
+| 3.2.1 | On Focus | A | 2.0+ |  |  |  | not | Context changes on focus come from script. |
+| 3.2.2 | On Input | A | 2.0+ |  |  |  | partly | Forms without a submit control are detectable; changes of context on input come from script. |
+| 3.2.3 | Consistent Navigation | AA | 2.0+ |  |  |  | not | Consistency is a property of several pages. |
+| 3.2.4 | Consistent Identification | AA | 2.0+ |  |  |  | not | Consistency is a property of several pages. |
+| 3.2.5 | Change on Request | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions | meta-refresh-no-exceptions | partly | Automatic refresh is detectable; other changes of context come from script. |
+| 3.2.6 | Consistent Help | A | 2.2+ |  |  |  | not | Consistency of help is a property of several pages. |
+| 3.3.1 | Error Identification | A | 2.0+ | 36b590 |  |  | partly | Invalid-state and error-message association markup is detectable; whether an error is identified in text depends on runtime validation. |
+| 3.3.2 | Labels or Instructions | A | 2.0+ |  | form-field-multiple-labels | form-field-multiple-labels | partly | Controls without labels are detectable; whether labels and instructions are sufficient is judgement. |
+| 3.3.3 | Error Suggestion | AA | 2.0+ |  |  |  | not | Error suggestions are runtime content. |
+| 3.3.4 | Error Prevention (Legal, Financial, Data) | AA | 2.0+ |  |  |  | not | Whether a page is legal or financial, and its safeguards, are judgement. |
+| 3.3.5 | Help | AAA | 2.0+ |  |  |  | not | Whether help is available is judgement. |
+| 3.3.6 | Error Prevention (All) | AAA | 2.0+ |  |  |  | not | Submission safeguards are runtime behaviour. |
+| 3.3.7 | Redundant Entry | A | 2.2+ |  |  |  | not | Redundant entry spans steps of a process. |
+| 3.3.8 | Accessible Authentication (Minimum) | AA | 2.2+ |  |  |  | partly | Missing autocomplete on authentication fields is detectable; script blocking of paste is invisible and the alternatives are judgement. |
+| 3.3.9 | Accessible Authentication (Enhanced) | AAA | 2.2+ |  |  |  | partly | As 3.3.8. |
+| 4.1.1 | Parsing | A | 2.0 (removed in 2.2) | 3ea0c8 (deprecated), e6952f (deprecated) | duplicate-id (deprecated), duplicate-id-active (deprecated) | duplicate-id, duplicate-id-active | fully | Duplicate ids and malformed nesting are decided by the parser and the document; the criterion is obsolete from WCAG 2.2. |
+| 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | partly | Roles, names and states in markup and ARIA are decided mechanically; values changed by script are invisible. |
+| 4.1.3 | Status Messages | AA | 2.1+ |  |  |  | not | Status messages are announced at runtime; markup alone cannot show that a message appears. |
 
 Implemented best-practice rules, which check no criterion: accesskeys, aria-allowed-role, aria-dialog-name, aria-text, aria-treeitem-name, empty-heading, empty-table-header, focus-order-semantics, heading-order, hidden-content, image-redundant-alt, label-title-only, landmark-banner-is-top-level, landmark-complementary-is-top-level, landmark-contentinfo-is-top-level, landmark-main-is-top-level, landmark-no-duplicate-banner, landmark-no-duplicate-contentinfo, landmark-no-duplicate-main, landmark-one-main, landmark-unique, meta-viewport-large, page-has-heading-one, presentation-role-conflict, region, scope-attr-valid, skip-link, tabindex, table-duplicate-name.

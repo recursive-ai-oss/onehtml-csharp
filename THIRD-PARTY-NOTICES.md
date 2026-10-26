@@ -286,3 +286,14 @@ Used in: `src/OneHtml.Accessibility.Validation/Rules/Data/language-subtags.json`
 The IANA and IETF Trust joint statement on copyright in the protocol registries (10 November 2021, <https://www.iana.org/help/licensing-terms>)
 dedicates the registries to the public domain under the Creative Commons CC0 1.0 dedication, so no notice is required;
 the source is named here as a courtesy.
+
+## SARIF 2.1.0 JSON schema (test data)
+
+Used in: `tests/OneHtml.Accessibility.Validation.Tests`, which validates the SARIF export against
+`testdata/sarif/sarif-schema-2.1.0.json`, the schema published with the OASIS Standard "Static Analysis Results
+Interchange Format (SARIF) Version 2.1.0, Errata 01"
+(<https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json>), copied unchanged. It is
+not part of any package. The OASIS notice permits copying and distributing the document in whole or in part without
+restriction, provided its copyright notice and notice section are included; `testdata/sarif/NOTICE.txt` carries them:
+
+> Copyright (c) OASIS Open 2023. All Rights Reserved.

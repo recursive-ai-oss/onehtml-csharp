@@ -234,12 +234,14 @@ RecursiveAI.OneHtml.Document vdoc = RecursiveAI.OneHtml.Document.Parse("<body><d
 RecursiveAI.OneHtml.Accessibility.Validation.CheckReport vreport = new RecursiveAI.OneHtml.Accessibility.Validation.Checker().Check(vdoc);
 string nativeJson = RecursiveAI.OneHtml.Accessibility.Validation.ResultsExport.ToNativeJson(vreport);
 string axeJson = RecursiveAI.OneHtml.Accessibility.Validation.ResultsExport.ToAxeJson(vreport);
+string sarifJson = RecursiveAI.OneHtml.Accessibility.Validation.SarifExport.ToSarifJson(vreport);
 RecursiveAI.OneHtml.Editing.EditResult fixedResult = RecursiveAI.OneHtml.DocumentEditing.Apply(vdoc, vreport.SuggestedEditList());
 RecursiveAI.OneHtml.Accessibility.Validation.CheckReport vafter = new RecursiveAI.OneHtml.Accessibility.Validation.Checker().Check(fixedResult.Document!);
 bool validationOk = vreport.Count(RecursiveAI.OneHtml.Accessibility.Validation.Outcome.Failed) >= 3
     && nativeJson.Contains("\"onehtml-results\"", StringComparison.Ordinal) && axeJson.Contains("\"violations\"", StringComparison.Ordinal)
+    && sarifJson.Contains("\"version\":\"2.1.0\"", StringComparison.Ordinal) && sarifJson.Contains("\"fixes\"", StringComparison.Ordinal) && sarifJson.Contains("\"byteOffset\"", StringComparison.Ordinal)
     && fixedResult.Succeeded && vafter.Count(RecursiveAI.OneHtml.Accessibility.Validation.Outcome.Failed) == vreport.Count(RecursiveAI.OneHtml.Accessibility.Validation.Outcome.Failed) - 1;
-Console.WriteLine($"validation={validationOk} results={vreport.Results.Count} native={nativeJson.Length} axe={axeJson.Length}");
+Console.WriteLine($"validation={validationOk} results={vreport.Results.Count} native={nativeJson.Length} axe={axeJson.Length} sarif={sarifJson.Length}");
 
 // Edit -> restyle -> tree update -> diff, reading view and navigation lists.
 DocumentStyles tstyles = DocumentStyles.Create(tdoc);

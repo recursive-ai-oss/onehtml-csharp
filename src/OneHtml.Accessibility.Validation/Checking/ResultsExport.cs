@@ -19,11 +19,17 @@ public sealed class ExportOptions
     /// <summary>Write indented JSON. Default <see langword="false"/>.</summary>
     public bool Indented { get; init; }
 
-    /// <summary>The address of the page, recorded as given; the library never reads it. Default none.</summary>
+    /// <summary>The address of the page, recorded as given (the SARIF artifact address, percent-encoded where it is not a legal URI reference); the library never reads it. Default none.</summary>
     public string? Url { get; init; }
 
-    /// <summary>The longest <c>html</c> excerpt, in characters, in the axe-compatible export. Default 300.</summary>
+    /// <summary>The longest <c>html</c> excerpt in the axe-compatible export, and the longest region snippet in the SARIF export, in characters. Default 300.</summary>
     public int MaxHtmlLength { get; init; } = 300;
+
+    /// <summary>SARIF only: also write passed results. Default <see langword="false"/>, since a pass is not a finding.</summary>
+    public bool IncludePassed { get; init; }
+
+    /// <summary>SARIF only: also write the results of rules that applied to nothing. Default <see langword="false"/>.</summary>
+    public bool IncludeInapplicable { get; init; }
 }
 
 /// <summary>

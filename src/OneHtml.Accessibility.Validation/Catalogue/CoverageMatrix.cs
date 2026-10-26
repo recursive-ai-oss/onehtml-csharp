@@ -12,7 +12,9 @@ public static class CoverageMatrix
     /// <summary>
     /// Renders the matrix as Markdown with Unix line endings. Rows are criteria in number order. The columns list the
     /// versions and level, then ACT rules (from the W3C list), axe-core rules (from their <c>wcagNNN</c> tags) and
-    /// the rules this library implements. Automation is "unassessed" until a criterion has been assessed.
+    /// the rules this library implements. Automation says how far a machine can decide the criterion (fully, partly, not),
+    /// with the reason. Before the table come the counts per WCAG version and a summary for each profile (criteria in
+    /// the profile, how many have an implemented rule, how they split by automation level, and the gaps).
     /// </summary>
     /// <param name="implementedRules">The descriptors of the implemented rules; may be <see langword="null"/>.</param>
     public static string ToMarkdown(IEnumerable<RuleDescriptor>? implementedRules = null)
@@ -54,8 +56,8 @@ public static class CoverageMatrix
         }
 
         var sb = new StringBuilder();
-        sb.Append("| Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation |\n");
-        sb.Append("|---|---|---|---|---|---|---|---|\n");
+        sb.Append("| Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation | Basis |\n");
+        sb.Append("|---|---|---|---|---|---|---|---|---|\n");
         int withAny = 0;
         foreach (SuccessCriterion c in WcagCriteria.All)
         {
@@ -70,7 +72,9 @@ public static class CoverageMatrix
               .Append(" | ").Append(Join(a))
               .Append(" | ").Append(Join(x))
               .Append(" | ").Append(Join(o))
-              .Append(" | unassessed |\n");
+              .Append(" | ").Append(AutomationName(AutomationAssessments.Get(c.Number).Level))
+              .Append(" | ").Append(AutomationAssessments.Get(c.Number).Basis)
+              .Append(" |\n");
         }
 
         var head = new StringBuilder();
@@ -99,6 +103,7 @@ public static class CoverageMatrix
         }
 
         head.Append('\n');
+        head.Append(ProfileSummaries(other, act, axe));
         sb.Append('\n');
         if (noCriterion.Count > 0)
         {
@@ -106,6 +111,61 @@ public static class CoverageMatrix
         }
 
         return head.Append(sb).ToString();
+    }
+
+    private static string AutomationName(AutomationLevel level) => level switch
+    {
+        AutomationLevel.Fully => "fully",
+        AutomationLevel.Partly => "partly",
+        _ => "not",
+    };
+
+    // Per profile: how many of its criteria have an implemented rule, any rule at all (ours, ACT or axe-core), and
+    // how the criteria split by automation level. A criterion that can be automated but has no implemented rule is a gap.
+    private static string ProfileSummaries(
+        Dictionary<string, List<string>> implemented,
+        Dictionary<string, List<string>> act,
+        Dictionary<string, List<string>> axe)
+    {
+        var sb = new StringBuilder();
+        sb.Append("Profile summaries (criteria in the profile; the automation columns split them by assessment; *Implemented* counts criteria that have at least one rule in this package; *Gaps* counts criteria assessed fully or partly automatable that have none):\n\n");
+        sb.Append("| Profile | Criteria | Implemented | Implemented, fully | Implemented, partly | Implemented, not | Not automatable | Gaps (fully or partly, no rule) | Some ACT or axe-core rule, none ours |\n");
+        sb.Append("|---|---|---|---|---|---|---|---|---|\n");
+        foreach (ValidationProfile profile in new[] { ValidationProfile.Wcag20AA, ValidationProfile.Wcag21AA, ValidationProfile.Wcag22AA, ValidationProfile.All })
+        {
+            int total = 0, impl = 0, gaps = 0, others = 0, notAuto = 0;
+            var byLevel = new int[3];
+            foreach (SuccessCriterion c in profile.Criteria)
+            {
+                total++;
+                AutomationLevel level = AutomationAssessments.Get(c.Number).Level;
+                bool has = implemented.ContainsKey(c.Number);
+                notAuto += level == AutomationLevel.Not ? 1 : 0;
+                if (has)
+                {
+                    impl++;
+                    byLevel[(int)level]++;
+                }
+                else
+                {
+                    gaps += level != AutomationLevel.Not ? 1 : 0;
+                    others += act.ContainsKey(c.Number) || axe.ContainsKey(c.Number) ? 1 : 0;
+                }
+            }
+
+            sb.Append("| ").Append(profile.Name)
+              .Append(" | ").Append(total.ToString(CultureInfo.InvariantCulture))
+              .Append(" | ").Append(impl.ToString(CultureInfo.InvariantCulture))
+              .Append(" | ").Append(byLevel[0].ToString(CultureInfo.InvariantCulture))
+              .Append(" | ").Append(byLevel[1].ToString(CultureInfo.InvariantCulture))
+              .Append(" | ").Append(byLevel[2].ToString(CultureInfo.InvariantCulture))
+              .Append(" | ").Append(notAuto.ToString(CultureInfo.InvariantCulture))
+              .Append(" | ").Append(gaps.ToString(CultureInfo.InvariantCulture))
+              .Append(" | ").Append(others.ToString(CultureInfo.InvariantCulture))
+              .Append(" |\n");
+        }
+
+        return sb.Append('\n').ToString();
     }
 
     private static void Add(Dictionary<string, List<string>> map, string number, string id)

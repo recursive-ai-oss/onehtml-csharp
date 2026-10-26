@@ -180,6 +180,20 @@ public class CatalogueTests
     }
 
     [Fact]
+    public void Every_criterion_has_an_automation_assessment_and_the_document_has_none_unassessed()
+    {
+        foreach (SuccessCriterion c in WcagCriteria.All)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(AutomationAssessments.Get(c.Number).Basis), c.Number);
+        }
+
+        Assert.Equal(WcagCriteria.All.Count, AutomationAssessments.All.Count);
+        string markdown = CoverageMatrix.ToMarkdown(BuiltInRules.All.Select(r => r.Descriptor));
+        Assert.DoesNotContain("unassessed", markdown, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("| wcag-2.1-aa |", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Coverage_document_is_current()
     {
         string path = Path.Combine(Repo, "docs", "coverage.md");
@@ -199,6 +213,9 @@ public class CatalogueTests
         "How to read it: *In WCAG* gives the first version with the criterion (`2.0+` means that version and every later one).\n" +
         "*ACT rules* are the W3C ACT rules that list the criterion as a requirement (any status; deprecated ones are marked).\n" +
         "*axe-core rules* are the rules whose `wcagNNN` tag names the criterion in axe-core 4.14.0. *Implemented* lists the\n" +
-        "rules this package implements. *Automation* (fully, partly or not automatable) is not assessed yet.\n\n" +
+        "rules this package implements. *Automation* says how far a machine can decide the criterion: *fully* when every failure\n" +
+        "condition can be decided mechanically, *partly* when some can and the rest need a person, *not* when it needs human\n" +
+        "judgement or running behaviour a static check cannot see. *Basis* gives the reason. The assessments are data in\n" +
+        "`Catalogue/Data/automation.json`.\n\n" +
         CoverageMatrix.ToMarkdown(BuiltInRules.All.Select(r => r.Descriptor));
 }

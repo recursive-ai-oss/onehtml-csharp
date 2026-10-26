@@ -236,6 +236,7 @@ public sealed class ReadingView
         private readonly Dictionary<AxNode, TableModel> _tables = [];
         private readonly Dictionary<AxNode, int> _listSizes = [];
         private readonly HashSet<int> _nameLabels = [];
+        private readonly Lang.Cache _langs = new();
 
         public Builder(AccessibilityTree tree, CancellationToken ct)
         {
@@ -359,7 +360,7 @@ public sealed class ReadingView
             }
 
             Flush();
-            string? lang = Lang.Of(n.DomNode);
+            string? lang = _langs.Of(n.DomNode);
             f.Lang = lang;
             string name = n.Name.Value;
             if (w.Kind == Class.Boundary)
@@ -432,7 +433,7 @@ public sealed class ReadingView
 
         private void AddText(AxNode n)
         {
-            string? lang = Lang.Of(n.DomNode);
+            string? lang = _langs.Of(n.DomNode);
             if (_run.Count > 0 && !string.Equals(lang, _runLang, StringComparison.Ordinal))
             {
                 Flush();

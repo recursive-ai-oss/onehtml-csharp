@@ -23,19 +23,49 @@ public sealed class TreeHostileTests
         Assert.True(sw.ElapsedMilliseconds < ms, "took " + sw.ElapsedMilliseconds + " ms");
     }
 
+    /// <summary>
+    /// Runs <paramref name="work"/> on an input of <c>n</c> and of <c>4n</c> units (best of three after a warm-up, so JIT time is
+    /// not counted) and requires the cost to grow far less than quadratically: linear work takes about 4 times as long, quadratic
+    /// work 16 times. A ratio tells a slow machine from a regression where a fixed time cannot. The absolute bound only guards a hang.
+    /// </summary>
+    private static void ScalesLinearly(int n, Func<int, Action> work)
+    {
+        work(n / 8)();
+        double Best(int size)
+        {
+            Action run = work(size);
+            double best = double.MaxValue;
+            for (int i = 0; i < 3; i++)
+            {
+                var sw = Stopwatch.StartNew();
+                run();
+                best = Math.Min(best, sw.Elapsed.TotalMilliseconds);
+            }
+
+            return best;
+        }
+
+        double small = Best(n);
+        double large = Best(4 * n);
+        Assert.True(large < 150 + 8 * small, $"{n} units took {small:F0} ms, {4 * n} took {large:F0} ms");
+        Assert.True(large < 120_000, $"{large:F0} ms");
+    }
+
     [Fact]
     public void Deeply_nested_elements()
     {
-        string html = string.Concat(Enumerable.Repeat("<div>", 100_000)) + "<button id=b>deep</button>";
-        Document doc = Parse(html);
-        // Linear in depth: about 0.7 s here (style computation plus tree build). The bound leaves a slow 4-core runner room,
-        // while a quadratic walk up the ancestors (about 6 s here, over 40 s on such a runner) still fails.
-        Within(20_000, () =>
+        // Styling and building the tree once walked every element's ancestors, which made depth quadratic.
+        ScalesLinearly(25_000, n =>
         {
-            AccessibilityTree tree = Build(doc);
-            Assert.Equal("deep", tree.Find(doc.Root.QuerySelector("#b"))!.Name.Value);
-            Assert.True(tree.Nodes.Count > 100_000);
-            Assert.NotEmpty(tree.ToChromeJson());
+            string html = string.Concat(Enumerable.Repeat("<div>", n)) + "<button id=b>deep</button>";
+            Document doc = Parse(html);
+            return () =>
+            {
+                AccessibilityTree tree = Build(doc);
+                Assert.Equal("deep", tree.Find(doc.Root.QuerySelector("#b"))!.Name.Value);
+                Assert.True(tree.Nodes.Count > n);
+                Assert.NotEmpty(tree.ToChromeJson());
+            };
         });
     }
 
@@ -163,17 +193,20 @@ public sealed class TreeHostileTests
     [Fact]
     public void Reading_view_and_lists_of_a_huge_table_and_deep_nesting_are_bounded()
     {
-        string rows = string.Concat(Enumerable.Repeat("<tr><th>h<td>a<td>b<td>c</tr>", 10_000));
-        Document doc = Parse("<table>" + rows + "</table>" + string.Concat(Enumerable.Repeat("<ul><li>", 20_000)) + "end");
-        AccessibilityTree tree = Build(doc);
-        Within(30_000, () =>
+        ScalesLinearly(5_000, n =>
         {
-            ReadingView view = tree.CreateReadingView();
-            Assert.True(view.Items.Count > 40_000);
-            NavigationLists nav = tree.CreateNavigationLists();
-            Assert.Single(nav.Tables);
-            Assert.Equal(10_000, nav.Tables[0].Rows);
-            Assert.True(tree.Diff(tree).IsEmpty);
+            string rows = string.Concat(Enumerable.Repeat("<tr><th>h<td>a<td>b<td>c</tr>", n / 2));
+            Document doc = Parse("<table>" + rows + "</table>" + string.Concat(Enumerable.Repeat("<ul><li>", n)) + "end");
+            AccessibilityTree tree = Build(doc);
+            return () =>
+            {
+                ReadingView view = tree.CreateReadingView();
+                Assert.True(view.Items.Count > 2 * n);
+                NavigationLists nav = tree.CreateNavigationLists();
+                Assert.Single(nav.Tables);
+                Assert.Equal(n / 2, nav.Tables[0].Rows);
+                Assert.True(tree.Diff(tree).IsEmpty);
+            };
         });
     }
 }

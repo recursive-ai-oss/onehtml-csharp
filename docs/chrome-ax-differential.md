@@ -171,12 +171,90 @@ A class is a field plus a pattern (see "Output"). Dispositions of every class ab
 | `role` (1,217 nodes, 0.089%) | 1,217 | **Below the threshold.** `cell`, `row`, `table` against `LayoutTableCell`, `LayoutTableRow`, `LayoutTable` (profile entry `layout-table`), and `image` against `SvgRoot`. |
 | `description`, `nameSource` | 1,810 and 102 | **Open, small.** `description` is 0.132%; the remainder is the `name` classes (a link's `title` as description when Chrome uses it as the name). |
 | `prop.url`: `image` and `srcset` | 2,832 | **Deviation.** Chrome reports the image chosen from `srcset` and `picture` for its viewport and density; we state the `src`, because choosing needs the layout width. |
-| `prop.editable` | 1 -> 61 | **Open.** The inner editor of an `input` with a placeholder, in a few pages, is a generic without the editable state in Chrome and one with it in ours (the probe shows the editable generic for a placeholder input on a plain page; these pages differ in a way not traced). |
-| `prop.disabled`, `invalid`, `hasPopup`, `readonly`, `selected`, `posinset`, `setsize`, `valuemin`, `valuemax`, `valuetext`, `roledescription` | 5 to 58 nodes each | **Open, small, not traced:** disabled options in an `optgroup`; invalid combobox and radio states from constraint validation; `hasPopup` on custom comboboxes and disclosure triangles; readonly on comboboxes; `posinset` and `setsize` that we state for menu items and Chrome does not (28 nodes on 5 pages); `valuemin`/`valuemax` of number inputs that Chrome reports as 0; the `valuetext` of a progress bar; `roledescription` text that Chrome decodes twice (`KunngjÃ¸ring`: a Chrome defect we do not reproduce). |
-| `value` | 66 | **Chrome user-interface text and form state.** "No file chosen", the selected option text of a select with `text-transform`, password bullets, the text of a textarea. Not reproduced. |
+| `prop.editable` | see below | **Second pass** ("Property fields, second pass"): traced and fixed, or documented per class. |
+| `prop.disabled`, `invalid`, `hasPopup`, `readonly`, `selected`, `posinset`, `setsize`, `valuemin`, `valuemax`, `valuetext`, `roledescription` | see below | **Second pass** ("Property fields, second pass"): traced and fixed, or documented per class. |
+| `value` | see below | **Second pass** ("Property fields, second pass"): traced and fixed, or documented per class. |
 | `rel.labelledby`, `rel.controls` | 298 and 14 | **Open.** Chrome lists the label for a radio, checkbox and textbox where our name came from another source; navigation landmarks whose label target is not in Chrome's tree. |
 
 The open classes above are not traced to a rule. The largest are `name` `link differs` (0.3% of the field's compared nodes), the generic and `StaticText` differences in `chromeOnly` and `oursOnly`, and the three small `ignored` residues.
+
+## Property fields, second pass
+
+The first run of the full corpus (12,788 captures, facts both) left these property fields above 1%: `posinset` and `setsize` 100%, `invalid` 27.3%, `readonly` 21.5%, `disabled` 15.8%, `valuetext` 7.9%, `value` 4.9%, `roledescription` 2.3%, `selected` 1.7%, `valuemax` 1.2%, `autocomplete` 2.8%, `hasPopup` 1.0%, `editable` 1.1%, `keyshortcuts` 1.0%, and `chromeOnly` 1.126%. Each had one or two systematic causes. They were found by writing a probe page for each suspected behaviour (`testdata/rendered/pages/axprops.html`, `axprops2.html`, `axprops3.html`), capturing it in the pinned Chrome (captures beside it in `testdata/rendered/captures`), and fixing the tree or export to match; the rule is a profile entry of the name given. `ChromePropertyTests` has one case per cause; `ChromePropertyProbeTests` compares every element with an `id` on the first two probe pages property by property and lists the three differences left; `ChromeProbeTests` compares the inner-node structure of the third.
+
+### Causes
+
+| Field | Cause | Profile entry |
+|---|---|---|
+| `posinset`, `setsize` | Chrome never states either (214 of 214 mismatches had Chrome absent), whether the author gave them or not; we stated the given ones. | `export-set-position` |
+| `invalid` | Chrome reports constraint failures of more control kinds than we did (radio groups, required file, date and time fields, list boxes, email and url syntax, pattern, step, date range) and none for a disabled or readonly control or after an explicit `aria-invalid=false`. | `constraint-invalid` |
+| `readonly` | Chrome states it on text boxes and grids only, and not when disabled. | `readonly-exposure` |
+| `disabled` | A disabled ancestor reaches only the focusable descendants, a disabled fieldset or optgroup is not itself disabled, an option of a disabled select is. | `disabled-inheritance` |
+| `valuetext`, `valuemin`, `valuemax`, `value` of ranges | Chrome never states `aria-valuetext`, reports bounds as single-precision numbers, lets the author's `aria-valuemin`/`max`/`now` win over native attributes, and gives a spin button 0, 0 and 0 and a progress bar with a bad `aria-valuenow` the value 0. | `range-values` |
+| `value` of text-like controls | "No file chosen", password bullets, the text of a custom combobox or text box, the first enabled option of a select (not the first), lower-cased colours, no value for an invalid date, no line breaks in a text value, the select's `text-transform`. | `input-password-file`, `option-selectedness`, `text-values` |
+| `selected` | Chrome omits `selected=false` on an option, tab or tree item when another item of the list says anything about `aria-selected`; it states none on a disabled option; a tree item is `false` by default. | `selected-states` |
+| `role` (a by-product) | An `option` role with no listbox around it (a `button`, `a` or `li` carrying `role=option` in a popup) is the element's own role in Chrome. This removed about 7 in 8 of the `role` mismatches on the 171-page subset. | `option-needs-listbox` |
+| `roledescription` | Not stated on a generic element; non-ASCII text arrives as Latin-1 bytes of its UTF-8 form. | `roledescription-roles` |
+| `autocomplete`, `hasPopup` | `hasPopup` on any element, listbox by default for every combobox, `aria-haspopup=1` and `false` are not popups; `autocomplete` on text fields only, and for `input list`. | `autocomplete-popup`, `autocomplete-text-fields` |
+| `keyshortcuts` | The `accesskey` attribute as written, after `Alt+`. | `accesskey-shortcut` |
+| `editable` | Editable text inherits down from a `contenteditable` host; the inner editor of a disabled or read-only field is not editable. | `editable-inherited` |
+| `expanded`, `level`, `multiline`, `required` (found by the probe comparison) | An ARIA combobox has no `expanded` of its own, tree items have levels, a `contenteditable` text box is multiline, a list box select is required. | `combobox-expanded`, `treeitem-level`, `readonly-exposure`, `text-values` |
+| `chromeOnly` `generic` (a search field with a placeholder) | The placeholder leaf comes before the ignored node that holds the inner editor of a search or number field, and a combobox input has that node too. | `placeholder-leaf` |
+
+### Before and after
+
+Same machine and run as above (Chrome for Testing 156.0.8078.47, `--facts both --jobs 2`, one process; AMD Ryzen 9 7950X3D, 32 threads, load average 4 to 5 from other work during the runs, so these are counts, not timings). Counts are mismatching nodes with facts. The subset is the 171 captures whose first mismatch examples were in the classes above (every class had at least one page); the sample is 399 captures from the middle of the corpus order (`--skip 3000 --limit 400`, one refused), as a check that no other field gets worse.
+
+| field | subset before | subset after | sample before | sample after |
+|---|---:|---:|---:|---:|
+| ignored | 127 | 127 | 730 | 730 |
+| hidden | 738 | 738 | 219 | 219 |
+| ignoredReasons | 273 | 273 | 222 | 222 |
+| role | 571 | 82 | 228 | 228 |
+| name | 586 | 586 | 3,932 | 3,932 |
+| nameSource | 23 | 23 | 59 | 59 |
+| description | 452 | 452 | 498 | 498 |
+| parent | 627 | 627 | 609 | 609 |
+| exposedParent | 235 | 235 | 988 | 988 |
+| chromeOnly | 874 | 799 | 2,380 | 2,267 |
+| oursOnly | 737 | 693 | 925 | 820 |
+| prop.posinset, prop.setsize | 151 each | 0 | 0 | 0 |
+| prop.invalid | 45 | 0 | 1 | 0 |
+| prop.readonly | 36 | 0 | 1 | 0 |
+| prop.disabled | 79 | 13 | 1 | 0 |
+| prop.valuetext | 83 | 0 | 3 | 0 |
+| prop.valuemin, prop.valuemax | 9, 21 | 0, 0 | 0 | 0 |
+| prop.roledescription | 19 | 0 | 11 | 0 |
+| prop.selected | 571 | 18 | 18 | 10 |
+| prop.autocomplete | 6 | 0 | 0 | 0 |
+| prop.hasPopup | 61 | 0 | 6 | 0 |
+| prop.editable | 73 | 4 | 3 | 0 |
+| prop.expanded | 10 | 0 | 2 | 0 |
+| prop.level | 29 | 1 | 4 | 4 |
+| prop.keyshortcuts | 9 | 0 | 0 | 0 |
+| prop.required, prop.multiline | 2, 1 | 0, 0 | 0 | 0 |
+| prop.url, prop.focusable, rel.* | unchanged | unchanged | unchanged | unchanged |
+| value | 86 | 40 | 2 | 2 |
+
+The final code was run on both sets. Every field not named is equal; none rose. The final rates come from the next full-corpus run.
+
+### What is left, per field
+
+| Field | Left | Why |
+|---|---|---|
+| `disabled` | 13 on the subset | An `a` inside an `object` (the plug-in fallback content) is disabled in Chrome, with no ancestor that says so. Not traced further. |
+| `selected` | 18 on the subset | A tab in a tab list of `aria-multiselectable` accordion panels states nothing in Chrome although no tab says anything; we state `false`. A row with `aria-selected=false`. The rule behind the first is not clear from the probes. |
+| `value` | 40 on the subset | A button with the combobox role whose content has an `svg` with a title: Chrome's value includes the title ("1 downwardArrowQuantity"), ours the text only (30). A select with a trailing direction mark (`\u200e`) that Chrome trims (2). A custom combobox whose hidden part Chrome leaves out of the value (1). A text field with `contenteditable=false` and `role=textbox`, whose text Chrome joins with its line breaks (3). Other select cases (3). An input with `role=status` (1). |
+| `autocomplete`, `hasPopup`, `keyshortcuts`, `invalid`, `readonly`, `roledescription`, `valuetext`, `valuemin`, `valuemax`, `posinset`, `setsize` | 0 on the subset | Fixed. |
+| `editable` | 4 on the subset | Static text inside an editing host that our tree does not mark; not traced. |
+| `prop.url` | about 0.9% | `srcset` choice, see above; not in this unit's list. |
+| `chromeOnly` | 830 on the subset (0.6%) | Not reduced to one cause. The largest single class found by tracing is a harness artefact: pages that link their stylesheets with `crossorigin` from another host (a CDN, with a subresource-integrity hash) load in our cascade but are rejected by Chrome in the capture, because the stored response has no CORS headers. A Bootstrap `.modal { display: none }` hides the dialog for us and not for Chrome, so Chrome's whole dialog subtree is `chromeOnly` (traced on one page; whether the same cause is behind the 80-page `listitem` and `list` classes was not checked). Fixing it means serving the stored sheets with `Access-Control-Allow-Origin` in the capture tool, which needs a re-capture; it is not a library difference. The rest is the generic, `StaticText` and `ListMarker` classes above. |
+
+### Behaviour not copied
+
+- The Chrome value of an editing host with block content (`x\n\nbs` for a `div` holding a `p`, a button and a span) depends on layout line breaks; ours has none (`ChromePropertyProbeTests`).
+- `aria-selected=false` on a `row`: Chrome states nothing, we state `false` (as for the grid cell and option, which state it).
+- Step mismatch counts only from a `min` (the step base is the `min`, else the `value` itself).
 
 ## Findings on the fixture pages
 
@@ -190,7 +268,7 @@ The fixture pages (`testdata/rendered/pages`) were captured with Chrome 156 (hea
 | `ignored`, `ignoredReasons`, `role`: cells and rows of a table with `role=presentation` | **Chrome** differs from the inherited-presentational rule we follow (WAI-ARIA 1.2 section 5.2.7): its `tbody` and `tr` are ignored as `uninteresting` and its `td` are `generic` and exposed. We make them all `presentationalRole`. Observed on one table. |
 | `ignored`: `template` | **Chrome**, unexplained: a `template` directly in the body is `generic`, a `template` in a `ul` is ignored. We ignore both (a template has no rendering). |
 | `prop.focusable` on `iframe` | **Chrome** does not report an iframe as focusable. HTML section 6.6.3 lists navigable containers as focusable areas, so we do. |
-| `value`: `No file chosen` on a file input | **Chrome** user-interface text (locale dependent). Not reproduced. |
+| `value`: `No file chosen` on a file input | **Reproduced** since the second pass (profile entry `input-password-file`). |
 | `name`: `mi` text `𝑥` against `x` | **Chrome** applies `text-transform: math-auto` from the MathML Core user-agent style to a single-character `mi`; our cascade does not implement that value. |
 | `parent`: children of `b`, `i` and `visibility: hidden` elements | **Representation.** We keep these as ignored nodes (the unpruned `parent` therefore names them); Chrome has no node. `exposedParent` agrees. |
 | `parent`, `exposedParent`: `option` and `optgroup` under `MenuListPopup` | **Chrome** puts the options of a drop-down select in a popup node that exists only while laid out; ours are children of the combobox. |

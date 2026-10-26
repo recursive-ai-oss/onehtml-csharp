@@ -8,7 +8,7 @@ namespace RecursiveAI.OneHtml.Accessibility.Tree;
 /// <summary>States and properties of an element: ARIA attributes the role supports, plus the HTML-AAM native mappings (WAI-ARIA 1.2 section 6, HTML-AAM section 3.6, Core-AAM section 5).</summary>
 internal static class StateBuilder
 {
-    public static AxStates Build(Node el, AriaRole? role, bool nativeDisabled, bool ariaDisabledChain, Func<string> selectValue, Func<Node, bool?>? optionSelected = null)
+    public static AxStates Build(Node el, AriaRole? role, bool nativeDisabled, bool ariaDisabledChain, bool markupFocusable, Func<string> selectValue, Func<Node, bool?>? optionSelected = null, StateHelpers? helpers = null)
     {
         var s = new AxStates();
         bool html = el.Namespace == ElementNamespace.Html;
@@ -57,7 +57,12 @@ internal static class StateBuilder
         string? roleName = role?.Name;
 
         // ---- disabled ----
-        s.Disabled = nativeDisabled || Aria("aria-disabled") == "true" || ariaDisabledChain;
+        // Chromium states an ancestor's disabled state only on the descendants that can take focus (a link, a control, an element with a
+        // tabindex), and an explicit aria-disabled=false on the element itself ends it (profile entry disabled-inheritance). An option of
+        // a disabled select or optgroup is disabled too.
+        string? ownDisabled = el.GetAttribute("aria-disabled") is { } rawDisabled ? TreeText.AsciiLower(TreeText.Trim(rawDisabled)) : null;
+        s.Disabled = nativeDisabled || Aria("aria-disabled") == "true" || (ariaDisabledChain && markupFocusable && ownDisabled != "false")
+            || (html && el.LocalName == "option" && InDisabledGroup(el));
 
         // ---- expanded ----
         // Chromium states aria-expanded on a list item too, which WAI-ARIA 1.2 does not allow it (profile entry expanded-list-item).
@@ -67,8 +72,10 @@ internal static class StateBuilder
         {
             s.Expanded = expanded == "true";
         }
-        else if (roleName == "combobox")
+        else if (roleName == "combobox" && html && el.LocalName == "select")
         {
+            // Only a drop-down select states that it is collapsed; an ARIA combobox says nothing until its author does (profile entry
+            // combobox-expanded).
             s.Expanded = false;
         }
 
@@ -89,15 +96,20 @@ internal static class StateBuilder
         if (html && el.LocalName == "option" && optionSelected?.Invoke(el) is { } picked)
         {
             // A native option is selected when HTML's selectedness says so: the last option with a selected attribute, or the first
-            // enabled one of a single-choice select when none has it (HTML section 4.10.7, profile entry option-selectedness).
-            s.Selected = picked;
+            // enabled one of a single-choice select when none has it (HTML section 4.10.7, profile entry option-selectedness). Chromium
+            // states nothing on a disabled option (profile entry selected-states).
+            if (!s.Disabled)
+            {
+                s.Selected = picked;
+            }
         }
         else if (selected is "true" or "false")
         {
             s.Selected = selected == "true";
         }
-        else if (roleName is "option" or "tab")
+        else if (roleName is "option" or "tab" or "treeitem" && !(helpers?.SiblingHasAriaSelected(el) ?? false))
         {
+            // An item that says nothing is not selected, unless a sibling does say (profile entry selected-states).
             s.Selected = false;
         }
 
@@ -116,7 +128,7 @@ internal static class StateBuilder
             s.Invalid = invalid;
         }
 
-        s.ConstraintInvalid = html && FailsConstraint(el, selectValue);
+        s.ConstraintInvalid = html && ConstraintValidity.Fails(el, nativeDisabled, helpers);
 
         // ---- level ----
         if (Aria("aria-level") is { } lv && TryInt(lv, out int level) && level >= 1)
@@ -143,18 +155,24 @@ internal static class StateBuilder
             s.SetSize = setsize;
         }
 
-        BuildRange(el, html, roleName, Aria, Native, s);
+        BuildRange(el, html, roleName, markupFocusable, Aria, Native, s);
 
         // ---- value ----
-        if (roleName is "textbox" or "searchbox" or "combobox")
+        if (html && el.LocalName == "input" && HtmlSemantics.GetInputType(el) == HtmlInputType.File)
+        {
+            // The label of an empty file chooser, in Chromium's English UI (profile entry file-input-value).
+            s.Value = "No file chosen";
+        }
+        else if (roleName is "textbox" or "searchbox" or "combobox")
         {
             if (html && el.LocalName == "input")
             {
-                // A password's characters are never exposed (profile entry input-password-file).
-                if (HtmlSemantics.GetInputType(el) != HtmlInputType.Password)
-                {
-                    s.Value = el.GetAttribute("value") ?? string.Empty;
-                }
+                // A password shows one bullet for each character of its value, which is not exposed; the other text types lose their line
+                // breaks to the value sanitization algorithm (HTML 4.10.5.1.1; profile entry input-password-file).
+                string raw = el.GetAttribute("value") ?? string.Empty;
+                s.Value = HtmlSemantics.GetInputType(el) == HtmlInputType.Password
+                    ? new string('\u2022', raw.Length)
+                    : raw.Contains('\n', StringComparison.Ordinal) || raw.Contains('\r', StringComparison.Ordinal) ? raw.Replace("\r", string.Empty, StringComparison.Ordinal).Replace("\n", string.Empty, StringComparison.Ordinal) : raw;
             }
             else if (html && el.LocalName == "textarea")
             {
@@ -165,19 +183,29 @@ internal static class StateBuilder
             {
                 s.Value = selectValue();
             }
+            else if (TextValue(el) is { Length: > 0 } textValue)
+            {
+                // A custom text box, search box or combobox (a div or a button with the role) states the text it holds.
+                s.Value = textValue;
+            }
         }
         else if (roleName is null && html && el.LocalName == "input" && HtmlSemantics.GetInputType(el) is HtmlInputType.Date or HtmlInputType.Color)
         {
             // The date and colour pickers have no WAI-ARIA role but state their value (profile entry internal-roles).
-            s.Value = el.GetAttribute("value") ?? (HtmlSemantics.GetInputType(el) == HtmlInputType.Color ? "#000000" : string.Empty);
+            // A value that is not a valid date string is sanitized to nothing (HTML 4.10.5.1.7).
+            s.Value = HtmlSemantics.GetInputType(el) == HtmlInputType.Color ? TreeText.AsciiLower(el.GetAttribute("value") ?? "#000000")
+                : el.GetAttribute("value") is { } dv && ConstraintValidity.IsValidTemporal(HtmlInputType.Date, dv) ? dv : string.Empty;
         }
-        else if (roleName == "listbox" && html && el.LocalName == "select")
-        {
-            s.Value = selectValue();
-        }
-        else if (s.ValueNow is { } vn && roleName is "slider" or "spinbutton" or "scrollbar" or "meter" or "progressbar")
+        else if (s.ValueNow is { } vn && (roleName is "slider" or "spinbutton" or "scrollbar" or "meter" or "progressbar" || roleName == "separator" && markupFocusable))
         {
             s.Value = FormatNumber(vn);
+        }
+        else if (html && el.GetAttribute("contenteditable") is { } own && (own.Length == 0 || TreeText.EqualsIgnoreCase(own, "true") || TreeText.EqualsIgnoreCase(own, "plaintext-only"))
+            && !HasBlockChild(el) && TextValue(el) is { Length: > 0 } hostText)
+        {
+            // An editing host states its text as a value; one with block content would need line breaks worked out, which is left out
+            // (profile entry editable-value).
+            s.Value = hostText;
         }
 
         // ---- live regions ----
@@ -215,21 +243,22 @@ internal static class StateBuilder
             s.Current = current is "true" or "page" or "step" or "location" or "date" or "time" ? current : "true";
         }
 
-        string? popup = Aria("aria-haspopup");
-        if (popup is not null && popup != "false")
+        // WAI-ARIA 1.2 aria-haspopup: true is menu; a missing, false or unknown value is none. Chromium states it on any element (not only the
+        // roles that support it), and gives every combobox a listbox popup unless the author names another (a drop-down select opens a menu;
+        // profile entry has-popup). A text field's aria-autocomplete adds none.
+        string? popup = el.GetAttribute("aria-haspopup") is { } rawPopup ? TreeText.AsciiLower(TreeText.Trim(rawPopup)) : null;
+        if (popup is "true")
         {
-            // WAI-ARIA 1.2 aria-haspopup: true is the same as menu; an unknown token is true.
-            s.HasPopup = popup is "menu" or "listbox" or "tree" or "grid" or "dialog" ? popup : "menu";
+            popup = "menu";
         }
-        else if (popup is null && html && el.LocalName == "select" && roleName == "combobox")
+
+        if (popup is "menu" or "listbox" or "tree" or "grid" or "dialog")
         {
-            // A drop-down select opens a menu of its options (profile entry select-popup).
-            s.HasPopup = "menu";
+            s.HasPopup = popup;
         }
-        else if (popup is null && roleName is "combobox" or "searchbox" or "textbox" && Aria("aria-autocomplete") is "list" or "both")
+        else if (roleName == "combobox")
         {
-            // A text field that offers a list of completions opens a listbox (profile entry autocomplete-popup).
-            s.HasPopup = "listbox";
+            s.HasPopup = html && el.LocalName == "select" ? "menu" : "listbox";
         }
 
         string? orientation = Aria("aria-orientation");
@@ -243,25 +272,34 @@ internal static class StateBuilder
         }
 
         s.MultiSelectable = Aria("aria-multiselectable") == "true" || Native("aria-multiselectable") == "true";
-        s.Multiline = Aria("aria-multiline") == "true" || Native("aria-multiline") == "true";
+        s.Multiline = Aria("aria-multiline") == "true" || Native("aria-multiline") == "true"
+            || (roleName == "textbox" && html && el.LocalName != "input" && el.GetAttribute("contenteditable") is { } cem && (cem.Length == 0 || TreeText.EqualsIgnoreCase(cem, "true")));
+        // Chromium states the autocomplete mode of a text field only: an author's aria-autocomplete on a button or a div is not reported
+        // (profile entry autocomplete-text-fields).
         string? ac = Aria("aria-autocomplete");
-        if (ac is "inline" or "list" or "both")
+        if (ac is "inline" or "list" or "both" && html && el.LocalName is "input" or "textarea")
         {
             s.AutoComplete = ac;
+        }
+        else if (html && el.LocalName == "input" && roleName == "combobox" && el.HasAttribute("list"))
+        {
+            // A text field with suggestions (a list attribute) completes from a list, as HTML-AAM maps it.
+            s.AutoComplete = "list";
         }
 
         if (el.GetAttribute("aria-keyshortcuts") is { } ks && TreeText.Trim(ks).Length > 0 && Supported("aria-keyshortcuts"))
         {
             s.KeyShortcuts = TreeText.Trim(ks);
         }
-        else if (html && el.GetAttribute("accesskey") is { } access && AccessKey(access) is { } accessKey)
+        else if (html && el.GetAttribute("accesskey") is { } access)
         {
-            // HTML-AAM: an element with an accesskey exposes it as a keyboard shortcut; Chromium on Linux and Windows names it Alt+key
-            // (profile entry accesskey-shortcut).
-            s.KeyShortcuts = "Alt+" + accessKey;
+            // HTML-AAM: an element with an accesskey exposes it as a keyboard shortcut; Chromium on Linux and Windows names it Alt+ and the
+            // attribute as written, whatever it holds, an empty value and a list of keys included (profile entry accesskey-shortcut).
+            s.KeyShortcuts = "Alt+" + access;
         }
 
-        if (el.GetAttribute("aria-roledescription") is { } rd && TreeText.Trim(rd).Length > 0)
+        // Chromium leaves the description out of a generic element and of a presentational one (profile entry roledescription-roles).
+        if (el.GetAttribute("aria-roledescription") is { } rd && TreeText.Trim(rd).Length > 0 && roleName is not (null or "generic" or "none" or "presentation"))
         {
             s.RoleDescription = TreeText.Trim(rd);
         }
@@ -289,9 +327,19 @@ internal static class StateBuilder
                 // Every text-entry control is editable, whatever role an author gives it (a text input with role=combobox).
                 s.Editable = "plaintext";
             }
+            else if (el.LocalName == "input" && HtmlSemantics.GetInputType(el) == HtmlInputType.Number)
+            {
+                // A number field is editable whatever role an author gives it.
+                s.Editable = "plaintext";
+            }
             else if (roleName == "spinbutton" && el.LocalName == "input")
             {
                 s.Editable = "plaintext";
+            }
+            else
+            {
+                // The content of an editing host is editable as well, down to a contenteditable=false element (profile entry editable-inherited).
+                s.Editable = helpers?.InheritedEditable(el);
             }
         }
 
@@ -305,72 +353,7 @@ internal static class StateBuilder
         return s;
     }
 
-    /// <summary>The first key of an accesskey attribute (a space-separated list of single characters), or null.</summary>
-    private static string? AccessKey(string value)
-    {
-        foreach (string token in value.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-        {
-            if (token.Length == 1 || (token.Length == 2 && char.IsSurrogatePair(token, 0)))
-            {
-                return token;
-            }
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// The constraint-validation failures Chromium reports as invalid (HTML section 4.10.20.3): a required checkbox that is not checked, a
-    /// required drop-down select whose chosen option is the placeholder (empty value), and a number below its minimum or above its
-    /// maximum. Text fields are not reported even when required and empty (observed in Chromium; profile entry constraint-invalid).
-    /// </summary>
-    private static bool FailsConstraint(Node el, Func<string> selectValue)
-    {
-        switch (el.LocalName)
-        {
-            case "input":
-                switch (HtmlSemantics.GetInputType(el))
-                {
-                    case HtmlInputType.Checkbox:
-                        return HtmlSemantics.Has(el, "required") && !HtmlSemantics.Has(el, "checked");
-                    case HtmlInputType.Number:
-                        return Num(el.GetAttribute("value")) is { } v && (Num(el.GetAttribute("min")) is { } min && v < min || Num(el.GetAttribute("max")) is { } max && v > max);
-                    default:
-                        return false;
-                }
-
-            case "select":
-                return HtmlSemantics.Has(el, "required") && !HtmlSemantics.Has(el, "multiple") && IsPlaceholderSelected(el);
-            default:
-                return false;
-        }
-    }
-
-    /// <summary>HTML section 4.10.7: a select whose chosen option is its first and has the empty value shows a placeholder label.</summary>
-    private static bool IsPlaceholderSelected(Node select)
-    {
-        Node first = default;
-        bool anySelected = false;
-        int visited = 0;
-        for (Node d = select.NextInDocumentOrder(select); !d.IsNull && visited++ < 100_000; d = d.NextInDocumentOrder(select))
-        {
-            if (!d.IsElement || d.Namespace != ElementNamespace.Html || d.LocalName != "option")
-            {
-                continue;
-            }
-
-            if (first.IsNull)
-            {
-                first = d;
-            }
-
-            anySelected |= d.HasAttribute("selected");
-        }
-
-        return !first.IsNull && !anySelected && (first.GetAttribute("value") ?? first.TextContent ?? string.Empty).Length == 0;
-    }
-
-    private static void BuildRange(Node el, bool html, string? roleName, Func<string, string?> aria, Func<string, string?> native, AxStates s)
+    private static void BuildRange(Node el, bool html, string? roleName, bool focusable, Func<string, string?> aria, Func<string, string?> native, AxStates s)
     {
         bool rangeRole = roleName is "slider" or "spinbutton" or "scrollbar" or "meter" or "progressbar" or "separator";
         if (!rangeRole)
@@ -391,9 +374,10 @@ internal static class StateBuilder
         {
             bool range = HtmlSemantics.GetInputType(el) == HtmlInputType.Range;
             // A number input with no min or max reports 0 for both (profile entry number-input-bounds).
-            min = Num(native("aria-valuemin")) ?? min ?? 0;
-            max = Num(native("aria-valuemax")) ?? max ?? (range ? 100 : 0);
-            now = Num(native("aria-valuenow")) ?? now;
+            // An author's aria-valuemin, aria-valuemax and aria-valuenow win over the native attributes (profile entry range-aria-wins).
+            min ??= Num(native("aria-valuemin")) ?? 0;
+            max ??= Num(native("aria-valuemax")) ?? (range ? 100 : 0);
+            now ??= Num(native("aria-valuenow"));
             if (range)
             {
                 // HTML section 4.10.5.1.13: the default value is the midpoint, and the value is clamped into the range.
@@ -420,10 +404,19 @@ internal static class StateBuilder
         else
         {
             // WAI-ARIA 1.2: meter, progressbar, scrollbar and slider default to 0 and 100; a slider with no value sits at the midpoint.
-            if (roleName is "slider" or "scrollbar" or "meter" or "progressbar")
+            if (roleName is "slider" or "scrollbar" or "meter" or "progressbar" || roleName == "separator" && focusable)
             {
+                // A separator that takes focus is a slider for Chromium (profile entry range-defaults).
                 min ??= 0;
                 max ??= 100;
+            }
+
+            if (roleName == "spinbutton")
+            {
+                // A spin button that gives no bounds has the range 0 to 0, and rests at 0 when it gives no value (profile entry range-defaults).
+                min ??= 0;
+                max ??= 0;
+                now ??= 0;
             }
 
             if (roleName == "slider" && now is null)
@@ -432,9 +425,61 @@ internal static class StateBuilder
             }
         }
 
+        if (now is null && roleName == "progressbar" && aria("aria-valuenow") is not null)
+        {
+            // A progress bar whose aria-valuenow is not a number rests at 0 (profile entry range-defaults).
+            now = 0;
+        }
+
         s.ValueNow = now;
         s.ValueMin = min;
         s.ValueMax = max;
+    }
+
+    /// <summary>True for an option whose select or optgroup is disabled.</summary>
+    private static bool InDisabledGroup(Node option)
+    {
+        Node p = option.ParentElement;
+        if (!p.IsNull && p.Namespace == ElementNamespace.Html && p.LocalName == "optgroup")
+        {
+            if (p.HasAttribute("disabled"))
+            {
+                return true;
+            }
+
+            p = p.ParentElement;
+        }
+
+        return !p.IsNull && p.Namespace == ElementNamespace.Html && p.LocalName == "select" && p.HasAttribute("disabled");
+    }
+
+    private static bool HasBlockChild(Node el)
+    {
+        for (Node c = el.FirstChild; !c.IsNull; c = c.NextSibling)
+        {
+            if (c.IsElement && c.LocalName is not ("a" or "abbr" or "b" or "bdi" or "bdo" or "cite" or "code" or "data" or "dfn" or "em" or "i" or "kbd" or "mark" or "q" or "s" or "samp" or "small" or "span" or "strong" or "sub" or "sup" or "time" or "u" or "var"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>The rendered-text approximation of an element's content: its text with scripts and styles left out, white space collapsed.</summary>
+    private static string TextValue(Node el)
+    {
+        var sb = new System.Text.StringBuilder();
+        int visited = 0;
+        for (Node d = el.NextInDocumentOrder(el); !d.IsNull && visited++ < 20_000 && sb.Length < 8192; d = d.NextInDocumentOrder(el))
+        {
+            if (d.Kind == NodeKind.Text && d.ParentElement is { IsNull: false } pe && !(pe.Namespace == ElementNamespace.Html && pe.LocalName is "script" or "style" or "template" or "noscript"))
+            {
+                sb.Append(d.TextContent);
+            }
+        }
+
+        return TreeText.Trim(TreeText.Collapse(sb.ToString()));
     }
 
     private static double? Num(string? v)

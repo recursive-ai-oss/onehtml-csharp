@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Property probe</title></head>
+<body>
+<h1>Property probe</h1>
+
+<!-- disabled -->
+<div aria-disabled="true" id="d1"><p id="d1p">x</p><span id="d1s">y</span><a id="d1a" href="#">a</a><button id="d1b">b</button><input id="d1i" aria-label="i"><div id="d1d" tabindex="0">t</div></div>
+<div role="radio" aria-checked="false" aria-disabled="true" id="d2" tabindex="-1"><p id="d2p">x</p></div>
+<button disabled id="d3"><div id="d3d">x</div><span id="d3s">y</span></button>
+<fieldset disabled id="d4"><legend id="d4l">L</legend><div id="d4d">d</div><input id="d4i" aria-label="i"><a href="#" id="d4a">a</a></fieldset>
+<select disabled id="d5" aria-label="s"><option id="d5o">o</option><optgroup id="d5g" label="g"><option id="d5go">q</option></optgroup></select>
+<a role="button" aria-disabled="true" href="#" id="d6"><svg id="d6s" width="7" height="7"></svg>text</a>
+<ul role="listbox" aria-disabled="true" id="d7" aria-label="l"><li role="option" id="d7o">o</li></ul>
+<div role="group" aria-disabled="true" id="d8" aria-label="g"><div role="button" id="d8b" tabindex="0">b</div><button id="d8bb">bb</button></div>
+<select id="d10" aria-label="s10"><option id="d10o" disabled>x</option><option id="d10p">y</option></select>
+<form id="d11f" aria-label="f" aria-disabled="true"><label id="d11l" for="d11i">Name</label><input id="d11i"></form>
+<div role="toolbar" aria-disabled="true" aria-label="t" id="d12"><div id="d12d">x</div></div>
+<div aria-disabled="true" id="d13"><h4 id="d13h">H</h4></div>
+<button aria-disabled="true" id="d14"><div id="d14d">x</div></button>
+<a aria-disabled="true" disabled href="#" id="d15"><strong id="d15s">T</strong></a>
+
+<!-- invalid -->
+<form id="invf">
+<input id="i1" required aria-label="i1">
+<input id="i2" required value="x" aria-label="i2">
+<input type="email" id="i3" value="foo" aria-label="i3">
+<input type="date" required id="i4" aria-label="i4">
+<input type="radio" required name="r" id="i5" aria-label="i5"><input type="radio" required name="r" id="i5b" aria-label="i5b">
+<select required multiple id="i6" aria-label="i6"><option value="">p</option></select>
+<input type="file" required id="i7" aria-label="i7">
+<input type="checkbox" required aria-invalid="false" id="i8" aria-label="i8">
+<input type="number" min="1" max="0" value="1" readonly id="i9" aria-label="i9">
+<input type="checkbox" required id="i10" aria-label="i10">
+<input type="number" min="5" max="10" value="1" id="i11" aria-label="i11">
+<input type="text" required disabled id="i12" aria-label="i12">
+<select required id="i13" aria-label="i13"><option value="">p</option><option>a</option></select>
+<textarea required id="i14" aria-label="i14"></textarea>
+<input type="email" required value="" id="i15" aria-label="i15">
+<input type="text" pattern="[0-9]+" value="abc" id="i16" aria-label="i16">
+<input type="url" value="foo" id="i17" aria-label="i17">
+<input type="text" required readonly id="i18" aria-label="i18">
+<input type="checkbox" required aria-invalid="true" id="i19" checked aria-label="i19">
+<div role="textbox" aria-invalid="true" id="i20" aria-label="i20"></div>
+<input type="text" required value="ok" id="i21" aria-label="i21" aria-invalid="spelling">
+</form>
+<form novalidate id="invf2"><input type="email" id="i22" value="foo" aria-label="i22"><input type="text" required id="i23" aria-label="i23"><select id="i24" required aria-label="i24"><option value="">p</option><option>a</option></select></form>
+
+<!-- readonly -->
+<input type="text" readonly id="ro1" aria-label="ro1">
+<input type="email" readonly id="ro2" aria-label="ro2">
+<input type="number" readonly id="ro3" aria-label="ro3">
+<input type="checkbox" readonly id="ro4" aria-label="ro4">
+<input type="radio" readonly id="ro5" aria-label="ro5">
+<textarea readonly id="ro6" aria-label="ro6"></textarea>
+<input type="text" readonly disabled id="ro7" aria-label="ro7">
+<div role="textbox" aria-readonly="true" id="ro8" aria-label="ro8"></div>
+<input role="combobox" aria-readonly="true" disabled id="ro9" aria-label="ro9">
+<input type="text" id="ro10" aria-label="ro10">
+<input type="text" disabled id="ro11" aria-label="ro11">
+<input type="password" readonly id="ro12" aria-label="ro12">
+<div role="combobox" aria-readonly="true" id="ro13" aria-label="ro13"></div>
+<input type="search" readonly id="ro14" aria-label="ro14">
+<input type="tel" readonly id="ro15" aria-label="ro15">
+<input type="url" readonly id="ro16" aria-label="ro16">
+<input type="date" readonly id="ro17" aria-label="ro17">
+<div role="spinbutton" aria-readonly="true" id="ro18" aria-label="ro18"></div>
+<div role="checkbox" aria-readonly="true" id="ro19" aria-label="ro19"></div>
+<div role="status" aria-readonly="true" id="ro20" aria-label="ro20"></div>
+
+<!-- ranges -->
+<div role="progressbar" aria-valuenow="50" aria-valuetext="half" aria-valuemin="0" aria-valuemax="100" id="v1" aria-label="v1"></div>
+<progress value="3" max="10" id="v2" aria-label="v2"></progress>
+<input type="range" min="0" max="174" aria-valuemax="100" aria-valuetext="0%" aria-valuenow="0" value="0" id="v3" aria-label="v3">
+<input type="text" role="spinbutton" aria-valuenow="675000" value="$675,000" id="v4" aria-label="v4">
+<input type="number" min="5.56" max="106.64" value="5.56" id="v5" aria-label="v5">
+<div role="spinbutton" aria-valuenow="3" id="v6" aria-label="v6"></div>
+<div role="slider" aria-valuenow="3" id="v7" aria-label="v7"></div>
+<div role="progressbar" aria-valuemax="74.90" aria-valuenow="0.0" aria-valuemin="0" id="v8" aria-label="v8"></div>
+<input type="number" value="1.00" id="v9" aria-label="v9">
+<meter value="0.5" id="v11" aria-label="v11"></meter>
+<div role="slider" aria-valuemin="0.05" aria-valuemax="3.1" aria-valuenow="0.1" id="v12" aria-label="v12"></div>
+<input type="range" id="v13" aria-label="v13" aria-valuetext="Eighty" value="80">
+<div role="progressbar" id="v14" aria-label="v14" aria-valuetext="Loading..."></div>
+<div role="progressbar" id="v15" aria-label="v15"></div>
+<progress id="v16" aria-label="v16"></progress>
+<input type="number" id="v17" aria-label="v17" value="">
+<input type="number" id="v18" aria-label="v18" min="0" max="10" value="4">
+
+<!-- selected -->
+<select id="s1" aria-label="s1"><option id="s1a" disabled value="x">-</option><option id="s1b">b</option></select>
+<select id="s2" aria-label="s2"><option id="s2a" value="" disabled selected>Staff</option><option id="s2b">b</option></select>
+<div role="listbox" id="s3" aria-label="s3"><button role="option" aria-selected="false" id="s3a">a</button><div role="option" id="s3b" aria-selected="true">b</div><div role="option" id="s3c">c</div></div>
+<div role="tablist" id="s4" aria-label="s4"><div role="tab" id="s4a">a</div><div role="tab" aria-selected="false" id="s4b">b</div></div>
+<ul role="tree" id="s5" aria-label="s5"><li role="treeitem" id="s5a" aria-expanded="true" aria-owns="s5g">a</li><li role="treeitem" id="s5b">b</li></ul><ul id="s5g"><li id="s5gi">x</li></ul>
+<ul role="listbox" id="s6" aria-label="s6"><li role="presentation"><a role="option" href="#" id="s6a">l</a></li></ul>
+<aside aria-label="s7" tabindex="0"><ul role="none"><li role="option" id="s7a">o</li></ul></aside>
+<div role="tab" id="s8">solo tab</div>
+<div role="option" id="s9">solo option</div>
+<div role="tablist"><div class="panel"><div role="tab" id="s10" aria-controls="s10p">tab in panel</div></div></div>
+<div role="listbox" id="s11" aria-label="s11" aria-disabled="true"><div role="option" id="s11a">a</div></div>
+<div role="listbox" id="s12" aria-label="s12"><div role="option" id="s12a" aria-disabled="true">a</div></div>
+<div role="menu" id="s13" aria-label="s13"><div role="menuitem" id="s13a" aria-selected="true">a</div></div>
+<div role="tab" id="s14" aria-selected="true">sel tab alone</div>
+<div role="gridcell" id="s15" aria-selected="false">cell</div>
+<div role="row" id="s16" aria-selected="false">row</div>
+<div role="button" id="s17" aria-selected="false" tabindex="0">btn</div>
+<a href="#" id="s18" aria-selected="false">link</a>
+
+<!-- hasPopup, autocomplete -->
+<button role="combobox" id="h1" aria-controls="x" aria-label="h1">Mileage</button>
+<details><summary aria-haspopup="dialog" id="h2" aria-label="h2">S</summary>x</details>
+<a href="#" aria-haspopup="1" id="h3">h3</a>
+<div role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="h4" aria-label="h4c"><input type="search" aria-autocomplete="list" aria-controls="x" id="h4" aria-label="h4"></div>
+<input type="text" aria-autocomplete="list" id="h5" aria-label="h5">
+<div aria-haspopup="menu" id="h6">h6</div>
+<a href="#" aria-haspopup="true" id="h7">h7</a>
+<button role="combobox" aria-haspopup="menu" id="h8" aria-label="h8">x</button>
+<div role="combobox" aria-haspopup="false" id="h9" aria-label="h9" tabindex="0"></div>
+<details><summary aria-haspopup="menu" id="h10">S</summary>x</details>
+<input list="dl" disabled value="MIT" id="a1" aria-label="a1"><datalist id="dl"><option>MIT</option></datalist>
+<input list="dl" id="a2" aria-label="a2">
+<button role="combobox" aria-autocomplete="list" aria-haspopup="true" id="a3" aria-label="a3">x</button>
+<input type="text" role="combobox" aria-autocomplete="list" id="a4" aria-label="a4">
+<input type="text" role="combobox" aria-autocomplete="both" id="a5" aria-label="a5" aria-haspopup="listbox">
+<select id="h11" aria-label="h11"><option>a</option></select>
+<select id="h12" aria-label="h12" multiple><option>a</option></select>
+<div role="button" aria-haspopup="dialog" id="h13" tabindex="0">d</div>
+<div role="button" aria-haspopup="tree" id="h14" tabindex="0">d</div>
+<div role="button" aria-haspopup="grid" id="h15" tabindex="0">d</div>
+<div role="button" aria-haspopup="bogus" id="h16" tabindex="0">d</div>
+<div role="searchbox" aria-haspopup="listbox" id="h17" aria-label="h17"></div>
+
+<!-- keyshortcuts, roledescription -->
+<a href="#" accesskey="" id="k1">k1</a>
+<button accesskey="l01" id="k2">k2</button>
+<a href="#" accesskey="10" id="k3">k3</a>
+<a href="#" accesskey="a b" id="k4">k4</a>
+<a href="#" accesskey="ab" id="k5">k5</a>
+<a href="#" accesskey="x" id="k6">k6</a>
+<div id="k7" accesskey="y">k7</div>
+<a href="#" accesskey="x" aria-keyshortcuts="Control+Z" id="k8">k8</a>
+<div aria-roledescription="slide" id="r1">r1</div>
+<section aria-roledescription="carousel" aria-label="c" id="r2">r2</section>
+<div role="group" aria-roledescription="slide" id="r3">r3</div>
+<div role="group" aria-roledescription="Kunngj&oslash;ring" aria-label="g" id="r4">r4</div>
+<button aria-roledescription="thing" id="r5">r5</button>
+<div role="region" aria-roledescription=" x " aria-label="r6" id="r6">r6</div>
+<p aria-roledescription="para" id="r7">r7</p>
+<div aria-roledescription="slide" role="presentation" id="r8">r8</div>
+
+<!-- editable -->
+<div contenteditable="true" id="e1"><p id="e1p">x</p><button id="e1b">b</button><span id="e1s">s</span></div>
+<span contenteditable="plaintext-only" id="e2" tabindex="0">x</span>
+<div contenteditable="false" id="e3">x</div>
+<div contenteditable="true"><div contenteditable="false" id="e4"><span id="e4s">t</span></div></div>
+<div role="textbox" contenteditable="true" id="e5" aria-label="e5"><button id="e5b">b</button></div>
+<div role="textbox" id="e7" aria-label="e7" contenteditable="true">hello<span id="e7s"> world</span></div>
+<input type="text" id="e8" aria-label="e8" value="v">
+<input type="text" disabled id="e9" aria-label="e9" value="v">
+<input type="text" readonly id="e10" aria-label="e10" value="v">
+<textarea id="e11" aria-label="e11">v</textarea>
+<textarea id="e12" aria-label="e12" disabled>v</textarea>
+<textarea id="e13" aria-label="e13" readonly>v</textarea>
+<input type="number" id="e14" aria-label="e14" value="3">
+<input type="number" id="e15" aria-label="e15" value="3" readonly>
+<input type="search" id="e16" aria-label="e16" value="3">
+<input type="email" id="e17" aria-label="e17" value="3" disabled>
+<input type="password" id="e18" aria-label="e18" value="secret">
+<input type="date" id="e19" aria-label="e19">
+<h4 contenteditable="true" id="e20">Heading ed</h4>
+
+<!-- value -->
+<button role="combobox" id="val1">Stampante Gamma</button>
+<input type="file" id="val2" aria-label="val2">
+<input type="file" multiple id="val2m" aria-label="val2m">
+<select id="val3" aria-label="val3" style="text-transform:uppercase"><option>All</option></select>
+<select id="val3b" aria-label="val3b" style="text-transform:capitalize"><option>roy high</option></select>
+<select id="val3c" aria-label="val3c" style="text-transform:lowercase"><option>ROY HIGH</option></select>
+<div role="textbox" id="val6" aria-label="val6">some text</div>
+<input type="text" id="val7" aria-label="val7" value="a&#10;b&#13;c">
+<span id="val8" contenteditable="true">amentu</span>
+<input type="color" value="#1913B0" id="val9" aria-label="val9">
+<select id="val10" aria-label="val10"><option>dansk&lrm;</option></select>
+<div role="combobox" id="val11" aria-label="val11" tabindex="0">Pick one</div>
+<div role="combobox" id="val12" aria-label="val12" aria-owns="val12l" tabindex="0"><span>Typed <b>text</b></span></div>
+<input type="password" id="val13" aria-label="val13" value="">
+<div role="searchbox" id="val14" aria-label="val14">q</div>
+<div role="listbox" id="val15" aria-label="val15"><div role="option" aria-selected="true">sel</div></div>
+<button id="val16">plain button</button>
+<input type="text" id="val17" aria-label="val17" value="  padded  ">
+<select id="val18" aria-label="val18"><option>&nbsp;&nbsp;indented</option></select>
+<input type="button" value="vb" id="val19">
+<input type="submit" id="val20">
+<div role="progressbar" aria-valuenow="0" id="val21" aria-label="val21"></div>
+</body>
+</html>

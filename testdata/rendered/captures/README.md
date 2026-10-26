@@ -12,3 +12,5 @@ Text widths and line breaks depend on the fonts installed on the machine that ca
 These files are the output of a browser run on pages written for this repository. Refresh them on each Chrome upgrade and re-run the tests.
 
 The `layout` and `svgprobe` directories also hold `ax.json.gz`: the `getFullAXTree` result of the same page, one entry per frame, for tests that compare the tree with Chrome's. `svgprobe` is the page behind the svg and header/footer role entries of the Chromium profile.
+
+`axprops`, `axprops2` and `axprops3` are probe pages for the properties Chrome states on controls and widgets (disabled, selected, invalid, readonly, popups, ranges, values, editable, the inner nodes of text fields), one element per observation. They were served as `https://pages.test/<page>.html`, and the directories hold `ax.json.gz`, `dom.json.gz` and `snapshot.json.gz`. `ChromePropertyProbeTests` and `ChromeProbeTests` compare our tree with them.

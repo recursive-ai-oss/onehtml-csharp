@@ -352,8 +352,8 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `input-password-file`
 
 - **Topic:** input type=password and type=file
-- **Choice:** A password field is a textbox whose value is not exposed; a file field is a button.
-- **Matches:** Chrome 156 output on the forms fixture; HTML-AAM lists no role for either.
+- **Choice:** A password field is a textbox whose value is one bullet for each character of its value attribute (the characters are not exposed); a file field is a button whose value is the label No file chosen, whatever its multiple attribute.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus; HTML-AAM lists no role for either.
 - **Evidence:** **observed in Chrome output**
 
 ## `row-name`
@@ -408,8 +408,8 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `export-set-position`
 
 - **Topic:** posinset and setsize in the export
-- **Choice:** The export leaves out posinset and setsize unless aria-posinset or aria-setsize gave them.
-- **Matches:** Chrome 156 output on the forms, implied and whitespace fixtures: no list item, option or radio button has either property.
+- **Choice:** The export never states posinset or setsize, whether the author gave aria-posinset and aria-setsize or the tree computed them. The tree keeps both.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus: 214 occurrences on 28 corpus pages where only we stated them, and none stated by Chrome in 12,788 captures.
 - **Evidence:** **observed in Chrome output**
 
 ## `foreign-object`
@@ -548,29 +548,29 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `accesskey-shortcut`
 
 - **Topic:** accesskey
-- **Choice:** An element with an accesskey has keyshortcuts Alt+key.
-- **Matches:** Chrome 156 output on the corpus (Linux).
+- **Choice:** An element with an accesskey has keyshortcuts Alt+ followed by the attribute exactly as written: an empty value gives Alt+, a list such as a b or a multi-character key is kept whole. aria-keyshortcuts wins when both are given.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus (Linux).
 - **Evidence:** **observed in Chrome output**
 
 ## `autocomplete-popup`
 
-- **Topic:** text field with suggestions
-- **Choice:** hasPopup is menu for true and listbox for aria-autocomplete list or both, and for a text field with a list attribute.
-- **Matches:** Chrome 156 output on the corpus; menu for aria-haspopup=true as WAI-ARIA 1.2 defines.
+- **Topic:** hasPopup
+- **Choice:** hasPopup is menu for aria-haspopup true and the token for menu, listbox, tree, grid or dialog on any element, a summary or a div included. A missing, false or unknown value (1, bogus) states none. Every combobox that names none has listbox (a drop-down select has menu, see select-popup), and aria-haspopup false does not remove it. A text field with aria-autocomplete adds no popup unless it is a combobox.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
 - **Evidence:** **observed in Chrome output**
 
 ## `option-selectedness`
 
 - **Topic:** selected state of options
-- **Choice:** An option is selected by its selectedness (HTML 4.10.7), including the first enabled option of a single-choice select that has none selected. aria-selected on the option overrides.
-- **Matches:** Chrome 156 output on the corpus.
+- **Choice:** An option is selected by its selectedness (HTML 4.10.7), including the first enabled option of a single-choice select that has none selected; aria-selected on the option overrides. A disabled native option states no selected. The value of the select is the text of that option, with the select text-transform applied.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
 - **Evidence:** **observed in Chrome output**
 
 ## `constraint-invalid`
 
 - **Topic:** invalid from form constraints
-- **Choice:** invalid is true for a required unchecked checkbox, a required select showing its placeholder and a number outside min and max. Text fields are not reported even when required and empty. Kept internal; the public invalid state follows ARIA.
-- **Matches:** Chrome 156 output on the corpus.
+- **Choice:** invalid is true when a control that is not disabled and has no readonly attribute fails one of: a required checkbox that is unchecked; a required radio group (same name in the same form) with no checked button; a required file field; a required date, time, month, week or datetime-local field with no valid value; a required list box or multiple select with nothing selected; a required drop-down whose chosen option is the empty-valued first option (also when it is marked selected and disabled); a number below min, above max or off the step grid counted from min; a date or month outside min and max; an email or url value that does not parse; a pattern that does not match the whole value of a text, search, tel, url, email or password field. Text fields, number fields and text areas are not reported when required and empty. An explicit aria-invalid=false replaces the report. Kept internal; the public invalid state follows ARIA. Step mismatch with no min is never reported because the step base is then the value itself.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
 - **Evidence:** **observed in Chrome output**
 
 ## `required-exposure`
@@ -669,4 +669,95 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 - **Topic:** roles named from contents
 - **Choice:** A dt (role term) is named from its contents although WAI-ARIA 1.2 allows only an author name for term; a dfn is not (WPT html-aam phrasing-elements expects that). A time element is not named from its contents.
 - **Matches:** Chrome 156 output: 929 dt on 98 corpus pages have their text as the name, 114 time elements on 13 pages have none; WPT html-aam/accname-computation-by-element/phrasing-elements.html for dfn.
+- **Evidence:** **observed in Chrome output**
+
+## `disabled-inheritance`
+
+- **Topic:** disabled on descendants
+- **Choice:** A disabled element passes the state to the descendants that can take focus (a link, a control, an element with a tabindex), not to the others: not to a paragraph, a span, a generic, or a role=button without a tabindex. The ancestor is one with aria-disabled=true or a disabled button or select; a disabled fieldset or optgroup passes nothing on and states nothing itself. An explicit aria-disabled=false ends the inheritance. An option of a disabled select or optgroup is disabled whether or not it can take focus (and stays focusable, see option-focusable).
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `selected-states`
+
+- **Topic:** selected on items that say nothing
+- **Choice:** An option, tab or treeitem with no aria-selected states selected=false, unless an item in the same list box, tab list, tree or tree grid carries an aria-selected attribute (any value), when it states nothing. An item outside such a container stands alone. A row, a button or a link states selected only when asked; a row with aria-selected=false states nothing.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `option-needs-listbox`
+
+- **Topic:** role=option outside a listbox
+- **Choice:** An explicit role option is dropped when the first ancestor that is not generic, group or presentational is not a listbox or combobox (and no aria-owns gives the element to one): a button, link or list item keeps its own role, a div is generic. A list between the option and the listbox (an ul inside it) counts.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus: 478 buttons, 31 links and 6 list items on 7 corpus pages that Chrome exposes as button, link and listitem.
+- **Evidence:** **observed in Chrome output**
+
+## `readonly-exposure`
+
+- **Topic:** readonly
+- **Choice:** The export states readonly on text boxes and on grids, tree grids and their cells, and nowhere else: not on a spin button, combobox, checkbox, radio, search box, slider or list box, whatever the markup says. A disabled control states none, and an input of a type other than text, tel, url, email or password with the role textbox states none.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `autocomplete-text-fields`
+
+- **Topic:** autocomplete
+- **Choice:** autocomplete is stated for input and textarea elements only (from aria-autocomplete), and as list for an input with a list attribute that is a combobox, disabled or not. An author aria-autocomplete on a button or a div is not stated.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `roledescription-roles`
+
+- **Topic:** aria-roledescription
+- **Choice:** Not stated on a generic or presentational element; stated on any other role. Chrome hands the text over as UTF-8 bytes read as Latin-1, so a non-ASCII description arrives with each byte as one character (cafe with an acute e becomes the two characters C3 A9); the export does the same.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus: 22 occurrences; "KunngjÃ¸ring".
+- **Evidence:** **observed in Chrome output**
+
+## `editable-inherited`
+
+- **Topic:** editable on the content of an editing host
+- **Choice:** An element inside contenteditable (true or empty, or plaintext-only) states editable richtext or plaintext, down to a contenteditable=false element and its content. A static text node inherits its parent state. The editing host inside a disabled or read-only text field keeps its generic node but states no editable.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `range-values`
+
+- **Topic:** value, valuemin, valuemax and valuetext of ranges
+- **Choice:** An author aria-valuenow, aria-valuemin or aria-valuemax wins over the native attribute of an input. A spin button gives no bounds and no value: 0, 0 and 0; a focusable separator is a slider with 0 to 100; a progress bar whose aria-valuenow is not a number rests at 0. Bounds are stated as single-precision numbers (5.56 is 5.559999942779541). The export never states aria-valuetext: valuetext is the value attribute of an input slider or spin button as written (1.00, $675,000), or the number a native slider rests at, and nothing for a progress bar, meter or div.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `text-values`
+
+- **Topic:** value of text-like controls
+- **Choice:** A custom text box, search box or combobox (a div, or a button with the role) states its text, white space collapsed; a text input loses its line breaks; a date input with an invalid value has none; a color input is lower case; a list box states no value. An editing host without block children states its text; one with blocks would need line breaks worked out, which is left out.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `placeholder-leaf`
+
+- **Topic:** placeholder before the inner editor
+- **Choice:** A text, tel, url, email or password field with a placeholder and no value has an ignored leaf before the generic that holds the editor; a search or number field has it before the ignored node that holds the editor, a combobox input the same.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus (axprops3).
+- **Evidence:** **observed in Chrome output**
+
+## `combobox-expanded`
+
+- **Topic:** expanded on a combobox
+- **Choice:** Only a drop-down select states expanded=false; an ARIA combobox states it when its author does.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `invalid-spelling`
+
+- **Topic:** aria-invalid=spelling
+- **Choice:** The export states true.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `treeitem-level`
+
+- **Topic:** level of a tree item
+- **Choice:** A tree item is at level 1 plus the number of groups it sits in, when aria-level is absent.
+- **Matches:** Chrome 156 output on the property probe pages (testdata/rendered/pages/axprops*.html, captures beside them) and the corpus.
 - **Evidence:** **observed in Chrome output**

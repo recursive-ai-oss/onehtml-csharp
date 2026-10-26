@@ -168,12 +168,12 @@ public sealed class ChromeObservedTreeTests
     }
 
     [Fact]
-    public void An_unnamed_form_is_a_form_and_a_password_is_a_textbox_without_a_value()
+    public void An_unnamed_form_is_a_form_and_a_password_is_a_textbox_whose_value_is_bullets()
     {
         (Document doc, AccessibilityTree tree) = Build("<form id=f><input id=p type=password value=secret><input id=u type=file></form>");
         Assert.Equal("form", Find(doc, tree, "#f").Role);
         Assert.Equal("textbox", Find(doc, tree, "#p").Role);
-        Assert.Null(Find(doc, tree, "#p").States.Value);
+        Assert.Equal("\u2022\u2022\u2022\u2022\u2022\u2022", Find(doc, tree, "#p").States.Value);
         Assert.Equal("button", Find(doc, tree, "#u").Role);
     }
 
@@ -242,7 +242,7 @@ public sealed class ChromeObservedTreeTests
     }
 
     [Fact]
-    public void The_export_leaves_out_computed_set_positions_but_not_given_ones()
+    public void The_export_leaves_out_set_positions_given_or_computed()
     {
         (Document doc, AccessibilityTree tree) = Build("<ul><li id=a>a</li><li id=b aria-posinset=7 aria-setsize=9>b</li></ul>");
         using JsonDocument export = JsonDocument.Parse(tree.ToChromeJson());
@@ -251,8 +251,9 @@ public sealed class ChromeObservedTreeTests
         Assert.Null(Prop(ExportNode(export, a), "posinset"));
         Assert.Null(Prop(ExportNode(export, a), "setsize"));
         AxNode b = Find(doc, tree, "#b");
-        Assert.Equal("7", Prop(ExportNode(export, b), "posinset"));
-        Assert.Equal("9", Prop(ExportNode(export, b), "setsize"));
+        Assert.Equal(7, b.States.PosInSet);
+        Assert.Null(Prop(ExportNode(export, b), "posinset"));
+        Assert.Null(Prop(ExportNode(export, b), "setsize"));
     }
 
     [Fact]

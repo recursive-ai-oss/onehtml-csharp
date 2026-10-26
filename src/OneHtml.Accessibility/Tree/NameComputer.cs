@@ -642,7 +642,8 @@ internal sealed class NameComputer
     internal static string SelectedOptionsText(Node select)
     {
         var sb = new StringBuilder();
-        Node first = default;
+        Node firstEnabled = default;
+        Node lastSelected = default;
         bool multiple = select.HasAttribute("multiple");
         int visited = 0;
         for (Node d = select.NextInDocumentOrder(select); !d.IsNull && visited++ < 100_000; d = d.NextInDocumentOrder(select))
@@ -652,33 +653,34 @@ internal sealed class NameComputer
                 continue;
             }
 
-            if (first.IsNull)
+            if (firstEnabled.IsNull && !d.HasAttribute("disabled") && !(d.ParentElement is { IsNull: false } g && g.LocalName == "optgroup" && g.HasAttribute("disabled")))
             {
-                first = d;
+                firstEnabled = d;
             }
 
             if (d.HasAttribute("selected"))
             {
-                if (sb.Length > 0)
+                lastSelected = d;
+                if (multiple)
                 {
-                    sb.Append(' ');
-                }
+                    if (sb.Length > 0)
+                    {
+                        sb.Append(' ');
+                    }
 
-                sb.Append(OptionText(d));
-                if (!multiple)
-                {
-                    return sb.ToString();
+                    sb.Append(OptionText(d));
                 }
             }
         }
 
-        // A single-selection select with no selected option shows its first option.
-        if (sb.Length == 0 && !multiple && !first.IsNull)
+        if (multiple)
         {
-            return OptionText(first);
+            return sb.ToString();
         }
 
-        return sb.ToString();
+        // HTML 4.10.7 selectedness: the last option marked selected, else the first option that is not disabled.
+        Node chosen = !lastSelected.IsNull ? lastSelected : firstEnabled;
+        return chosen.IsNull ? string.Empty : OptionText(chosen);
     }
 
     private static string AriaSelectedText(Node widget)

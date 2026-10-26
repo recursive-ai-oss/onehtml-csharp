@@ -142,6 +142,16 @@ public sealed class ChromeProbeTests
     }
 
     [Fact]
+    public void Text_search_and_number_fields_have_Chromes_inner_nodes_with_and_without_a_placeholder()
+    {
+        // The property probe for inner editors: every field type, with and without a value, a placeholder, disabled and read-only.
+        Page p = Load("axprops3");
+        AccessibilityTree tree = AccessibilityTree.Build(p.Doc, p.Styles, null, new AccessibilityOptions { Facts = p.Facts });
+        // The date field's pickers are not built (profile entry internal-roles), so the outlines are compared up to it.
+        Assert.Equal(ChromeOutline(p.AxNodes).TakeWhile(l => l.Trim() != "Date"), OursOutline(tree.Root).TakeWhile(l => l.Trim() != "Date"));
+    }
+
+    [Fact]
     public void Link_names_have_Chromes_spaces_for_every_parent_and_child_display_on_the_name_probe()
     {
         Page p = Load("nameprobe");

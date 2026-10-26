@@ -11,6 +11,7 @@ internal sealed class TreeBuilder
 {
     private readonly Document _doc;
     private readonly DocumentStyles _styles;
+    private readonly StateHelpers _stateHelpers;
     private readonly AccessibilityOptions _opt;
     private readonly CancellationToken _ct;
     private readonly UpdatePlan? _plan;
@@ -33,6 +34,7 @@ internal sealed class TreeBuilder
         _plan = plan;
         _doc = doc;
         _styles = styles;
+        _stateHelpers = new StateHelpers(doc, a => _roles[a].Role is { Name: "listbox" or "tablist" or "tree" or "treegrid" });
         _opt = options;
         _ct = ct;
         _layout = options.Facts is { } facts ? new LayoutRules(facts, styles) : null;
@@ -60,6 +62,7 @@ internal sealed class TreeBuilder
         AssignIds();
         _plan?.Prepare(_hidden, _roles, _owns, _opt.MaxIdReferences, _ct);
         ComputeNodes();
+        ClearDisabledEditors();
         ResolveSvgRoots();
         ResolveLabelFor();
         _tree.UsedCounters = _counters.Walked;
@@ -459,14 +462,9 @@ internal sealed class TreeBuilder
         string? value = el.GetAttribute("value");
         switch (_roles[el].Role?.Name)
         {
-            case "textbox" or "searchbox" or "spinbutton":
+            case "textbox" or "searchbox" or "spinbutton" or "combobox" when type is "text" or "search" or "tel" or "url" or "email" or "password" or "number" or "":
                 AxNode editor = EditorNode(host, type == "password" ? new string('\u2022', value?.Length ?? 0) : value ?? string.Empty);
-                if (type is not ("search" or "number") && string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(el.GetAttribute("placeholder")))
-                {
-                    // The placeholder text is an ignored leaf before the inner editor.
-                    return [new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode) { Role = "none", IsIgnored = true, IgnoredReasons = [], Parent = host, States = new AxStates(), Children = [] }, editor];
-                }
-
+                AxNode content = editor;
                 if (type is "search" or "number")
                 {
                     // The inner editor of these controls sits in an ignored node with no reason (a search field's cancel button, a
@@ -474,15 +472,44 @@ internal sealed class TreeBuilder
                     var wrapper = new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode) { Role = "none", IsIgnored = true, IgnoredReasons = [], Parent = host, States = new AxStates() };
                     editor.Parent = wrapper;
                     wrapper.Children = [editor];
-                    return [wrapper];
+                    content = wrapper;
                 }
 
-                return [editor];
+                if (string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(el.GetAttribute("placeholder")))
+                {
+                    // The placeholder text is an ignored leaf before the inner editor (or before the node that holds it).
+                    return [new AxNode(_tree, -1, AxNodeKind.Generated, host.DomNode) { Role = "none", IsIgnored = true, IgnoredReasons = [], Parent = host, States = new AxStates(), Children = [] }, content];
+                }
+
+                return [content];
             case "button" when type is "submit" or "button" or "reset":
                 string label = !string.IsNullOrEmpty(value) ? value : type == "submit" ? "Submit" : type == "reset" ? "Reset" : string.Empty;
                 return label.Length == 0 ? none : [GeneratedStaticText(host, label)];
             default:
                 return none;
+        }
+    }
+
+    private readonly List<AxNode> _editors = [];
+
+    /// <summary>
+    /// The editing host inside a control (and its text) is editable only while the control is enabled and not read-only (profile entry
+    /// inner-editor-editable); a disabled or read-only field keeps the nodes and loses the state. Run after the states are known.
+    /// </summary>
+    private void ClearDisabledEditors()
+    {
+        foreach (AxNode e in _editors)
+        {
+            AxNode? host = e.Parent;
+            while (host is { Kind: AxNodeKind.Generated })
+            {
+                host = host.Parent;
+            }
+
+            if (host is { Kind: AxNodeKind.Element } h && (h.States.Disabled || h.DomNode.HasAttribute("readonly")))
+            {
+                e.States.Editable = null;
+            }
         }
     }
 
@@ -494,10 +521,12 @@ internal sealed class TreeBuilder
             Parent = host,
             States = new AxStates { Editable = "plaintext" },
         };
+        _editors.Add(editor);
         if (text.Length > 0 && !text.Contains('\n', StringComparison.Ordinal))
         {
             AxNode t = GeneratedStaticText(editor, text);
             t.States.Editable = "plaintext";
+            _editors.Add(t);
             editor.Children = [t];
         }
         else
@@ -769,7 +798,7 @@ internal sealed class TreeBuilder
         n.IsIgnored = reasons.Count > 0;
         n.IgnoredReasons = reasons;
         n.AriaDisabledChain = n.Parent is { } p && (p.AriaDisabledChain || p.States.Disabled);
-        n.States = new AxStates();
+        n.States = new AxStates { Editable = n.Parent is { Kind: AxNodeKind.Element } pe ? pe.States.Editable : null };
     }
 
     private void AddHiddenReasons(AxNode n, List<string> reasons)
@@ -793,6 +822,32 @@ internal sealed class TreeBuilder
             bool own = n.Kind == AxNodeKind.Element && _hidden.Own(n.DomNode.Index).HasFlag(HiddenReasons.Inert);
             reasons.Add(own ? "inertElement" : "inertSubtree");
         }
+    }
+
+    /// <summary>
+    /// True when a listbox or combobox holds the element: the first ancestor that is not a generic, a group or presentational is one, or an
+    /// <c>aria-owns</c> gives the element to one. A list between them (an <c>ul</c> inside the listbox) is not.
+    /// </summary>
+    private bool HasListboxContext(Node el)
+    {
+        if (_owns.OwnerOf(el.Index) >= 0)
+        {
+            return true;
+        }
+
+        int steps = 0;
+        for (Node a = el.ParentElement; !a.IsNull && a.IsElement && steps++ < 100_000; a = a.ParentElement)
+        {
+            string? name = _roles[a].Role?.Name;
+            if (name is null or "generic" or "group" or "none" or "presentation")
+            {
+                continue;
+            }
+
+            return name is "listbox" or "combobox";
+        }
+
+        return false;
     }
 
     private void ComputeElement(AxNode n)
@@ -825,6 +880,14 @@ internal sealed class TreeBuilder
             origin = nr.ExplicitRole is not null ? RoleOrigin.Explicit : role is null ? RoleOrigin.None : RoleOrigin.Implicit;
         }
 
+        if (origin == RoleOrigin.Explicit && role is { Name: "option" } && !HasListboxContext(el))
+        {
+            // Chromium does not give the role option to an element that no listbox (or combobox) holds: a button, link or list item keeps its
+            // own role, a div is generic (profile entry option-needs-listbox).
+            role = nr.ImplicitRole;
+            origin = role is null ? RoleOrigin.None : RoleOrigin.Implicit;
+        }
+
         if (origin == RoleOrigin.Implicit && role is { Name: "listitem" or "generic" } && el.Namespace == ElementNamespace.Html && el.LocalName == "li"
             && el.ParentElement is { IsNull: false } listParent && listParent.Namespace == ElementNamespace.Html && listParent.LocalName is "ul" or "ol" or "menu"
             && _roles[listParent].ExplicitRole is { Name: not ("list" or "none" or "presentation" or "generic") })
@@ -838,7 +901,8 @@ internal sealed class TreeBuilder
         n.RoleOrigin = origin;
         n.Role = role is null ? string.Empty : RoleComputer.ComputedRoleName(role);
         n.Hidden = _hidden.Get(el);
-        n.AriaDisabledChain = n.Parent is { Kind: AxNodeKind.Element } p && (p.AriaDisabledChain || TreeText.EqualsIgnoreCase(p.DomNode.GetAttribute("aria-disabled"), "true"));
+        // A disabled fieldset or optgroup passes nothing on: only the controls and options it holds are disabled (profile entry disabled-inheritance).
+        n.AriaDisabledChain = n.Parent is { Kind: AxNodeKind.Element } p && (p.AriaDisabledChain || (p.States.Disabled && !(p.DomNode.Namespace == ElementNamespace.Html && p.DomNode.LocalName is "fieldset" or "optgroup")));
 
         // Name and description. A role that prohibits author naming is still named from aria-label, aria-labelledby and the
         // title attribute, as the html-aam name pages expect of generic elements.
@@ -869,7 +933,7 @@ internal sealed class TreeBuilder
             n.Description = AxText.Empty;
         }
 
-        n.States = StateBuilder.Build(el, role, nr.IsDisabled, n.AriaDisabledChain, () => NameComputer.SelectedOptionsText(el), OptionSelected);
+        n.States = StateBuilder.Build(el, role, nr.IsDisabled, n.AriaDisabledChain, nr.IsFocusable, () => TreeText.ApplyTextTransform(NameComputer.SelectedOptionsText(el), _styles.GetStyle(el).GetPropertyValue("text-transform")), OptionSelected, _stateHelpers);
         n.Relations = BuildRelations(n);
         if (n.States.Url is { } rawUrl)
         {
@@ -1353,7 +1417,7 @@ internal sealed class TreeBuilder
         foreach (AxNode n in _domOrder)
         {
             if (n.Kind == AxNodeKind.Element && !n.Focus.IsFocusable && n.Role == "option" && n.DomNode.Namespace == ElementNamespace.Html
-                && n.DomNode.LocalName == "option" && !n.States.Disabled && !n.IsIgnored && n.Parent is { } p && p.Role is "combobox" or "listbox" or "group" or "MenuListPopup")
+                && n.DomNode.LocalName == "option" && !n.DomNode.HasAttribute("disabled") && !n.IsIgnored && n.Parent is { } p && p.Role is "combobox" or "listbox" or "group" or "MenuListPopup")
             {
                 n.Focus = n.Focus with { IsFocusable = true };
             }
@@ -1368,6 +1432,22 @@ internal sealed class TreeBuilder
     {
         foreach (AxNode n in _domOrder)
         {
+            if (n.Kind == AxNodeKind.Element && n.Role == "treeitem" && n.States.Level is null)
+            {
+                // A tree item is one level deeper for each group it sits in (profile entry treeitem-level).
+                int groups = 0;
+                for (AxNode? p = n.Parent; p is not null; p = p.Parent)
+                {
+                    if (p.Role == "group")
+                    {
+                        groups++;
+                    }
+                }
+
+                n.States.Level = groups + 1;
+                continue;
+            }
+
             if (n.Kind != AxNodeKind.Element || !(n.Role == "listitem" || n.InternalRole == "listitem") || n.States.Level is not null)
             {
                 continue;

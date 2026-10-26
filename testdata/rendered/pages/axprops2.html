@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Property probe 2</title></head>
+<body>
+<h1>Property probe 2</h1>
+<div role="listbox" aria-label="L1"><div role="option" id="l1a">a</div><div role="option" id="l1b">b</div><div role="option" id="l1c">c</div></div>
+<div role="tablist" aria-label="L2"><div role="tab" id="l2a">a</div><div role="tab" id="l2b">b</div></div>
+<div role="listbox" aria-label="L3"><div role="option" id="l3a" aria-selected="true">a</div><div role="option" id="l3b">b</div><div role="option" id="l3c">c</div></div>
+<div role="listbox" aria-label="L4"><div role="option" id="l4a" aria-selected="false">a</div><div role="option" id="l4b">b</div></div>
+<div role="listbox" aria-label="L5"><div role="option" id="l5a" aria-selected="true">a</div></div>
+<div role="tablist" aria-label="L8"><div role="tab" id="l8a" aria-selected="true">a</div><div role="tab" id="l8b">b</div><div role="tab" id="l8c">c</div></div>
+<div role="listbox" aria-label="L10"><div role="option" id="l10a" tabindex="0">a</div><div role="option" id="l10b" tabindex="-1">b</div></div>
+<select multiple aria-label="L12"><option id="l12a">a</option><option id="l12b" selected>b</option></select>
+<div role="listbox" aria-label="L13"><div role="option" id="l13a" aria-selected="false">a</div><div role="option" id="l13b" aria-selected="false">b</div></div>
+<div role="listbox" aria-label="L14"><div role="option" id="l14a" aria-selected="undefined">a</div><div role="option" id="l14b">b</div></div>
+<div role="menu" aria-label="L15"><div role="menuitemradio" id="l15a" aria-checked="true">a</div><div role="menuitem" id="l15b">b</div></div>
+<div role="tree" aria-label="L16"><div role="treeitem" id="l16a" aria-selected="true">a</div><div role="treeitem" id="l16b">b</div><div role="group"><div role="treeitem" id="l16c">c</div></div></div>
+<div role="grid" aria-label="L17"><div role="row" id="l17r"><div role="gridcell" id="l17a">a</div><div role="gridcell" id="l17b" aria-selected="true">b</div></div></div>
+<table role="grid" aria-label="L18"><tr><td id="l18a">a</td><td id="l18b" aria-selected="false">b</td></tr></table>
+
+<button disabled><div tabindex="0" id="dd1d">x</div></button>
+<fieldset disabled><div tabindex="0" id="dd2d">x</div></fieldset>
+<div aria-disabled="true"><div role="button" id="dd3b">b</div></div>
+<div aria-disabled="true"><a role="link" id="dd4a">l</a></div>
+<div aria-disabled="true"><span tabindex="-1" id="dd5s">s</span></div>
+<div aria-disabled="true"><div role="menuitem" id="dd6m">m</div></div>
+<div aria-disabled="true"><div role="tab" id="dd7t">t</div></div>
+<div aria-disabled="true"><input type="checkbox" id="dd8c" aria-label="c"></div>
+<div aria-disabled="true"><div tabindex="0" role="button" aria-disabled="false" id="dd10">x</div></div>
+<section aria-disabled="true" aria-label="s"><h2 id="dd11h" tabindex="0">h</h2></section>
+<select aria-label="g"><optgroup disabled label="g"><option id="dd13o">x</option></optgroup></select>
+<fieldset disabled><legend><input id="dd14i" aria-label="i"></legend></fieldset>
+<div aria-disabled="true"><div role="gridcell" id="dd15">c</div><div role="checkbox" id="dd16" aria-checked="false">k</div><div role="textbox" id="dd17" aria-label="t">t</div><div role="separator" id="dd18"></div><div role="slider" id="dd19" aria-label="sl"></div></div>
+<div aria-disabled="true"><details><summary id="dd20">s</summary>x</details></div>
+
+<form>
+<input type="number" required id="n1" aria-label="n1">
+<input type="number" step="2" value="3" id="n2" aria-label="n2">
+<input type="time" required id="n3" aria-label="n3">
+<input type="month" required id="n4" aria-label="n4">
+<input type="url" required id="n5" aria-label="n5">
+<input type="email" value="a@b.co" id="n6" aria-label="n6">
+<input type="email" value="a b" id="n7" aria-label="n7">
+<input type="radio" required checked name="g1" id="n8" aria-label="n8">
+<input type="radio" name="g2" id="n9" aria-label="n9">
+<select required size="3" id="n10" aria-label="n10"><option value="">p</option></select>
+<input type="date" min="2030-01-01" value="2020-01-01" id="n11" aria-label="n11">
+<input type="url" value="http://a.b" id="n12" aria-label="n12">
+<input type="email" multiple value="a@b.co,c@d.ef" id="n13" aria-label="n13">
+<input type="text" pattern="[a-z]+" value="abc" id="n14" aria-label="n14">
+<input type="text" pattern="[a-z]+" value="ABC" readonly id="n15" aria-label="n15">
+<input type="tel" pattern="[0-9]+" value="12x" id="n16" aria-label="n16">
+<input type="text" minlength="5" value="abc" id="n17" aria-label="n17">
+<input type="datetime-local" required id="n18" aria-label="n18">
+<input type="week" required id="n19" aria-label="n19">
+<input type="color" id="n20" aria-label="n20">
+<input type="range" min="0" max="10" value="5" aria-valuenow="3" id="n21" aria-label="n21">
+<input type="number" value="abc" id="n22" aria-label="n22">
+<input type="number" min="1" max="5" value="9" disabled id="n23" aria-label="n23">
+<input type="checkbox" required id="n24" aria-label="n24" disabled>
+<fieldset disabled><input type="checkbox" required id="n25" aria-label="n25"></fieldset>
+<select required id="n26" aria-label="n26" disabled><option value="">p</option></select>
+<input type="radio" required name="g3" id="n27" aria-label="n27" disabled>
+<input type="checkbox" required id="n28" aria-label="n28" readonly>
+</form>
+<div role="combobox" aria-autocomplete="list" id="ac1" aria-label="ac1" tabindex="0">x</div>
+<div role="combobox" aria-haspopup="menu" id="hp1" aria-label="hp1" tabindex="0">x</div>
+<input type="text" role="combobox" aria-haspopup="true" id="hp2" aria-label="hp2">
+<input type="password" id="pw1" aria-label="pw1" value="h&eacute;llo&#128512;">
+<textarea id="ta1" aria-label="ta1">  a  
+b</textarea>
+<progress value="0" id="pr0" aria-label="pr0"></progress>
+<input type="text" role="combobox" value="x" id="cb1" aria-label="cb1">
+<button role="combobox" id="cb2"><span>A</span> <b>B</b></button>
+<div role="combobox" id="cb3" aria-label="x" tabindex="0"></div>
+<input type="text" value="a   b" id="tv1" aria-label="tv1">
+<input type="button" role="combobox" value="bb" id="cb4">
+<input type="range" min="0" max="10" value="5" aria-valuenow="3" id="rg1" aria-label="rg1">
+<div role="slider" aria-valuenow="3" aria-valuemin="2" id="rg2" aria-label="rg2"></div>
+<div role="slider" aria-valuemax="50" id="rg3" aria-label="rg3"></div>
+<div role="spinbutton" aria-valuemax="9" id="rg4" aria-label="rg4"></div>
+<div role="scrollbar" aria-valuenow="3" id="rg5" aria-label="rg5" aria-controls="x"></div>
+<div role="meter" aria-valuenow="3" id="rg6" aria-label="rg6"></div>
+<input type="range" id="rg7" aria-label="rg7">
+<div role="progressbar" aria-valuemin="10" aria-valuemax="5" id="rg8" aria-label="rg8"></div>
+<div role="spinbutton" aria-valuenow="3" aria-valuetext="three" id="rg9" aria-label="rg9"></div>
+<div role="slider" aria-valuenow="3" aria-valuetext="three" id="rg10" aria-label="rg10"></div>
+<div role="separator" aria-valuenow="1" tabindex="0" id="rg11"></div>
+<input type="number" min="abc" max="3.3" value="2.2" id="rg12" aria-label="rg12">
+<input type="number" min="1" id="rg13" aria-label="rg13" value="1.50">
+<meter id="rg14" aria-label="rg14" min="1" max="3" value="2.25"></meter>
+<meter id="rg15" aria-label="rg15" value="0.7"></meter>
+<progress id="rg16" aria-label="rg16" max="3.5" value="1.1"></progress>
+<div role="grid" aria-readonly="true" aria-label="g" id="rr1"></div>
+<div role="listbox" aria-readonly="true" aria-label="g" id="rr2"></div>
+<div role="radiogroup" aria-readonly="true" aria-label="g" id="rr3"></div>
+<div role="slider" aria-readonly="true" aria-label="g" id="rr4"></div>
+<div role="grid" aria-label="g"><div role="row"><div role="gridcell" aria-readonly="true" id="rr5">c</div><div role="columnheader" aria-readonly="true" id="rr6">c</div></div></div>
+<input type="checkbox" role="textbox" readonly id="rr7" aria-label="rr7">
+<div role="textbox" aria-readonly="true" aria-disabled="true" id="rr8" aria-label="rr8"></div>
+<div id="ce1" contenteditable="true"><div id="ce1d">a<div contenteditable="plaintext-only" id="ce1p"><b id="ce1b">x</b></div></div></div>
+<div contenteditable="true">text <b id="ce2b">bold</b></div>
+<div role="roledescription-probe" aria-roledescription="caf&eacute; &#128512;" id="rd1">x</div>
+<button aria-roledescription="caf&eacute;" id="rd2">x</button>
+<p>text <input id="ce3" aria-label="x" value="v"></p>
+</body>
+</html>

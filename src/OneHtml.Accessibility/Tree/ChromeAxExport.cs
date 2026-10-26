@@ -321,7 +321,8 @@ internal static class ChromeAxExport
             Prop(w, "busy", x => WriteValue(x, "boolean", true));
         }
 
-        if (s.Disabled)
+        // Chromium states disabled on the controls and options, not on the fieldset or optgroup that disables them.
+        if (s.Disabled && !(n.DomNode.Namespace == ElementNamespace.Html && n.DomNode.LocalName is "fieldset" or "optgroup"))
         {
             Prop(w, "disabled", x => WriteValue(x, "boolean", true));
         }
@@ -343,7 +344,8 @@ internal static class ChromeAxExport
 
         if (s.Invalid is { } inv)
         {
-            Prop(w, "invalid", x => WriteValue(x, "token", inv));
+            // Chromium reports aria-invalid=spelling as true (profile entry invalid-spelling).
+            Prop(w, "invalid", x => WriteValue(x, "token", inv == "spelling" ? "true" : inv));
         }
         else if (s.ConstraintInvalid)
         {
@@ -357,7 +359,9 @@ internal static class ChromeAxExport
 
         if (s.RoleDescription is { } rd)
         {
-            Prop(w, "roledescription", x => WriteValue(x, "string", rd));
+            // Chromium hands the description over as UTF-8 bytes read as Latin-1: "café" arrives as "cafÃ©" (profile entry
+            // roledescription-latin1).
+            Prop(w, "roledescription", x => WriteValue(x, "string", Latin1View(rd)));
         }
 
         if (s.Live is { } live)
@@ -405,7 +409,7 @@ internal static class ChromeAxExport
             Prop(w, "multiline", x => WriteValue(x, "boolean", true));
         }
 
-        if (s.ReadOnly)
+        if (s.ReadOnly && !s.Disabled && ExposesReadOnly(n))
         {
             Prop(w, "readonly", x => WriteValue(x, "boolean", true));
         }
@@ -415,17 +419,18 @@ internal static class ChromeAxExport
             Prop(w, "required", x => WriteValue(x, "boolean", true));
         }
 
+        // Chromium keeps range bounds as single-precision floats and reports them widened to double (profile entry range-single-precision).
         if (s.ValueMin is { } vmin)
         {
-            Prop(w, "valuemin", x => WriteValue(x, "number", vmin));
+            Prop(w, "valuemin", x => WriteValue(x, "number", (double)(float)vmin));
         }
 
         if (s.ValueMax is { } vmax)
         {
-            Prop(w, "valuemax", x => WriteValue(x, "number", vmax));
+            Prop(w, "valuemax", x => WriteValue(x, "number", (double)(float)vmax));
         }
 
-        if (s.ValueText is { } vt)
+        if (ExportedValueText(n) is { } vt)
         {
             Prop(w, "valuetext", x => WriteValue(x, "string", vt));
         }
@@ -455,15 +460,8 @@ internal static class ChromeAxExport
             Prop(w, "selected", x => WriteValue(x, "booleanOrUndefined", sel));
         }
 
-        if (s.PosInSet is { } pos && !s.PosInSetComputed)
-        {
-            Prop(w, "posinset", x => WriteValue(x, "integer", pos));
-        }
-
-        if (s.SetSize is { } size && !s.SetSizeComputed)
-        {
-            Prop(w, "setsize", x => WriteValue(x, "integer", size));
-        }
+        // posinset and setsize are not in the export at all: Chromium states neither, whether the author gave them or not (profile entry
+        // export-set-position). The tree keeps both.
 
         if (n.GetRelation(AxRelationKind.LabelledBy) is null && n.Name.Source == AxTextSource.NativeLabelElement && n.Name.RelatedElements.Count > 0)
         {
@@ -515,6 +513,54 @@ internal static class ChromeAxExport
     }
 
     /// <summary>
+    /// Chromium states <c>readonly</c> on text boxes and on grids and their cells, and nowhere else: not on a spin button, a combobox, a checkbox, a
+    /// radio button, a search box, a slider or a list box, although the attribute is there (profile entry readonly-exposure).
+    /// </summary>
+    private static bool ExposesReadOnly(AxNode n) =>
+        n.InternalRole is null && n.Role is "textbox" or "grid" or "treegrid" or "gridcell" or "columnheader" or "rowheader"
+        && !(n.DomNode.Namespace == ElementNamespace.Html && n.DomNode.LocalName == "input" && HtmlSemantics.GetInputType(n.DomNode) is not (HtmlInputType.Text or HtmlInputType.Telephone or HtmlInputType.Url or HtmlInputType.Email or HtmlInputType.Password));
+
+    /// <summary>
+    /// Chromium's value text of a slider or spin button is the text of its native <c>value</c> attribute ("1.00", "$675,000"), or the number a
+    /// slider rests at; it never reports <c>aria-valuetext</c> (profile entry valuetext-native).
+    /// </summary>
+    private static string? ExportedValueText(AxNode n)
+    {
+        if (n.DomNode.Namespace != ElementNamespace.Html || n.DomNode.LocalName != "input" || n.Role is not ("slider" or "spinbutton"))
+        {
+            return null;
+        }
+
+        // A value that is not a number is sanitized away from a number or range field (HTML 4.10.5.1.12).
+        return n.DomNode.GetAttribute("value") is { Length: > 0 } text
+            ? double.TryParse(text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double d) && double.IsFinite(d) || HtmlSemantics.GetInputType(n.DomNode) is not (HtmlInputType.Number or HtmlInputType.Range) ? text : null
+            : n.Role == "slider" ? n.States.Value : null;
+    }
+
+    private static string Latin1View(string s)
+    {
+        bool ascii = true;
+        foreach (char c in s)
+        {
+            ascii &= c < 0x80;
+        }
+
+        if (ascii)
+        {
+            return s;
+        }
+
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(s);
+        var chars = new char[bytes.Length];
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            chars[i] = (char)bytes[i];
+        }
+
+        return new string(chars);
+    }
+
+    /// <summary>
     /// Chromium states <c>required</c> on text fields, spin buttons, and the other roles that take it, but not on a search box, a native
     /// select, a checkbox, a radio button, a date field or a button, although <c>aria-required</c> or the <c>required</c> attribute is there
     /// (profile entry required-exposure).
@@ -526,7 +572,7 @@ internal static class ChromeAxExport
             return false;
         }
 
-        if (n.DomNode.Namespace == ElementNamespace.Html && n.DomNode.LocalName == "select")
+        if (n.DomNode.Namespace == ElementNamespace.Html && n.DomNode.LocalName == "select" && n.Role != "listbox")
         {
             return false;
         }

@@ -13,22 +13,23 @@
 # Chrome, default all of the sample); set ONEHTML_BENCH_SKIP_BDN=1 to skip the BenchmarkDotNet rows.
 #
 # Takes ~/WORKER-BENCH.lock and exits with status 3 at once when it is held. Writes environment.txt, load.log and the
-# BenchmarkDotNet results to the out dir (default ~/onehtml/u7/bench-out/<timestamp>).
+# BenchmarkDotNet results to the out dir (default ~/onehtml/worker/bench-out/<timestamp>).
 
 set -o pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
+WH=${ONEHTML_WORKER_HOME:-${ONEHTML_U7_HOME:-$HOME/onehtml/worker}}
 MODE=parse
 if [ "${1:-}" = checker ]; then MODE=checker; shift; fi
 CORPUS=${1:?usage: run-worker.sh <corpus-version-dir> [out-dir] [BenchmarkDotNet args]}
-OUT=${2:-$HOME/onehtml/u7/bench-out/$(date +%Y%m%d-%H%M%S)}
+OUT=${2:-$WH/bench-out/$(date +%Y%m%d-%H%M%S)}
 [ $# -ge 2 ] && shift 2 || shift
 MAX=${ONEHTML_BENCH_MAX_SECONDS:-7200}
 
 . "$ROOT/tools/worker-lock.sh" "${MODE}-bench" "$MAX"
 
 export PATH=$HOME/dotnet10:$PATH DOTNET_ROOT=$HOME/dotnet10 DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-export MSBUILDDISABLENODEREUSE=1 ONEHTML_ARTIFACTS=$HOME/onehtml/u7/artifacts
-export NUGET_PACKAGES=$HOME/onehtml/u7/nuget ONEHTML_BENCH_CORPUS=$CORPUS
+export MSBUILDDISABLENODEREUSE=1 ONEHTML_ARTIFACTS=$WH/artifacts
+export NUGET_PACKAGES=$WH/nuget ONEHTML_BENCH_CORPUS=$CORPUS
 mkdir -p "$OUT"
 
 sample_load() { echo "$(date +%T) $(cut -d' ' -f1-3 /proc/loadavg) running=$(cut -d' ' -f4 /proc/loadavg)" >> "$OUT/load.log"; }

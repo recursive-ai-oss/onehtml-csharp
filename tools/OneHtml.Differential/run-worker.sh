@@ -8,6 +8,7 @@
 
 set -o pipefail
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
+WH=${ONEHTML_WORKER_HOME:-${ONEHTML_U7_HOME:-$HOME/onehtml/worker}}
 CMD=${1:?usage: run-worker.sh <roundtrip|angle|replay|locators|styles|editfuzz|ax|axe> <corpus-or-capture-dir> <out-dir> [options]}
 CORPUS=${2:?corpus dir}
 OUT=${3:?out dir}
@@ -17,7 +18,7 @@ MAX=${ONEHTML_RUN_MAX_SECONDS:-7200}
 . "$ROOT/tools/worker-lock.sh" "differential-$CMD" "$MAX"
 
 export PATH=$HOME/dotnet10:$PATH DOTNET_ROOT=$HOME/dotnet10 DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
-export MSBUILDDISABLENODEREUSE=1 ONEHTML_ARTIFACTS=$HOME/onehtml/u7/artifacts NUGET_PACKAGES=$HOME/onehtml/u7/nuget
+export MSBUILDDISABLENODEREUSE=1 ONEHTML_ARTIFACTS=$WH/artifacts NUGET_PACKAGES=$WH/nuget
 mkdir -p "$OUT"
 
 sample_load() { echo "$(date +%T) $(cut -d' ' -f1-3 /proc/loadavg)" >> "$OUT/load.log"; }

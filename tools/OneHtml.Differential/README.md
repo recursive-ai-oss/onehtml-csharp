@@ -61,8 +61,8 @@ Takes a `tools/capture` output directory and compares the checker's results with
 Every command takes the worker's shared-job lock inside the job (`~/WORKER-BENCH.lock`) and exit with status 3 at once if it is held; they never wait. Run from the repo root on the worker, after the repo is synced:
 
 ```
-bash tools/OneHtml.Differential/run-worker.sh roundtrip ~/onehtml/corpus/<version> ~/onehtml/u7/out/roundtrip --jobs 2
-bash tools/OneHtml.Differential/run-worker.sh angle     ~/onehtml/corpus/<version> ~/onehtml/u7/out/angle     --jobs 2
+bash tools/OneHtml.Differential/run-worker.sh roundtrip ~/onehtml/corpus/<version> ~/onehtml/worker/out/roundtrip --jobs 2
+bash tools/OneHtml.Differential/run-worker.sh angle     ~/onehtml/corpus/<version> ~/onehtml/worker/out/angle     --jobs 2
 bash tools/OneHtml.Differential/run-worker.sh locators  ~/onehtml/corpus/<version> ~/onehtml/out/locators  --jobs 8
 bash tools/OneHtml.Differential/run-worker.sh styles    ~/onehtml/corpus/<version> ~/onehtml/out/styles    --jobs 8 --timeout 120
 bash tools/OneHtml.Differential/run-worker.sh editfuzz  ~/onehtml/corpus/<version> ~/onehtml/out/editfuzz  --jobs 8 --per-page 20
@@ -70,4 +70,4 @@ bash tools/OneHtml.Differential/run-worker.sh axe ~/onehtml/capture-out/<version
 bash tools/OneHtml.Differential/run-worker.sh ax ~/onehtml/capture-out/<version> ~/onehtml/out/ax --corpus ~/onehtml/corpus/<version> --jobs 8
 ```
 
-The script builds in Release into `~/onehtml/u7/artifacts` with the worker's .NET 10, records CPU, core count and load before, during (every 30 s) and after in `load.log`, and cuts the run off after `ONEHTML_RUN_MAX_SECONDS` (default 7200). Outputs land in the out dir with `environment.txt`, `load.log` and `run.log`. Runs on more than 2 jobs or for over 5 minutes must keep the lock; for a first look add `--limit 500`.
+The script builds in Release into `~/onehtml/worker/artifacts` with the worker's .NET 10, records CPU, core count and load before, during (every 30 s) and after in `load.log`, and cuts the run off after `ONEHTML_RUN_MAX_SECONDS` (default 7200). Outputs land in the out dir with `environment.txt`, `load.log` and `run.log`. Runs on more than 2 jobs or for over 5 minutes must keep the lock; for a first look add `--limit 500`.

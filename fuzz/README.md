@@ -8,7 +8,7 @@
 
 ## Coverage-guided runs
 
-The driver is the prebuilt `libfuzzer-dotnet` release (a fuzzing tool, pinned by tag and SHA-256 in `setup-worker.sh`); the instrumenter is the `SharpFuzz.CommandLine` dotnet tool. Setup is user-local and needs no sudo. Everything (the instrumenter, the driver, the NuGet cache, the published build in `build/fuzz`) lives under `$ONEHTML_U7_HOME`, default `~/onehtml/u7`. `run.sh` rebuilds `build/fuzz` on every call, so two users or two jobs sharing one home overwrite each other: parallel users must each set `ONEHTML_U7_HOME` to their own directory (and run `setup-worker.sh` with it set).
+The driver is the prebuilt `libfuzzer-dotnet` release (a fuzzing tool, pinned by tag and SHA-256 in `setup-worker.sh`); the instrumenter is the `SharpFuzz.CommandLine` dotnet tool. Setup is user-local and needs no sudo. Everything (the instrumenter, the driver, the NuGet cache, the published build in `build/fuzz`) lives under `$ONEHTML_WORKER_HOME`, default `~/onehtml/worker`. `run.sh` rebuilds `build/fuzz` on every call, so two users or two jobs sharing one home overwrite each other: parallel users must each set `ONEHTML_WORKER_HOME` to their own directory (and run `setup-worker.sh` with it set).
 
 ```
 bash fuzz/setup-worker.sh

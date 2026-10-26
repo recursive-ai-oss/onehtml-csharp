@@ -22,7 +22,7 @@ Locally: `ONEHTML_BENCH_CORPUS=<dir> dotnet run -c Release --project bench/OneHt
 ## On the worker
 
 ```
-bash bench/run-worker.sh ~/onehtml/corpus/<version> ~/onehtml/u7/bench-out/<name>
+bash bench/run-worker.sh ~/onehtml/corpus/<version> ~/onehtml/worker/bench-out/<name>
 ```
 
 Optional: `ONEHTML_BENCH_SAMPLE_SIZE`, `ONEHTML_BENCH_BAND_CAP`, `ONEHTML_BENCH_MAX_SECONDS` (default 7200), and BenchmarkDotNet arguments after the out dir (for example `--job short`). The script claims `~/WORKER-BENCH.lock` atomically and exits with status 3 at once if it is held, builds in Release, records CPU model, cores, SDK, package versions and the load average before, during (every 30 s) and after, and runs the benchmark under `timeout`. Outputs in the out dir: `environment.txt`, `load.log`, `bench.log`, `bdn/results/*`. A run that overlapped another heavy job is not publishable; check `load.log`.

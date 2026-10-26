@@ -224,8 +224,8 @@ probes/target-size-1.html	target-size	u5	violation
 probes/target-size-1.html	target-size	u5b	violation
 probes/target-size-1.html	target-size	u6	pass
 probes/target-size-1.html	target-size	u6b	pass
-probes/target-size-1.html	target-size	u7a	pass
-probes/target-size-1.html	target-size	u7b	pass
+probes/target-size-1.html	target-size	ida	pass
+probes/target-size-1.html	target-size	idb	pass
 probes/target-size-1.html	target-size	u8a	violation
 probes/target-size-1.html	target-size	u8b	violation
 probes/target-size-1.html	target-size	u9a	pass
@@ -251,8 +251,8 @@ probes/target-size-6.html	target-size	u5a	pass
 probes/target-size-6.html	target-size	u5b	pass
 probes/target-size-6.html	target-size	u6a	violation
 probes/target-size-6.html	target-size	u6b	violation
-probes/target-size-6.html	target-size	u7a	violation
-probes/target-size-6.html	target-size	u7b	violation
+probes/target-size-6.html	target-size	ida	violation
+probes/target-size-6.html	target-size	idb	violation
 probes/target-size-6.html	target-size	u8a	pass
 probes/target-size-6.html	target-size	u8b	pass
 probes/link-in-text-block-1.html	link-in-text-block	t1	violation

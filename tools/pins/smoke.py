@@ -79,7 +79,7 @@ class Cdp:
 def main():
     chrome = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
         ROOT, "chrome-for-testing-" + CFT, "chrome-linux64", "chrome")
-    tmp = os.path.expanduser("~/onehtml/u1")
+    tmp = os.path.expanduser("~/onehtml/tmp")
     os.makedirs(tmp, exist_ok=True)
     work = tempfile.mkdtemp(prefix="smoke-", dir=tmp)
     page = os.path.join(work, "page.html")

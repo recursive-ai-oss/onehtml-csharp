@@ -1,0 +1,7142 @@
+{
+  "format": "onehtml-results",
+  "version": 1,
+  "document": {
+    "sha256": "47a049bed309fa42b2c56800ff068d4616af250e03b5b2eeca0af088a9258a8c",
+    "url": "https://example.test/visual"
+  },
+  "styleContext": {
+    "viewportWidth": 1280,
+    "viewportHeight": 720,
+    "media": "screen",
+    "colorScheme": "light",
+    "reducedMotion": "no-preference",
+    "contrast": "no-preference",
+    "forcedColors": false,
+    "cssOnly": false
+  },
+  "profile": null,
+  "limitReached": false,
+  "rules": [
+    {
+      "id": "accesskeys",
+      "description": "Each accesskey value must be unique.",
+      "help": "Give every element that has an accesskey its own key.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "accesskeys"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Which element keeps the key, and what the others use, is the author's decision."
+    },
+    {
+      "id": "area-alt",
+      "description": "An area element of an image map that is a link must have alternative text.",
+      "help": "Add an alt attribute to the area that says where the link goes.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "area-alt"
+        },
+        {
+          "kind": "act",
+          "id": "c487ae"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.4",
+          "handle": "Link Purpose (In Context)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag244",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.2.4.4",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "aria-allowed-attr",
+      "description": "Each WAI-ARIA state or property on an element must be one that the element's role supports.",
+      "help": "Remove the attribute, or give the element the role that supports it.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-allowed-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The attribute may be right and the role wrong (or the reverse); choosing between changing the role and dropping the attribute is a judgement."
+    },
+    {
+      "id": "aria-allowed-role",
+      "description": "The role attribute of an element should be one that ARIA in HTML allows on that element.",
+      "help": "Remove the role, or use an element that suits the role.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-allowed-role"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Changing the role changes what the element means to users, and which meaning is intended is the author's call."
+    },
+    {
+      "id": "aria-braille-equivalent",
+      "description": "aria-braillelabel needs an accessible name and aria-brailleroledescription needs an aria-roledescription to refine.",
+      "help": "Add the ordinary label or role description that the braille text abbreviates.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-braille-equivalent"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The missing text is content, which only the author can supply."
+    },
+    {
+      "id": "aria-command-name",
+      "description": "A button, link or menu item given its role by the role attribute must have an accessible name.",
+      "help": "Give the control a visible text label, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-command-name"
+        },
+        {
+          "kind": "act",
+          "id": "m6b1q3"
+        },
+        {
+          "kind": "act",
+          "id": "97a4e1"
+        },
+        {
+          "kind": "act",
+          "id": "c487ae"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-conditional-attr",
+      "description": "A native checkbox must not carry an aria-checked value that disagrees with its checked state.",
+      "help": "Drop aria-checked and let the checked attribute carry the state.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-conditional-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove aria-checked from a native checkbox whose value disagrees with the checked attribute. The native state is the one assistive technology reports.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-deprecated-role",
+      "description": "The role that applies to an element must not be one that WAI-ARIA or its digital publishing module has deprecated.",
+      "help": "Replace the deprecated role with the role the specification recommends in its place.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-deprecated-role"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Replace the role directory with list, the replacement WAI-ARIA 1.2 names.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-dialog-name",
+      "description": "A dialog or alert dialog given its role by the role attribute should have an accessible name.",
+      "help": "Name the dialog with aria-labelledby pointing at its title, or with aria-label.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-dialog-name"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-hidden-body",
+      "description": "The body element must not have aria-hidden=\"true\", which hides the whole page from assistive technology.",
+      "help": "Remove aria-hidden from body; hide only the parts of the page that need hiding.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-hidden-body"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-10.8.1"
+      ],
+      "fix": "Remove aria-hidden=\"true\" from body. No reading of the page is served by hiding all of it.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-hidden-focus",
+      "description": "An element with aria-hidden=\"true\" must not contain anything that can receive focus through the Tab key.",
+      "help": "Make the hidden content non-focusable (tabindex=\"-1\" or disabled), or stop hiding it.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-hidden-focus"
+        },
+        {
+          "kind": "act",
+          "id": "6cfa84"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-10.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Hiding it from assistive technology, making it unfocusable and showing it are three different outcomes, and the author must choose."
+    },
+    {
+      "id": "aria-input-field-name",
+      "description": "A combo box, list box, search box, slider, spin button or text box given its role by the role attribute must have an accessible name.",
+      "help": "Label the field with a visible label, aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-input-field-name"
+        },
+        {
+          "kind": "act",
+          "id": "e086e5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-meter-name",
+      "description": "A meter given its role by the role attribute must have an accessible name.",
+      "help": "Say what the meter measures with aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-meter-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag111",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-progressbar-name",
+      "description": "A progress bar given its role by the role attribute must have an accessible name.",
+      "help": "Say what is progressing with aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-progressbar-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag111",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-prohibited-attr",
+      "description": "A WAI-ARIA attribute must not be used on a role that prohibits it, such as aria-label on an element with no role.",
+      "help": "Remove the attribute, or give the element a role that can be named.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-prohibited-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5c01ea"
+        },
+        {
+          "kind": "act",
+          "id": "kb1m8s"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove the prohibited attribute. Authors may not set it on this role, and removing it leaves the element with the semantics the rest of its markup gives.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-required-attr",
+      "description": "An element with an explicit role must set the states and properties that role requires.",
+      "help": "Add the required attribute with a value that matches the element's state.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-attr"
+        },
+        {
+          "kind": "act",
+          "id": "4e8ab6"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The value of a required state (checked, the current value of a slider) is the page's own data, so the library cannot choose it."
+    },
+    {
+      "id": "aria-required-children",
+      "description": "An element whose role needs owned elements (a list needs items, a table needs rows) must contain them.",
+      "help": "Add the required child elements, or use a role that needs none.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-children"
+        },
+        {
+          "kind": "act",
+          "id": "bc4a75"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Adding rows, items or options is content, and wrapping existing children can change the page's structure, so the right edit is the author's."
+    },
+    {
+      "id": "aria-required-parent",
+      "description": "An element whose role needs a parent role (a list item needs a list, a tab needs a tab list) must be inside one.",
+      "help": "Put the element inside an element with the required role, or use a role that needs no parent.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-required-parent"
+        },
+        {
+          "kind": "act",
+          "id": "ff89c9"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Wrapping orphans in a container changes layout and styling, and which container role is right depends on the content."
+    },
+    {
+      "id": "aria-roles",
+      "description": "A role attribute must contain at least one token that names a WAI-ARIA role authors may use.",
+      "help": "Correct the role name, or remove the attribute and use an element that already has the meaning.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-roles"
+        },
+        {
+          "kind": "act",
+          "id": "674b10"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "Passing a list of tokens when one of them is valid is allowed (fallback roles), so a failure means no token is usable and the intended role is unknown."
+    },
+    {
+      "id": "aria-tab-name",
+      "description": "A tab given its role by the role attribute must have an accessible name.",
+      "help": "Give the tab text, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-tab-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-text",
+      "description": "An element with role=\"text\" must not contain focusable elements.",
+      "help": "Move the focusable element out of the role=\"text\" element, or remove the role.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-text"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a control or dropping the role changes the page's structure, which is an authoring decision."
+    },
+    {
+      "id": "aria-toggle-field-name",
+      "description": "A checkbox, radio button, switch, option or toggling menu item given its role by the role attribute must have an accessible name.",
+      "help": "Label the control with text, aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-toggle-field-name"
+        },
+        {
+          "kind": "act",
+          "id": "e086e5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-tooltip-name",
+      "description": "A tooltip given its role by the role attribute must have an accessible name.",
+      "help": "Give the tooltip text content, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-tooltip-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-treeitem-name",
+      "description": "A tree item given its role by the role attribute should have an accessible name.",
+      "help": "Give the tree item text, an aria-label or an aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-treeitem-name"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the control is called."
+    },
+    {
+      "id": "aria-valid-attr",
+      "description": "Every attribute that starts with aria- must be a state or property defined by WAI-ARIA.",
+      "help": "Fix the spelling of the attribute, or remove it if WAI-ARIA has no such state or property.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-valid-attr"
+        },
+        {
+          "kind": "act",
+          "id": "5f99a7"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove the aria- attribute that WAI-ARIA does not define. A browser ignores it, so removing it changes nothing a user perceives.",
+      "noFixReason": null
+    },
+    {
+      "id": "aria-valid-attr-value",
+      "description": "Every non-empty WAI-ARIA state or property must have a value of its type, and a required ID reference must name an element in the page.",
+      "help": "Use one of the values WAI-ARIA allows for the attribute, or point the required reference at an element that exists.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "aria-valid-attr-value"
+        },
+        {
+          "kind": "act",
+          "id": "6a7281"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.aria",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": "Remove an attribute whose value is outside its type when the role does not require that attribute. A browser already falls back to the attribute's default, so removing it changes nothing a user perceives.",
+      "noFixReason": null
+    },
+    {
+      "id": "audio-alternative",
+      "description": "Audio should have a text alternative.",
+      "help": "Provide a transcript or media alternative next to the audio.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "e7aa44"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "audio-caption",
+      "description": "Audio must have a transcript or another text alternative.",
+      "help": "Provide a transcript next to the audio, or link to one.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "audio-caption"
+        },
+        {
+          "kind": "act",
+          "id": "2eb176"
+        },
+        {
+          "kind": "act",
+          "id": "afb423"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag121",
+        "EN-301-549",
+        "EN-9.1.2.1",
+        "section508",
+        "section508.22.a",
+        "deprecated"
+      ],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "autocomplete-valid",
+      "description": "The autocomplete attribute of a form field must follow the HTML autofill token syntax.",
+      "help": "Change the autocomplete value to the field name that matches the data the field collects, such as email or street-address, optionally preceded by section-*, shipping or billing, and a contact type for telephone and e-mail fields.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "autocomplete-valid"
+        },
+        {
+          "kind": "act",
+          "id": "73f2c2"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.5",
+          "handle": "Identify Input Purpose",
+          "level": "AA",
+          "version": "2.1"
+        }
+      ],
+      "tags": [
+        "cat.forms",
+        "wcag21aa",
+        "wcag135",
+        "EN-301-549",
+        "EN-9.1.3.5",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.13.1"
+      ],
+      "fix": null,
+      "noFixReason": "Removing a bad value would only hide the problem; the right token depends on what the field collects."
+    },
+    {
+      "id": "autoplay-audio-control",
+      "description": "Audio or video that starts by itself with sound must have a way to pause, stop or silence it.",
+      "help": "Add the controls attribute, or put a visible, named pause or mute button on the page.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "4c31df"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.2",
+          "handle": "Audio Control",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Adding controls, muting or removing autoplay changes how the media behaves, which is the author's decision."
+    },
+    {
+      "id": "autoplay-audio-duration",
+      "description": "Audio or video that starts by itself should not play sound for more than three seconds.",
+      "help": "Shorten the sound, mute the media, or do not autoplay it.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "aaa1bf"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.2",
+          "handle": "Audio Control",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "avoid-inline-spacing",
+      "description": "Line height, letter spacing and word spacing set with !important in a style attribute must already be wide enough for WCAG's text spacing.",
+      "help": "Drop !important from the declaration in the style attribute, or make the value at least 1.5 times the font size for line height, 0.12 for letter spacing and 0.16 for word spacing.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "avoid-inline-spacing"
+        },
+        {
+          "kind": "act",
+          "id": "24afc2"
+        },
+        {
+          "kind": "act",
+          "id": "78fd32"
+        },
+        {
+          "kind": "act",
+          "id": "9e45ec"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.12",
+          "handle": "Text Spacing",
+          "level": "AA",
+          "version": "2.1"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag21aa",
+        "wcag1412",
+        "EN-301-549",
+        "EN-9.1.4.12",
+        "ACT"
+      ],
+      "fix": "Declare the property again in the style attribute without !important. The page keeps its look, and a reader's own style sheet can then adjust the spacing.",
+      "noFixReason": null
+    },
+    {
+      "id": "blink",
+      "description": "The blink element makes text flash, which WCAG forbids for more than five seconds.",
+      "help": "Remove the blink element and mark emphasis another way.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "blink"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.2.2",
+          "handle": "Pause, Stop, Hide",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag222",
+        "section508",
+        "section508.22.j",
+        "TTv5",
+        "TT2.b",
+        "EN-301-549",
+        "EN-9.2.2.2",
+        "RGAAv4",
+        "RGAA-13.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Removing the element drops the author's intended effect, and CSS the library cannot see may style the element, so the author decides what replaces it."
+    },
+    {
+      "id": "button-name",
+      "description": "A button element must have an accessible name.",
+      "help": "Put text in the button, or add an aria-label or aria-labelledby.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "button-name"
+        },
+        {
+          "kind": "act",
+          "id": "97a4e1"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "bypass",
+      "description": "A page must give a way to skip blocks of content that repeat across pages: a heading, a main landmark or a skip link.",
+      "help": "Add a skip link to the main content, mark it up with a main element, or start it with a heading.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "bypass"
+        },
+        {
+          "kind": "act",
+          "id": "cf77f2"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.1",
+          "handle": "Bypass Blocks",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.keyboard",
+        "wcag2a",
+        "wcag241",
+        "section508",
+        "section508.22.o",
+        "TTv5",
+        "TT9.a",
+        "EN-301-549",
+        "EN-9.2.4.1",
+        "RGAAv4",
+        "RGAA-12.7.1"
+      ],
+      "fix": null,
+      "noFixReason": "Choosing where the main content starts, and what the skip link says, is the author's decision."
+    },
+    {
+      "id": "color-contrast",
+      "description": "Text must have a contrast ratio of at least 4.5:1 with its background (3:1 for large text).",
+      "help": "Change the text or background colour until the ratio reaches 4.5:1, or 3:1 for large text.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "color-contrast"
+        },
+        {
+          "kind": "act",
+          "id": "afw4f7"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.3",
+          "handle": "Contrast (Minimum)",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.color",
+        "wcag2aa",
+        "wcag143",
+        "TTv5",
+        "TT13.c",
+        "EN-301-549",
+        "EN-9.1.4.3",
+        "ACT",
+        "RGAAv4",
+        "RGAA-3.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Colours are a design choice: many pairs would pass, and the right one depends on the brand and the page."
+    },
+    {
+      "id": "color-contrast-enhanced",
+      "description": "Text must have a contrast ratio of at least 7:1 with its background (4.5:1 for large text).",
+      "help": "Change the text or background colour until the ratio reaches 7:1, or 4.5:1 for large text.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "color-contrast-enhanced"
+        },
+        {
+          "kind": "act",
+          "id": "09o5cg"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.6",
+          "handle": "Contrast (Enhanced)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.color",
+        "wcag2aaa",
+        "wcag146",
+        "ACT"
+      ],
+      "fix": null,
+      "noFixReason": "Colours are a design choice: many pairs would pass, and the right one depends on the brand and the page."
+    },
+    {
+      "id": "css-orientation-lock",
+      "description": "Content must not be rotated by a quarter turn in only one display orientation.",
+      "help": "Remove the rotation inside the orientation media query, or apply the same rotation in both orientations.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "css-orientation-lock"
+        },
+        {
+          "kind": "act",
+          "id": "b33eff"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.4",
+          "handle": "Orientation",
+          "level": "AA",
+          "version": "2.1"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag134",
+        "wcag21aa",
+        "EN-301-549",
+        "EN-9.1.3.4",
+        "RGAAv4",
+        "RGAA-13.9.1",
+        "experimental"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to drop the rotation or rework the layout for the other orientation is a design decision."
+    },
+    {
+      "id": "definition-list",
+      "description": "A dl may only directly contain well-ordered dt and dd groups, div, script and template elements.",
+      "help": "Order the terms and descriptions as dt then dd, and move other content out of the dl.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "definition-list"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.3"
+      ],
+      "fix": null,
+      "noFixReason": "Which terms and descriptions belong together is the author's decision."
+    },
+    {
+      "id": "dlitem",
+      "description": "A dt or dd element must be inside a dl.",
+      "help": "Put the dt and dd elements in a dl.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "dlitem"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.3"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the content is a definition list at all is the author's decision."
+    },
+    {
+      "id": "document-title",
+      "description": "The document must have a title element with text in it.",
+      "help": "Add a title element to the head of the document and say in it what the page is.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "document-title"
+        },
+        {
+          "kind": "act",
+          "id": "2779a5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.2",
+          "handle": "Page Titled",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag242",
+        "TTv5",
+        "TT12.a",
+        "EN-301-549",
+        "EN-9.2.4.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.5.1"
+      ],
+      "fix": null,
+      "noFixReason": "The title is content: only the author knows what the page is called."
+    },
+    {
+      "id": "duplicate-id",
+      "description": "An id value should be used by one element only.",
+      "help": "Give each element its own id.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "duplicate-id"
+        },
+        {
+          "kind": "act",
+          "id": "3ea0c8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.1",
+          "handle": "Parsing",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.parsing",
+        "wcag2a-obsolete",
+        "wcag411",
+        "deprecated"
+      ],
+      "fix": null,
+      "noFixReason": "Which element should keep the id, and what the others are called, is the author's decision; stylesheets and scripts the library cannot see may depend on either."
+    },
+    {
+      "id": "duplicate-id-active",
+      "description": "A focusable element must not share its id with another element.",
+      "help": "Give each focusable element its own id.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "duplicate-id-active"
+        },
+        {
+          "kind": "act",
+          "id": "3ea0c8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.1",
+          "handle": "Parsing",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.parsing",
+        "wcag2a-obsolete",
+        "wcag411",
+        "deprecated"
+      ],
+      "fix": null,
+      "noFixReason": "Which element should keep the id, and what the others are called, is the author's decision; stylesheets and scripts the library cannot see may depend on either."
+    },
+    {
+      "id": "duplicate-id-aria",
+      "description": "An id that a label or an ARIA attribute refers to must be used by one element only.",
+      "help": "Give each element its own id and keep the reference pointing at the right one.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "duplicate-id-aria"
+        },
+        {
+          "kind": "act",
+          "id": "3ea0c8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.parsing",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-8.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which element should keep the id, and what the others are called, is the author's decision; stylesheets and scripts the library cannot see may depend on either."
+    },
+    {
+      "id": "element-lang-matches-content",
+      "description": "The language named by a lang attribute should be the language of the text it covers.",
+      "help": "Read the passage and make its lang attribute name the language the text is written in.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "off6ek"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.2",
+          "handle": "Language of Parts",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Deciding which language a passage is in needs a reader."
+    },
+    {
+      "id": "empty-heading",
+      "description": "A heading must have text.",
+      "help": "Put text in the heading, or remove the heading element if it is only for spacing.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "empty-heading"
+        },
+        {
+          "kind": "act",
+          "id": "ffd0e9"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.name-role-value",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "empty-table-header",
+      "description": "A table header cell should have text a screen reader can read.",
+      "help": "Put text in the header cell, or make it a data cell if it does not head anything.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "empty-table-header"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.name-role-value",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "What the header should say is a content decision."
+    },
+    {
+      "id": "focus-order-semantics",
+      "description": "An element made focusable with tabindex should have a role that says what it is.",
+      "help": "Give the element a widget, landmark or dialog role, or take it out of the tab order.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "focus-order-semantics"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-12.8.1",
+        "experimental"
+      ],
+      "fix": null,
+      "noFixReason": "Which role fits the element depends on what it does, which only the author knows."
+    },
+    {
+      "id": "form-field-multiple-labels",
+      "description": "A form field should not have more than one label element.",
+      "help": "Use one label element for the field and put the extra text inside it.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "form-field-multiple-labels"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.3.2",
+          "handle": "Labels or Instructions",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag332",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.3.3.2",
+        "RGAAv4",
+        "RGAA-11.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which label to keep, or how to merge them, is a content decision."
+    },
+    {
+      "id": "frame-focusable-content",
+      "description": "A frame removed from the tab order must not contain focusable content.",
+      "help": "Remove the negative tabindex from the frame, or remove the focusable content.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "frame-focusable-content"
+        },
+        {
+          "kind": "act",
+          "id": "akn7bn"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.1.1",
+          "handle": "Keyboard",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.keyboard",
+        "wcag2a",
+        "wcag211",
+        "TTv5",
+        "TT4.a",
+        "EN-301-549",
+        "EN-9.2.1.1",
+        "RGAAv4",
+        "RGAA-7.3.2"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the frame or its content should change is the author's decision."
+    },
+    {
+      "id": "frame-title",
+      "description": "A frame or iframe must have an accessible name.",
+      "help": "Add a title attribute to the frame that says what it contains.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "frame-title"
+        },
+        {
+          "kind": "act",
+          "id": "cae760"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.i",
+        "TTv5",
+        "TT12.d",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-2.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "frame-title-unique",
+      "description": "Frames with the same accessible name must have the same purpose.",
+      "help": "Give each frame a name that says what it holds, or show the same resource in frames that share a name.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "frame-title-unique"
+        },
+        {
+          "kind": "act",
+          "id": "4b1c6c"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT12.d",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-2.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Naming a frame is a content decision."
+    },
+    {
+      "id": "heading-order",
+      "description": "Heading levels should only increase by one.",
+      "help": "Change the heading's level so it is at most one deeper than the heading before it.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "heading-order"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the heading or its predecessor has the wrong level is the author's decision."
+    },
+    {
+      "id": "hidden-content",
+      "description": "Content hidden with CSS should be checked: confirm that it is meant to be hidden.",
+      "help": "Confirm the content is not needed by anyone, or show it.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "hidden-content"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.structure",
+        "best-practice",
+        "experimental",
+        "review-item"
+      ],
+      "fix": null,
+      "noFixReason": "Whether hidden content should be shown or removed is the author's decision."
+    },
+    {
+      "id": "html-has-lang",
+      "description": "The html element must have a lang attribute that is not empty.",
+      "help": "Add a lang attribute to the html element that names the main language of the page, such as lang=\"en\".",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "html-has-lang"
+        },
+        {
+          "kind": "act",
+          "id": "b5c3f8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.1",
+          "handle": "Language of Page",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "TTv5",
+        "TT11.a",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "The language of the page is content that the checker cannot know."
+    },
+    {
+      "id": "html-lang-matches-content",
+      "description": "The language named by the lang attribute of the html element should be the main language of the page's text.",
+      "help": "Read the page and make the lang attribute of the html element name the language most of the text is written in.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "ucwvc8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.1",
+          "handle": "Language of Page",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Deciding which language the text is in needs a reader."
+    },
+    {
+      "id": "html-lang-valid",
+      "description": "The lang attribute of the html element must start with a registered language code.",
+      "help": "Change the lang attribute of the html element to a language code from the IANA registry, such as en or fr-CA.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "html-lang-valid"
+        },
+        {
+          "kind": "act",
+          "id": "bf051a"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.1",
+          "handle": "Language of Page",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "TTv5",
+        "TT11.a",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.4.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which language the page is in is content; a corrected value cannot be derived from the markup."
+    },
+    {
+      "id": "html-xml-lang-mismatch",
+      "description": "When the html element has both lang and xml:lang, their primary languages must be the same.",
+      "help": "Make the xml:lang attribute of the html element name the same language as lang, or remove xml:lang.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "html-xml-lang-mismatch"
+        },
+        {
+          "kind": "act",
+          "id": "5b7ae0"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.1",
+          "handle": "Language of Page",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.language",
+        "wcag2a",
+        "wcag311",
+        "EN-301-549",
+        "EN-9.3.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which of the two values is right is content; removing xml:lang would also discard it for XML consumers."
+    },
+    {
+      "id": "identical-links-same-purpose",
+      "description": "Links with the same accessible name should serve the same purpose.",
+      "help": "Give links that go to different places different names, or send the identical names to the same resource.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "identical-links-same-purpose"
+        },
+        {
+          "kind": "act",
+          "id": "b20e66"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.9",
+          "handle": "Link Purpose (Link Only)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.semantics",
+        "wcag2aaa",
+        "wcag249"
+      ],
+      "fix": null,
+      "noFixReason": "Naming a link is a content decision."
+    },
+    {
+      "id": "image-alt",
+      "description": "An img element must have alternative text, or be marked as decorative with an empty alt.",
+      "help": "Add an alt attribute that says what the image shows, or alt=\"\" if it is decorative.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "image-alt"
+        },
+        {
+          "kind": "act",
+          "id": "23a2a8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "TT7.b",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the image is informative or decorative, and what it shows, is content only the author knows."
+    },
+    {
+      "id": "image-name-descriptive",
+      "description": "The accessible name of an image should describe it.",
+      "help": "Reword the name so that it says what the image shows or does.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "qt1vmo"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "needs-review-only"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the text is descriptive is a judgement about content; there is no single correct replacement."
+    },
+    {
+      "id": "image-redundant-alt",
+      "description": "The alternative text of an image should not repeat the text next to it in a link or button.",
+      "help": "Give the image an empty alt when the surrounding text already says it, or word the alt differently.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "image-redundant-alt"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.text-alternatives",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to empty the alt or reword it depends on what the image shows."
+    },
+    {
+      "id": "input-button-name",
+      "description": "An input button must have an accessible name.",
+      "help": "Give the input a value attribute, or an aria-label or aria-labelledby.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "input-button-name"
+        },
+        {
+          "kind": "act",
+          "id": "97a4e1"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.9.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "input-image-alt",
+      "description": "An image button must have alternative text that says what it does.",
+      "help": "Add an alt attribute to the image button that describes its action.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "input-image-alt"
+        },
+        {
+          "kind": "act",
+          "id": "59796f"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.3"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "label",
+      "description": "A form field must have a label.",
+      "help": "Associate a visible label element with the field, or add an aria-label or aria-labelledby.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "label"
+        },
+        {
+          "kind": "act",
+          "id": "e086e5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.n",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "label-content-name-mismatch",
+      "description": "The accessible name of a control must contain the text visible on it.",
+      "help": "Start or include the visible text in the aria-label or aria-labelledby that names the control.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "label-content-name-mismatch"
+        },
+        {
+          "kind": "act",
+          "id": "2ee8b8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.5.3",
+          "handle": "Label in Name",
+          "level": "A",
+          "version": "2.1"
+        }
+      ],
+      "tags": [
+        "experimental",
+        "cat.semantics",
+        "wcag21a",
+        "wcag253",
+        "EN-301-549",
+        "EN-9.2.5.3",
+        "RGAAv4",
+        "RGAA-6.1.5"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: the fix is to reword it around the visible text, which is the author's call."
+    },
+    {
+      "id": "label-title-only",
+      "description": "A form field should have a visible label, not only a title attribute or a description.",
+      "help": "Add a visible label element for the field, or name it with aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "label-title-only"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.forms",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The label is content: its wording and place on the page are the author's."
+    },
+    {
+      "id": "landmark-banner-is-top-level",
+      "description": "A banner landmark must not sit inside another landmark.",
+      "help": "Move the banner out of the other landmark, or give the inner element a role that is not banner.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-banner-is-top-level"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-complementary-is-top-level",
+      "description": "A complementary landmark (an aside) should not sit inside another landmark.",
+      "help": "Move the aside out of the other landmark, or give it a role that is not complementary.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-complementary-is-top-level"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice",
+        "deprecated"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-contentinfo-is-top-level",
+      "description": "A contentinfo landmark (a page footer) must not sit inside another landmark.",
+      "help": "Move the footer out of the other landmark, or give the inner element a role that is not contentinfo.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-contentinfo-is-top-level"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-main-is-top-level",
+      "description": "A main landmark must not sit inside another landmark.",
+      "help": "Move the main element out of the other landmark.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-main-is-top-level"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-no-duplicate-banner",
+      "description": "A page should have at most one banner landmark.",
+      "help": "Keep one banner; give the other elements a role that is not banner, or use header inside sectioning content.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-no-duplicate-banner"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-no-duplicate-contentinfo",
+      "description": "A page should have at most one contentinfo landmark.",
+      "help": "Keep one page footer; give the other elements a role that is not contentinfo.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-no-duplicate-contentinfo"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-no-duplicate-main",
+      "description": "A page should have at most one main landmark.",
+      "help": "Keep one main element; remove the role or element from the others.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-no-duplicate-main"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-one-main",
+      "description": "A page should have a main landmark.",
+      "help": "Wrap the page's primary content in a main element.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-one-main"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Which part of the page is its main content is the author's decision."
+    },
+    {
+      "id": "landmark-unique",
+      "description": "Landmarks that share a role must have different accessible names.",
+      "help": "Give each landmark of the same role a distinct aria-label or aria-labelledby.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-unique"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The names are content: only the author knows what to call each landmark."
+    },
+    {
+      "id": "link-in-context-descriptive",
+      "description": "A link's purpose should be clear from its name and its context.",
+      "help": "Reword the link, or put the missing context in its sentence, paragraph, list item or table cell.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "5effbb"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.4",
+          "handle": "Link Purpose (In Context)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "2.4.9",
+          "handle": "Link Purpose (Link Only)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "needs-review-only"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the text is descriptive is a judgement about content; there is no single correct replacement."
+    },
+    {
+      "id": "link-in-text-block",
+      "description": "A link inside a block of text must be distinguishable from the surrounding text by more than colour.",
+      "help": "Underline the link, or give it a colour with at least 3:1 contrast against the surrounding text.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "link-in-text-block"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.1",
+          "handle": "Use of Color",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.color",
+        "wcag2a",
+        "wcag141",
+        "TTv5",
+        "TT13.a",
+        "EN-301-549",
+        "EN-9.1.4.1",
+        "RGAAv4",
+        "RGAA-10.6.1"
+      ],
+      "fix": null,
+      "noFixReason": "How to mark a link (underline, weight, colour) is a design choice."
+    },
+    {
+      "id": "link-name",
+      "description": "A link must have an accessible name.",
+      "help": "Put text or an image with alternative text in the link, or add an aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "link-name"
+        },
+        {
+          "kind": "act",
+          "id": "c487ae"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.4",
+          "handle": "Link Purpose (In Context)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag244",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.2.4.4",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-6.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "list",
+      "description": "A ul or ol may only directly contain li, script and template elements.",
+      "help": "Move other elements and text into li elements, or out of the list.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "list"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Where stray content belongs, and whether it should be a list item at all, is the author's decision."
+    },
+    {
+      "id": "listitem",
+      "description": "An li element must be inside a ul, an ol or a list.",
+      "help": "Put the li in a ul or ol, or give its parent the role list.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "listitem"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": "Wrap a run of sibling li elements that have no role and no value attribute in a ul.",
+      "noFixReason": null
+    },
+    {
+      "id": "marquee",
+      "description": "The marquee element scrolls text on its own, which a user must be able to stop.",
+      "help": "Replace the marquee with static content, or with an animation a user can pause.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "marquee"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.2.2",
+          "handle": "Pause, Stop, Hide",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.parsing",
+        "wcag2a",
+        "wcag222",
+        "TTv5",
+        "TT2.b",
+        "EN-301-549",
+        "EN-9.2.2.2",
+        "RGAAv4",
+        "RGAA-13.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Static text, a slower effect or a control to pause it are all valid replacements, so the author decides."
+    },
+    {
+      "id": "meta-refresh",
+      "description": "A page must not refresh or redirect on a timer, unless the delay is zero or longer than twenty hours.",
+      "help": "Remove the timed refresh, redirect on the server, or add a way to turn it off.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "meta-refresh"
+        },
+        {
+          "kind": "act",
+          "id": "bc659a"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.2.1",
+          "handle": "Timing Adjustable",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag221",
+        "TTv5",
+        "TT8.a",
+        "EN-301-549",
+        "EN-9.2.2.1",
+        "RGAAv4",
+        "RGAA-13.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to redirect on the server, remove the refresh or give users a control is the author's decision."
+    },
+    {
+      "id": "meta-refresh-no-exceptions",
+      "description": "A page must not refresh or redirect on a timer at all, other than immediately.",
+      "help": "Remove the timed refresh and redirect on the server instead.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "meta-refresh-no-exceptions"
+        },
+        {
+          "kind": "act",
+          "id": "bisz58"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.2.4",
+          "handle": "Interruptions",
+          "level": "AAA",
+          "version": "2.0"
+        },
+        {
+          "number": "3.2.5",
+          "handle": "Change on Request",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2aaa",
+        "wcag224",
+        "wcag325"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to redirect on the server, remove the refresh or give users a control is the author's decision."
+    },
+    {
+      "id": "meta-viewport",
+      "description": "The viewport meta element must not stop a user from zooming in, or limit zoom below two times.",
+      "help": "Remove user-scalable=no and any maximum-scale below 2 from the viewport content.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "meta-viewport"
+        },
+        {
+          "kind": "act",
+          "id": "b4f0c3"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.4",
+          "handle": "Resize Text",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.sensory-and-visual-cues",
+        "wcag2aa",
+        "wcag144",
+        "EN-301-549",
+        "EN-9.1.4.4",
+        "ACT",
+        "RGAAv4",
+        "RGAA-10.4.2"
+      ],
+      "fix": null,
+      "noFixReason": "Removing the restriction and raising the limit both make zoom possible, so there is more than one correct edit."
+    },
+    {
+      "id": "meta-viewport-large",
+      "description": "The viewport meta element should let a user zoom to at least five times.",
+      "help": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "meta-viewport-large"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.sensory-and-visual-cues",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Removing the restriction and raising the limit both make zoom possible, so there is more than one correct edit."
+    },
+    {
+      "id": "nested-interactive",
+      "description": "An element whose role makes its children presentational (a button, a tab, an image) must not contain anything reachable with the Tab key.",
+      "help": "Move the focusable element out, or change the outer role to one that exposes its children.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "nested-interactive"
+        },
+        {
+          "kind": "act",
+          "id": "307n5z"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.keyboard",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "Removing the focusable child, moving it or changing the outer role each change the page; the author must choose."
+    },
+    {
+      "id": "no-autoplay-audio",
+      "description": "Audio or video that starts by itself and plays sound for more than three seconds must have a way to pause or silence it.",
+      "help": "Add the controls attribute, a pause button, or mute the media.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "no-autoplay-audio"
+        },
+        {
+          "kind": "act",
+          "id": "80f0bf"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.2",
+          "handle": "Audio Control",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag142",
+        "TTv5",
+        "TT2.a",
+        "EN-301-549",
+        "EN-9.1.4.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-4.10.1"
+      ],
+      "fix": null,
+      "noFixReason": "Adding controls, muting or removing autoplay changes how the media behaves, which is the author's decision."
+    },
+    {
+      "id": "object-alt",
+      "description": "An object element that shows non-text content must have an accessible name.",
+      "help": "Name the object with aria-label, aria-labelledby or a title attribute.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "object-alt"
+        },
+        {
+          "kind": "act",
+          "id": "8fc3b6"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "RGAAv4",
+        "RGAA-1.1.6"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the embedded resource is."
+    },
+    {
+      "id": "p-as-heading",
+      "description": "A paragraph styled to look like a heading should be a real heading.",
+      "help": "Use a heading element (h1 to h6) for the text and style it with CSS.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "p-as-heading"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.semantics",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.1.3",
+        "experimental"
+      ],
+      "fix": null,
+      "noFixReason": "The right heading level depends on the page's outline, which is the author's decision."
+    },
+    {
+      "id": "page-has-heading-one",
+      "description": "A page should contain a level-one heading.",
+      "help": "Add an h1 that says what the page is about.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "page-has-heading-one"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The heading's text is content, and which existing heading should be level one is the author's decision."
+    },
+    {
+      "id": "presentation-role-conflict",
+      "description": "An element marked as decorative must really be presentational: it may not be focusable or carry a global WAI-ARIA attribute.",
+      "help": "Either make the element non-interactive without WAI-ARIA attributes, or drop the presentational role and give it a real one.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "presentation-role-conflict"
+        },
+        {
+          "kind": "act",
+          "id": "46ca7f"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.aria",
+        "best-practice",
+        "ACT"
+      ],
+      "fix": null,
+      "noFixReason": "Two fixes exist (remove the role or remove what conflicts with it) and which one is right depends on the author's intent."
+    },
+    {
+      "id": "region",
+      "description": "All page content should sit inside a landmark.",
+      "help": "Put the content inside a header, nav, main, aside, footer or a named section or region.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "region"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-9.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Choosing the landmark that fits each block of content is the author's decision."
+    },
+    {
+      "id": "role-img-alt",
+      "description": "An element given the img role must have a text alternative.",
+      "help": "Add an aria-label or aria-labelledby that says what the element shows.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "role-img-alt"
+        },
+        {
+          "kind": "act",
+          "id": "23a2a8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "scope-attr-valid",
+      "description": "The scope attribute belongs on th elements and must be col, row, colgroup or rowgroup.",
+      "help": "Use scope only on th elements, with the value col, row, colgroup or rowgroup.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "scope-attr-valid"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.tables",
+        "best-practice"
+      ],
+      "fix": "Remove an invalid scope value from a th: a browser already treats it as no scope, so removing it changes nothing but the markup.",
+      "noFixReason": null
+    },
+    {
+      "id": "scrollable-region-focusable",
+      "description": "A scrollable region must be reachable with the keyboard.",
+      "help": "Give the region tabindex 0, or put a focusable element inside it.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "scrollable-region-focusable"
+        },
+        {
+          "kind": "act",
+          "id": "0ssw9k"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.1.1",
+          "handle": "Keyboard",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "2.1.3",
+          "handle": "Keyboard (No Exception)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.keyboard",
+        "wcag2a",
+        "wcag211",
+        "wcag213",
+        "TTv5",
+        "TT4.a",
+        "EN-301-549",
+        "EN-9.2.1.1",
+        "EN-9.2.1.3",
+        "RGAAv4",
+        "RGAA-7.3.2"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to make the region focusable or to supply another way to scroll it is the author's decision."
+    },
+    {
+      "id": "select-name",
+      "description": "A select element must have an accessible name.",
+      "help": "Associate a label element with the select, or add an aria-label or aria-labelledby.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "select-name"
+        },
+        {
+          "kind": "act",
+          "id": "e086e5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.n",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-11.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "server-side-image-map",
+      "description": "A server-side image map cannot be used with a keyboard.",
+      "help": "Replace the server-side image map with a client-side map or plain links.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "server-side-image-map"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.1.1",
+          "handle": "Keyboard",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag211",
+        "section508",
+        "section508.22.f",
+        "TTv5",
+        "TT4.a",
+        "EN-301-549",
+        "EN-9.2.1.1",
+        "RGAAv4",
+        "RGAA-1.1.4"
+      ],
+      "fix": null,
+      "noFixReason": "How the map's regions become links is design, so the author decides."
+    },
+    {
+      "id": "skip-link",
+      "description": "A link to a place on the same page must have a target that exists and is not hidden.",
+      "help": "Point the link at the id of an element that is on the page, or remove the link.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "skip-link"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-12.7.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which element the link should reach is the author's decision."
+    },
+    {
+      "id": "summary-name",
+      "description": "The summary of a details element must have an accessible name.",
+      "help": "Put text in the summary, or add an aria-label or aria-labelledby.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "summary-name"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.name-role-value",
+        "wcag2a",
+        "wcag412",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "svg-img-alt",
+      "description": "An SVG element with an image role must have a text alternative.",
+      "help": "Add a title child, aria-label or aria-labelledby that says what the graphic shows.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "svg-img-alt"
+        },
+        {
+          "kind": "act",
+          "id": "7d6734"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.1.1",
+          "handle": "Non-text Content",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag111",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT7.a",
+        "EN-301-549",
+        "EN-9.1.1.1",
+        "ACT",
+        "RGAAv4",
+        "RGAA-1.1.5"
+      ],
+      "fix": null,
+      "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "tabindex",
+      "description": "A tabindex above 0 should not be used.",
+      "help": "Reorder the elements in the document and use tabindex 0 or -1.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "tabindex"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice"
+      ],
+      "fix": "Set tabindex to 0, when the page's focus order already follows the document order.",
+      "noFixReason": null
+    },
+    {
+      "id": "table-duplicate-name",
+      "description": "A table's caption should not repeat the text of its summary attribute.",
+      "help": "Make the caption name the table and use summary only for extra detail, or remove the obsolete summary attribute.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "table-duplicate-name"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.tables",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-5.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Either the caption or the summary can be the one to drop or reword, which is a content decision."
+    },
+    {
+      "id": "table-fake-caption",
+      "description": "A data cell that spans the whole first row to title the table should be a caption element.",
+      "help": "Move the text into a caption element as the first child of the table and remove the spanning cell.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "table-fake-caption"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.tables",
+        "experimental",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.4.1"
+      ],
+      "fix": null,
+      "noFixReason": "Moving the text changes the table's structure and styling; whether the cell is a title is a judgement."
+    },
+    {
+      "id": "target-size",
+      "description": "A pointer target should be at least 24 by 24 CSS pixels, or have enough space around it.",
+      "help": "Make the target at least 24 by 24 CSS pixels with padding or a minimum size, or move it at least 24 pixels from the other targets.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "target-size"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.5.8",
+          "handle": "Target Size (Minimum)",
+          "level": "AA",
+          "version": "2.2"
+        }
+      ],
+      "tags": [
+        "cat.sensory-and-visual-cues",
+        "wcag22aa",
+        "wcag258",
+        "EN-301-549v4",
+        "EN-9.2.5.8"
+      ],
+      "fix": null,
+      "noFixReason": "Enlarging a target or spacing it out changes the layout, which is the author's decision."
+    },
+    {
+      "id": "td-has-header",
+      "description": "Each cell with content in a data table of at least three rows and three columns must have a header cell.",
+      "help": "Mark the heading cells with th (and scope where needed), or give the cell a headers attribute that lists its header cells.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "td-has-header"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.tables",
+        "experimental",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.4"
+      ],
+      "fix": null,
+      "noFixReason": "Which cells are the headers is a content decision."
+    },
+    {
+      "id": "td-headers-attr",
+      "description": "Every id listed in a cell's headers attribute must belong to another cell of the same table.",
+      "help": "Make each id in the headers attribute the id of a header or data cell in the same table, and do not list the cell's own id.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "td-headers-attr"
+        },
+        {
+          "kind": "act",
+          "id": "a25f45"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.tables",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.4"
+      ],
+      "fix": null,
+      "noFixReason": "The right header cells depend on what the table says; the markup does not show them."
+    },
+    {
+      "id": "th-has-data-cells",
+      "description": "Every header cell of a table must have at least one cell that it is the header of.",
+      "help": "Remove the header cell or the markup that cuts it off from its cells, or add the cells it describes.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "th-has-data-cells"
+        },
+        {
+          "kind": "act",
+          "id": "d0f69e"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.tables",
+        "wcag2a",
+        "wcag131",
+        "section508",
+        "section508.22.g",
+        "TTv5",
+        "TT14.b",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-5.7.1"
+      ],
+      "fix": null,
+      "noFixReason": "Whether a header is stray or its cells are missing is a content decision."
+    },
+    {
+      "id": "valid-lang",
+      "description": "A lang attribute on content inside the body must start with a registered language code.",
+      "help": "Change the lang attribute to a language code from the IANA registry, such as es or zh-Hans.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "valid-lang"
+        },
+        {
+          "kind": "act",
+          "id": "de46e4"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "3.1.2",
+          "handle": "Language of Parts",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.language",
+        "wcag2aa",
+        "wcag312",
+        "TTv5",
+        "TT11.b",
+        "EN-301-549",
+        "EN-9.3.1.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-8.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which language a passage is in is content; a corrected value cannot be derived from the markup."
+    },
+    {
+      "id": "video-audio-description",
+      "description": "A video's visuals should have an audio description.",
+      "help": "Provide a version of the video with audio description, or an audio track that describes the visuals.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "1ea59c"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.5",
+          "handle": "Audio Description (Prerecorded)",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-caption",
+      "description": "A video that has speech or sound must have captions.",
+      "help": "Add a captions track (track kind=captions) or burn captions into the video.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "video-caption"
+        },
+        {
+          "kind": "act",
+          "id": "eac66b"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.2",
+          "handle": "Captions (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag122",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT17.a",
+        "EN-301-549",
+        "EN-9.1.2.2",
+        "RGAAv4",
+        "RGAA-4.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-captions",
+      "description": "A video with sound should have captions.",
+      "help": "Add a captions track or burn captions into the video.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "f51b46"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.2",
+          "handle": "Captions (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-description-track",
+      "description": "A video should have a description track.",
+      "help": "Add a track of kind=descriptions.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "f196ce"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.5",
+          "handle": "Audio Description (Prerecorded)",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-media-alternative",
+      "description": "A video should have a media alternative for text.",
+      "help": "Add a media alternative, such as a described version, next to the video.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "ab4d13"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.3",
+          "handle": "Audio Description or Media Alternative (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-alternative",
+      "description": "A video without sound should have a text or audio alternative.",
+      "help": "Add a transcript, a media alternative for text, or an audio track that describes the visuals.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "c3232f"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-audio-track",
+      "description": "A video without sound should have an audio track that describes it.",
+      "help": "Add an audio recording that describes the visuals.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "d7ba54"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-description-track",
+      "description": "A video without sound should have a description track.",
+      "help": "Add a track of kind=descriptions.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "ac7dc6"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-media-alternative",
+      "description": "A video without sound should have a media alternative for text.",
+      "help": "Add a media alternative, such as a described version, next to the video.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "fd26cf"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-transcript",
+      "description": "A video without sound should have a transcript.",
+      "help": "Add a transcript that describes the visuals next to the video.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "ee13b5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-strict-alternative",
+      "description": "A video's visuals need an audio description and a media alternative.",
+      "help": "Provide audio description and a media alternative for text.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "1ec09b"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.5",
+          "handle": "Audio Description (Prerecorded)",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-transcript",
+      "description": "A video's audio and visuals should have a transcript.",
+      "help": "Add a transcript with both the speech and the descriptions of the visuals.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "1a02b0"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.8",
+          "handle": "Media Alternative (Prerecorded)",
+          "level": "AAA",
+          "version": "2.0"
+        },
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-visual-alternative",
+      "description": "A video's visuals should have an accessible alternative.",
+      "help": "Provide an audio description, a transcript or a media alternative.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "c5a4ea"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.3",
+          "handle": "Audio Description or Media Alternative (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "1.2.5",
+          "handle": "Audio Description (Prerecorded)",
+          "level": "AA",
+          "version": "2.0"
+        },
+        {
+          "number": "1.2.8",
+          "handle": "Media Alternative (Prerecorded)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    }
+  ],
+  "results": [
+    {
+      "rule": "accesskeys",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "area-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-attr",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-allowed-role",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-braille-equivalent",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-command-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-conditional-attr",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-deprecated-role",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-dialog-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-hidden-body",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "body",
+        "locator": "body",
+        "source": {
+          "start": 420,
+          "end": 426
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-hidden-focus",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-input-field-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-meter-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-progressbar-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-prohibited-attr",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-attr",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-children",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-required-parent",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-roles",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-tab-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-text",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-toggle-field-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-tooltip-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-treeitem-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "aria-valid-attr-value",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "audio-alternative",
+      "outcome": "needs-review",
+      "message": "Check that the audio has a transcript or a media alternative for text.",
+      "target": {
+        "tag": "audio",
+        "locator": "audio",
+        "source": {
+          "start": 966,
+          "end": 1006
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "audio-caption",
+      "outcome": "needs-review",
+      "message": "Check that the audio has a transcript or other text alternative on the page.",
+      "target": {
+        "tag": "audio",
+        "locator": "audio",
+        "source": {
+          "start": 966,
+          "end": 1006
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autocomplete-valid",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autoplay-audio-control",
+      "outcome": "needs-review",
+      "message": "The element starts by itself and has no native controls. Check that the page has a visible, named control to pause or silence it, unless it has no sound or the sound lasts three seconds or less.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autoplay-audio-control",
+      "outcome": "passed",
+      "message": "The element starts by itself and has native controls to pause or silence it.",
+      "target": {
+        "tag": "audio",
+        "locator": "audio",
+        "source": {
+          "start": 966,
+          "end": 1006
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autoplay-audio-duration",
+      "outcome": "needs-review",
+      "message": "Check that the sound that plays by itself lasts no more than three seconds.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "The element has no native controls."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autoplay-audio-duration",
+      "outcome": "needs-review",
+      "message": "Check that the sound that plays by itself lasts no more than three seconds.",
+      "target": {
+        "tag": "audio",
+        "locator": "audio",
+        "source": {
+          "start": 966,
+          "end": 1006
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "The element has native controls."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "avoid-inline-spacing",
+      "outcome": "failed",
+      "message": "Spacing set with !important in the style attribute stops a reader's style sheet from widening it.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(7)",
+        "source": {
+          "start": 771,
+          "end": 816
+        }
+      },
+      "findings": [
+        {
+          "attribute": "style",
+          "value": "letter-spacing: 0.05em !important",
+          "message": "Important in the style attribute and narrower than 0.12 times the font size (16px)."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": [
+        {
+          "description": "Declare letter-spacing in the style attribute without !important.",
+          "edit": 0
+        }
+      ]
+    },
+    {
+      "rule": "blink",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "button-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "button",
+        "source": {
+          "start": 872,
+          "end": 908
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "bypass",
+      "outcome": "failed",
+      "message": "The page has no heading, no main landmark and no skip link.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(1)",
+        "source": {
+          "start": 427,
+          "end": 430
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "failed",
+      "message": "The text has a contrast ratio of 2.84:1; 4.50:1 is needed.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(2)",
+        "source": {
+          "start": 467,
+          "end": 484
+        }
+      },
+      "findings": [
+        {
+          "attribute": "color",
+          "value": "#999999",
+          "message": "The text colour."
+        },
+        {
+          "attribute": null,
+          "value": "#ffffff",
+          "message": "The background colour."
+        },
+        {
+          "attribute": null,
+          "value": "2.84:1",
+          "message": "Normal text 16px, weight 400; 4.50:1 is needed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "The text has enough contrast with the most contrasting colour of its gradient background.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(3)",
+        "source": {
+          "start": 522,
+          "end": 538
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "failed",
+      "message": "The text has a contrast ratio of 1.60:1; 4.50:1 is needed.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(4)",
+        "source": {
+          "start": 573,
+          "end": 590
+        }
+      },
+      "findings": [
+        {
+          "attribute": "color",
+          "value": "#cccccc",
+          "message": "The text colour of the ::before content."
+        },
+        {
+          "attribute": null,
+          "value": "#ffffff",
+          "message": "The background colour."
+        },
+        {
+          "attribute": null,
+          "value": "1.60:1",
+          "message": "Normal text 16px, weight 400; 4.50:1 is needed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(4)",
+        "source": {
+          "start": 573,
+          "end": 590
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "needs-render",
+      "message": "Something the cascade cannot colour (an image, a gradient it cannot read, or a positioned generated box) is behind the text; its pixels decide the contrast.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(5)",
+        "source": {
+          "start": 607,
+          "end": 656
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "background samples (median and 5th/95th percentile colours) behind the text"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(6)",
+        "source": {
+          "start": 679,
+          "end": 682
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "a",
+        "source": {
+          "start": 687,
+          "end": 745
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(7)",
+        "source": {
+          "start": 771,
+          "end": 816
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "div",
+        "source": {
+          "start": 833,
+          "end": 851
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(1)",
+        "source": {
+          "start": 427,
+          "end": 430
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "failed",
+      "message": "The text has a contrast ratio of 2.84:1; 7.00:1 is needed.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(2)",
+        "source": {
+          "start": 467,
+          "end": 484
+        }
+      },
+      "findings": [
+        {
+          "attribute": "color",
+          "value": "#999999",
+          "message": "The text colour."
+        },
+        {
+          "attribute": null,
+          "value": "#ffffff",
+          "message": "The background colour."
+        },
+        {
+          "attribute": null,
+          "value": "2.84:1",
+          "message": "Normal text 16px, weight 400; 7.00:1 is needed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "The text has enough contrast with the most contrasting colour of its gradient background.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(3)",
+        "source": {
+          "start": 522,
+          "end": 538
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "failed",
+      "message": "The text has a contrast ratio of 1.60:1; 7.00:1 is needed.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(4)",
+        "source": {
+          "start": 573,
+          "end": 590
+        }
+      },
+      "findings": [
+        {
+          "attribute": "color",
+          "value": "#cccccc",
+          "message": "The text colour of the ::before content."
+        },
+        {
+          "attribute": null,
+          "value": "#ffffff",
+          "message": "The background colour."
+        },
+        {
+          "attribute": null,
+          "value": "1.60:1",
+          "message": "Normal text 16px, weight 400; 7.00:1 is needed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(4)",
+        "source": {
+          "start": 573,
+          "end": 590
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "needs-render",
+      "message": "Something the cascade cannot colour (an image, a gradient it cannot read, or a positioned generated box) is behind the text; its pixels decide the contrast.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(5)",
+        "source": {
+          "start": 607,
+          "end": 656
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "background samples (median and 5th/95th percentile colours) behind the text"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(6)",
+        "source": {
+          "start": 679,
+          "end": 682
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "failed",
+      "message": "The text has a contrast ratio of 5.56:1; 7.00:1 is needed.",
+      "target": {
+        "tag": "a",
+        "locator": "a",
+        "source": {
+          "start": 687,
+          "end": 745
+        }
+      },
+      "findings": [
+        {
+          "attribute": "color",
+          "value": "#0066cc",
+          "message": "The text colour."
+        },
+        {
+          "attribute": null,
+          "value": "#ffffff",
+          "message": "The background colour."
+        },
+        {
+          "attribute": null,
+          "value": "5.56:1",
+          "message": "Normal text 16px, weight 400; 7.00:1 is needed."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(7)",
+        "source": {
+          "start": 771,
+          "end": 816
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "div",
+        "source": {
+          "start": 833,
+          "end": 851
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "css-orientation-lock",
+      "outcome": "failed",
+      "message": "The element is turned by a quarter turn in one orientation and not in the other.",
+      "target": {
+        "tag": "div",
+        "locator": "div",
+        "source": {
+          "start": 833,
+          "end": 851
+        }
+      },
+      "findings": [
+        {
+          "attribute": "transform",
+          "value": "none",
+          "message": "In a landscape viewport (rotation 0 degrees)."
+        },
+        {
+          "attribute": "transform",
+          "value": "rotate(90deg)",
+          "message": "In a portrait viewport (rotation 90 degrees)."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "definition-list",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "dlitem",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "document-title",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "duplicate-id",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "duplicate-id-active",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "duplicate-id-aria",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "element-lang-matches-content",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-heading",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "empty-table-header",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-order-semantics",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "form-field-multiple-labels",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-focusable-content",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-title",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-title-unique",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "heading-order",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "hidden-content",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "html-has-lang",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "html-lang-matches-content",
+      "outcome": "needs-review",
+      "message": "Check that most of the page is written in \"en\".",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [
+        {
+          "attribute": "lang",
+          "value": "en",
+          "message": "page language"
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "html-lang-valid",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "html-xml-lang-mismatch",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "identical-links-same-purpose",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-name-descriptive",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "image-redundant-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "input-button-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "input-image-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label-content-name-mismatch",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "label-title-only",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-banner-is-top-level",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-complementary-is-top-level",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-contentinfo-is-top-level",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-main-is-top-level",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-no-duplicate-banner",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-no-duplicate-contentinfo",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-no-duplicate-main",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-one-main",
+      "outcome": "failed",
+      "message": "The page has no main landmark.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-unique",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-in-context-descriptive",
+      "outcome": "needs-review",
+      "message": "Check that the link's purpose is clear from its name together with its context.",
+      "target": {
+        "tag": "a",
+        "locator": "a",
+        "source": {
+          "start": 687,
+          "end": 745
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": "the report",
+          "message": "The accessible name."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-in-text-block",
+      "outcome": "failed",
+      "message": "Only colour sets the link apart from the surrounding text, and the contrast between them is 2.85:1.",
+      "target": {
+        "tag": "a",
+        "locator": "a",
+        "source": {
+          "start": 687,
+          "end": 745
+        }
+      },
+      "findings": [
+        {
+          "attribute": "color",
+          "value": "#0066cc",
+          "message": "The link colour."
+        },
+        {
+          "attribute": null,
+          "value": "#222222",
+          "message": "The colour of the surrounding text."
+        },
+        {
+          "attribute": null,
+          "value": "2.85:1",
+          "message": "The contrast between them; 3:1 is needed when nothing else marks the link."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-name",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "a",
+        "source": {
+          "start": 687,
+          "end": 745
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "list",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "listitem",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "marquee",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "meta-refresh",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "meta-refresh-no-exceptions",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "meta-viewport",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "meta-viewport-large",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "nested-interactive",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "button",
+        "source": {
+          "start": 872,
+          "end": 908
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "no-autoplay-audio",
+      "outcome": "needs-review",
+      "message": "The element starts by itself and has no native controls. Check that the page has a visible, named control to pause or silence it, unless it has no sound or the sound lasts three seconds or less.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "no-autoplay-audio",
+      "outcome": "passed",
+      "message": "The element starts by itself and has native controls to pause or silence it.",
+      "target": {
+        "tag": "audio",
+        "locator": "audio",
+        "source": {
+          "start": 966,
+          "end": 1006
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "object-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "p-as-heading",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(1)",
+        "source": {
+          "start": 427,
+          "end": 430
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "p-as-heading",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(2)",
+        "source": {
+          "start": 467,
+          "end": 484
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "p-as-heading",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(3)",
+        "source": {
+          "start": 522,
+          "end": 538
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "p-as-heading",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(4)",
+        "source": {
+          "start": 573,
+          "end": 590
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "p-as-heading",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(5)",
+        "source": {
+          "start": 607,
+          "end": 656
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "p-as-heading",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(6)",
+        "source": {
+          "start": 679,
+          "end": 682
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "page-has-heading-one",
+      "outcome": "failed",
+      "message": "The page has no level-one heading.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "presentation-role-conflict",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(1)",
+        "source": {
+          "start": 427,
+          "end": 430
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(2)",
+        "source": {
+          "start": 467,
+          "end": 484
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(3)",
+        "source": {
+          "start": 522,
+          "end": 538
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(4)",
+        "source": {
+          "start": 573,
+          "end": 590
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(5)",
+        "source": {
+          "start": 607,
+          "end": 656
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(6)",
+        "source": {
+          "start": 679,
+          "end": 682
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p:nth-of-type(7)",
+        "source": {
+          "start": 771,
+          "end": 816
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "div",
+        "locator": "div",
+        "source": {
+          "start": 833,
+          "end": 851
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "button",
+        "locator": "button",
+        "source": {
+          "start": 872,
+          "end": 908
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "audio",
+        "locator": "audio",
+        "source": {
+          "start": 966,
+          "end": 1006
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "role-img-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "scope-attr-valid",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "scrollable-region-focusable",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "select-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "server-side-image-map",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "skip-link",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "summary-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "svg-img-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "tabindex",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "table-duplicate-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "table-fake-caption",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "a",
+        "locator": "a",
+        "source": {
+          "start": 687,
+          "end": 745
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "audio",
+        "locator": "audio",
+        "source": {
+          "start": 966,
+          "end": 1006
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "td-has-header",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "td-headers-attr",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "th-has-data-cells",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "valid-lang",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-audio-description",
+      "outcome": "needs-review",
+      "message": "Check that the visuals of the video are described in audio.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-caption",
+      "outcome": "needs-review",
+      "message": "Check that the video's speech and sounds are available as captions or a text alternative, if it has audio.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "The video has no captions track; captions may be burned into the picture or given elsewhere."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-captions",
+      "outcome": "needs-review",
+      "message": "Check that the video's speech and sounds are captioned, if it has audio.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "The video has no captions track; captions may be burned into the picture or given elsewhere."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-description-track",
+      "outcome": "needs-review",
+      "message": "Check that the video has a description track for its visuals.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "The video has no descriptions track."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-media-alternative",
+      "outcome": "needs-review",
+      "message": "Check that the video has a media alternative for text.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-alternative",
+      "outcome": "needs-review",
+      "message": "Check that a video with no sound has a text alternative or an audio track that describes it.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-audio-track",
+      "outcome": "needs-review",
+      "message": "Check that a video with no sound has an audio track that describes what it shows.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-description-track",
+      "outcome": "needs-review",
+      "message": "Check that a video with no sound has a description track.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [
+        {
+          "attribute": null,
+          "value": null,
+          "message": "The video has no descriptions track."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-media-alternative",
+      "outcome": "needs-review",
+      "message": "Check that a video with no sound has a media alternative for text.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-transcript",
+      "outcome": "needs-review",
+      "message": "Check that a video with no sound has a transcript that describes what it shows.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-strict-alternative",
+      "outcome": "needs-review",
+      "message": "Check that the video has both an audio description and a media alternative for text.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-transcript",
+      "outcome": "needs-review",
+      "message": "Check that the video has a transcript covering both its sound and its visuals.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-visual-alternative",
+      "outcome": "needs-review",
+      "message": "Check that the video's visuals have an audio description, a transcript or a media alternative.",
+      "target": {
+        "tag": "video",
+        "locator": "video",
+        "source": {
+          "start": 926,
+          "end": 957
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    }
+  ],
+  "suggestedEdits": {
+    "format": "onehtml-edits",
+    "version": 1,
+    "document": {
+      "sha256": "47a049bed309fa42b2c56800ff068d4616af250e03b5b2eeca0af088a9258a8c"
+    },
+    "edits": [
+      {
+        "op": "setStyle",
+        "target": {
+          "locator": "body > p:nth-of-type(7)",
+          "fingerprint": {
+            "tag": "p",
+            "text": "sha256:3e8e7bca0992bbf7cf24e996679d03d9f76b0bd44366976eb6b447c226b36b31",
+            "path": "sha256:99d8abdd1089289ee8af9745bc08e906704a4543ec436ba89ca3d99b77c955fd"
+          },
+          "anchor": {
+            "start": 771,
+            "end": 832,
+            "bytes": "sha256:f307bdd4d98642bf1bd987c314f4d34ee221148c7c7d56419c08d0518deca3a2"
+          }
+        },
+        "value": "0.05em",
+        "property": "letter-spacing",
+        "meta": {
+          "rule": "avoid-inline-spacing",
+          "criteria": [
+            "1.4.12"
+          ],
+          "suggested": true
+        }
+      }
+    ]
+  }
+}

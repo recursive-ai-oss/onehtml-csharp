@@ -4,7 +4,8 @@
 returns labelled results. This page covers the API, how rules are selected, and how to add a private rule. The shape of
 the results and the two JSON exports is in [results.md](results.md); the rules that ship are in
 [rules/aria.md](rules/aria.md), [rules/names.md](rules/names.md), [rules/structure.md](rules/structure.md), [rules/tables.md](rules/tables.md),
-[rules/forms.md](rules/forms.md) and [rules/language.md](rules/language.md); the data about the standards they cite is in [catalogue.md](catalogue.md).
+[rules/forms.md](rules/forms.md), [rules/language.md](rules/language.md), [rules/contrast.md](rules/contrast.md), [rules/presentation.md](rules/presentation.md)
+and [rules/media.md](rules/media.md); the data about the standards they cite is in [catalogue.md](catalogue.md).
 
 ## Running a check
 

@@ -916,6 +916,73 @@
       "noFixReason": null
     },
     {
+      "id": "audio-alternative",
+      "description": "Audio should have a text alternative.",
+      "help": "Provide a transcript or media alternative next to the audio.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "e7aa44"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "audio-caption",
+      "description": "Audio must have a transcript or another text alternative.",
+      "help": "Provide a transcript next to the audio, or link to one.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "audio-caption"
+        },
+        {
+          "kind": "act",
+          "id": "2eb176"
+        },
+        {
+          "kind": "act",
+          "id": "afb423"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag121",
+        "EN-301-549",
+        "EN-9.1.2.1",
+        "section508",
+        "section508.22.a",
+        "deprecated"
+      ],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
       "id": "autocomplete-valid",
       "description": "The autocomplete attribute of a form field must follow the HTML autofill token syntax.",
       "help": "Change the autocomplete value to the field name that matches the data the field collects, such as email or street-address, optionally preceded by section-*, shipping or billing, and a contact type for telephone and e-mail fields.",
@@ -952,6 +1019,100 @@
       ],
       "fix": null,
       "noFixReason": "Removing a bad value would only hide the problem; the right token depends on what the field collects."
+    },
+    {
+      "id": "autoplay-audio-control",
+      "description": "Audio or video that starts by itself with sound must have a way to pause, stop or silence it.",
+      "help": "Add the controls attribute, or put a visible, named pause or mute button on the page.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "4c31df"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.2",
+          "handle": "Audio Control",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Adding controls, muting or removing autoplay changes how the media behaves, which is the author's decision."
+    },
+    {
+      "id": "autoplay-audio-duration",
+      "description": "Audio or video that starts by itself should not play sound for more than three seconds.",
+      "help": "Shorten the sound, mute the media, or do not autoplay it.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "aaa1bf"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.2",
+          "handle": "Audio Control",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "avoid-inline-spacing",
+      "description": "Line height, letter spacing and word spacing set with !important in a style attribute must already be wide enough for WCAG's text spacing.",
+      "help": "Drop !important from the declaration in the style attribute, or make the value at least 1.5 times the font size for line height, 0.12 for letter spacing and 0.16 for word spacing.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "avoid-inline-spacing"
+        },
+        {
+          "kind": "act",
+          "id": "24afc2"
+        },
+        {
+          "kind": "act",
+          "id": "78fd32"
+        },
+        {
+          "kind": "act",
+          "id": "9e45ec"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.12",
+          "handle": "Text Spacing",
+          "level": "AA",
+          "version": "2.1"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag21aa",
+        "wcag1412",
+        "EN-301-549",
+        "EN-9.1.4.12",
+        "ACT"
+      ],
+      "fix": "Declare the property again in the style attribute without !important. The page keeps its look, and a reader's own style sheet can then adjust the spacing.",
+      "noFixReason": null
     },
     {
       "id": "blink",
@@ -1072,6 +1233,118 @@
       ],
       "fix": null,
       "noFixReason": "Choosing where the main content starts, and what the skip link says, is the author's decision."
+    },
+    {
+      "id": "color-contrast",
+      "description": "Text must have a contrast ratio of at least 4.5:1 with its background (3:1 for large text).",
+      "help": "Change the text or background colour until the ratio reaches 4.5:1, or 3:1 for large text.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "color-contrast"
+        },
+        {
+          "kind": "act",
+          "id": "afw4f7"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.3",
+          "handle": "Contrast (Minimum)",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.color",
+        "wcag2aa",
+        "wcag143",
+        "TTv5",
+        "TT13.c",
+        "EN-301-549",
+        "EN-9.1.4.3",
+        "ACT",
+        "RGAAv4",
+        "RGAA-3.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Colours are a design choice: many pairs would pass, and the right one depends on the brand and the page."
+    },
+    {
+      "id": "color-contrast-enhanced",
+      "description": "Text must have a contrast ratio of at least 7:1 with its background (4.5:1 for large text).",
+      "help": "Change the text or background colour until the ratio reaches 7:1, or 4.5:1 for large text.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "color-contrast-enhanced"
+        },
+        {
+          "kind": "act",
+          "id": "09o5cg"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.6",
+          "handle": "Contrast (Enhanced)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.color",
+        "wcag2aaa",
+        "wcag146",
+        "ACT"
+      ],
+      "fix": null,
+      "noFixReason": "Colours are a design choice: many pairs would pass, and the right one depends on the brand and the page."
+    },
+    {
+      "id": "css-orientation-lock",
+      "description": "Content must not be rotated by a quarter turn in only one display orientation.",
+      "help": "Remove the rotation inside the orientation media query, or apply the same rotation in both orientations.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "css-orientation-lock"
+        },
+        {
+          "kind": "act",
+          "id": "b33eff"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.4",
+          "handle": "Orientation",
+          "level": "AA",
+          "version": "2.1"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag134",
+        "wcag21aa",
+        "EN-301-549",
+        "EN-9.1.3.4",
+        "RGAAv4",
+        "RGAA-13.9.1",
+        "experimental"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to drop the rotation or rework the layout for the other orientation is a design decision."
     },
     {
       "id": "definition-list",
@@ -2261,6 +2534,41 @@
       "noFixReason": "Whether the text is descriptive is a judgement about content; there is no single correct replacement."
     },
     {
+      "id": "link-in-text-block",
+      "description": "A link inside a block of text must be distinguishable from the surrounding text by more than colour.",
+      "help": "Underline the link, or give it a colour with at least 3:1 contrast against the surrounding text.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "link-in-text-block"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.1",
+          "handle": "Use of Color",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.color",
+        "wcag2a",
+        "wcag141",
+        "TTv5",
+        "TT13.a",
+        "EN-301-549",
+        "EN-9.1.4.1",
+        "RGAAv4",
+        "RGAA-10.6.1"
+      ],
+      "fix": null,
+      "noFixReason": "How to mark a link (underline, weight, colour) is a design choice."
+    },
+    {
       "id": "link-name",
       "description": "A link must have an accessible name.",
       "help": "Put text or an image with alternative text in the link, or add an aria-label or aria-labelledby.",
@@ -2587,6 +2895,46 @@
       ],
       "fix": null,
       "noFixReason": "Removing the focusable child, moving it or changing the outer role each change the page; the author must choose."
+    },
+    {
+      "id": "no-autoplay-audio",
+      "description": "Audio or video that starts by itself and plays sound for more than three seconds must have a way to pause or silence it.",
+      "help": "Add the controls attribute, a pause button, or mute the media.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "no-autoplay-audio"
+        },
+        {
+          "kind": "act",
+          "id": "80f0bf"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.2",
+          "handle": "Audio Control",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag142",
+        "TTv5",
+        "TT2.a",
+        "EN-301-549",
+        "EN-9.1.4.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-4.10.1"
+      ],
+      "fix": null,
+      "noFixReason": "Adding controls, muting or removing autoplay changes how the media behaves, which is the author's decision."
     },
     {
       "id": "object-alt",
@@ -3101,6 +3449,37 @@
       "noFixReason": "Moving the text changes the table's structure and styling; whether the cell is a title is a judgement."
     },
     {
+      "id": "target-size",
+      "description": "A pointer target should be at least 24 by 24 CSS pixels, or have enough space around it.",
+      "help": "Make the target at least 24 by 24 CSS pixels with padding or a minimum size, or move it at least 24 pixels from the other targets.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "target-size"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.5.8",
+          "handle": "Target Size (Minimum)",
+          "level": "AA",
+          "version": "2.2"
+        }
+      ],
+      "tags": [
+        "cat.sensory-and-visual-cues",
+        "wcag22aa",
+        "wcag258",
+        "EN-301-549v4",
+        "EN-9.2.5.8"
+      ],
+      "fix": null,
+      "noFixReason": "Enlarging a target or spacing it out changes the layout, which is the author's decision."
+    },
+    {
       "id": "td-has-header",
       "description": "Each cell with content in a data table of at least three rows and three columns must have a header cell.",
       "help": "Mark the heading cells with th (and scope where needed), or give the cell a headers attribute that lists its header cells.",
@@ -3259,6 +3638,383 @@
       ],
       "fix": null,
       "noFixReason": "Which language a passage is in is content; a corrected value cannot be derived from the markup."
+    },
+    {
+      "id": "video-audio-description",
+      "description": "A video's visuals should have an audio description.",
+      "help": "Provide a version of the video with audio description, or an audio track that describes the visuals.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "1ea59c"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.5",
+          "handle": "Audio Description (Prerecorded)",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-caption",
+      "description": "A video that has speech or sound must have captions.",
+      "help": "Add a captions track (track kind=captions) or burn captions into the video.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "video-caption"
+        },
+        {
+          "kind": "act",
+          "id": "eac66b"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.2",
+          "handle": "Captions (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag122",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT17.a",
+        "EN-301-549",
+        "EN-9.1.2.2",
+        "RGAAv4",
+        "RGAA-4.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-captions",
+      "description": "A video with sound should have captions.",
+      "help": "Add a captions track or burn captions into the video.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "f51b46"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.2",
+          "handle": "Captions (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-description-track",
+      "description": "A video should have a description track.",
+      "help": "Add a track of kind=descriptions.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "f196ce"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.5",
+          "handle": "Audio Description (Prerecorded)",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-media-alternative",
+      "description": "A video should have a media alternative for text.",
+      "help": "Add a media alternative, such as a described version, next to the video.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "ab4d13"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.3",
+          "handle": "Audio Description or Media Alternative (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-alternative",
+      "description": "A video without sound should have a text or audio alternative.",
+      "help": "Add a transcript, a media alternative for text, or an audio track that describes the visuals.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "c3232f"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-audio-track",
+      "description": "A video without sound should have an audio track that describes it.",
+      "help": "Add an audio recording that describes the visuals.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "d7ba54"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-description-track",
+      "description": "A video without sound should have a description track.",
+      "help": "Add a track of kind=descriptions.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "ac7dc6"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-media-alternative",
+      "description": "A video without sound should have a media alternative for text.",
+      "help": "Add a media alternative, such as a described version, next to the video.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "fd26cf"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-only-transcript",
+      "description": "A video without sound should have a transcript.",
+      "help": "Add a transcript that describes the visuals next to the video.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "ee13b5"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-strict-alternative",
+      "description": "A video's visuals need an audio description and a media alternative.",
+      "help": "Provide audio description and a media alternative for text.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "1ec09b"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.5",
+          "handle": "Audio Description (Prerecorded)",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-transcript",
+      "description": "A video's audio and visuals should have a transcript.",
+      "help": "Add a transcript with both the speech and the descriptions of the visuals.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "1a02b0"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.8",
+          "handle": "Media Alternative (Prerecorded)",
+          "level": "AAA",
+          "version": "2.0"
+        },
+        {
+          "number": "1.2.1",
+          "handle": "Audio-only and Video-only (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
+    },
+    {
+      "id": "video-visual-alternative",
+      "description": "A video's visuals should have an accessible alternative.",
+      "help": "Provide an audio description, a transcript or a media alternative.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "act",
+          "id": "c5a4ea"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.2.3",
+          "handle": "Audio Description or Media Alternative (Prerecorded)",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "1.2.5",
+          "handle": "Audio Description (Prerecorded)",
+          "level": "AA",
+          "version": "2.0"
+        },
+        {
+          "number": "1.2.8",
+          "handle": "Media Alternative (Prerecorded)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [],
+      "fix": null,
+      "noFixReason": "Whether captions, transcripts and descriptions exist and are right depends on the recording, which only a person can judge."
     }
   ],
   "results": [
@@ -3701,7 +4457,82 @@
       "suggested": []
     },
     {
+      "rule": "audio-alternative",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "audio-caption",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "autocomplete-valid",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autoplay-audio-control",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "autoplay-audio-duration",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "avoid-inline-spacing",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,
@@ -3843,6 +4674,1297 @@
           "end": 32
         }
       },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(1)",
+        "source": {
+          "start": 230,
+          "end": 249
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(2)",
+        "source": {
+          "start": 269,
+          "end": 288
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "nav",
+        "locator": "header > nav:nth-of-type(1)",
+        "source": {
+          "start": 319,
+          "end": 324
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "nav",
+        "locator": "header > nav:nth-of-type(2)",
+        "source": {
+          "start": 337,
+          "end": 342
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "h2",
+        "locator": "h2",
+        "source": {
+          "start": 388,
+          "end": 392
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "h4",
+        "locator": "h4",
+        "source": {
+          "start": 413,
+          "end": 417
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "b",
+        "locator": "b",
+        "source": {
+          "start": 441,
+          "end": 444
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "#content > p:nth-of-type(2)",
+        "source": {
+          "start": 475,
+          "end": 478
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "li",
+        "locator": "ul > li",
+        "source": {
+          "start": 539,
+          "end": 543
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "ul > div",
+        "source": {
+          "start": 552,
+          "end": 557
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "li",
+        "locator": "#content > div:nth-of-type(1) > li:nth-of-type(1)",
+        "source": {
+          "start": 581,
+          "end": 585
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "li",
+        "locator": "#content > div:nth-of-type(1) > li:nth-of-type(2)",
+        "source": {
+          "start": 600,
+          "end": 604
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "dt",
+        "locator": "dl > dt:nth-of-type(1)",
+        "source": {
+          "start": 632,
+          "end": 636
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "dd",
+        "locator": "dd",
+        "source": {
+          "start": 645,
+          "end": 649
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "dt",
+        "locator": "dl > dt:nth-of-type(2)",
+        "source": {
+          "start": 664,
+          "end": 668
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#content > div:nth-of-type(2)",
+        "source": {
+          "start": 694,
+          "end": 709
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#content > div:nth-of-type(3)",
+        "source": {
+          "start": 716,
+          "end": 731
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(1)",
+        "source": {
+          "start": 741,
+          "end": 757
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(2)",
+        "source": {
+          "start": 768,
+          "end": 784
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(1)",
+        "source": {
+          "start": 804,
+          "end": 830
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(2)",
+        "source": {
+          "start": 839,
+          "end": 865
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#content > div:nth-of-type(4)",
+        "source": {
+          "start": 878,
+          "end": 896
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(3)",
+        "source": {
+          "start": 923,
+          "end": 950
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(3)",
+        "source": {
+          "start": 955,
+          "end": 977
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > button:nth-of-type(4) > a",
+        "source": {
+          "start": 998,
+          "end": 1015
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "blink",
+        "locator": "blink",
+        "source": {
+          "start": 1103,
+          "end": 1110
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "footer",
+        "locator": "body > footer:nth-of-type(1)",
+        "source": {
+          "start": 1234,
+          "end": 1242
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "footer",
+        "locator": "body > footer:nth-of-type(2)",
+        "source": {
+          "start": 1258,
+          "end": 1266
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p",
+        "source": {
+          "start": 1289,
+          "end": 1292
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(1)",
+        "source": {
+          "start": 230,
+          "end": 249
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(2)",
+        "source": {
+          "start": 269,
+          "end": 288
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "nav",
+        "locator": "header > nav:nth-of-type(1)",
+        "source": {
+          "start": 319,
+          "end": 324
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "nav",
+        "locator": "header > nav:nth-of-type(2)",
+        "source": {
+          "start": 337,
+          "end": 342
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "h2",
+        "locator": "h2",
+        "source": {
+          "start": 388,
+          "end": 392
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "h4",
+        "locator": "h4",
+        "source": {
+          "start": 413,
+          "end": 417
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "b",
+        "locator": "b",
+        "source": {
+          "start": 441,
+          "end": 444
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "#content > p:nth-of-type(2)",
+        "source": {
+          "start": 475,
+          "end": 478
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "li",
+        "locator": "ul > li",
+        "source": {
+          "start": 539,
+          "end": 543
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "ul > div",
+        "source": {
+          "start": 552,
+          "end": 557
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "li",
+        "locator": "#content > div:nth-of-type(1) > li:nth-of-type(1)",
+        "source": {
+          "start": 581,
+          "end": 585
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "li",
+        "locator": "#content > div:nth-of-type(1) > li:nth-of-type(2)",
+        "source": {
+          "start": 600,
+          "end": 604
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "dt",
+        "locator": "dl > dt:nth-of-type(1)",
+        "source": {
+          "start": 632,
+          "end": 636
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "dd",
+        "locator": "dd",
+        "source": {
+          "start": 645,
+          "end": 649
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "dt",
+        "locator": "dl > dt:nth-of-type(2)",
+        "source": {
+          "start": 664,
+          "end": 668
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#content > div:nth-of-type(2)",
+        "source": {
+          "start": 694,
+          "end": 709
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#content > div:nth-of-type(3)",
+        "source": {
+          "start": 716,
+          "end": 731
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(1)",
+        "source": {
+          "start": 741,
+          "end": 757
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(2)",
+        "source": {
+          "start": 768,
+          "end": 784
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(1)",
+        "source": {
+          "start": 804,
+          "end": 830
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(2)",
+        "source": {
+          "start": 839,
+          "end": 865
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#content > div:nth-of-type(4)",
+        "source": {
+          "start": 878,
+          "end": 896
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(3)",
+        "source": {
+          "start": 923,
+          "end": 950
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(3)",
+        "source": {
+          "start": 955,
+          "end": 977
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > button:nth-of-type(4) > a",
+        "source": {
+          "start": 998,
+          "end": 1015
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "blink",
+        "locator": "blink",
+        "source": {
+          "start": 1103,
+          "end": 1110
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "footer",
+        "locator": "body > footer:nth-of-type(1)",
+        "source": {
+          "start": 1234,
+          "end": 1242
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "footer",
+        "locator": "body > footer:nth-of-type(2)",
+        "source": {
+          "start": 1258,
+          "end": 1266
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "color-contrast-enhanced",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "p",
+        "locator": "body > p",
+        "source": {
+          "start": 1289,
+          "end": 1292
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "css-orientation-lock",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
       "findings": [],
       "taskImpact": {
         "blocksTask": false,
@@ -5192,6 +7314,94 @@
       "suggested": []
     },
     {
+      "rule": "link-in-text-block",
+      "outcome": "passed",
+      "message": "The link is underlined or struck through and the surrounding text is not.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(1)",
+        "source": {
+          "start": 804,
+          "end": 830
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-in-text-block",
+      "outcome": "passed",
+      "message": "The link is underlined or struck through and the surrounding text is not.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(2)",
+        "source": {
+          "start": 839,
+          "end": 865
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-in-text-block",
+      "outcome": "passed",
+      "message": "The link is underlined or struck through and the surrounding text is not.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(3)",
+        "source": {
+          "start": 923,
+          "end": 950
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "link-in-text-block",
+      "outcome": "passed",
+      "message": "The link is underlined or struck through and the surrounding text is not.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(4)",
+        "source": {
+          "start": 1124,
+          "end": 1139
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "link-name",
       "outcome": "passed",
       "message": "Meets the rule.",
@@ -5694,6 +7904,21 @@
       "suggested": []
     },
     {
+      "rule": "no-autoplay-audio",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "object-alt",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
@@ -6072,6 +8297,331 @@
       "suggested": []
     },
     {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(1)",
+        "source": {
+          "start": 230,
+          "end": 249
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "a",
+        "locator": "body > a:nth-of-type(2)",
+        "source": {
+          "start": 269,
+          "end": 288
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(1)",
+        "source": {
+          "start": 741,
+          "end": 757
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(2)",
+        "source": {
+          "start": 768,
+          "end": 784
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(1)",
+        "source": {
+          "start": 804,
+          "end": 830
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(2)",
+        "source": {
+          "start": 839,
+          "end": 865
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "div",
+        "locator": "#content > div:nth-of-type(4)",
+        "source": {
+          "start": 878,
+          "end": 896
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(3)",
+        "source": {
+          "start": 923,
+          "end": 950
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(3)",
+        "source": {
+          "start": 955,
+          "end": 977
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "button",
+        "locator": "#content > button:nth-of-type(4)",
+        "source": {
+          "start": 990,
+          "end": 998
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > button:nth-of-type(4) > a",
+        "source": {
+          "start": 998,
+          "end": 1015
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "iframe",
+        "locator": "iframe",
+        "source": {
+          "start": 1037,
+          "end": 1091
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
+      "rule": "target-size",
+      "outcome": "needs-render",
+      "message": "The size of a pointer target is known only after layout.",
+      "target": {
+        "tag": "a",
+        "locator": "#content > a:nth-of-type(4)",
+        "source": {
+          "start": 1124,
+          "end": 1139
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [
+        "border box of the target",
+        "border boxes of the targets near it"
+      ],
+      "suggested": []
+    },
+    {
       "rule": "td-has-header",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
@@ -6118,6 +8668,201 @@
     },
     {
       "rule": "valid-lang",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-audio-description",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-caption",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-captions",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-description-track",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-media-alternative",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-alternative",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-audio-track",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-description-track",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-media-alternative",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-only-transcript",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-strict-alternative",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-transcript",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "video-visual-alternative",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,

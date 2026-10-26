@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Contrast, spacing and media</title>
+<style>
+  body { color: #222; background: #fff; font: 16px sans-serif; }
+  .muted { color: #999; }
+  .hero { background: linear-gradient(90deg, #003, #006); color: #fff; }
+  .badge::before { content: "New: "; color: #ccc; }
+  @media (orientation: portrait) { .turn { transform: rotate(90deg); } }
+</style>
+</head>
+<body>
+<p>Plain text with enough contrast.</p>
+<p class="muted">Pale grey text that is too faint.</p>
+<p class="hero">Light text on a dark gradient.</p>
+<p class="badge">Announcement</p>
+<p style="color:#555; background:url(photo.png)">Text over a photo.</p>
+<p>Read <a href="/report" style="text-decoration:none;color:#06c">the report</a> today.</p>
+<p style="letter-spacing: 0.05em !important">Spaced text.</p>
+<div class="turn">Turned content</div>
+<button disabled style="color:#ccc">Disabled</button>
+<video src="clip.mp4" autoplay></video>
+<audio src="talk.mp3" autoplay controls></audio>
+</body>
+</html>

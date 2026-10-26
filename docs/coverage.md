@@ -19,33 +19,33 @@ Criteria with at least one rule: 42 of 87.
 | Criterion | Name | Level | In WCAG | ACT rules | axe-core rules | Implemented | Automation |
 |---|---|---|---|---|---|---|---|
 | 1.1.1 | Non-text Content | A | 2.0+ | 23a2a8, 46ca7f, 59796f, 7d6734, 8fc3b6, 9eb3f6 (deprecated), c487ae, e88epe, qt1vmo | aria-meter-name, aria-progressbar-name, image-alt, input-image-alt, object-alt, role-img-alt, svg-img-alt | aria-meter-name, aria-progressbar-name, image-alt, image-name-descriptive, input-image-alt, object-alt, role-img-alt, svg-img-alt | unassessed |
-| 1.2.1 | Audio-only and Video-only (Prerecorded) | A | 2.0+ | 1a02b0, c3232f, e7aa44, ee13b5, f51b46 | audio-caption (deprecated) |  | unassessed |
-| 1.2.2 | Captions (Prerecorded) | A | 2.0+ | eac66b | video-caption |  | unassessed |
-| 1.2.3 | Audio Description or Media Alternative (Prerecorded) | A | 2.0+ | c5a4ea |  |  | unassessed |
+| 1.2.1 | Audio-only and Video-only (Prerecorded) | A | 2.0+ | 1a02b0, c3232f, e7aa44, ee13b5, f51b46 | audio-caption (deprecated) | audio-alternative, audio-caption, video-captions, video-only-alternative, video-only-audio-track, video-only-description-track, video-only-media-alternative, video-only-transcript, video-transcript | unassessed |
+| 1.2.2 | Captions (Prerecorded) | A | 2.0+ | eac66b | video-caption | video-caption, video-captions | unassessed |
+| 1.2.3 | Audio Description or Media Alternative (Prerecorded) | A | 2.0+ | c5a4ea |  | video-media-alternative, video-visual-alternative | unassessed |
 | 1.2.4 | Captions (Live) | AA | 2.0+ |  |  |  | unassessed |
-| 1.2.5 | Audio Description (Prerecorded) | AA | 2.0+ | 1ec09b, c5a4ea |  |  | unassessed |
+| 1.2.5 | Audio Description (Prerecorded) | AA | 2.0+ | 1ec09b, c5a4ea |  | video-audio-description, video-description-track, video-strict-alternative, video-visual-alternative | unassessed |
 | 1.2.6 | Sign Language (Prerecorded) | AAA | 2.0+ |  |  |  | unassessed |
 | 1.2.7 | Extended Audio Description (Prerecorded) | AAA | 2.0+ |  |  |  | unassessed |
-| 1.2.8 | Media Alternative (Prerecorded) | AAA | 2.0+ | 1a02b0, c5a4ea |  |  | unassessed |
+| 1.2.8 | Media Alternative (Prerecorded) | AAA | 2.0+ | 1a02b0, c5a4ea |  | video-transcript, video-visual-alternative | unassessed |
 | 1.2.9 | Audio-only (Live) | AAA | 2.0+ |  |  |  | unassessed |
-| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | unassessed |
+| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells, video-only-transcript, video-transcript | unassessed |
 | 1.3.2 | Meaningful Sequence | A | 2.0+ |  |  |  | unassessed |
 | 1.3.3 | Sensory Characteristics | A | 2.0+ | 9bd38c |  |  | unassessed |
-| 1.3.4 | Orientation | AA | 2.1+ | b33eff | css-orientation-lock |  | unassessed |
+| 1.3.4 | Orientation | AA | 2.1+ | b33eff | css-orientation-lock | css-orientation-lock | unassessed |
 | 1.3.5 | Identify Input Purpose | AA | 2.1+ | 73f2c2 | autocomplete-valid | autocomplete-valid | unassessed |
 | 1.3.6 | Identify Purpose | AAA | 2.1+ |  |  |  | unassessed |
-| 1.4.1 | Use of Color | A | 2.0+ |  | link-in-text-block |  | unassessed |
-| 1.4.2 | Audio Control | A | 2.0+ | 80f0bf | no-autoplay-audio |  | unassessed |
-| 1.4.3 | Contrast (Minimum) | AA | 2.0+ | 09o5cg, afw4f7 | color-contrast |  | unassessed |
+| 1.4.1 | Use of Color | A | 2.0+ |  | link-in-text-block | link-in-text-block | unassessed |
+| 1.4.2 | Audio Control | A | 2.0+ | 80f0bf | no-autoplay-audio | autoplay-audio-control, autoplay-audio-duration, no-autoplay-audio | unassessed |
+| 1.4.3 | Contrast (Minimum) | AA | 2.0+ | 09o5cg, afw4f7 | color-contrast | color-contrast | unassessed |
 | 1.4.4 | Resize Text | AA | 2.0+ | 59br37, b4f0c3 | meta-viewport | meta-viewport | unassessed |
 | 1.4.5 | Images of Text | AA | 2.0+ | 0va7u6 |  |  | unassessed |
-| 1.4.6 | Contrast (Enhanced) | AAA | 2.0+ | 09o5cg, afw4f7 | color-contrast-enhanced |  | unassessed |
+| 1.4.6 | Contrast (Enhanced) | AAA | 2.0+ | 09o5cg, afw4f7 | color-contrast-enhanced | color-contrast-enhanced | unassessed |
 | 1.4.7 | Low or No Background Audio | AAA | 2.0+ |  |  |  | unassessed |
 | 1.4.8 | Visual Presentation | AAA | 2.0+ |  |  |  | unassessed |
 | 1.4.9 | Images of Text (No Exception) | AAA | 2.0+ | 0va7u6 |  |  | unassessed |
 | 1.4.10 | Reflow | AA | 2.1+ | b4f0c3 |  |  | unassessed |
 | 1.4.11 | Non-text Contrast | AA | 2.1+ |  |  |  | unassessed |
-| 1.4.12 | Text Spacing | AA | 2.1+ | 24afc2, 78fd32, 9e45ec | avoid-inline-spacing |  | unassessed |
+| 1.4.12 | Text Spacing | AA | 2.1+ | 24afc2, 78fd32, 9e45ec | avoid-inline-spacing | avoid-inline-spacing | unassessed |
 | 1.4.13 | Content on Hover or Focus | AA | 2.1+ |  |  |  | unassessed |
 | 2.1.1 | Keyboard | A | 2.0+ | 0ssw9k, akn7bn | frame-focusable-content, scrollable-region-focusable, server-side-image-map | frame-focusable-content, scrollable-region-focusable, server-side-image-map | unassessed |
 | 2.1.2 | No Keyboard Trap | A | 2.0+ | 80af7b |  |  | unassessed |
@@ -80,7 +80,7 @@ Criteria with at least one rule: 42 of 87.
 | 2.5.5 | Target Size (Enhanced) | AAA | 2.1+ |  |  |  | unassessed |
 | 2.5.6 | Concurrent Input Mechanisms | AAA | 2.1+ |  |  |  | unassessed |
 | 2.5.7 | Dragging Movements | AA | 2.2+ |  |  |  | unassessed |
-| 2.5.8 | Target Size (Minimum) | AA | 2.2+ |  | target-size |  | unassessed |
+| 2.5.8 | Target Size (Minimum) | AA | 2.2+ |  | target-size | target-size | unassessed |
 | 3.1.1 | Language of Page | A | 2.0+ | 5b7ae0 (deprecated), b5c3f8, bf051a, ucwvc8 | html-has-lang, html-lang-valid, html-xml-lang-mismatch | html-has-lang, html-lang-matches-content, html-lang-valid, html-xml-lang-mismatch | unassessed |
 | 3.1.2 | Language of Parts | AA | 2.0+ | de46e4, off6ek | valid-lang | element-lang-matches-content, valid-lang | unassessed |
 | 3.1.3 | Unusual Words | AAA | 2.0+ |  |  |  | unassessed |

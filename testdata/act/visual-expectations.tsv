@@ -1,0 +1,17 @@
+# ACT test cases of the contrast, text spacing and media rules that the cascade cannot judge. Columns: case id, status, reason.
+# A case listed here must still be wrong (or the test says the entry is stale).
+b84e9e1a57fce9aeba150ee3b3f9284c6a86620b	n/a	afw4f7 passed example 3: the text is over an image; its pixels decide the verdict and need background samples
+1934f556cad7387ea81f1d59ab137ce3034abb23	n/a	afw4f7 passed example 9: the text is created inside a shadow root by a script, which is inert here
+11ec274fc1fdac1792436368e7ad1b25bfa50370	n/a	afw4f7 failed example 3: the text is over an image; its pixels decide the verdict and need background samples
+6f8fa71c663ca8e52324a3dddbd4a2d60140dba1	n/a	afw4f7 failed example 6: the text is created inside a shadow root by a script, which is inert here
+d30f6df3a88791b737df63d470ad7eb2661179e7	n/a	09o5cg passed example 3: the text is over an image; its pixels decide the verdict and need background samples
+cd21ba82effa1d349cd9ed76f8d5c3f16cbada19	n/a	09o5cg passed example 8: the text is created inside a shadow root by a script, which is inert here
+051137940ea6c5091641e53063b2a9207221ac3d	n/a	09o5cg failed example 5: the text is over an image; its pixels decide the verdict and need background samples
+c2dcc599d1d0b741106f0ba63b0de8c77f3ebe54	n/a	09o5cg failed example 8: the text is created inside a shadow root by a script, which is inert here
+6d3e0c4e14eca510a1f14068cbe0cf01dea8877d	n/a	78fd32 failed example 1: applies only to text that wraps onto more than one line; needs the text boxes of a rendered page
+f38ccd07215941a657b8f7ae158e71247e8338cd	n/a	78fd32 failed example 2: applies only to text that wraps onto more than one line; needs the text boxes of a rendered page
+7f5181ef5b3cc2a0a17850f36a0c544258b3a497	n/a	78fd32 failed example 3: applies only to text that wraps onto more than one line; needs the text boxes of a rendered page
+8357d0c7f5ee9eea54aafe34d041540454ac71ea	n/a	78fd32 failed example 4: applies only to text that wraps onto more than one line; needs the text boxes of a rendered page
+1e50edac0dfd91cf4649e7a56d92b1fb4715ebd8	n/a	78fd32 failed example 5: applies only to text that wraps onto more than one line; needs the text boxes of a rendered page
+a56532cceabed95bd36bf9efafe63f7fde90cce5	n/a	78fd32 failed example 6: applies only to text that wraps onto more than one line; needs the text boxes of a rendered page
+2746b22a10b9b1a6f285398bea944dd505552468	n/a	78fd32 inapplicable example 2: applies only to text that wraps onto more than one line; needs the text boxes of a rendered page

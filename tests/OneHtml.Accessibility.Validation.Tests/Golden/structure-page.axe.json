@@ -419,6 +419,33 @@
       "nodes": []
     },
     {
+      "id": "audio-alternative",
+      "impact": null,
+      "tags": [],
+      "description": "Audio should have a text alternative.",
+      "help": "Provide a transcript or media alternative next to the audio.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "audio-caption",
+      "impact": null,
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag121",
+        "EN-301-549",
+        "EN-9.1.2.1",
+        "section508",
+        "section508.22.a",
+        "deprecated"
+      ],
+      "description": "Audio must have a transcript or another text alternative.",
+      "help": "Provide a transcript next to the audio, or link to one.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/audio-caption",
+      "nodes": []
+    },
+    {
       "id": "autocomplete-valid",
       "impact": null,
       "tags": [
@@ -434,6 +461,58 @@
       "description": "The autocomplete attribute of a form field must follow the HTML autofill token syntax.",
       "help": "Change the autocomplete value to the field name that matches the data the field collects, such as email or street-address, optionally preceded by section-*, shipping or billing, and a contact type for telephone and e-mail fields.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/autocomplete-valid",
+      "nodes": []
+    },
+    {
+      "id": "autoplay-audio-control",
+      "impact": null,
+      "tags": [],
+      "description": "Audio or video that starts by itself with sound must have a way to pause, stop or silence it.",
+      "help": "Add the controls attribute, or put a visible, named pause or mute button on the page.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "autoplay-audio-duration",
+      "impact": null,
+      "tags": [],
+      "description": "Audio or video that starts by itself should not play sound for more than three seconds.",
+      "help": "Shorten the sound, mute the media, or do not autoplay it.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "avoid-inline-spacing",
+      "impact": null,
+      "tags": [
+        "cat.structure",
+        "wcag21aa",
+        "wcag1412",
+        "EN-301-549",
+        "EN-9.1.4.12",
+        "ACT"
+      ],
+      "description": "Line height, letter spacing and word spacing set with !important in a style attribute must already be wide enough for WCAG's text spacing.",
+      "help": "Drop !important from the declaration in the style attribute, or make the value at least 1.5 times the font size for line height, 0.12 for letter spacing and 0.16 for word spacing.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/avoid-inline-spacing",
+      "nodes": []
+    },
+    {
+      "id": "css-orientation-lock",
+      "impact": null,
+      "tags": [
+        "cat.structure",
+        "wcag134",
+        "wcag21aa",
+        "EN-301-549",
+        "EN-9.1.3.4",
+        "RGAAv4",
+        "RGAA-13.9.1",
+        "experimental"
+      ],
+      "description": "Content must not be rotated by a quarter turn in only one display orientation.",
+      "help": "Remove the rotation inside the orientation media query, or apply the same rotation in both orientations.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/css-orientation-lock",
       "nodes": []
     },
     {
@@ -692,6 +771,26 @@
       "description": "The marquee element scrolls text on its own, which a user must be able to stop.",
       "help": "Replace the marquee with static content, or with an animation a user can pause.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/marquee",
+      "nodes": []
+    },
+    {
+      "id": "no-autoplay-audio",
+      "impact": null,
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag142",
+        "TTv5",
+        "TT2.a",
+        "EN-301-549",
+        "EN-9.1.4.2",
+        "ACT",
+        "RGAAv4",
+        "RGAA-4.10.1"
+      ],
+      "description": "Audio or video that starts by itself and plays sound for more than three seconds must have a way to pause or silence it.",
+      "help": "Add the controls attribute, a pause button, or mute the media.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/no-autoplay-audio",
       "nodes": []
     },
     {
@@ -961,6 +1060,135 @@
       "help": "Change the lang attribute to a language code from the IANA registry, such as es or zh-Hans.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/valid-lang",
       "nodes": []
+    },
+    {
+      "id": "video-audio-description",
+      "impact": null,
+      "tags": [],
+      "description": "A video's visuals should have an audio description.",
+      "help": "Provide a version of the video with audio description, or an audio track that describes the visuals.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-caption",
+      "impact": null,
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag122",
+        "section508",
+        "section508.22.a",
+        "TTv5",
+        "TT17.a",
+        "EN-301-549",
+        "EN-9.1.2.2",
+        "RGAAv4",
+        "RGAA-4.3.1"
+      ],
+      "description": "A video that has speech or sound must have captions.",
+      "help": "Add a captions track (track kind=captions) or burn captions into the video.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/video-caption",
+      "nodes": []
+    },
+    {
+      "id": "video-captions",
+      "impact": null,
+      "tags": [],
+      "description": "A video with sound should have captions.",
+      "help": "Add a captions track or burn captions into the video.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-description-track",
+      "impact": null,
+      "tags": [],
+      "description": "A video should have a description track.",
+      "help": "Add a track of kind=descriptions.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-media-alternative",
+      "impact": null,
+      "tags": [],
+      "description": "A video should have a media alternative for text.",
+      "help": "Add a media alternative, such as a described version, next to the video.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-only-alternative",
+      "impact": null,
+      "tags": [],
+      "description": "A video without sound should have a text or audio alternative.",
+      "help": "Add a transcript, a media alternative for text, or an audio track that describes the visuals.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-only-audio-track",
+      "impact": null,
+      "tags": [],
+      "description": "A video without sound should have an audio track that describes it.",
+      "help": "Add an audio recording that describes the visuals.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-only-description-track",
+      "impact": null,
+      "tags": [],
+      "description": "A video without sound should have a description track.",
+      "help": "Add a track of kind=descriptions.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-only-media-alternative",
+      "impact": null,
+      "tags": [],
+      "description": "A video without sound should have a media alternative for text.",
+      "help": "Add a media alternative, such as a described version, next to the video.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-only-transcript",
+      "impact": null,
+      "tags": [],
+      "description": "A video without sound should have a transcript.",
+      "help": "Add a transcript that describes the visuals next to the video.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-strict-alternative",
+      "impact": null,
+      "tags": [],
+      "description": "A video's visuals need an audio description and a media alternative.",
+      "help": "Provide audio description and a media alternative for text.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-transcript",
+      "impact": null,
+      "tags": [],
+      "description": "A video's audio and visuals should have a transcript.",
+      "help": "Add a transcript with both the speech and the descriptions of the visuals.",
+      "helpUrl": "",
+      "nodes": []
+    },
+    {
+      "id": "video-visual-alternative",
+      "impact": null,
+      "tags": [],
+      "description": "A video's visuals should have an accessible alternative.",
+      "help": "Provide an audio description, a transcript or a media alternative.",
+      "helpUrl": "",
+      "nodes": []
     }
   ],
   "passes": [
@@ -1117,6 +1345,1028 @@
           "impact": null,
           "target": [
             "html"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "color-contrast",
+      "impact": null,
+      "tags": [
+        "cat.color",
+        "wcag2aa",
+        "wcag143",
+        "TTv5",
+        "TT13.c",
+        "EN-301-549",
+        "EN-9.1.4.3",
+        "ACT",
+        "RGAAv4",
+        "RGAA-3.2.1"
+      ],
+      "description": "Text must have a contrast ratio of at least 4.5:1 with its background (3:1 for large text).",
+      "help": "Change the text or background colour until the ratio reaches 4.5:1, or 3:1 for large text.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast",
+      "nodes": [
+        {
+          "html": "<a href=\"#content\">",
+          "impact": null,
+          "target": [
+            "body > a:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"#missing\">",
+          "impact": null,
+          "target": [
+            "body > a:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<nav>",
+          "impact": null,
+          "target": [
+            "header > nav:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<nav>",
+          "impact": null,
+          "target": [
+            "header > nav:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<h2>",
+          "impact": null,
+          "target": [
+            "h2"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<h4>",
+          "impact": null,
+          "target": [
+            "h4"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<b>",
+          "impact": null,
+          "target": [
+            "b"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<p>",
+          "impact": null,
+          "target": [
+            "#content > p:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<li>",
+          "impact": null,
+          "target": [
+            "ul > li"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div>",
+          "impact": null,
+          "target": [
+            "ul > div"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<li>",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(1) > li:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<li>",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(1) > li:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<dt>",
+          "impact": null,
+          "target": [
+            "dl > dt:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<dd>",
+          "impact": null,
+          "target": [
+            "dd"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<dt>",
+          "impact": null,
+          "target": [
+            "dl > dt:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div id=\"twin\">",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div id=\"twin\">",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button id=\"go\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button id=\"go\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/x\" tabindex=\"1\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/y\" tabindex=\"2\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(4)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/k\" accesskey=\"k\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button accesskey=\"K\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/inner\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(4) > a"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<blink>",
+          "impact": null,
+          "target": [
+            "blink"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<footer>",
+          "impact": null,
+          "target": [
+            "body > footer:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<footer>",
+          "impact": null,
+          "target": [
+            "body > footer:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<p>",
+          "impact": null,
+          "target": [
+            "body > p"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "color-contrast-enhanced",
+      "impact": null,
+      "tags": [
+        "cat.color",
+        "wcag2aaa",
+        "wcag146",
+        "ACT"
+      ],
+      "description": "Text must have a contrast ratio of at least 7:1 with its background (4.5:1 for large text).",
+      "help": "Change the text or background colour until the ratio reaches 7:1, or 4.5:1 for large text.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast-enhanced",
+      "nodes": [
+        {
+          "html": "<a href=\"#content\">",
+          "impact": null,
+          "target": [
+            "body > a:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"#missing\">",
+          "impact": null,
+          "target": [
+            "body > a:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<nav>",
+          "impact": null,
+          "target": [
+            "header > nav:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<nav>",
+          "impact": null,
+          "target": [
+            "header > nav:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<h2>",
+          "impact": null,
+          "target": [
+            "h2"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<h4>",
+          "impact": null,
+          "target": [
+            "h4"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<b>",
+          "impact": null,
+          "target": [
+            "b"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<p>",
+          "impact": null,
+          "target": [
+            "#content > p:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<li>",
+          "impact": null,
+          "target": [
+            "ul > li"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div>",
+          "impact": null,
+          "target": [
+            "ul > div"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<li>",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(1) > li:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<li>",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(1) > li:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<dt>",
+          "impact": null,
+          "target": [
+            "dl > dt:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<dd>",
+          "impact": null,
+          "target": [
+            "dd"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<dt>",
+          "impact": null,
+          "target": [
+            "dl > dt:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div id=\"twin\">",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div id=\"twin\">",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button id=\"go\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button id=\"go\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/x\" tabindex=\"1\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/y\" tabindex=\"2\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div tabindex=\"0\">",
+          "impact": null,
+          "target": [
+            "#content > div:nth-of-type(4)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/k\" accesskey=\"k\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button accesskey=\"K\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/inner\">",
+          "impact": null,
+          "target": [
+            "#content > button:nth-of-type(4) > a"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<blink>",
+          "impact": null,
+          "target": [
+            "blink"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<footer>",
+          "impact": null,
+          "target": [
+            "body > footer:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<footer>",
+          "impact": null,
+          "target": [
+            "body > footer:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<p>",
+          "impact": null,
+          "target": [
+            "body > p"
           ],
           "any": [],
           "all": [],
@@ -1731,6 +2981,94 @@
           "onehtml": {
             "outcome": "passed",
             "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "link-in-text-block",
+      "impact": null,
+      "tags": [
+        "cat.color",
+        "wcag2a",
+        "wcag141",
+        "TTv5",
+        "TT13.a",
+        "EN-301-549",
+        "EN-9.1.4.1",
+        "RGAAv4",
+        "RGAA-10.6.1"
+      ],
+      "description": "A link inside a block of text must be distinguishable from the surrounding text by more than colour.",
+      "help": "Underline the link, or give it a colour with at least 3:1 contrast against the surrounding text.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/link-in-text-block",
+      "nodes": [
+        {
+          "html": "<a href=\"/x\" tabindex=\"1\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(1)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/y\" tabindex=\"2\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(2)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/k\" accesskey=\"k\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(3)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/map\">",
+          "impact": null,
+          "target": [
+            "#content > a:nth-of-type(4)"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": true,
             "cssOnly": false,
             "factsMissing": [],
             "suggestedEdits": 0
@@ -2446,6 +3784,399 @@
             "blocksTask": false,
             "cssOnly": false,
             "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "target-size",
+      "impact": "serious",
+      "tags": [
+        "cat.sensory-and-visual-cues",
+        "wcag22aa",
+        "wcag258",
+        "EN-301-549v4",
+        "EN-9.2.5.8"
+      ],
+      "description": "A pointer target should be at least 24 by 24 CSS pixels, or have enough space around it.",
+      "help": "Make the target at least 24 by 24 CSS pixels with padding or a minimum size, or move it at least 24 pixels from the other targets.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/target-size",
+      "nodes": [
+        {
+          "html": "<a href=\"#content\">",
+          "impact": "serious",
+          "target": [
+            "body > a:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"#missing\">",
+          "impact": "serious",
+          "target": [
+            "body > a:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button id=\"go\">",
+          "impact": "serious",
+          "target": [
+            "#content > button:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button id=\"go\">",
+          "impact": "serious",
+          "target": [
+            "#content > button:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/x\" tabindex=\"1\">",
+          "impact": "serious",
+          "target": [
+            "#content > a:nth-of-type(1)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/y\" tabindex=\"2\">",
+          "impact": "serious",
+          "target": [
+            "#content > a:nth-of-type(2)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<div tabindex=\"0\">",
+          "impact": "serious",
+          "target": [
+            "#content > div:nth-of-type(4)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/k\" accesskey=\"k\">",
+          "impact": "serious",
+          "target": [
+            "#content > a:nth-of-type(3)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button accesskey=\"K\">",
+          "impact": "serious",
+          "target": [
+            "#content > button:nth-of-type(3)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<button>",
+          "impact": "serious",
+          "target": [
+            "#content > button:nth-of-type(4)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/inner\">",
+          "impact": "serious",
+          "target": [
+            "#content > button:nth-of-type(4) > a"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<iframe tabindex=\"-1\" srcdoc=\"<a href='/'>inside</a>\">",
+          "impact": "serious",
+          "target": [
+            "iframe"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
+            "suggestedEdits": 0
+          }
+        },
+        {
+          "html": "<a href=\"/map\">",
+          "impact": "serious",
+          "target": [
+            "#content > a:nth-of-type(4)"
+          ],
+          "any": [
+            {
+              "id": "target-size",
+              "data": [],
+              "relatedNodes": [],
+              "impact": "serious",
+              "message": "The size of a pointer target is known only after layout."
+            }
+          ],
+          "all": [],
+          "none": [],
+          "failureSummary": "The size of a pointer target is known only after layout.",
+          "onehtml": {
+            "outcome": "needs-render",
+            "blocksTask": true,
+            "cssOnly": false,
+            "factsMissing": [
+              "border box of the target",
+              "border boxes of the targets near it"
+            ],
             "suggestedEdits": 0
           }
         }

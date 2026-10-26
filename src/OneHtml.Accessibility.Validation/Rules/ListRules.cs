@@ -36,17 +36,6 @@ internal static class ListRuleSet
 
         return i > s ? v[s..i].ToLowerInvariantAscii() : null;
     }
-
-    private static string ToLowerInvariantAscii(this string s)
-    {
-        var sb = new System.Text.StringBuilder(s.Length);
-        foreach (char ch in s)
-        {
-            sb.Append(ch is >= 'A' and <= 'Z' ? (char)(ch + 32) : ch);
-        }
-
-        return sb.ToString();
-    }
 }
 
 // axe list, WCAG 1.3.1 (HTML 4.4.5 and 4.4.6 content models): a ul or ol holds li elements, plus script-supporting

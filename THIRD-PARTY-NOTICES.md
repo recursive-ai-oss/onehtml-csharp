@@ -103,6 +103,9 @@ unmodified and are not part of the published packages. Used in:
 - `testdata/css/wpt/css/css-syntax/`: CSS Syntax tests (the `charset/` directory is not included).
 - `testdata/wpt/aria/`: the role pages of `html-aam/` (13 files) and `wai-aria/role/` (24 files), unmodified, with an
   expectations file we wrote. `testdata/wpt/aria/MANIFEST.md` lists each file with its SHA-256.
+- `testdata/wpt/accname/`: the accessible name and property pages of `accname/` (including `manual/`), `html-aam/` (name
+  computation by element, names, hidden names, headings), and `wai-aria/` (checked, pressed, heading, subtree),
+  unmodified, with an expectations file we wrote. `testdata/wpt/accname/MANIFEST.md` lists each file with its SHA-256.
 - `testdata/css/wpt-style/`: cascade tests, unmodified: `css/css-cascade/`, `css/css-variables/`, `css/css-nesting/`, the
   specificity files of `css/selectors/`, the computed-value files of `css/css-fonts/parsing/`, `css-display/parsing/`,
   `css-position/parsing/`, `css-overflow/parsing/`, `css-ui/parsing/`, and the shared `css/support/*.css`.

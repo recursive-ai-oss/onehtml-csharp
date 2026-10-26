@@ -195,4 +195,15 @@ string replayed = replay.Succeeded ? replay.Batch!.Document!.Source.Text : "";
 bool replayOk = replay.Succeeded && readBack.ToJson() == envelopeJson
     && replayed.Contains("<nav id=main-nav title=", StringComparison.Ordinal) && replayed.Contains("margin: 0; padding: 1px", StringComparison.Ordinal);
 Console.WriteLine($"replay={replay.Succeeded} json={envelopeJson.Length} ok={replayOk}");
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk ? 0 : 1;
+
+// Accessibility tree: names, hidden status, aria-owns, states, focus and the Chrome-shaped export.
+RecursiveAI.OneHtml.Document tdoc = RecursiveAI.OneHtml.Document.Parse("<style>.g::before{content:'[' attr(data-k) ']'; counter-increment:c} </style><main><h1 id=h>Title <em>here</em></h1><button id=b class=g data-k=k aria-describedby=d>Go</button><span id=d>help</span><div id=o aria-owns=x></div><ul><li id=x>one</li></ul><div hidden id=hid>no</div><a href=/y tabindex=1>link</a></main>");
+RecursiveAI.OneHtml.Accessibility.AccessibilityTree tree = RecursiveAI.OneHtml.Accessibility.AccessibilityTree.Build(tdoc, DocumentStyles.Create(tdoc));
+RecursiveAI.OneHtml.Accessibility.AxNode tb = tree.Find(tdoc.GetElementById("b"))!;
+string json = tree.ToChromeJson();
+bool treeOk = tree.Find(tdoc.GetElementById("h"))!.Name.Value == "Title here" && tb.Name.Value == "[k]Go" && tb.Description.Value == "help"
+    && tree.Find(tdoc.GetElementById("x"))!.Parent!.DomNode.Id == "o" && tree.Find(tdoc.GetElementById("hid")) is null
+    && tree.GetHidden(tdoc.GetElementById("hid")).Reasons == RecursiveAI.OneHtml.Accessibility.HiddenReasons.HiddenAttribute
+    && tree.FocusOrder[0].DomNode.LocalName == "a" && json.Contains("\"nodes\"", StringComparison.Ordinal);
+Console.WriteLine($"tree={treeOk} nodes={tree.Nodes.Count} json={json.Length}");
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk ? 0 : 1;

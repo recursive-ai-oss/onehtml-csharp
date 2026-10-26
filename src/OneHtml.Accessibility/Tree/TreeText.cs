@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace RecursiveAI.OneHtml.Accessibility.Tree;
+
+/// <summary>ASCII-only text helpers: HTML's whitespace and case rules, never the current culture.</summary>
+internal static class TreeText
+{
+    public static bool IsWs(char c) => c is ' ' or '\t' or '\n' or '\f' or '\r';
+
+    public static string AsciiLower(string s)
+    {
+        int i = 0;
+        while (i < s.Length && s[i] is not (>= 'A' and <= 'Z'))
+        {
+            i++;
+        }
+
+        if (i == s.Length)
+        {
+            return s;
+        }
+
+        return string.Create(s.Length, s, static (span, src) =>
+        {
+            for (int k = 0; k < span.Length; k++)
+            {
+                char c = src[k];
+                span[k] = c is >= 'A' and <= 'Z' ? (char)(c + 32) : c;
+            }
+        });
+    }
+
+    public static bool EqualsIgnoreCase(string? a, string b) => a is not null && string.Equals(a, b, StringComparison.OrdinalIgnoreCase) && IsAscii(a);
+
+    private static bool IsAscii(string s)
+    {
+        foreach (char c in s)
+        {
+            if (c > 127)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static string Trim(string s) => s.Trim(' ', '\t', '\n', '\f', '\r');
+
+    /// <summary>Collapses runs of ASCII whitespace to one space and trims both ends: the flattening the accessible name gets.</summary>
+    public static string Collapse(ReadOnlySpan<char> s)
+    {
+        var sb = new StringBuilder(s.Length);
+        bool pendingSpace = false;
+        foreach (char c in s)
+        {
+            if (IsWs(c))
+            {
+                pendingSpace = sb.Length > 0;
+                continue;
+            }
+
+            if (pendingSpace)
+            {
+                sb.Append(' ');
+                pendingSpace = false;
+            }
+
+            sb.Append(c);
+        }
+
+        return sb.ToString();
+    }
+
+    public static bool HasNonWhitespace(StringBuilder sb, int from)
+    {
+        for (int i = from; i < sb.Length; i++)
+        {
+            if (!IsWs(sb[i]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

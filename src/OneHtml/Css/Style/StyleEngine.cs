@@ -427,6 +427,98 @@ internal sealed class StyleEngine
         return Finish(el, s, parent, mode);
     }
 
+    /// <summary>
+    /// Computes the style of a generated box (<c>::before</c>, <c>::after</c>, <c>::marker</c>) of an element: the declarations
+    /// of the rules whose selector ends in that pseudo-element and whose rest matches the element, inheriting from the
+    /// element's own style (CSS Pseudo-Elements 4 section 3). Returns null when no rule applies.
+    /// </summary>
+    public ComputedStyle? ComputePseudo(Node el, string pseudo, ComputedStyle elementStyle, SelectorMatchOptions? options)
+    {
+        if (!Db.PseudoIndex.TryGetValue(pseudo, out RuleIndex? index))
+        {
+            return null;
+        }
+
+        CascadeScratch s = GetScratch();
+        s.Candidates.Clear();
+        s.Matched.Clear();
+        index.Collect(el, s.Candidates);
+        if (s.Candidates.Count == 0)
+        {
+            return null;
+        }
+
+        SelectorBulkCache? bulk = options?.BulkCache;
+        if (bulk is not null)
+        {
+            lock (bulk)
+            {
+                SelectorMatcher.FilterMatchingPseudo(el, s.Candidates, options, s.Matched);
+            }
+        }
+        else
+        {
+            SelectorMatcher.FilterMatchingPseudo(el, s.Candidates, options, s.Matched);
+        }
+
+        if (s.Matched.Count == 0)
+        {
+            return null;
+        }
+
+        if (++s.Epoch == int.MaxValue)
+        {
+            Array.Clear(s.Stamp);
+            s.Epoch = 1;
+        }
+
+        s.Touched.Clear();
+        s.Custom.Clear();
+        s.Sources.Clear();
+        if (++s.RuleEpoch == int.MaxValue)
+        {
+            Array.Clear(s.RuleStamp);
+            s.RuleEpoch = 1;
+        }
+
+        foreach (RuleSel m in s.Matched)
+        {
+            long spec = Pack(m.Spec);
+            int rid = m.Rule.Id;
+            if (s.RuleStamp[rid] == s.RuleEpoch)
+            {
+                int slot = s.RuleSlot[rid];
+                if (spec > s.Sources[slot].Spec)
+                {
+                    s.Sources[slot] = (m.Rule, spec);
+                }
+            }
+            else
+            {
+                s.RuleStamp[rid] = s.RuleEpoch;
+                s.RuleSlot[rid] = s.Sources.Count;
+                s.Sources.Add((m.Rule, spec));
+            }
+        }
+
+        foreach ((StyleRule rule, long spec) in s.Sources)
+        {
+            foreach (ParsedDeclaration d in rule.Parsed)
+            {
+                foreach (StyleValue v in d.Values)
+                {
+                    Offer(s, MakeCand(rule, spec, d, v));
+                }
+            }
+        }
+
+        int mode = ComputeMode(s, elementStyle);
+        MergeLogical(s, mode);
+        ResolveRollbacks(s, mode);
+        s.Touched.Sort();
+        return Finish(el, s, elementStyle, mode);
+    }
+
     private static void Offer(CascadeScratch s, in Cand c)
     {
         StyleValue v = c.V!;

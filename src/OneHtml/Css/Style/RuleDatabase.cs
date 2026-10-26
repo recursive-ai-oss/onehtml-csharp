@@ -121,6 +121,9 @@ internal sealed class RuleDatabase
     public readonly LayerTree Layers = new();
     public RuleIndex Index = null!;
     public RuleIndex DynamicIndex = null!;
+
+    /// <summary>Rules whose selector ends in <c>::before</c>, <c>::after</c> or <c>::marker</c>, by pseudo-element name; the index keys come from the originating element's compound.</summary>
+    public readonly Dictionary<string, RuleIndex> PseudoIndex = new(StringComparer.Ordinal);
     public bool Quirks;
 
     /// <summary>Every rule identified by what it says, for comparing two gathers.</summary>
@@ -1049,6 +1052,19 @@ internal sealed class RuleGatherer
             {
                 if (list.HasPseudoElement(i))
                 {
+                    // Only a plain ::before, ::after or ::marker as the last simple selector generates a style here.
+                    Simple[] parts = list.Items[i].Compounds[^1].Parts;
+                    if (parts.Length > 0 && parts[^1].Kind == SimpleKind.PseudoElement && parts[^1].Name is "before" or "after" or "marker")
+                    {
+                        string pn = parts[^1].Name!;
+                        if (!_db.PseudoIndex.TryGetValue(pn, out RuleIndex? pi))
+                        {
+                            _db.PseudoIndex[pn] = pi = new RuleIndex(_db.Quirks);
+                        }
+
+                        pi.Add(new RuleSel(r, i, list.GetSpecificity(i)), list.GetKey(i));
+                    }
+
                     continue;
                 }
 

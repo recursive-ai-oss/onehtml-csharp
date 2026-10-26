@@ -27,6 +27,9 @@ internal ref struct MatchCtx
     public HashSet<(int Selector, int Compound, int Element)>? Failed;
     public Dictionary<ComplexSelector, ulong[]>? HasMarks;
     public Dictionary<Simple, NthOfCache>? NthCaches;
+
+    /// <summary>Match the originating element of a selector that ends in a pseudo-element: the trailing pseudo-element itself is ignored (Selectors 4 section 3.6).</summary>
+    public bool IgnoreTrailingPseudo;
 }
 
 internal sealed class NthOfCache
@@ -79,6 +82,26 @@ internal static class SelectorMatcher
         foreach (Css.RuleSel rs in candidates)
         {
             if (MatchComplex(ref c, rs.Rule.Selectors!.Items[rs.Sel], el))
+            {
+                matched.Add(rs);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tests candidate selectors that end in a pseudo-element against the element the pseudo-element hangs from, ignoring
+    /// the pseudo-element itself, and appends the ones that match.
+    /// </summary>
+    internal static void FilterMatchingPseudo(Node element, List<Css.RuleSel> candidates, SelectorMatchOptions? options, List<Css.RuleSel> matched)
+    {
+        MatchCtx c = Create(element, options, false);
+        c.IgnoreTrailingPseudo = true;
+        int el = element.Index;
+        foreach (Css.RuleSel rs in candidates)
+        {
+            ComplexSelector sel = rs.Rule.Selectors!.Items[rs.Sel];
+            c.Steps = 0;
+            if (!sel.Invalid && MatchFrom(ref c, sel, sel.Compounds.Length - 1, el))
             {
                 matched.Add(rs);
             }
@@ -338,13 +361,18 @@ internal static class SelectorMatcher
 
     private static bool MatchCompound(ref MatchCtx c, Compound k, int el)
     {
-        if (k.HasPseudoElement)
+        if (k.HasPseudoElement && !c.IgnoreTrailingPseudo)
         {
             return false;
         }
 
         foreach (Simple s in k.Parts)
         {
+            if (s.Kind == SimpleKind.PseudoElement)
+            {
+                continue;
+            }
+
             if (!MatchSimple(ref c, s, el))
             {
                 return false;

@@ -54,7 +54,9 @@ Conditional group rules: `@media` (evaluated against the context's `MediaFeature
 nested, statement form; a statement inside a style rule is ignored), `@namespace`, and style rules with CSS Nesting
 (`&` is replaced by `:is(parent)`, or `:scope` at the top level; an item without `&` is relative to the parent; a nested
 declaration run after nested rules becomes a separate ordered rule; an invalid nested selector drops that rule and its
-content; the resolved selector text is capped at 64 KB). Rules with a pseudo-element selector are kept out of the match index.
+content; the resolved selector text is capped at 64 KB). Rules with a pseudo-element selector are kept out of the element match index; those that end in `::before`, `::after` or
+`::marker` (or the single-colon forms of the first two) go into a separate index per pseudo-element (see
+"Pseudo-element styles").
 
 ## Cascade
 
@@ -191,6 +193,21 @@ No loop follows input depth: gathering uses an explicit stack, ancestor chains a
 - `font-style: oblique` alone stays `oblique`; a written angle is kept; `oblique 0deg` serializes as `normal`.
 - `overflow-x`/`overflow-y`: `visible` computes to `auto` when the other axis is `hidden`, `scroll` or `auto`; the
   `overflow` shorthand serializes as one keyword when both axes are equal.
+
+## Pseudo-element styles
+
+`GetPseudoStyle(element, PseudoElementKind)` returns the computed style of the `::before`, `::after` or `::marker` of an
+element, or `null` when no rule styles it (then no box is generated for `::before` and `::after`). A selector is indexed
+only when the pseudo-element is the last simple selector of its last compound; it matches when everything before the
+pseudo-element matches the originating element (Selectors 4 section 3.6), with the originating element's specificity plus
+one type selector for the pseudo-element. The cascade is the element cascade restricted to those rules: no `style`
+attribute and no presentational hints reach a pseudo-element, and the style inherits from the element's own computed style.
+The box exists for `::before` and `::after` only when `content` is neither `normal` nor `none`; the typed `Content`
+accessor gives strings, `attr()`, `counter()`/`counters()`, quotes and the alternative text after `/`. Counter values and
+attribute lookups are the caller's to resolve (the accessibility tree does both). User-agent rules apply, for example
+`q::before { content: open-quote }`. Not done: `::first-line`, `::first-letter`, `::placeholder`, `::selection`, `::backdrop`
+and the other pseudo-elements, pseudo-classes after a pseudo-element (the selector is not indexed), and generation of
+`::marker` content.
 
 ## Conformance (web-platform-tests, pinned commit in the notices file)
 

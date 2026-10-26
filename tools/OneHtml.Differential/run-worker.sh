@@ -1,6 +1,6 @@
 #!/bin/bash
 # Runs a corpus command of OneHtml.Differential on the shared worker. Usage:
-#   tools/OneHtml.Differential/run-worker.sh <roundtrip|angle|replay|ax> <corpus-version-dir> <out-dir> [options...]
+#   tools/OneHtml.Differential/run-worker.sh <roundtrip|angle|replay|locators|styles|editfuzz|ax> <corpus-version-dir> <out-dir> [options...]
 # For ax the second argument is the capture output directory and --corpus <corpus-version-dir> supplies the stylesheets.
 # Options are passed through (--jobs, --limit, --timeout, --top, --max-reduce, --corpus, --facts, --dump). The tool defaults to --jobs 2.
 # Takes ~/WORKER-BENCH.lock and exits with status 3 at once when it is held; the run is cut off after
@@ -8,7 +8,7 @@
 
 set -o pipefail
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
-CMD=${1:?usage: run-worker.sh <roundtrip|angle|replay|ax> <corpus-or-capture-dir> <out-dir> [options]}
+CMD=${1:?usage: run-worker.sh <roundtrip|angle|replay|locators|styles|editfuzz|ax> <corpus-or-capture-dir> <out-dir> [options]}
 CORPUS=${2:?corpus dir}
 OUT=${3:?out dir}
 shift 3

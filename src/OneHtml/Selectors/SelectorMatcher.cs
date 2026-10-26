@@ -81,6 +81,7 @@ internal static class SelectorMatcher
         int el = element.Index;
         foreach (Css.RuleSel rs in candidates)
         {
+            ResetBacktracking(ref c);
             if (MatchComplex(ref c, rs.Rule.Selectors!.Items[rs.Sel], el))
             {
                 matched.Add(rs);
@@ -100,11 +101,23 @@ internal static class SelectorMatcher
         foreach (Css.RuleSel rs in candidates)
         {
             ComplexSelector sel = rs.Rule.Selectors!.Items[rs.Sel];
-            c.Steps = 0;
+            ResetBacktracking(ref c);
             if (!sel.Invalid && MatchFrom(ref c, sel, sel.Compounds.Length - 1, el))
             {
                 matched.Add(rs);
             }
+        }
+    }
+
+    // Selector ids are only unique within the list they were parsed in, and candidates come from many lists (one per rule),
+    // so a failure memo must never outlive the candidate that recorded it. The step budget is per candidate as well.
+    private static void ResetBacktracking(ref MatchCtx c)
+    {
+        c.Steps = 0;
+        if (c.UseMemo)
+        {
+            c.UseMemo = false;
+            c.Failed?.Clear();
         }
     }
 

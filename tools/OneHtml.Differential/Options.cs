@@ -26,6 +26,12 @@ internal sealed class Options
 
     public int PerPage { get; private set; } = 5;
 
+    /// <summary>Items skipped (in sha256 order) before <see cref="Limit"/> counts; with <c>--limit</c> it resumes a long gate run.</summary>
+    public int Skip { get; private set; }
+
+    /// <summary>With <c>locators</c>, how many elements per page are checked by querying the whole document (the rest are checked by matching).</summary>
+    public int Sample { get; private set; } = 2000;
+
     /// <summary>Where the <c>ax</c> command finds stylesheets (a corpus version or a directory of pages); null for none.</summary>
     public string? StyleCorpus { get; private set; }
 
@@ -87,6 +93,8 @@ internal sealed class Options
                 case "--top": o.Top = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--max-reduce": o.MaxReduce = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--seed": o.Seed = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
+                case "--skip": o.Skip = Math.Max(0, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
+                case "--sample": o.Sample = Math.Max(0, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--per-page": o.PerPage = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 default: return null;
             }
@@ -100,6 +108,8 @@ internal sealed class Options
           --timeout <seconds per item> (default 30) --top <n> (default 20) --max-reduce <classes to minimize> (default 100, angle only)
           --only pages|stylesheets (roundtrip only)
           --seed <n> (default 1) --per-page <targets per page> (default 5), replay only
+          --skip <n> (items skipped first, to resume), --sample <n> (locators: elements per page checked by a whole-document query, default 2000)
+          locators, styles, editfuzz: --per-page is the contexts and edit steps (styles) or transactions (editfuzz) per page; --corpus supplies stylesheets for styles (default: the corpus itself)
           ax: the positional argument is the capture directory; --corpus <dir> supplies stylesheets (a corpus version or a directory of
           pages), --facts on|off|both (default both), --dump (also write dump/<sha>-<viewport>.txt)
         """;

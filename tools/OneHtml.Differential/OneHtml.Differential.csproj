@@ -7,6 +7,12 @@
     <PackageReference Include="AngleSharp" />
   </ItemGroup>
   <ItemGroup>
+    <!-- editfuzz runs the same checks as the edit fuzz target. -->
+    <Compile Include="../../fuzz/OneHtml.Fuzz/EditTarget.cs" Link="EditTarget.cs" />
+    <Compile Include="../../fuzz/OneHtml.Fuzz/EditOracle.cs" Link="EditOracle.cs" />
+    <Compile Include="../../tests/OneHtml.Tests/DocumentInvariants.cs" Link="DocumentInvariants.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />
     <ProjectReference Include="../../src/OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
     <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />

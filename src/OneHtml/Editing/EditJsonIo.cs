@@ -453,7 +453,7 @@ internal static class EditJsonIo
     internal static string Compact(ReadOnlySpan<byte> value, EditJsonLimits lim)
     {
         var buffer = new ArrayBufferWriter<byte>(value.Length);
-        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = s_encoder, SkipValidation = false }))
+        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { NewLine = "\n", Encoder = s_encoder, SkipValidation = false }))
         {
             var rd = new Utf8JsonReader(value, new JsonReaderOptions { MaxDepth = Math.Max(1, lim.MaxDepth) });
             while (rd.Read())
@@ -675,7 +675,7 @@ internal static class EditJsonIo
         var buffer = new ArrayBufferWriter<byte>();
         try
         {
-            using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = indented, Encoder = s_encoder }))
+            using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = indented, NewLine = "\n", Encoder = s_encoder }))
             {
                 Write(w, e);
             }

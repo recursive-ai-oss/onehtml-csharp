@@ -47,7 +47,7 @@ public static class SarifExport
         ArgumentNullException.ThrowIfNull(report);
         options ??= new ExportOptions();
         var buffer = new ArrayBufferWriter<byte>();
-        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = options.Indented, Encoder = s_encoder }))
+        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = options.Indented, NewLine = "\n", Encoder = s_encoder }))
         {
             new Writer(report, options).Write(w);
         }

@@ -318,7 +318,7 @@ internal static class MetaWriter
         }
 
         var buffer = new ArrayBufferWriter<byte>();
-        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }))
+        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { NewLine = "\n", Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping }))
         {
             try
             {

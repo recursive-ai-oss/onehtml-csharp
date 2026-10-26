@@ -54,7 +54,7 @@ public static class ResultsExport
         ArgumentNullException.ThrowIfNull(report);
         options ??= new ExportOptions();
         var buffer = new ArrayBufferWriter<byte>();
-        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = options.Indented, Encoder = s_encoder }))
+        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = options.Indented, NewLine = "\n", Encoder = s_encoder }))
         {
             WriteNative(w, report, options);
         }
@@ -70,7 +70,7 @@ public static class ResultsExport
         ArgumentNullException.ThrowIfNull(report);
         options ??= new ExportOptions();
         var buffer = new ArrayBufferWriter<byte>();
-        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = options.Indented, Encoder = s_encoder }))
+        using (var w = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = options.Indented, NewLine = "\n", Encoder = s_encoder }))
         {
             WriteAxe(w, report, options);
         }

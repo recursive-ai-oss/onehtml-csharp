@@ -190,7 +190,8 @@ public sealed partial class ActCoverageTests
 
         sb.AppendLine();
         sb.Append(table);
-        return sb.ToString();
+        // AppendLine uses the OS newline; the document is LF everywhere.
+        return sb.ToString().Replace("\r\n", "\n", StringComparison.Ordinal);
     }
 
     [Fact]

@@ -142,7 +142,9 @@ target changes, and focus changes together with them, test every element against
   the elements matched by the rules between the common prefix and suffix of the old and new rule lists are restyled.
 
 An element is recomputed when it is listed, new, moved, or next to an added or removed node (siblings and parents, when a
-sibling, position or `:empty` selector exists), when a selector that reads a changed attribute, class or id matches it
+sibling, position or `:empty` selector exists, and the descendants of those siblings when such a selector reads a position
+or sibling and then reaches below, as `li:last-child a` does; a page with any `:has()` rule recomputes in full after a
+change of shape), when a selector that reads a changed attribute, class or id matches it
 differently in the old and the new document (found by matching only those rules, which covers descendant, sibling,
 `:has()` and `:nth-*` reach), when a changed rule matches it, or when its parent's style object changed and the values
 differ. Everything else keeps its style object. A document that uses `:has()` selectors recomputes fully when the node

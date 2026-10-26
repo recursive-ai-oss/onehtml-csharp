@@ -132,7 +132,9 @@ internal sealed class CssTreeBuilder
         _ => false,
     };
 
-    private void ComputeMatch(int from, int to)
+    // 'retokenized' is set for the values of unicode-range descriptors that are tokenized a second time: they are values,
+    // never blocks of rules, so an overflow there must not move the marker for the opaque rule block in the text itself.
+    private void ComputeMatch(int from, int to, bool retokenized = false)
     {
         if (_match.Length < to)
         {
@@ -154,10 +156,13 @@ internal sealed class CssTreeBuilder
                     // everything after it stay unmatched, which the builders read as blocks running to the end of
                     // their range. The tree stays lossless and its depth stays bounded, and nothing throws.
                     NestingLimitReached = true;
-                    _overflowAt = i;
-                    if (_firstOverflow < 0)
+                    if (!retokenized)
                     {
-                        _firstOverflow = i;
+                        _overflowAt = i;
+                        if (_firstOverflow < 0)
+                        {
+                            _firstOverflow = i;
+                        }
                     }
 
                     break;
@@ -710,7 +715,7 @@ internal sealed class CssTreeBuilder
         _t = tk.Tokens;
         int first = _total;
         _total = tk.Count;
-        ComputeMatch(first, _total);
+        ComputeMatch(first, _total, retokenized: true);
         item.V0 = first;
         item.V1 = _total;
     }

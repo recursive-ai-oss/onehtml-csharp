@@ -27,6 +27,7 @@ internal ref struct MatchCtx
     public HashSet<(int Selector, int Compound, int Element)>? Failed;
     public Dictionary<ComplexSelector, ulong[]>? HasMarks;
     public Dictionary<Simple, NthOfCache>? NthCaches;
+    public Dictionary<(Simple Simple, int Element), bool>? LogicalMemo;
 
     /// <summary>Match the originating element of a selector that ends in a pseudo-element: the trailing pseudo-element itself is ignored (Selectors 4 section 3.6).</summary>
     public bool IgnoreTrailingPseudo;
@@ -76,6 +77,7 @@ internal static class SelectorMatcher
         {
             c.HasMarks = cache.HasMarks;
             c.NthCaches = cache.Nth;
+            c.LogicalMemo = cache.Logical;
         }
 
         int el = element.Index;
@@ -465,12 +467,10 @@ internal static class SelectorMatcher
             case SimpleKind.Logical:
                 switch (s.Logical)
                 {
-                    case LogicalKind.Not:
-                        return !MatchList(ref c, s.Sub!, el);
                     case LogicalKind.Has:
                         return MatchHas(ref c, s, el);
                     default:
-                        return MatchList(ref c, s.Sub!, el);
+                        return MatchIsOrNot(ref c, s, el);
                 }
 
             case SimpleKind.Nth:
@@ -858,6 +858,34 @@ internal static class SelectorMatcher
         }
 
         return d % a == 0 && d / a >= 0;
+    }
+
+    // :is(), :where() and :not() are pure in the element for a fixed document and interaction state, and a descendant combinator
+    // inside them asks the same question of the same ancestors again from every element below. Nested forms (what CSS nesting
+    // desugars to) would otherwise cost depth^nesting. In a bulk query the answers are kept per (selector, element), up to a
+    // bound that keeps the table small next to the document.
+    private const int LogicalMemoLimit = 1 << 21;
+
+    private static bool MatchIsOrNot(ref MatchCtx c, Simple s, int el)
+    {
+        Dictionary<(Simple Simple, int Element), bool>? memo = c.LogicalMemo;
+        if (memo is not null && memo.TryGetValue((s, el), out bool known))
+        {
+            return known;
+        }
+
+        bool r = MatchList(ref c, s.Sub!, el);
+        if (s.Logical == LogicalKind.Not)
+        {
+            r = !r;
+        }
+
+        if (memo is not null && memo.Count < LogicalMemoLimit)
+        {
+            memo[(s, el)] = r;
+        }
+
+        return r;
     }
 
     private static bool MatchNth(ref MatchCtx c, Simple s, int el)

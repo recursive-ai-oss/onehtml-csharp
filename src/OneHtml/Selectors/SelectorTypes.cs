@@ -282,4 +282,6 @@ internal sealed class SelectorBulkCache
     public Dictionary<ComplexSelector, ulong[]> HasMarks { get; } = [];
 
     public Dictionary<Simple, NthOfCache> Nth { get; } = [];
+
+    public Dictionary<(Simple Simple, int Element), bool> Logical { get; } = [];
 }

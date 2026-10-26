@@ -164,7 +164,9 @@ public static class DocumentInvariants
                 {
                     foreach (Attr a in node.Attributes)
                     {
-                        if (a.Value.IndexOf('\0') >= 0)
+                        // A carriage return from a character reference is written back as is, and the input stream
+                        // preprocessing of the next parse turns it into a line feed (HTML 13.2.3.5), as in text below.
+                        if (a.Value.IndexOf('\0') >= 0 || a.Value.IndexOf('\r') >= 0)
                         {
                             return false;
                         }

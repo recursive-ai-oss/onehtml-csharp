@@ -159,8 +159,9 @@ internal static class HtmlRoleMapper
                 // el-header-ancestorbody, el-header.
                 return ctx.Scope == LandmarkScope.Body ? Of("banner") : new ImplicitRole(s_generic);
             case "form":
-                // el-form: a form is a landmark only with an accessible name.
-                return new ImplicitRole(s_generic, R("form"));
+                // el-form: HTML-AAM maps form to the form role. Chromium exposes it with or without a name (profile entry
+                // unnamed-form), although the role is a landmark only when named.
+                return Of("form");
             case "h1":
             case "h2":
             case "h3":
@@ -324,6 +325,12 @@ internal static class HtmlRoleMapper
                 return Of("spinbutton");
             case HtmlInputType.Range:
                 return Of("slider");
+            case HtmlInputType.Password:
+                // HTML-AAM lists no role for a password field; Chromium exposes a text box (profile entry input-password-file).
+                return Of("textbox");
+            case HtmlInputType.File:
+                // Likewise a file picker is exposed as a button.
+                return Of("button");
             case HtmlInputType.Search:
                 return HasSuggestions(n) ? Of("combobox") : Of("searchbox");
             case HtmlInputType.Text:
@@ -333,7 +340,7 @@ internal static class HtmlRoleMapper
                 // el-input-textetc-autocomplete: a list attribute naming a datalist makes it a combobox.
                 return HasSuggestions(n) ? Of("combobox") : Of("textbox");
             default:
-                // color, date, datetime-local, file, hidden, month, password, time, week.
+                // color, date, datetime-local, hidden, month, time, week.
                 return default;
         }
     }

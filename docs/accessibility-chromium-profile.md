@@ -9,6 +9,7 @@ Each entry has an id, the choice, the browser behaviour it matches with where th
 - **test suite**: a web-platform-tests page expects the behaviour and the library passes it. The pages test browsers
   through `get_computed_role`, so this is evidence of what Chromium and the other engines agree on;
 - **specification**: a normative statement in the specification fixes the choice;
+- **observed in Chrome output**: the Chrome differential saw it in `Accessibility.getFullAXTree` output of the pinned Chrome on the fixture pages; the entry names the pages and says what was not seen;
 - **unverified until the Chrome differential**: inferred from public documentation or spec notes. The differential that
   compares the computed tree with Chrome's `Accessibility.getFullAXTree` output either confirms or corrects it.
 
@@ -39,7 +40,7 @@ name computation, states and focus.
 ## `named-native-landmarks`
 
 - **Topic:** section, form and sectioned aside
-- **Choice:** region, form and complementary only with an accessible name; otherwise generic. A title attribute counts as a name.
+- **Choice:** region and complementary only with an accessible name; otherwise generic. A title attribute counts as a name. (form is always form, see unnamed-form.)
 - **Matches:** wpt html-aam/roles-contextual.html el-section-title, el-aside-in-section-title.
 - **Evidence:** test suite
 
@@ -68,7 +69,7 @@ name computation, states and focus.
 
 - **Topic:** th in the auto scope state
 - **Choice:** columnheader inside thead or in a row with no td; rowheader in a row that has a td. scope=col|colgroup gives columnheader, scope=row|rowgroup gives rowheader.
-- **Matches:** wpt html-aam/table-roles.html. The auto rule is a simplification of the HTML header-cell algorithm.
+- **Matches:** wpt html-aam/table-roles.html. The auto rule is a simplification of the HTML header-cell algorithm; Chrome 156 agrees on the table fixture, which sets scope on every th.
 - **Evidence:** **unverified until the Chrome differential**
 
 ## `computed-role-names`
@@ -190,30 +191,30 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `tree-keeps-ignored`
 
 - **Topic:** Ignored nodes in the tree
-- **Choice:** The tree keeps nodes that are ignored (hidden by visibility, aria-hidden or inert, presentational, uninteresting) with their reasons, and the children of an ignored node stay its children, as getFullAXTree returns it. Nodes that are not rendered at all have no tree node.
-- **Matches:** Chrome returns ignored nodes with ignored=true and ignoredReasons; the exact set of nodes is checked by the differential.
-- **Evidence:** **unverified until the Chrome differential**
+- **Choice:** The tree keeps nodes that are ignored (hidden by visibility, aria-hidden or inert, presentational, uninteresting) with their reasons, and the children of an ignored node stay its children. Nodes that are not rendered at all have no tree node. Chrome returns no node at all for a visibility: hidden or aria-hidden element and its subtree, and none for a noscript element; those are the nodes only we list (oursOnlyIgnored in the differential), and they are ignored, so the exposed tree is the same.
+- **Matches:** Chrome 156 output on the hidden and script fixture pages. The children of a visibility: hidden element that are visible again appear under its nearest exposed ancestor, which is what lifting the children of an ignored node gives.
+- **Evidence:** **observed in Chrome output**
 
 ## `ignored-reason-names`
 
 - **Topic:** Spelling of ignored reasons
-- **Choice:** notVisible (visibility), ariaHiddenElement and ariaHiddenSubtree, inertElement and inertSubtree, presentationalRole, uninteresting. An ignored node is exported with the role none.
-- **Matches:** Names follow what the DevTools Protocol returns for ignoredReasons.
-- **Evidence:** **unverified until the Chrome differential**
+- **Choice:** notVisible (visibility), ariaHiddenElement and ariaHiddenSubtree, inertElement and inertSubtree, presentationalRole, uninteresting. An ignored node is exported with the role none. Chrome also uses labelFor (a label whose text is the control name) and notRendered, which we do not produce.
+- **Matches:** Names follow what the DevTools Protocol returns for ignoredReasons; uninteresting and presentationalRole observed in Chrome 156 on the fixture pages.
+- **Evidence:** **observed in Chrome output**
 
 ## `generic-pruning`
 
 - **Topic:** Generic elements
-- **Choice:** A generic element is ignored as uninteresting unless it has a name or description, is focusable, or carries a role, tabindex, contenteditable or title attribute or any aria-* attribute. An element with no role at all is ignored too.
-- **Matches:** Chrome prunes generic containers that carry no information.
-- **Evidence:** **unverified until the Chrome differential**
+- **Choice:** A generic element is exposed (not ignored) whatever it contains or carries, including div, span and an empty container with only element children. The exceptions that are ignored as uninteresting are the html and body elements and the b and i elements (their children belong to the nearest exposed ancestor). An element with no role at all is ignored too, unless it has an internal role (see internal-roles).
+- **Matches:** Chrome 156 output on the fixture pages hidden, landmarks, overflow, positioned, whitespace and background: every div and span is generic and exposed, html and body are ignored as uninteresting, b and i have no node. Not observed: an empty div or span, other inline formatting elements (u, s, small and so on) and a template inside a list (ignored there, exposed as generic under body).
+- **Evidence:** **observed in Chrome output**
 
 ## `static-text-nodes`
 
 - **Topic:** Text nodes
-- **Choice:** Each text node is a StaticText node with its text, white space collapsed. A white-space-only text node is kept, as an ignored node, only when its parent is inline. Leading and trailing white space is trimmed at the start and end of a block. There are no InlineTextBox children.
-- **Matches:** Chrome exposes StaticText with InlineTextBox children; the boxes need layout.
-- **Evidence:** **unverified until the Chrome differential**
+- **Choice:** Each text node is a StaticText node with its text, white space collapsed. A white-space-only text node is kept, as an ignored node, only when its parent is inline. Leading and trailing white space is trimmed at the start and end of a block. There are no InlineTextBox children, and no StaticText for the text of a textarea, an option or an SVG title, desc or metadata element (see text-control-leaves). Generated text (::before, ::after, list markers) is not a node (needs rendering).
+- **Matches:** Chrome exposes StaticText with InlineTextBox children; the boxes need layout. Names and text of every matched StaticText equal Chrome 156 on the fixture pages, except mathematical alphanumerics (mi text uses text-transform: math-auto).
+- **Evidence:** **observed in Chrome output**
 
 ## `not-rendered-absent`
 
@@ -302,15 +303,15 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `default-states`
 
 - **Topic:** States exposed without an attribute
-- **Choice:** A combobox is expanded=false; checkbox, radio, switch and menuitem checkbox and radio roles are checked=false; option and tab are selected=false. Range roles (slider, scrollbar, meter, progressbar) default to 0 and 100 and a slider with no value sits at the midpoint; an input type=range clamps its value into its range.
-- **Matches:** HTML section 4.10.5.1.13; Chrome exposes these states.
-- **Evidence:** **unverified until the Chrome differential**
+- **Choice:** A combobox is expanded=false; checkbox, radio, switch and menuitem checkbox and radio roles are checked=false; option and tab are selected=false. Range roles (slider, scrollbar, meter, progressbar) default to 0 and 100 and a slider with no value sits at the midpoint; an input type=range clamps its value into its range. The first summary of a details is expanded=false when closed.
+- **Matches:** HTML section 4.10.5.1.13; observed in Chrome 156 on the forms fixture (combobox, checkbox, radio, option, slider, progress, meter, details).
+- **Evidence:** **observed in Chrome output**
 
 ## `set-position`
 
 - **Topic:** posinset and setsize
-- **Choice:** Items with the role listitem, menuitem (and its checkbox and radio forms), option, radio, tab, treeitem, or article directly in a feed, form a set with the siblings of that kind under the nearest ancestor that is not generic, none, ignored or (for treeitem and menuitem) a group. A native radio button belongs to the set of its name in its form. Ignored items are not counted; an explicit aria-posinset restarts the count and the first aria-setsize found is used for the set.
-- **Matches:** Core-AAM section 5.4 and HTML-AAM; unverified in the differential.
+- **Choice:** Items with the role listitem, menuitem (and its checkbox and radio forms), option, radio, tab, treeitem, or article directly in a feed, form a set with the siblings of that kind under the nearest ancestor that is not generic, none, ignored or (for treeitem and menuitem) a group. A native radio button belongs to the set of its name in its form. Ignored items are not counted; an explicit aria-posinset restarts the count and the first aria-setsize found is used for the set. The tree holds the computed values; the Chrome-shaped export leaves them out unless the author gave them (see export-set-position).
+- **Matches:** Core-AAM section 5.4 and HTML-AAM.
 - **Evidence:** **unverified until the Chrome differential**
 
 ## `focus-order`
@@ -323,6 +324,97 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 ## `export-role-names`
 
 - **Topic:** Role names in the Chrome-shaped export
-- **Choice:** Core-AAM computed role names are used, except br as LineBreak, label as LabelText, legend as Legend and iframe as Iframe (internal roles), StaticText for text and RootWebArea for the document.
-- **Matches:** Chrome DevTools Protocol AXNode role values.
-- **Evidence:** **unverified until the Chrome differential**
+- **Choice:** Core-AAM computed role names are used, except the nodes with an internal role (see internal-roles), StaticText for text and RootWebArea for the document.
+- **Matches:** Chrome DevTools Protocol AXNode role values; observed on all fixture pages.
+- **Evidence:** **observed in Chrome output**
+
+## `unnamed-form`
+
+- **Topic:** form without an accessible name
+- **Choice:** A form element has the form role whether or not it has a name.
+- **Matches:** Chrome 156 exposes the unnamed form of the forms fixture as form (HTML-AAM maps form to form; the landmark rule needs a name, the role does not).
+- **Evidence:** **observed in Chrome output**
+
+## `internal-roles`
+
+- **Topic:** Roles that are not WAI-ARIA roles
+- **Choice:** Elements WAI-ARIA has no role for, and that Chrome exposes, have AxNode.InternalRole and are not ignored: label (LabelText), legend (Legend), br (LineBreak), iframe (Iframe), the first summary of a details (DisclosureTriangle), input type=date (Date) and type=color (ColorWell), which also state their value. svg (SvgRoot) and the MathML elements math, mi, mo and mn (MathMLMath, MathMLIdentifier, MathMLOperator, MathMLNumber) keep their WAI-ARIA role and are exported under these names. Other date and time input types, other MathML elements and the SVG graphics elements are not covered.
+- **Matches:** Chrome 156 output on the forms, implied and iframe fixture pages (label, iframe, summary, date, colour, svg, math, mi, mo, mn); legend and br are inferred from the same naming.
+- **Evidence:** **observed in Chrome output**
+
+## `input-password-file`
+
+- **Topic:** input type=password and type=file
+- **Choice:** A password field is a textbox whose value is not exposed; a file field is a button.
+- **Matches:** Chrome 156 output on the forms fixture; HTML-AAM lists no role for either.
+- **Evidence:** **observed in Chrome output**
+
+## `row-name`
+
+- **Topic:** Name of a table row
+- **Choice:** A row is not named from its cells; aria-label, aria-labelledby and title still name it. Cells are named from their contents.
+- **Matches:** Chrome 156 output on the table fixture (rows have no name, cells do).
+- **Evidence:** **observed in Chrome output**
+
+## `text-control-leaves`
+
+- **Topic:** Children of textarea, option and SVG title
+- **Choice:** A textarea and an option have no child nodes, and neither do the SVG title, desc and metadata elements; the text is the control value, the option label or not rendered. The name computation still reads it.
+- **Matches:** Chrome 156 output on the forms and implied fixtures (no StaticText for the textarea text, the option labels or the SVG title).
+- **Evidence:** **observed in Chrome output**
+
+## `option-focusable`
+
+- **Topic:** Options of a select
+- **Choice:** An enabled option inside a select is focusable (focusable=true) but not a stop of the sequential focus order.
+- **Matches:** Chrome 156 output on the forms fixture.
+- **Evidence:** **observed in Chrome output**
+
+## `list-item-level`
+
+- **Topic:** level of a list item
+- **Choice:** A listitem has the level property: the number of list ancestors, unless aria-level is given.
+- **Matches:** Chrome 156 output on the implied and whitespace fixtures: level=1 for items of a top-level list. Depth greater than 1 is inferred from the property name and unobserved.
+- **Evidence:** **observed in Chrome output**
+
+## `select-popup`
+
+- **Topic:** haspopup of a select
+- **Choice:** A drop-down select (combobox role) has haspopup=menu.
+- **Matches:** Chrome 156 output on the forms fixture.
+- **Evidence:** **observed in Chrome output**
+
+## `number-input-bounds`
+
+- **Topic:** Bounds of input type=number
+- **Choice:** A number input without min and max has valuemin=0 and valuemax=0; with them, their values. A native slider or spin button states its value as its value text as well.
+- **Matches:** Chrome 156 output on the forms fixture (spinbutton 0, 0 and valuetext 3; slider valuetext 4).
+- **Evidence:** **observed in Chrome output**
+
+## `export-native-labelledby`
+
+- **Topic:** labelledby in the export for native labels
+- **Choice:** In the Chrome-shaped export a node named by a label, caption or legend (not by aria-labelledby) has a labelledby property naming those elements. The tree API reports only aria-labelledby as the LabelledBy relation. SVG title elements are not reported.
+- **Matches:** Chrome 156 output on the forms and table fixtures (controls and the captioned table); an svg named by its title has none.
+- **Evidence:** **observed in Chrome output**
+
+## `export-set-position`
+
+- **Topic:** posinset and setsize in the export
+- **Choice:** The export leaves out posinset and setsize unless aria-posinset or aria-setsize gave them.
+- **Matches:** Chrome 156 output on the forms, implied and whitespace fixtures: no list item, option or radio button has either property.
+- **Evidence:** **observed in Chrome output**
+
+## `foreign-object`
+
+- **Topic:** SVG foreignObject
+- **Choice:** The foreignObject element is ignored with the reason presentationalRole.
+- **Matches:** Chrome 156 output on the implied fixture.
+- **Evidence:** **observed in Chrome output**
+
+## `link-url`
+
+- **Topic:** url of links and images
+- **Choice:** The url property is the href of a link or area, or the src of an img, resolved against AccessibilityOptions.BaseUrl (and a base element). Without a base URL it is the attribute as written.
+- **Matches:** Chrome 156 output on the fixture pages: absolute URLs for links and the image.
+- **Evidence:** **observed in Chrome output**

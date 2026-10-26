@@ -1,0 +1,401 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using RecursiveAI.OneHtml.Accessibility;
+using RecursiveAI.OneHtml.Accessibility.Rendered;
+using RecursiveAI.OneHtml.Accessibility.Tree;
+using RecursiveAI.OneHtml.Css;
+
+namespace RecursiveAI.OneHtml.Differential;
+
+/// <summary>
+/// The Chrome accessibility-tree differential: for each captured page and viewport, builds our tree from Chrome's serialized DOM and
+/// compares it with Chrome's <c>Accessibility.getFullAXTree</c> node by node. See <c>docs/chrome-ax-differential.md</c>.
+/// </summary>
+internal static class AxCommand
+{
+    /// <summary>Version of the output files.</summary>
+    public const string Schema = "onehtml-ax-differential/1";
+
+    internal sealed record CaptureRef(string Sha, string Viewport, string Dir);
+
+    internal sealed class CaptureResult
+    {
+        public required CaptureRef Ref { get; init; }
+
+        public string Url { get; set; } = string.Empty;
+
+        /// <summary>ok, refused, skipped (capture incomplete) or error.</summary>
+        public string Status { get; set; } = "ok";
+
+        public string Detail { get; set; } = string.Empty;
+
+        public AxPageDiff? Diff { get; set; }
+    }
+
+    public static int Run(Options o)
+    {
+        string root = o.Corpus;
+        List<CaptureRef> captures = FindCaptures(root);
+        if (captures.Count > o.Limit)
+        {
+            captures.RemoveRange(o.Limit, captures.Count - o.Limit);
+        }
+
+        StylesheetStore? styles = o.StyleCorpus is { Length: > 0 } sc ? StylesheetStore.Load(sc) : null;
+        string facts = o.Facts;
+        Console.WriteLine($"ax: {captures.Count} captures, facts {facts}, jobs {o.Jobs}, timeout {o.TimeoutSeconds}s, {styles?.Count ?? 0} stylesheets");
+        var results = new List<CaptureResult>(captures.Count);
+        var clock = Stopwatch.StartNew();
+        int done = 0;
+        Parallel.ForEach(captures, new ParallelOptions { MaxDegreeOfParallelism = o.Jobs }, cap =>
+        {
+            CaptureResult r = RunCapture(cap, styles, o.TimeoutSeconds, o.Dump);
+            lock (results)
+            {
+                results.Add(r);
+            }
+
+            int n = Interlocked.Increment(ref done);
+            if (n % 100 == 0)
+            {
+                Console.WriteLine($"  {n}/{captures.Count} after {clock.Elapsed.TotalSeconds:0}s");
+            }
+        });
+
+        results.Sort(static (a, b) => string.CompareOrdinal(a.Ref.Sha + "/" + a.Ref.Viewport, b.Ref.Sha + "/" + b.Ref.Viewport));
+        Directory.CreateDirectory(o.Out);
+        if (o.Dump)
+        {
+            Directory.CreateDirectory(System.IO.Path.Combine(o.Out, "dump"));
+            foreach (CaptureResult r in results.Where(r => r.Diff is not null))
+            {
+                File.WriteAllLines(System.IO.Path.Combine(o.Out, "dump", r.Ref.Sha[..Math.Min(12, r.Ref.Sha.Length)] + "-" + r.Ref.Viewport + ".txt"), r.Diff!.Dump);
+            }
+        }
+
+        string env = ReadEnvironment(root);
+        AxReport.Write(o, results, env, facts, clock.Elapsed.TotalSeconds);
+        int ok = results.Count(r => r.Status == "ok");
+        Console.WriteLine($"ax: {ok} compared, {results.Count(r => r.Status == "refused")} refused, {results.Count(r => r.Status is "skipped" or "error")} skipped or failed; summary in {Path.GetFullPath(o.Out)}");
+        return 0;
+    }
+
+    /// <summary>Finds capture directories (<c>…/&lt;sha&gt;/&lt;viewport&gt;/</c> with a <c>meta.json</c> or <c>errors.json</c>) below a capture root.</summary>
+    internal static List<CaptureRef> FindCaptures(string root)
+    {
+        var list = new List<CaptureRef>();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        if (!Directory.Exists(root))
+        {
+            return list;
+        }
+
+        foreach (string f in Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories))
+        {
+            string name = System.IO.Path.GetFileName(f);
+            if (name is not ("meta.json" or "errors.json"))
+            {
+                continue;
+            }
+
+            string dir = System.IO.Path.GetDirectoryName(f)!;
+            string viewport = System.IO.Path.GetFileName(dir);
+            string sha = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(dir)!);
+            if (seen.Add(dir))
+            {
+                list.Add(new CaptureRef(sha, viewport, dir));
+            }
+        }
+
+        list.Sort(static (a, b) => string.CompareOrdinal(a.Sha + "/" + a.Viewport, b.Sha + "/" + b.Viewport));
+        return list;
+    }
+
+    private static string ReadEnvironment(string root)
+    {
+        string? dir = root;
+        for (int i = 0; i < 3 && dir is not null; i++, dir = System.IO.Path.GetDirectoryName(dir))
+        {
+            string p = System.IO.Path.Combine(dir, "environment.json");
+            if (!File.Exists(p))
+            {
+                continue;
+            }
+
+            try
+            {
+                using JsonDocument d = JsonDocument.Parse(File.ReadAllBytes(p));
+                if (d.RootElement.TryGetProperty("chrome", out JsonElement c))
+                {
+                    string product = c.TryGetProperty("product", out JsonElement pr) ? pr.GetString() ?? string.Empty : string.Empty;
+                    string rev = c.TryGetProperty("revision", out JsonElement rv) ? rv.GetString() ?? string.Empty : string.Empty;
+                    string proto = c.TryGetProperty("protocolVersion", out JsonElement pv) ? pv.GetString() ?? string.Empty : string.Empty;
+                    return $"{product} (revision {rev}, protocol {proto})";
+                }
+            }
+            catch (JsonException)
+            {
+                return string.Empty;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private static byte[]? ReadFile(string dir, string name)
+    {
+        string gz = System.IO.Path.Combine(dir, name + ".json.gz");
+        if (File.Exists(gz))
+        {
+            using FileStream f = File.OpenRead(gz);
+            using var z = new GZipStream(f, CompressionMode.Decompress);
+            using var ms = new MemoryStream();
+            z.CopyTo(ms);
+            return ms.ToArray();
+        }
+
+        string plain = System.IO.Path.Combine(dir, name + ".json");
+        return File.Exists(plain) ? File.ReadAllBytes(plain) : null;
+    }
+
+    private static CaptureResult RunCapture(CaptureRef cap, StylesheetStore? sheets, int timeoutSeconds, bool dump)
+    {
+        var r = new CaptureResult { Ref = cap };
+        (CaptureResult? res, string? failure) = Guard.Run(ct => Compare(cap, sheets, r, dump, ct), timeoutSeconds);
+        if (failure is not null)
+        {
+            r.Status = "error";
+            r.Detail = failure;
+            return r;
+        }
+
+        return res!;
+    }
+
+    private static CaptureResult Compare(CaptureRef cap, StylesheetStore? sheets, CaptureResult r, bool dump, CancellationToken ct)
+    {
+        byte[]? meta = ReadFile(cap.Dir, "meta");
+        if (meta is null)
+        {
+            r.Status = "skipped";
+            r.Detail = "capture failed (no meta.json)";
+            return r;
+        }
+
+        using JsonDocument metaDoc = JsonDocument.Parse(meta);
+        JsonElement m = metaDoc.RootElement;
+        r.Url = m.TryGetProperty("url", out JsonElement u) ? u.GetString() ?? string.Empty : string.Empty;
+        if (m.TryGetProperty("ok", out JsonElement okv) && okv.ValueKind == JsonValueKind.False)
+        {
+            r.Status = "skipped";
+            r.Detail = "capture not ok";
+            return r;
+        }
+
+        byte[]? axJson = ReadFile(cap.Dir, "ax");
+        byte[]? snapJson = ReadFile(cap.Dir, "snapshot");
+        byte[]? domJson = ReadFile(cap.Dir, "dom");
+        if (axJson is null || snapJson is null || domJson is null)
+        {
+            r.Status = "skipped";
+            r.Detail = "capture incomplete (" + string.Join(',', new[] { axJson is null ? "ax" : null, snapJson is null ? "snapshot" : null, domJson is null ? "dom" : null }.Where(s => s is not null)) + " missing)";
+            return r;
+        }
+
+        double width = 1280, height = 800, dpr = 1;
+        if (m.TryGetProperty("viewport", out JsonElement vp))
+        {
+            width = Num(vp, "width", width);
+            height = Num(vp, "height", height);
+            dpr = Num(vp, "deviceScaleFactor", dpr);
+        }
+
+        string baseUrl = m.TryGetProperty("final_url", out JsonElement fu) && fu.ValueKind == JsonValueKind.String ? fu.GetString()! : r.Url;
+
+        using JsonDocument domDoc = JsonDocument.Parse(domJson);
+        string outer = domDoc.RootElement.GetProperty("outerHTML").GetString() ?? string.Empty;
+        string doctype = domDoc.RootElement.TryGetProperty("doctype", out JsonElement dt) && dt.ValueKind == JsonValueKind.String ? dt.GetString()! : string.Empty;
+        Document doc = Document.Parse(doctype + outer, cancellationToken: ct);
+
+        var context = StyleContext.Default.WithMedia(MediaFeatures.Default with { Width = width, Height = height, DevicePixelRatio = dpr });
+        var options = new StyleSourceOptions { BaseUrl = baseUrl, Resolver = sheets is null ? null : sheets.Resolve };
+        DocumentStyles styles = DocumentStyles.Create(doc, context, options, ct);
+
+        DomSnapshot snapshot = DomSnapshot.Parse(snapJson);
+        DomSnapshotMapResult map = DomSnapshotAdapter.Map(snapshot, doc, new DomSnapshotMapOptions { ViewportWidth = width, ViewportHeight = height, Context = context }, ct);
+        if (!map.Succeeded)
+        {
+            r.Status = "refused";
+            r.Detail = map.Refusal is { } rf ? rf.Reason + ": " + rf.Message : "refused";
+            return r;
+        }
+
+        RenderedFacts rendered = map.Facts!;
+        var backendToDom = new Dictionary<long, int>();
+        for (int i = 0; i < doc.NodeCount; i++)
+        {
+            if (rendered.TryGet(doc.GetNode(i), out NodeFacts nf) && nf.BackendNodeId >= 0)
+            {
+                backendToDom[nf.BackendNodeId] = i;
+            }
+        }
+
+        int Map(long backend) => backendToDom.TryGetValue(backend, out int d) ? d : -1;
+
+        using JsonDocument axDoc = JsonDocument.Parse(axJson);
+        JsonElement frames = axDoc.RootElement.GetProperty("frames");
+        if (frames.GetArrayLength() == 0)
+        {
+            r.Status = "skipped";
+            r.Detail = "no frames in ax.json";
+            return r;
+        }
+
+        JsonElement main = frames[0];
+        if (main.TryGetProperty("error", out JsonElement fe) && fe.ValueKind == JsonValueKind.String)
+        {
+            r.Status = "skipped";
+            r.Detail = "ax frame error: " + fe.GetString();
+            return r;
+        }
+
+        AxSide chrome = AxReader.Read(main.GetProperty("nodes"), Map, null);
+        foreach (AxEntry c in chrome.Entries)
+        {
+            c.Path = "chrome#" + c.Backend.ToString(CultureInfo.InvariantCulture) + " " + c.Role;
+        }
+
+        AccessibilityTree tree = AccessibilityTree.Build(doc, styles, null, new AccessibilityOptions { BaseUrl = baseUrl }, ct);
+        using JsonDocument oursDoc = JsonDocument.Parse(tree.ToChromeJson());
+        AxSide ours = AxReader.Read(oursDoc.RootElement.GetProperty("nodes"), static b => b > int.MaxValue ? -1 : (int)b, tree);
+        foreach (AxEntry o in ours.Entries)
+        {
+            o.Path = o.Dom >= 0 ? DomPath(doc.GetNode(o.Dom)) : "#document";
+        }
+
+        r.Diff = AxComparer.Compare(chrome, ours, dump);
+        return r;
+    }
+
+    private static double Num(JsonElement o, string name, double fallback) =>
+        o.TryGetProperty(name, out JsonElement v) && v.ValueKind == JsonValueKind.Number ? v.GetDouble() : fallback;
+
+    /// <summary>A readable path of a node: element names with their position among the element siblings, text as <c>#text[k]</c>.</summary>
+    internal static string DomPath(Node node)
+    {
+        var parts = new List<string>();
+        int guard = 0;
+        for (Node n = node; !n.IsNull && n.Parent.Document is not null && guard++ < 256; n = n.Parent)
+        {
+            if (n.IsElement)
+            {
+                int k = 1;
+                for (Node s = n.PreviousElementSibling; !s.IsNull; s = s.PreviousElementSibling)
+                {
+                    k++;
+                }
+
+                parts.Add(n.LocalName + "[" + k.ToString(CultureInfo.InvariantCulture) + "]");
+            }
+            else
+            {
+                int k = 1;
+                foreach (Node s in n.Parent.ChildNodes)
+                {
+                    if (s.Equals(n))
+                    {
+                        break;
+                    }
+
+                    k++;
+                }
+
+                parts.Add("#text[" + k.ToString(CultureInfo.InvariantCulture) + "]");
+            }
+        }
+
+        parts.Reverse();
+        return parts.Count == 0 ? "#document" : string.Join(" > ", parts);
+    }
+}
+
+/// <summary>Stylesheets supplied to the cascade by URL: the corpus manifest's stylesheet bodies, or loose <c>.css</c> files of a directory.</summary>
+internal sealed class StylesheetStore
+{
+    private readonly Dictionary<string, CorpusItem> _byUrl = new(StringComparer.Ordinal);
+    private readonly List<CorpusItem> _loose = [];
+
+    public int Count => _byUrl.Count + _loose.Count;
+
+    public static StylesheetStore Load(string dir)
+    {
+        var s = new StylesheetStore();
+        bool manifest = File.Exists(System.IO.Path.Combine(dir, "manifest.jsonl"));
+        foreach (CorpusItem item in Corpus.Load(dir, pages: false, stylesheets: true))
+        {
+            if (manifest)
+            {
+                s._byUrl[Strip(item.Url)] = item;
+            }
+            else
+            {
+                s._loose.Add(item);
+            }
+        }
+
+        return s;
+    }
+
+    private static string Strip(string url)
+    {
+        int h = url.IndexOf('#', StringComparison.Ordinal);
+        return h < 0 ? url : url[..h];
+    }
+
+    /// <summary>The sheet Chrome was served for a URL: the same stored bytes.</summary>
+    public StylesheetResource? Resolve(string absoluteUrl)
+    {
+        string url = Strip(absoluteUrl);
+        CorpusItem? item = _byUrl.GetValueOrDefault(url);
+        if (item is null && _loose.Count > 0)
+        {
+            // A directory of loose files has no URLs: a request matches the file whose relative path ends the URL's path.
+            string path = Uri.TryCreate(url, UriKind.Absolute, out Uri? uri) ? uri.AbsolutePath.TrimStart('/') : url;
+            item = _loose.FirstOrDefault(i => path.EndsWith(i.Url.Replace('\\', '/'), StringComparison.Ordinal));
+        }
+
+        if (item is null || !File.Exists(item.Path))
+        {
+            return null;
+        }
+
+        return new StylesheetResource(File.ReadAllBytes(item.Path), Charset(item.ContentType));
+    }
+
+    private static string? Charset(string? contentType)
+    {
+        if (contentType is null)
+        {
+            return null;
+        }
+
+        int i = contentType.IndexOf("charset=", StringComparison.OrdinalIgnoreCase);
+        if (i < 0)
+        {
+            return null;
+        }
+
+        string v = contentType[(i + 8)..].Trim().Trim('"', '\'');
+        int semi = v.IndexOf(';', StringComparison.Ordinal);
+        return semi >= 0 ? v[..semi].Trim() : v;
+    }
+}

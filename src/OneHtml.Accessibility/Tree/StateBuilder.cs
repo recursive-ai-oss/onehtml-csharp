@@ -139,7 +139,11 @@ internal static class StateBuilder
         {
             if (html && el.LocalName == "input")
             {
-                s.Value = el.GetAttribute("value") ?? string.Empty;
+                // A password's characters are never exposed (profile entry input-password-file).
+                if (HtmlSemantics.GetInputType(el) != HtmlInputType.Password)
+                {
+                    s.Value = el.GetAttribute("value") ?? string.Empty;
+                }
             }
             else if (html && el.LocalName == "textarea")
             {
@@ -150,6 +154,11 @@ internal static class StateBuilder
             {
                 s.Value = selectValue();
             }
+        }
+        else if (roleName is null && html && el.LocalName == "input" && HtmlSemantics.GetInputType(el) is HtmlInputType.Date or HtmlInputType.Color)
+        {
+            // The date and colour pickers have no WAI-ARIA role but state their value (profile entry internal-roles).
+            s.Value = el.GetAttribute("value") ?? (HtmlSemantics.GetInputType(el) == HtmlInputType.Color ? "#000000" : string.Empty);
         }
         else if (roleName == "listbox" && html && el.LocalName == "select")
         {
@@ -200,6 +209,11 @@ internal static class StateBuilder
         {
             s.HasPopup = popup is "true" or "menu" or "listbox" or "tree" or "grid" or "dialog" ? popup : "true";
         }
+        else if (popup is null && html && el.LocalName == "select" && roleName == "combobox")
+        {
+            // A drop-down select opens a menu of its options (profile entry select-popup).
+            s.HasPopup = "menu";
+        }
 
         string? orientation = Aria("aria-orientation");
         if (orientation is "horizontal" or "vertical")
@@ -233,6 +247,10 @@ internal static class StateBuilder
         {
             s.Url = href;
         }
+        else if (html && el.LocalName == "img" && el.GetAttribute("src") is { Length: > 0 } src)
+        {
+            s.Url = src;
+        }
 
         // ---- editable (HTML section 6.8) ----
         if (html)
@@ -246,6 +264,17 @@ internal static class StateBuilder
             {
                 s.Editable = "plaintext";
             }
+            else if (roleName == "spinbutton" && el.LocalName == "input")
+            {
+                s.Editable = "plaintext";
+            }
+        }
+
+        // Chromium states the value of a native slider or spin button as its value text as well.
+        if (html && el.LocalName == "input" && s.ValueText is null && s.Value is { Length: > 0 } nv && roleName is "slider" or "spinbutton"
+            && HtmlSemantics.GetInputType(el) is HtmlInputType.Range or HtmlInputType.Number)
+        {
+            s.ValueText = nv;
         }
 
         return s;
@@ -271,8 +300,9 @@ internal static class StateBuilder
         if (html && el.LocalName == "input" && HtmlSemantics.GetInputType(el) is HtmlInputType.Range or HtmlInputType.Number)
         {
             bool range = HtmlSemantics.GetInputType(el) == HtmlInputType.Range;
-            min = Num(native("aria-valuemin")) ?? min ?? (range ? 0 : null);
-            max = Num(native("aria-valuemax")) ?? max ?? (range ? 100 : null);
+            // A number input with no min or max reports 0 for both (profile entry number-input-bounds).
+            min = Num(native("aria-valuemin")) ?? min ?? 0;
+            max = Num(native("aria-valuemax")) ?? max ?? (range ? 100 : 0);
             now = Num(native("aria-valuenow")) ?? now;
             if (range)
             {

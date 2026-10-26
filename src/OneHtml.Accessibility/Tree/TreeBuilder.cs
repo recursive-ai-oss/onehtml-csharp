@@ -53,6 +53,8 @@ internal sealed class TreeBuilder
         AssignIds();
         ComputeNodes();
         ComputeFocusOrder();
+        ComputeChromiumFocusableOptions();
+        ComputeListItemLevels();
         ComputePositions();
         CheckContextAndOwned();
         Collect();
@@ -88,7 +90,9 @@ internal sealed class TreeBuilder
                 if (!_hidden.NotRendered(cur.Index))
                 {
                     Create(AxNodeKind.Element, cur);
-                    descend = !cur.FirstChild.IsNull;
+                    // The text of a textarea or option is the control's value or label, not content a user reads on its own:
+                    // Chromium exposes no children for either (profile entry text-control-leaves).
+                    descend = !cur.FirstChild.IsNull && !IsLeafControl(cur);
                 }
             }
             else if (cur.Kind == NodeKind.Text && !_hidden.NotRendered(cur.Index) && KeepText(cur))
@@ -120,6 +124,57 @@ internal sealed class TreeBuilder
             }
         }
     }
+
+    /// <summary>HTML section 4.11.1: the summary element that is the first summary child of a details element.</summary>
+    private static bool IsFirstSummary(Node el)
+    {
+        if (el.LocalName != "summary" || el.ParentElement is not { IsNull: false } p || p.Namespace != ElementNamespace.Html || p.LocalName != "details")
+        {
+            return false;
+        }
+
+        for (Node s = el.PreviousElementSibling; !s.IsNull; s = s.PreviousElementSibling)
+        {
+            if (s.Namespace == ElementNamespace.Html && s.LocalName == "summary")
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private string? _baseUrl;
+    private bool _baseUrlKnown;
+
+    /// <summary>The URL a link or image refers to: <paramref name="value"/> resolved against the base URL when there is one.</summary>
+    private string ResolveUrl(string value)
+    {
+        if (!_baseUrlKnown)
+        {
+            _baseUrlKnown = true;
+            if (_opt.BaseUrl is { Length: > 0 } b && Uri.TryCreate(b, UriKind.Absolute, out Uri? baseUri))
+            {
+                Node baseEl = _doc.Root.QuerySelector("base[href]");
+                if (!baseEl.IsNull && Uri.TryCreate(baseUri, baseEl.GetAttribute("href"), out Uri? withBase))
+                {
+                    baseUri = withBase;
+                }
+
+                _baseUrl = baseUri.AbsoluteUri;
+            }
+        }
+
+        if (_baseUrl is not null && Uri.TryCreate(new Uri(_baseUrl), TreeText.Trim(value), out Uri? resolved))
+        {
+            return resolved.AbsoluteUri;
+        }
+
+        return value;
+    }
+
+    private static bool IsLeafControl(Node el) =>
+        el.Namespace == ElementNamespace.Html ? el.LocalName is "textarea" or "option" : el.Namespace == ElementNamespace.Svg && el.LocalName is "title" or "desc" or "metadata";
 
     /// <summary>Text that is only white space is kept only between inline neighbours, where it is a visible space.</summary>
     private bool KeepText(Node text)
@@ -368,6 +423,10 @@ internal sealed class TreeBuilder
 
         n.States = StateBuilder.Build(el, role, nr.IsDisabled, n.AriaDisabledChain, () => NameComputer.SelectedOptionsText(el));
         n.Relations = BuildRelations(n);
+        if (n.States.Url is { } rawUrl)
+        {
+            n.States.Url = ResolveUrl(rawUrl);
+        }
         n.Focus = new AxFocus(IsFocusableNow(n, nr), TabIndexOf(el), -1);
 
         // Role diagnostics of the role layer.
@@ -376,7 +435,58 @@ internal sealed class TreeBuilder
             AddDiagnostic(n, new AxDiagnostic(AxDiagnosticKind.Role, el, d.Attribute, d.Value, d.Message, d.Kind));
         }
 
+        n.InternalRole = InternalRoleOf(el, role, IsFirstSummary(el));
         ComputeIgnored(n, nr);
+    }
+
+    /// <summary>
+    /// The role Chromium exposes for elements WAI-ARIA has no role for (profile entry internal-roles). Elements that have a WAI-ARIA
+    /// role keep it, except the SVG and MathML elements Chromium names after the element.
+    /// </summary>
+    private static string? InternalRoleOf(Node el, AriaRole? role, bool firstSummary)
+    {
+        switch (el.Namespace)
+        {
+            case ElementNamespace.Svg:
+                return el.LocalName == "svg" && el.ParentElement is { IsNull: false } sp && sp.Namespace != ElementNamespace.Svg ? "SvgRoot" : null;
+            case ElementNamespace.MathMl:
+                return el.LocalName switch
+                {
+                    "math" => "MathMLMath",
+                    "mi" => "MathMLIdentifier",
+                    "mo" => "MathMLOperator",
+                    "mn" => "MathMLNumber",
+                    _ => null,
+                };
+        }
+
+        if (role is not null)
+        {
+            return null;
+        }
+
+        switch (el.LocalName)
+        {
+            case "label":
+                return "LabelText";
+            case "legend":
+                return "Legend";
+            case "br":
+                return "LineBreak";
+            case "iframe":
+                return "Iframe";
+            case "summary":
+                return firstSummary ? "DisclosureTriangle" : null;
+            case "input":
+                return HtmlSemantics.GetInputType(el) switch
+                {
+                    HtmlInputType.Date => "Date",
+                    HtmlInputType.Color => "ColorWell",
+                    _ => null,
+                };
+            default:
+                return null;
+        }
     }
 
     private static int? TabIndexOf(Node el)
@@ -403,9 +513,17 @@ internal sealed class TreeBuilder
         }
         else if (role is null)
         {
+            if (n.InternalRole is null)
+            {
+                // SVG's foreignObject only hosts HTML content (profile entry foreign-object).
+                reasons.Add(n.DomNode.Namespace == ElementNamespace.Svg && n.DomNode.LocalName == "foreignObject" ? "presentationalRole" : "uninteresting");
+            }
+        }
+        else if (role.Name == "generic" && IsRootWrapper(n.DomNode))
+        {
             reasons.Add("uninteresting");
         }
-        else if (role.Name == "generic" && !IsInterestingGeneric(n, nr))
+        else if (role.Name == "rowgroup" && n.RoleOrigin == RoleOrigin.Implicit && n.DomNode.LocalName == "tbody")
         {
             reasons.Add("uninteresting");
         }
@@ -414,24 +532,8 @@ internal sealed class TreeBuilder
         n.IgnoredReasons = reasons;
     }
 
-    private static bool IsInterestingGeneric(AxNode n, NodeRole nr)
-    {
-        if (!n.Name.IsEmpty || !n.Description.IsEmpty || nr.IsFocusable)
-        {
-            return true;
-        }
-
-        foreach (Attr a in n.DomNode.Attributes)
-        {
-            string name = a.LocalName;
-            if (name is "role" or "tabindex" or "contenteditable" or "title" || name.StartsWith("aria-", StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    /// <summary>The elements Chromium leaves out of the exposed tree although they have the generic role: the document element, the body and the bold and italic elements (profile entry generic-pruning).</summary>
+    private static bool IsRootWrapper(Node el) => el.Namespace == ElementNamespace.Html && el.LocalName is "html" or "body" or "b" or "i";
 
     // ---- relations ----
 
@@ -587,6 +689,51 @@ internal sealed class TreeBuilder
         _ => null,
     };
 
+    /// <summary>
+    /// Chromium reports the options of a select as focusable although they are not stops in the sequential order (profile entry
+    /// option-focusable). The focus order has already been computed, so this changes only <see cref="AxFocus.IsFocusable"/>.
+    /// </summary>
+    private void ComputeChromiumFocusableOptions()
+    {
+        foreach (AxNode n in _domOrder)
+        {
+            if (n.Kind == AxNodeKind.Element && !n.Focus.IsFocusable && n.Role == "option" && n.DomNode.Namespace == ElementNamespace.Html
+                && n.DomNode.LocalName == "option" && !n.States.Disabled && !n.IsIgnored && n.Parent is { } p && p.Role is "combobox" or "listbox" or "group")
+            {
+                n.Focus = n.Focus with { IsFocusable = true };
+            }
+        }
+    }
+
+    /// <summary>
+    /// Chromium gives each list item the number of list ancestors as its level (profile entry list-item-level). An explicit
+    /// <c>aria-level</c> is kept.
+    /// </summary>
+    private void ComputeListItemLevels()
+    {
+        foreach (AxNode n in _domOrder)
+        {
+            if (n.Kind != AxNodeKind.Element || n.Role != "listitem" || n.States.Level is not null)
+            {
+                continue;
+            }
+
+            int depth = 0;
+            for (AxNode? p = n.Parent; p is not null; p = p.Parent)
+            {
+                if (p.Role == "list")
+                {
+                    depth++;
+                }
+            }
+
+            if (depth > 0)
+            {
+                n.States.Level = depth;
+            }
+        }
+    }
+
     private void ComputePositions()
     {
         var groups = new Dictionary<(int Container, string Family, string? Extra), List<AxNode>>();
@@ -648,8 +795,18 @@ internal sealed class TreeBuilder
             {
                 int pos = m.States.PosInSet ?? prev + 1;
                 prev = pos;
-                m.States.PosInSet ??= pos;
-                m.States.SetSize ??= size;
+                if (m.States.PosInSet is null)
+                {
+                    m.States.PosInSet = pos;
+                    m.States.PosInSetComputed = true;
+                }
+
+                if (m.States.SetSize is null)
+                {
+                    m.States.SetSize = size;
+                    m.States.SetSizeComputed = true;
+                }
+
                 if (m.States.SetSize == -1)
                 {
                     m.States.SetSize = null;

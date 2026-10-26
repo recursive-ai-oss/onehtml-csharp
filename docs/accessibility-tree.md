@@ -63,10 +63,15 @@ An `area` inside a `map` is not hidden although the rendering rules give it `dis
   an inline parent. At the start and end of a block, leading and trailing white space is trimmed.
 - **Role** is the Core-AAM computed role name of the role layer (`image`, `none`, `generic`, …), with `Role` empty for an
   element with no role, `RoleOrigin` the derivation and `AriaRole` the record. `RootWebArea` is the document.
+  `InternalRole` names the role Chromium gives the elements WAI-ARIA has no role for (`LabelText`, `Legend`, `LineBreak`,
+  `Iframe`, `DisclosureTriangle`, `Date`, `ColorWell`) and the SVG and MathML roots and tokens (`SvgRoot`, `MathMLMath`,
+  `MathMLIdentifier`, `MathMLOperator`, `MathMLNumber`); an element with one is not ignored as uninteresting. A `textarea`, an `option` and an SVG
+  `title`, `desc` or `metadata` element have no child nodes (the name computation still reads their text).
 - **Ignored** nodes stay in the tree with `IsIgnored` and `IgnoredReasons`: `notVisible`, `ariaHiddenElement`,
   `ariaHiddenSubtree`, `inertElement`, `inertSubtree`, `presentationalRole` (role `none`/`presentation`, including
-  imposed ones), `uninteresting` (a generic element with no name, description, focus, role, `tabindex`,
-  `contenteditable`, `title` or `aria-*` attribute; an element with no role; white-space-only text). The children of an
+  imposed ones), `uninteresting` (the `html`, `body`, `b` and `i` elements; an element with no role and no internal role;
+  `tbody` with its implicit role; white-space-only text; every other generic element is exposed, as Chrome does). SVG
+  `foreignObject` is `presentationalRole`. The children of an
   ignored node are still its children; a consumer that wants the pruned tree skips ignored nodes and lifts their children.
 - **Locator** is generated on demand (`AxNode.Locator`), **source range** is `AxNode.SourceBytes`.
 
@@ -147,7 +152,7 @@ disabled), the parsed `TabIndex`, and `SequentialIndex` (position in `Accessibil
 |---|---|
 | `nodeId` | the tree node's `Id` as a string |
 | `ignored`, `ignoredReasons` | `ignored`; reasons as `[{"name":…,"value":{"type":"boolean","value":true}}]` when ignored |
-| `role` | `{"type":"role","value":<computed role>}`; ignored nodes are `none`; `{"type":"internalRole",…}` for `RootWebArea`, `StaticText`, `LineBreak`, `LabelText`, `Legend`, `Iframe` |
+| `role` | `{"type":"role","value":<computed role>}`; ignored nodes are `none`; `{"type":"internalRole",…}` for `RootWebArea`, `StaticText` and every node with an `InternalRole` |
 | `name` | not ignored only: `{"type":"computedString","value":…,"sources":[{"type":"attribute"|"relatedElement"|"contents"|"placeholder","value":{…},"attribute"?,"attributeValue"?,"nativeSource"?}]}`; one source, the one that produced the name |
 | `description` | present when not empty |
 | `value` | `{"type":"string","value":…}` for text fields, selects and ranges |
@@ -155,9 +160,11 @@ disabled), the parsed `TabIndex`, and `SequentialIndex` (position in `Accessibil
 | `parentId`, `childIds` | tree ids; an ignored node keeps its children |
 | `backendDOMNodeId` | the arena index of the node in the OneHtml document (not Chrome's id); absent for the document |
 
-Not exported: `InlineTextBox` nodes, `frameId`, `chromeRole`, `focused`, the `hiddenRoot` and `root` properties, name sources
-that lost. The export is deterministic. Every spelling here is a profile entry marked unverified until the Chrome
-differential compares it with captures; a change that alters meaning raises the schema version.
+`posinset` and `setsize` are exported only when the author gave them; a node named by a label, caption or legend gets a
+`labelledby` property naming it; `url` is resolved against `AccessibilityOptions.BaseUrl`. Not exported: `InlineTextBox` nodes, `frameId`, `chromeRole`, `focused`, the `hiddenRoot` and `root` properties, name sources
+that lost. The export is deterministic. The spellings are profile entries; the Chrome differential
+(`chrome-ax-differential.md`) compares the export's content with captures, and a change that alters meaning raises the schema
+version.
 
 ## Conformance
 
@@ -173,17 +180,17 @@ Known failures, each with its reason, are in `testdata/wpt/accname/expectations.
 | `accname/name/` | 16 | 463 | 13 | 3 |
 | `accname/name/shadowdom/` | 2 | 0 | 0 | 6 |
 | `accname/manual/` | 159 | 152 | 7 | 0 |
-| `html-aam/accname-computation-by-element/` | 17 | 516 | 8 | 0 |
+| `html-aam/accname-computation-by-element/` | 17 | 518 | 6 | 0 |
 | `html-aam/` (`names`, `hidden-names`, `figure-name…`) | 3 | 139 | 3 | 0 |
 | `html-aam/heading/` | 1 | 14 | 0 | 0 |
 | `wai-aria/` `checked`, `pressed`, `subtree` | 3 | 9 | 0 | 0 |
 | `wai-aria/heading/` | 2 | 8 | 0 | 6 |
-| total | 205 | 1,312 | 31 | 15 |
+| total | 205 | 1,314 | 29 | 15 |
 
 Not applicable: shadow DOM is built by script (`shadowdom/`, 6), `comp_name_from_content_alt_counter_invalidation.html`
 changes style by script (3), and `wai-aria/heading/invalid-nesting.tentative.html` marks its expectations ambiguous (6).
-Known failures (31): the tentative `::marker` text in names (8), the tentative naming of dialog and article from a heading
-(5), the tentative cell and row pages that name them only from author attributes (6), the tentative page that does not
+Known failures (29): the tentative `::marker` text in names (8), the tentative naming of dialog and article from a heading
+(5), the tentative cell and header pages that name them only from author attributes (4), the tentative page that does not
 name a figure from its figcaption (3), a menu inside a label on five manual pages (5), two legacy manual pages that expect
 the label's title between its generated content (2), and the image-map area page, whose setup leaves an `alt` in place for
 its title and empty cases (2). The reasons are in the expectations file.

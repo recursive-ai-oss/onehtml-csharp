@@ -65,6 +65,14 @@ public sealed class AxNode
     /// <summary>How the role was derived: explicit, implicit, presentational-conflict and so on.</summary>
     public RoleOrigin RoleOrigin { get; internal set; }
 
+    /// <summary>
+    /// The name of the role Chromium gives the node when it is not a WAI-ARIA role (<c>LabelText</c>, <c>Legend</c>, <c>LineBreak</c>,
+    /// <c>Iframe</c>, <c>DisclosureTriangle</c>, <c>Date</c>, <c>ColorWell</c>, <c>SvgRoot</c>, <c>MathMLMath</c> and so on), or null. The
+    /// node keeps its Core-AAM <see cref="Role"/> (empty for elements with no role); an element with an internal role is not
+    /// ignored as uninteresting. See profile entry <c>internal-roles</c>.
+    /// </summary>
+    public string? InternalRole { get; internal set; }
+
     /// <summary>The accessible name and the step that produced it.</summary>
     public AxText Name { get; internal set; } = AxText.Empty;
 

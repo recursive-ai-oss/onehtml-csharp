@@ -134,21 +134,10 @@ internal static class ChromeAxExport
             return ("role", "none");
         }
 
-        Node el = n.DomNode;
-        if (el.Namespace == ElementNamespace.Html && n.RoleOrigin is RoleOrigin.Implicit)
+        if (n.InternalRole is { } internalRole)
         {
-            // Chrome's own role names for a few elements (profile entry export-role-names).
-            switch (el.LocalName)
-            {
-                case "br":
-                    return ("internalRole", "LineBreak");
-                case "label":
-                    return ("internalRole", "LabelText");
-                case "legend":
-                    return ("internalRole", "Legend");
-                case "iframe":
-                    return ("internalRole", "Iframe");
-            }
+            // Chromium's own role names (profile entry internal-roles).
+            return ("internalRole", internalRole);
         }
 
         return ("role", n.Role.Length == 0 ? "none" : n.Role);
@@ -420,14 +409,20 @@ internal static class ChromeAxExport
             Prop(w, "selected", x => WriteValue(x, "booleanOrUndefined", sel));
         }
 
-        if (s.PosInSet is { } pos)
+        if (s.PosInSet is { } pos && !s.PosInSetComputed)
         {
             Prop(w, "posinset", x => WriteValue(x, "integer", pos));
         }
 
-        if (s.SetSize is { } size)
+        if (s.SetSize is { } size && !s.SetSizeComputed)
         {
             Prop(w, "setsize", x => WriteValue(x, "integer", size));
+        }
+
+        if (n.GetRelation(AxRelationKind.LabelledBy) is null && n.Name.Source == AxTextSource.NativeLabelElement && n.Name.RelatedElements.Count > 0 && n.Name.RelatedElements[0].Namespace == ElementNamespace.Html)
+        {
+            // A label, caption or legend that names the node is reported as a labelledby relation (profile entry export-native-labelledby).
+            Prop(w, "labelledby", x => WriteRelated(x, "idrefList", n.Name.RelatedElements));
         }
 
         foreach ((AxRelationKind kind, string name) in RelationNames)

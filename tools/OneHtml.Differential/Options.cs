@@ -26,6 +26,15 @@ internal sealed class Options
 
     public int PerPage { get; private set; } = 5;
 
+    /// <summary>Where the <c>ax</c> command finds stylesheets (a corpus version or a directory of pages); null for none.</summary>
+    public string? StyleCorpus { get; private set; }
+
+    /// <summary>With <c>ax</c>, also writes every paired and unpaired node, side by side, to <c>dump/</c>.</summary>
+    public bool Dump { get; private set; }
+
+    /// <summary>The <c>ax</c> command's rendered-facts mode: <c>on</c>, <c>off</c> or <c>both</c>.</summary>
+    public string Facts { get; private set; } = "both";
+
     public static Options? Parse(string[] args)
     {
         var o = new Options();
@@ -38,7 +47,13 @@ internal sealed class Options
                 continue;
             }
 
-            if (i + 1 >= args.Length || !int.TryParse(args[i + 1], NumberStyles.None, CultureInfo.InvariantCulture, out int n) && a != "--out")
+            if (a == "--dump")
+            {
+                o.Dump = true;
+                continue;
+            }
+
+            if (i + 1 >= args.Length || !int.TryParse(args[i + 1], NumberStyles.None, CultureInfo.InvariantCulture, out int n) && a is not ("--out" or "--corpus" or "--facts"))
             {
                 return null;
             }
@@ -46,6 +61,15 @@ internal sealed class Options
             switch (a)
             {
                 case "--out": o.Out = args[++i]; break;
+                case "--corpus": o.StyleCorpus = args[++i]; break;
+                case "--facts":
+                    o.Facts = args[++i];
+                    if (o.Facts is not ("on" or "off" or "both"))
+                    {
+                        return null;
+                    }
+
+                    break;
                 case "--jobs": o.Jobs = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--limit": o.Limit = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--timeout": o.TimeoutSeconds = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
@@ -64,6 +88,8 @@ internal sealed class Options
         options (after the corpus directory): --out <dir> (default ./out) --jobs <n> (default 2) --limit <n> (first n items in sha256 order)
           --timeout <seconds per item> (default 30) --top <n> (default 20) --max-reduce <classes to minimize> (default 100, angle only)
           --seed <n> (default 1) --per-page <targets per page> (default 5), replay only
+          ax: the positional argument is the capture directory; --corpus <dir> supplies stylesheets (a corpus version or a directory of
+          pages), --facts on|off|both (default both), --dump (also write dump/<sha>-<viewport>.txt)
         """;
 }
 

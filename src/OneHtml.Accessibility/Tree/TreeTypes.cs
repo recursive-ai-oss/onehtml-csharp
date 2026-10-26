@@ -266,6 +266,12 @@ public sealed class AxStates
     /// <summary>Position in the set, given or computed (Core-AAM section 5.4).</summary>
     public int? PosInSet { get; internal set; }
 
+    /// <summary>True when <see cref="PosInSet"/> was worked out from the siblings rather than given by <c>aria-posinset</c>.</summary>
+    internal bool PosInSetComputed { get; set; }
+
+    /// <summary>True when <see cref="SetSize"/> was counted rather than given by <c>aria-setsize</c>.</summary>
+    internal bool SetSizeComputed { get; set; }
+
     /// <summary>Size of the set, given or computed.</summary>
     public int? SetSize { get; internal set; }
 
@@ -343,6 +349,13 @@ public readonly record struct AxFocus(bool IsFocusable, int? TabIndex, int Seque
 /// <summary>Limits and switches for <see cref="AccessibilityTree.Build"/>.</summary>
 public sealed class AccessibilityOptions
 {
+    /// <summary>
+    /// The document's URL, used to turn the <c>href</c> of a link and the <c>src</c> of an image into the absolute <see cref="AxStates.Url"/>
+    /// (a <c>base</c> element's <c>href</c> is applied on top of it). Without it, or when the value cannot be resolved, the attribute value is
+    /// reported as written. The resolution uses the platform's URI parser, not the WHATWG URL parser, so unusual URLs may differ.
+    /// </summary>
+    public string? BaseUrl { get; init; }
+
     /// <summary>The most nodes all name computations together may visit; past it, names fall back to attributes only and a limit diagnostic is recorded. Default 32 million.</summary>
     public int MaxNameWork { get; init; } = 32_000_000;
 

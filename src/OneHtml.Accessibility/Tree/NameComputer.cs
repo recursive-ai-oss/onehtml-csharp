@@ -848,7 +848,8 @@ internal sealed class NameComputer
         AriaRole? role = RoleOf(f.Node);
         if (role is not null)
         {
-            return role.NameFromContents;
+            // A row is not named from its cells: the cells carry the text (profile entry row-name).
+            return role.NameFromContents && role.Name != "row";
         }
 
         // HTML-AAM: summary has no role of its own but is named from its contents.

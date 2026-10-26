@@ -1,6 +1,6 @@
 # OneHtml.Differential
 
-Corpus commands that compare our parser with itself and with AngleSharp. AngleSharp is used in-process as a black box, and only here (never in `src/`). Both commands take a corpus version directory (see `tools/corpus/README.md`: `manifest.jsonl` plus `bodies/ab/<sha256>`) or any directory of loose files (`.css` is a stylesheet, everything else a page). Items are processed in SHA-256 order, so `--limit n` always picks the same items. Output never contains page content except where stated below; copy nothing from an output directory into the repo.
+Corpus commands that compare our parser with itself and with AngleSharp, and our accessibility tree with Chrome's. AngleSharp is used in-process as a black box, and only here (never in `src/`). The corpus commands take a corpus version directory (see `tools/corpus/README.md`: `manifest.jsonl` plus `bodies/ab/<sha256>`) or any directory of loose files (`.css` is a stylesheet, everything else a page). Items are processed in SHA-256 order, so `--limit n` always picks the same items. Output never contains page content except where stated below; copy nothing from an output directory into the repo.
 
 ```
 OneHtml.Differential <roundtrip|angle|replay> <corpus-dir> [--out dir] [--jobs n] [--limit n] [--timeout s] [--top n] [--max-reduce n] [--seed n] [--per-page n]
@@ -34,13 +34,18 @@ For every page, saves a `setAttribute` edit (`EditJson.Create`, written and read
 
 Writes `replay.md` (applied, stale, ambiguous, invalid, wrong, twin, lookalike and unexpected counts per mutation) and `replay-findings.txt` to `--out`; `--seed` fixes the sampling.
 
+## `ax`: Chrome accessibility-tree differential
+
+Takes a `tools/capture` output directory instead of a corpus: compares our tree with Chrome's `Accessibility.getFullAXTree` node by node and writes mismatch rates per field and mismatch classes with examples (`summary.md`, `summary.json`, `classes.json`, `captures.jsonl`). `--corpus` supplies the stylesheets the pages link; `--facts on|off|both` and `--dump` as described in `docs/chrome-ax-differential.md`, which is the normative description of the matching, the normalization and the output.
+
 ## Worker commands
 
-Both commands take the worker's shared-job lock inside the job (`~/WORKER-BENCH.lock`) and exit with status 3 at once if it is held; they never wait. Run from the repo root on the worker, after the repo is synced:
+Every command takes the worker's shared-job lock inside the job (`~/WORKER-BENCH.lock`) and exit with status 3 at once if it is held; they never wait. Run from the repo root on the worker, after the repo is synced:
 
 ```
 bash tools/OneHtml.Differential/run-worker.sh roundtrip ~/onehtml/corpus/<version> ~/onehtml/u7/out/roundtrip --jobs 2
 bash tools/OneHtml.Differential/run-worker.sh angle     ~/onehtml/corpus/<version> ~/onehtml/u7/out/angle     --jobs 2
+bash tools/OneHtml.Differential/run-worker.sh ax ~/onehtml/capture-out/<version> ~/onehtml/out/ax --corpus ~/onehtml/corpus/<version> --jobs 8
 ```
 
 The script builds in Release into `~/onehtml/u7/artifacts` with the worker's .NET 10, records CPU, core count and load before, during (every 30 s) and after in `load.log`, and cuts the run off after `ONEHTML_RUN_MAX_SECONDS` (default 7200). Outputs land in the out dir with `environment.txt`, `load.log` and `run.log`. Runs on more than 2 jobs or for over 5 minutes must keep the lock; for a first look add `--limit 500`.

@@ -38,6 +38,9 @@ internal sealed class Options
     /// <summary>With <c>ax</c>, also writes every paired and unpaired node, side by side, to <c>dump/</c>.</summary>
     public bool Dump { get; private set; }
 
+    /// <summary>With <c>ax</c>, only the captures whose sha256 starts with one of these prefixes (comma separated on the command line); null for all.</summary>
+    public string[]? Pages { get; private set; }
+
     /// <summary>The <c>ax</c> command's rendered-facts mode: <c>on</c>, <c>off</c> or <c>both</c>.</summary>
     public string Facts { get; private set; } = "both";
 
@@ -74,7 +77,7 @@ internal sealed class Options
                 continue;
             }
 
-            if (i + 1 >= args.Length || !int.TryParse(args[i + 1], NumberStyles.None, CultureInfo.InvariantCulture, out int n) && a is not ("--out" or "--corpus" or "--facts" or "--only"))
+            if (i + 1 >= args.Length || !int.TryParse(args[i + 1], NumberStyles.None, CultureInfo.InvariantCulture, out int n) && a is not ("--out" or "--corpus" or "--facts" or "--only" or "--pages"))
             {
                 return null;
             }
@@ -99,6 +102,7 @@ internal sealed class Options
                     }
 
                     break;
+                case "--pages": o.Pages = args[++i].Split(',', StringSplitOptions.RemoveEmptyEntries); break;
                 case "--jobs": o.Jobs = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--limit": o.Limit = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--timeout": o.TimeoutSeconds = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
@@ -126,7 +130,7 @@ internal sealed class Options
           axe: the positional argument is the capture directory; --corpus, --facts as for ax; --max-seconds <n> stops starting captures after n seconds (resume by running again),
             --fresh redoes every capture
           ax: the positional argument is the capture directory; --corpus <dir> supplies stylesheets (a corpus version or a directory of
-          pages), --facts on|off|both (default both), --dump (also write dump/<sha>-<viewport>.txt)
+          pages), --facts on|off|both (default both), --pages <sha256 prefix,...>, --dump (also write dump/<sha>-<viewport>.txt)
         """;
 }
 

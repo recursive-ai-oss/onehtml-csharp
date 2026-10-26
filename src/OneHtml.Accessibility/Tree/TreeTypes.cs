@@ -258,6 +258,9 @@ public sealed class AxStates
     /// <summary><c>aria-invalid</c>: <c>true</c>, <c>grammar</c> or <c>spelling</c>; null when absent or false.</summary>
     public string? Invalid { get; internal set; }
 
+    /// <summary>True when the element fails the constraint validation Chromium reports as invalid (see the Chromium profile); separate from <see cref="Invalid"/>, which is only what <c>aria-invalid</c> says.</summary>
+    internal bool ConstraintInvalid { get; set; }
+
     /// <summary>Read-only.</summary>
     public bool ReadOnly { get; internal set; }
 

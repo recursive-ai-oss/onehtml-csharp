@@ -107,6 +107,12 @@ internal sealed class HiddenMap
                 }
             }
 
+            if (n.Namespace == ElementNamespace.Html && n.LocalName == "noscript" && (own & NotRenderedMask) == 0)
+            {
+                // HTML section 15.3.1: noscript is display: none when scripting is enabled, as it is in a browser (profile entry noscript-not-rendered).
+                own |= HiddenReasons.DisplayNone;
+            }
+
             if ((own & NotRenderedMask) == 0 && (inherited & NotRenderedMask) == 0 && NoBoxDespiteStyle(n, style))
             {
                 // Profile entry layout-hidden: the capture says the element has no box although the cascade renders it.

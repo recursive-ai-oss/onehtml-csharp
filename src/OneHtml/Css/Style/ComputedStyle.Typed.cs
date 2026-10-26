@@ -48,8 +48,28 @@ public sealed partial class ComputedStyle
 
     private ColorParseOptions ColorOptions => Engine.ColorOptions;
 
-    /// <summary>The element's <c>display</c>. Defaults to <c>inline</c> if the stored value does not parse.</summary>
-    public DisplayValue Display => Parse<DisplayValue>(PropertyIds.Display, KDisplay, DisplayValue.TryParse, default, "inline");
+    /// <summary>
+    /// The element's computed <c>display</c>: the declared value, blockified as CSS Display 3 section 2.7 requires for an element that is
+    /// absolutely positioned or floated. (Children of flex and grid containers are blockified by the specification too; the accessible
+    /// name computation does not treat them as block-level, as Chrome's output shows, so this property leaves them alone.) Defaults to
+    /// <c>inline</c> if the stored value does not parse.
+    /// </summary>
+    public DisplayValue Display
+    {
+        get
+        {
+            DisplayValue d = Parse<DisplayValue>(PropertyIds.Display, KDisplay, DisplayValue.TryParse, default, "inline");
+            if (d.Kind == DisplayKind.Box && d.Outside != DisplayOutside.Block || d.Kind == DisplayKind.Internal)
+            {
+                if (Position is PositionValue.Absolute or PositionValue.Fixed || GetPropertyValue("float") is { } fl && fl.Length > 0 && fl != "none")
+                {
+                    return d.Blockified();
+                }
+            }
+
+            return d;
+        }
+    }
 
     /// <summary>The element's <c>visibility</c>.</summary>
     public VisibilityValue Visibility => Parse<VisibilityValue>(PropertyIds.Visibility, KVisibility, TypedProperties.TryParseVisibility, default, "visible");

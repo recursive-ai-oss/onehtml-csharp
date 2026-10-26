@@ -61,9 +61,11 @@ internal sealed class TreeBuilder
         _plan?.Prepare(_hidden, _roles, _owns, _opt.MaxIdReferences, _ct);
         ComputeNodes();
         ResolveSvgRoots();
+        ResolveLabelFor();
         _tree.UsedCounters = _counters.Walked;
         ComputeFocusOrder();
         ComputeChromiumFocusableOptions();
+        MarkAutofocus();
         ComputeListItemLevels();
         ComputePositions();
         CheckContextAndOwned();
@@ -169,30 +171,20 @@ internal sealed class TreeBuilder
     private string? _baseUrl;
     private bool _baseUrlKnown;
 
-    /// <summary>The URL a link or image refers to: <paramref name="value"/> resolved against the base URL when there is one.</summary>
+    /// <summary>The URL a link or image refers to: <paramref name="value"/> resolved against the base URL when there is one (profile entry url-serialization).</summary>
     private string ResolveUrl(string value)
     {
         if (!_baseUrlKnown)
         {
             _baseUrlKnown = true;
-            if (_opt.BaseUrl is { Length: > 0 } b && Uri.TryCreate(b, UriKind.Absolute, out Uri? baseUri))
+            if (_opt.BaseUrl is { Length: > 0 } b)
             {
                 Node baseEl = _doc.Root.QuerySelector("base[href]");
-                if (!baseEl.IsNull && Uri.TryCreate(baseUri, baseEl.GetAttribute("href"), out Uri? withBase))
-                {
-                    baseUri = withBase;
-                }
-
-                _baseUrl = baseUri.AbsoluteUri;
+                _baseUrl = baseEl.IsNull ? b : UrlResolver.Resolve(b, baseEl.GetAttribute("href") ?? string.Empty);
             }
         }
 
-        if (_baseUrl is not null && Uri.TryCreate(new Uri(_baseUrl), TreeText.Trim(value), out Uri? resolved))
-        {
-            return resolved.AbsoluteUri;
-        }
-
-        return value;
+        return UrlResolver.Resolve(_baseUrl, value);
     }
 
     private static bool IsLeafControl(Node el) =>
@@ -465,6 +457,55 @@ internal sealed class TreeBuilder
         }
     }
 
+    /// <summary>
+    /// Profile entry label-for: a label that holds nothing but text and labels a checkbox or a radio button is ignored (reason labelFor) and
+    /// so is its text, because the control's name already carries the text.
+    /// </summary>
+    private void ResolveLabelFor()
+    {
+        foreach (AxNode n in _tree.Nodes)
+        {
+            if (n.Kind != AxNodeKind.Element || n.IsIgnored || n.Role is not ("checkbox" or "radio") || n.NativeLabels.Count == 0 || n.DomNode.LocalName != "input")
+            {
+                continue;
+            }
+
+            foreach (Node label in n.NativeLabels)
+            {
+                if (_byDom[label.Index] is not { } l || l.IsIgnored || l.InternalRole != "LabelText" || !HoldsOnlyText(l))
+                {
+                    continue;
+                }
+
+                l.IsIgnored = true;
+                l.IgnoredReasons = ["labelFor"];
+                foreach (AxNode c in l.Children)
+                {
+                    c.IsIgnored = true;
+                    c.IgnoredReasons = ["presentationalRole"];
+                }
+            }
+        }
+    }
+
+    private static bool HoldsOnlyText(AxNode label)
+    {
+        if (label.Children.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (AxNode c in label.Children)
+        {
+            if (c.Kind != AxNodeKind.Text || c.IsIgnored)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static bool HasExposedContent(AxNode root)
     {
         var stack = new Stack<AxNode>();
@@ -524,7 +565,9 @@ internal sealed class TreeBuilder
     {
         n.Role = "StaticText";
         n.Hidden = _hidden.Get(n.DomNode);
-        string text = TreeText.Collapse(n.DomNode.Data);
+        // The static text is the rendered text, so text-transform applies (profile entry text-transform-static-text).
+        string transform = n.DomNode.Parent.IsElement ? _styles.GetStyle(n.DomNode.Parent).GetPropertyValue("text-transform") : string.Empty;
+        string text = TreeText.ApplyTextTransform(TreeText.Collapse(n.DomNode.Data), transform);
         // Collapsed white space keeps one space at an end only where an inline neighbour follows or precedes.
         ReadOnlySpan<char> d = n.DomNode.Data;
         bool startSpace = d.Length > 0 && TreeText.IsWs(d[0]);
@@ -572,6 +615,8 @@ internal sealed class TreeBuilder
 
         if ((h.Reasons & HiddenReasons.AriaHidden) != 0)
         {
+            // An element that has aria-hidden=true itself is ariaHiddenElement even when an ancestor is aria-hidden too (Chrome 156 output on
+            // 104 of the 2,901 own aria-hidden nodes in 400 corpus pages were nested, and none was the subtree); the rest is the subtree.
             bool own = n.Kind == AxNodeKind.Element && _hidden.Own(n.DomNode.Index).HasFlag(HiddenReasons.AriaHidden);
             reasons.Add(own ? "ariaHiddenElement" : "ariaHiddenSubtree");
         }
@@ -588,8 +633,42 @@ internal sealed class TreeBuilder
         Node el = n.DomNode;
         NodeRole nr = _roles[el];
         AriaRole? role = nr.Role;
+        RoleOrigin origin = nr.Origin;
+        bool presentationalTableRow = false;
+        if (origin == RoleOrigin.InheritedPresentational && el.Namespace == ElementNamespace.Html)
+        {
+            // Inside a table whose role is none, Chromium exposes each cell as a generic and leaves the rows and row groups out as
+            // uninteresting, where WAI-ARIA 5.2.7 would make all of them presentational (profile entry presentational-table).
+            if (el.LocalName is "td" or "th")
+            {
+                role = AriaTaxonomy.FindRole("generic");
+                origin = RoleOrigin.Implicit;
+            }
+            else if (el.LocalName is "tr" or "tbody" or "thead" or "tfoot")
+            {
+                presentationalTableRow = true;
+            }
+        }
+
+        if (origin == RoleOrigin.ChildrenPresentational)
+        {
+            // Chromium does not make the descendants of a button, tab or image role presentational: an svg, heading or span inside a button
+            // keeps its own role (profile entry children-presentational).
+            role = nr.ExplicitRole ?? nr.ImplicitRole;
+            origin = nr.ExplicitRole is not null ? RoleOrigin.Explicit : role is null ? RoleOrigin.None : RoleOrigin.Implicit;
+        }
+
+        if (origin == RoleOrigin.Implicit && role is { Name: "listitem" or "generic" } && el.Namespace == ElementNamespace.Html && el.LocalName == "li"
+            && el.ParentElement is { IsNull: false } listParent && listParent.Namespace == ElementNamespace.Html && listParent.LocalName is "ul" or "ol" or "menu"
+            && _roles[listParent].ExplicitRole is { Name: not ("list" or "none" or "presentation" or "generic") })
+        {
+            // An li whose list element was given another role (menu, menubar, tablist) is not a list item: Chromium ignores it as presentational
+            // (profile entry list-item-in-widget).
+            role = AriaTaxonomy.FindRole("none");
+        }
+
         n.AriaRole = role;
-        n.RoleOrigin = nr.Origin;
+        n.RoleOrigin = origin;
         n.Role = role is null ? string.Empty : RoleComputer.ComputedRoleName(role);
         n.Hidden = _hidden.Get(el);
         n.AriaDisabledChain = n.Parent is { Kind: AxNodeKind.Element } p && (p.AriaDisabledChain || TreeText.EqualsIgnoreCase(p.DomNode.GetAttribute("aria-disabled"), "true"));
@@ -607,7 +686,23 @@ internal sealed class TreeBuilder
             n.Description = reusedDescription;
         }
 
-        n.States = StateBuilder.Build(el, role, nr.IsDisabled, n.AriaDisabledChain, () => NameComputer.SelectedOptionsText(el));
+        if (n.Name.Source == AxTextSource.Title && role is { Name: "generic" } && el.Namespace == ElementNamespace.Html)
+        {
+            // Chromium does not name a generic container from its title: the title is its description (profile entry generic-title).
+            if (n.Description.IsEmpty)
+            {
+                n.Description = new AxText(n.Name.Value, AxTextSource.Title, "title", []);
+            }
+
+            n.Name = AxText.Empty;
+        }
+        else if (n.Description.Source == AxTextSource.Title && n.Name.Source == AxTextSource.Contents && string.Equals(n.Description.Value, n.Name.Value, StringComparison.Ordinal) && !HasImageContent(el))
+        {
+            // A title that repeats a name made of text alone is not also the description (profile entry description-repeats-name).
+            n.Description = AxText.Empty;
+        }
+
+        n.States = StateBuilder.Build(el, role, nr.IsDisabled, n.AriaDisabledChain, () => NameComputer.SelectedOptionsText(el), OptionSelected);
         n.Relations = BuildRelations(n);
         if (n.States.Url is { } rawUrl)
         {
@@ -621,23 +716,91 @@ internal sealed class TreeBuilder
             AddDiagnostic(n, new AxDiagnostic(AxDiagnosticKind.Role, el, d.Attribute, d.Value, d.Message, d.Kind));
         }
 
-        n.InternalRole = InternalRoleOf(el, role, nr.Origin, IsFirstSummary(el)) ?? LayoutTableRole(el, nr);
+        n.InternalRole = InternalRoleOf(el, role, origin, IsFirstSummary(el)) ?? LayoutTableRole(el, role, origin) ?? ProfileRole(n, el, role, origin);
+        if (el.Namespace == ElementNamespace.Html && LabelIndex.IsLabelable(el))
+        {
+            n.NativeLabels = _names.LabelsOf(el);
+        }
         ComputeIgnored(n, nr);
+        if (presentationalTableRow && n.IgnoredReasons.Count == 1 && n.IgnoredReasons[0] == "presentationalRole")
+        {
+            n.IgnoredReasons = ["uninteresting"];
+        }
+    }
+
+    private readonly Dictionary<int, int> _selectedOption = [];
+
+    /// <summary>
+    /// HTML section 4.10.7 selectedness of an option of a select: for a multiple select its selected attribute; for a single-choice one the
+    /// last option with the attribute, else, when the select shows one row, the first option that is not disabled. Null when the option
+    /// belongs to no select (a datalist).
+    /// </summary>
+    private bool? OptionSelected(Node option)
+    {
+        Node select = option.ParentElement;
+        if (!select.IsNull && select.Namespace == ElementNamespace.Html && select.LocalName == "optgroup")
+        {
+            select = select.ParentElement;
+        }
+
+        if (select.IsNull || select.Namespace != ElementNamespace.Html || select.LocalName != "select")
+        {
+            return null;
+        }
+
+        if (select.HasAttribute("multiple"))
+        {
+            return option.HasAttribute("selected");
+        }
+
+        if (!_selectedOption.TryGetValue(select.Index, out int chosen))
+        {
+            chosen = -1;
+            int firstEnabled = -1;
+            int visited = 0;
+            for (Node d = select.NextInDocumentOrder(select); !d.IsNull && visited++ < 100_000; d = d.NextInDocumentOrder(select))
+            {
+                if (!d.IsElement || d.Namespace != ElementNamespace.Html || d.LocalName != "option")
+                {
+                    continue;
+                }
+
+                if (d.HasAttribute("selected"))
+                {
+                    chosen = d.Index;
+                }
+
+                if (firstEnabled < 0 && !d.HasAttribute("disabled") && !(d.ParentElement is { IsNull: false } g && g.LocalName == "optgroup" && g.HasAttribute("disabled")))
+                {
+                    firstEnabled = d.Index;
+                }
+            }
+
+            bool oneRow = !(select.GetAttribute("size") is { } sz && int.TryParse(sz, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int rows) && rows > 1);
+            if (chosen < 0 && oneRow)
+            {
+                chosen = firstEnabled;
+            }
+
+            _selectedOption[select.Index] = chosen;
+        }
+
+        return chosen == option.Index;
     }
 
     /// <summary>
     /// With rendered facts, the internal role Chromium gives a table it judges to be for layout, and its rows and cells (profile entry
     /// <c>layout-table</c>); null otherwise. Only elements whose role is the implicit one of the HTML table, row or cell qualify.
     /// </summary>
-    private string? LayoutTableRole(Node el, NodeRole nr)
+    private string? LayoutTableRole(Node el, AriaRole? role, RoleOrigin origin)
     {
-        if (_layout is null || nr.Origin != RoleOrigin.Implicit || nr.Role is null || el.Namespace != ElementNamespace.Html)
+        if (_layout is null || origin != RoleOrigin.Implicit || role is null || el.Namespace != ElementNamespace.Html)
         {
             return null;
         }
 
         // A generic element laid out as a CSS table, row or cell.
-        if (nr.Role.Name == "generic")
+        if (role.Name == "generic")
         {
             return _layout.CssTableKind(el);
         }
@@ -738,6 +901,57 @@ internal sealed class TreeBuilder
         }
     }
 
+    /// <summary>True when the element's contents include an image, an SVG or an image button (looked at up to a bounded number of nodes).</summary>
+    private static bool HasImageContent(Node el)
+    {
+        int budget = 500;
+        for (Node d = el.NextInDocumentOrder(el); !d.IsNull && budget-- > 0; d = d.NextInDocumentOrder(el))
+        {
+            if (d.IsElement && (d.LocalName is "img" or "svg" or "area" || d.LocalName == "input" && HtmlSemantics.GetInputType(d) == HtmlInputType.Image))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Roles Chromium exposes in place of the HTML-AAM mapping (profile entries <c>description-list-role</c>, <c>figcaption-role</c>,
+    /// <c>orphan-list-item</c>, <c>aside-in-sectioning</c>); null when the mapping stands.
+    /// </summary>
+    private static string? ProfileRole(AxNode n, Node el, AriaRole? role, RoleOrigin origin)
+    {
+        if (origin != RoleOrigin.Implicit || role is null || el.Namespace != ElementNamespace.Html)
+        {
+            return null;
+        }
+
+        switch (el.LocalName)
+        {
+            case "dl" when role.Name == "list":
+                return "DescriptionList";
+            case "figcaption" when role.Name == "caption":
+                return "Figcaption";
+            case "li" when role.Name == "generic":
+                return "listitem";
+            case "aside" when role.Name == "complementary" && n.Name.IsEmpty:
+                // An unnamed aside nested in sectioning content or in another complementary landmark is not a landmark of its own.
+                for (Node p = el.ParentElement; !p.IsNull; p = p.ParentElement)
+                {
+                    if (p.Namespace == ElementNamespace.Html && p.LocalName is "article" or "aside" or "nav" or "section"
+                        || TreeText.EqualsIgnoreCase(p.GetAttribute("role"), "complementary"))
+                    {
+                        return "generic";
+                    }
+                }
+
+                return null;
+            default:
+                return null;
+        }
+    }
+
     private static int? TabIndexOf(Node el)
     {
         string? v = el.GetAttribute("tabindex");
@@ -765,7 +979,9 @@ internal sealed class TreeBuilder
             if (n.InternalRole is null)
             {
                 // SVG's foreignObject only hosts HTML content (profile entry foreign-object).
-                reasons.Add(n.DomNode.Namespace == ElementNamespace.Svg && n.DomNode.LocalName == "foreignObject" ? "presentationalRole" : "uninteresting");
+                // Chrome 156 lists a wbr as ignored with the reason notRendered (5,021 nodes on 8 corpus pages; profile entry wbr-not-rendered).
+                reasons.Add(n.DomNode.Namespace == ElementNamespace.Svg && n.DomNode.LocalName == "foreignObject" ? "presentationalRole"
+                    : n.DomNode.Namespace == ElementNamespace.Html && n.DomNode.LocalName == "wbr" ? "notRendered" : "uninteresting");
             }
         }
         else if (role.Name == "generic" && IsRootWrapper(n.DomNode) && !(_layout is not null && n.DomNode.LocalName is "b" or "i" or "body" && _layout.HasBox(n.DomNode)))
@@ -948,6 +1164,19 @@ internal sealed class TreeBuilder
         _ => null,
     };
 
+    /// <summary>The first element with an autofocus attribute that is focusable and exposed has focus after load (HTML section 6.6.4, flush autofocus candidates).</summary>
+    private void MarkAutofocus()
+    {
+        foreach (AxNode n in _domOrder)
+        {
+            if (n.Kind == AxNodeKind.Element && !n.IsIgnored && n.Focus.IsFocusable && n.DomNode.HasAttribute("autofocus"))
+            {
+                n.IsAutofocus = true;
+                return;
+            }
+        }
+    }
+
     /// <summary>
     /// Chromium reports the options of a select as focusable although they are not stops in the sequential order (profile entry
     /// option-focusable). The focus order has already been computed, so this changes only <see cref="AxFocus.IsFocusable"/>.
@@ -972,24 +1201,22 @@ internal sealed class TreeBuilder
     {
         foreach (AxNode n in _domOrder)
         {
-            if (n.Kind != AxNodeKind.Element || n.Role != "listitem" || n.States.Level is not null)
+            if (n.Kind != AxNodeKind.Element || !(n.Role == "listitem" || n.InternalRole == "listitem") || n.States.Level is not null)
             {
                 continue;
             }
 
+            // A description list is not a list for the level (it is DescriptionList in Chromium), and an item outside any list is level 1.
             int depth = 0;
             for (AxNode? p = n.Parent; p is not null; p = p.Parent)
             {
-                if (p.Role == "list")
+                if (p.Role == "list" && p.InternalRole is null)
                 {
                     depth++;
                 }
             }
 
-            if (depth > 0)
-            {
-                n.States.Level = depth;
-            }
+            n.States.Level = Math.Max(1, depth);
         }
     }
 

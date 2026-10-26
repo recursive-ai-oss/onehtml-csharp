@@ -53,11 +53,12 @@ internal static class ChromeAxExport
         w.WriteStartObject();
         w.WriteString("nodeId", Id(n));
         w.WriteBoolean("ignored", n.IsIgnored);
-        if (n.IsIgnored && n.IgnoredReasons.Count > 0)
+        IReadOnlyList<string> exportReasons = n.IsIgnored ? ExportReasons(n) : [];
+        if (n.IsIgnored && exportReasons.Count > 0)
         {
             w.WritePropertyName("ignoredReasons");
             w.WriteStartArray();
-            foreach (string reason in n.IgnoredReasons)
+            foreach (string reason in exportReasons)
             {
                 w.WriteStartObject();
                 w.WriteString("name", reason);
@@ -117,6 +118,42 @@ internal static class ChromeAxExport
         }
 
         w.WriteEndObject();
+    }
+
+    private static readonly string[] ReasonOrder =
+    [
+        "notRendered", "ariaHiddenElement", "ariaHiddenSubtree", "inertElement", "inertSubtree", "notVisible", "emptyAlt", "labelFor", "presentationalRole", "uninteresting",
+    ];
+
+    /// <summary>
+    /// The ignored reasons the way Chromium reports them (profile entry ignored-reasons): one reason, the first that applies in the order
+    /// not rendered, aria-hidden, inert, not visible, empty alt, presentational, uninteresting; an <c>img</c> whose role is none because its
+    /// <c>alt</c> is empty is <c>emptyAlt</c>.
+    /// </summary>
+    private static IReadOnlyList<string> ExportReasons(AxNode n)
+    {
+        if (n.IgnoredReasons.Count == 0)
+        {
+            return n.IgnoredReasons;
+        }
+
+        var set = new List<string>(n.IgnoredReasons);
+        if (set.Contains("presentationalRole") && n.Kind == AxNodeKind.Element && n.DomNode.Namespace == ElementNamespace.Html && n.DomNode.LocalName == "img"
+            && n.RoleOrigin == Aria.RoleOrigin.Implicit && n.DomNode.GetAttribute("alt") is { Length: 0 })
+        {
+            set.Remove("presentationalRole");
+            set.Add("emptyAlt");
+        }
+
+        foreach (string reason in ReasonOrder)
+        {
+            if (set.Contains(reason))
+            {
+                return [reason];
+            }
+        }
+
+        return [set[0]];
     }
 
     private static (string Type, string Value) ExportRole(AxNode n)
@@ -294,14 +331,23 @@ internal static class ChromeAxExport
             Prop(w, "editable", x => WriteValue(x, "token", ed));
         }
 
-        if (n.Focus.IsFocusable)
+        if (n.Focus.IsFocusable && n.InternalRole != "Iframe")
         {
             Prop(w, "focusable", x => WriteValue(x, "booleanOrUndefined", true));
+        }
+
+        if (n.IsAutofocus)
+        {
+            Prop(w, "focused", x => WriteValue(x, "booleanOrUndefined", true));
         }
 
         if (s.Invalid is { } inv)
         {
             Prop(w, "invalid", x => WriteValue(x, "token", inv));
+        }
+        else if (s.ConstraintInvalid)
+        {
+            Prop(w, "invalid", x => WriteValue(x, "token", "true"));
         }
 
         if (s.KeyShortcuts is { } ks)
@@ -364,7 +410,7 @@ internal static class ChromeAxExport
             Prop(w, "readonly", x => WriteValue(x, "boolean", true));
         }
 
-        if (s.Required)
+        if (s.Required && ExposesRequired(n))
         {
             Prop(w, "required", x => WriteValue(x, "boolean", true));
         }
@@ -419,17 +465,22 @@ internal static class ChromeAxExport
             Prop(w, "setsize", x => WriteValue(x, "integer", size));
         }
 
-        if (n.GetRelation(AxRelationKind.LabelledBy) is null && n.Name.Source == AxTextSource.NativeLabelElement && n.Name.RelatedElements.Count > 0 && n.Name.RelatedElements[0].Namespace == ElementNamespace.Html)
+        if (n.GetRelation(AxRelationKind.LabelledBy) is null && n.Name.Source == AxTextSource.NativeLabelElement && n.Name.RelatedElements.Count > 0)
         {
-            // A label, caption or legend that names the node is reported as a labelledby relation (profile entry export-native-labelledby).
-            Prop(w, "labelledby", x => WriteRelated(x, "idrefList", n.Name.RelatedElements));
+            // A label, caption or legend that names the node is reported as a labelledby relation, with every label of a labelable control;
+            // a figcaption naming an img is not (profile entry export-native-labelledby).
+            List<Node> labels = n.NativeLabels.Count > 0 ? [.. n.NativeLabels] : [.. n.Name.RelatedElements];
+            if (labels[0].Namespace == ElementNamespace.Html && labels[0].LocalName is "caption" or "legend" or "label")
+            {
+                Prop(w, "labelledby", x => WriteRelated(x, "idrefList", labels));
+            }
         }
 
         foreach ((AxRelationKind kind, string name) in RelationNames)
         {
-            if (n.GetRelation(kind) is { } rel && rel.Elements.Count > 0)
+            if (n.GetRelation(kind) is { } rel && ReportedTargets(rel, kind) is { Count: > 0 } targets)
             {
-                Prop(w, name, x => WriteRelated(x, kind is AxRelationKind.Owns or AxRelationKind.Controls or AxRelationKind.DescribedBy or AxRelationKind.FlowTo or AxRelationKind.LabelledBy ? "idrefList" : "idref", rel.Elements));
+                Prop(w, name, x => WriteRelated(x, kind is AxRelationKind.Owns or AxRelationKind.Controls or AxRelationKind.DescribedBy or AxRelationKind.FlowTo or AxRelationKind.LabelledBy ? "idrefList" : "idref", targets));
             }
         }
 
@@ -437,6 +488,50 @@ internal static class ChromeAxExport
         {
             Prop(w, "url", x => WriteValue(x, "string", url));
         }
+    }
+
+    /// <summary>
+    /// The targets of a relation as Chromium reports them. Controls, details, error message, flow-to and active descendant name only
+    /// nodes that are exposed in the tree; labelledby, describedby and owns name every element the attribute resolves to, whether or not it is
+    /// rendered, because Chromium makes a node for it to compute the name (profile entry relation-targets).
+    /// </summary>
+    private static List<Node> ReportedTargets(AxRelation rel, AxRelationKind kind)
+    {
+        if (kind is AxRelationKind.LabelledBy or AxRelationKind.DescribedBy or AxRelationKind.Owns)
+        {
+            return [.. rel.Elements];
+        }
+
+        var result = new List<Node>();
+        foreach (AxNode t in rel.Targets)
+        {
+            if (!t.IsIgnored)
+            {
+                result.Add(t.DomNode);
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Chromium states <c>required</c> on text fields, spin buttons, and the other roles that take it, but not on a search box, a native
+    /// select, a checkbox, a radio button, a date field or a button, although <c>aria-required</c> or the <c>required</c> attribute is there
+    /// (profile entry required-exposure).
+    /// </summary>
+    private static bool ExposesRequired(AxNode n)
+    {
+        if (n.InternalRole is not null)
+        {
+            return false;
+        }
+
+        if (n.DomNode.Namespace == ElementNamespace.Html && n.DomNode.LocalName == "select")
+        {
+            return false;
+        }
+
+        return n.Role is "textbox" or "spinbutton" or "combobox" or "listbox" or "radiogroup" or "tree" or "treegrid" or "grid";
     }
 
     private static readonly (AxRelationKind, string)[] RelationNames =

@@ -65,6 +65,8 @@ Everything that makes the two sides spelled differently without a difference in 
 - **White space.** Runs of ASCII white space (space, tab, line feed, form feed, carriage return) in names, descriptions and `valuetext` collapse to one space and the ends are trimmed. A no-break space stays.
 - **Flags.** `false` and absent are the same for `focusable`, `focused`, `disabled`, `required`, `readonly`, `modal`, `multiselectable`, `multiline` and `busy`; `invalid=false` is absent; an empty `valuetext`, `roledescription`, `keyshortcuts`, `autocomplete` or `relevant` is absent. Chrome reports these flags as `false` where the role supports them and we leave them out. `expanded`, `selected`, `checked` and `pressed` are not touched: absent means the role does not have the state, `false` means it is off.
 - **Numbers.** Property numbers are compared in their shortest round-trip spelling (`1` and `1.0`). The `value` of a `meter`, `progressbar`, `slider`, `spinbutton` or `scrollbar` is compared as a 32-bit float, because Chrome stores these as single-precision floats and reports them widened (`0.6` arrives as `0.6000000238418579`). Other values compare as written.
+- **Value and flags added by the last round.** An empty `value` is absent; `atomic=false` is absent; `busy` as `1` is `true`.
+- **Parents.** `parent` and `exposedParent` are compared through the nearest ancestor that has a counterpart on the other side, so an unpaired ignored node is not counted twice.
 - **Role of ignored nodes.** Both sides call an ignored node `none`; its role is not compared.
 - **Name source of static text** is `text` on both sides.
 - **Names and descriptions of ignored nodes** are not compared (neither side has them).
@@ -102,42 +104,74 @@ Written to `--out`; nothing in it should be copied into the repository except re
 The command takes the worker's shared-job lock like the other corpus commands and exits with status 3 at once if it is held:
 
 ```
-bash tools/OneHtml.Differential/run-worker.sh ax ~/onehtml/capture-out/<version> ~/onehtml/out/ax --corpus ~/onehtml/corpus/<version> --jobs 8
+bash tools/OneHtml.Differential/run-worker.sh ax ~/onehtml/capture-out/<version> ~/onehtml/out/ax --corpus ~/onehtml/corpus/<version> --facts both --jobs 8
 ```
+
+`--limit N` takes the first N captures by hash and `--pages <sha256 prefix,...>` selects pages; `--dump` writes a per-node listing of the selected pages.
 
 ## Results with and without rendered facts
 
-Chrome for Testing 156.0.8078.47 (protocol 1.3), headless, 1280x800, page script off; .NET 10 runtime; run with `--facts both --jobs 2` on an AMD Ryzen 9 7950X3D worker (32 threads), about 90 seconds per 2,100 pages. Sample C is 2,133 corpus captures (every 6th by hash, starting at the 1st) and sample D is 2,129 others (every 6th, starting at the 4th); the rules in the `layout-*` entries were fitted on about 640 other captures and, for the table rule, on the tables of 6,000 pages that overlap C and D, so the rates are not a clean held-out test of the table rule. The fixtures are the 16 hand-written pages of `testdata/rendered/pages` (the earlier ones plus `layout.html` and `svgprobe.html`). Rates are mismatching nodes over the times the field was compared; the node counts are in the report. The full capture set of 12,750 pages has not been run with this version.
+Chrome for Testing 156.0.8078.47 (protocol 1.3), headless, 1280x800, page script off; .NET 10 on the AMD Ryzen 9 7950X3D worker (32 threads), `--facts both --jobs 2 --limit 2100`, about 125 seconds. The sample is the first 2,100 captures by hash: 2,095 compared (1,840,086 Chrome nodes, 1,954,001 of ours, 1,759,749 matched, 264,876 of them by the anonymous-node rule) and 5 refused (a custom element whose shadow root the snapshot omits, and two whose text differs in line breaks). Rates are mismatching nodes over the times the field was compared, with the number of nodes in brackets. "Before" is the same pages with the tree as it stood before this round of fixes (facts on). Fields that never differ are left out; the run's `summary.md` has all of them.
 
-| field | C without | C with | D without | D with | fixtures without | fixtures with |
-|---|---:|---:|---:|---:|---:|---:|
-| ignored | 14.0% | 0.66% | 15.7% | 0.76% | 2.9% | 2.8% |
-| hidden | 0.17% | 0.13% | 0.19% | 0.16% | 0% | 0% |
-| ignoredReasons | 16.7% | 4.0% | 19.1% | 3.9% | 4.8% | 4.3% |
-| role | 0.63% | 0.20% | 0.64% | 0.17% | 3.6% | 0% |
-| name | 4.9% | 4.4% | 4.7% | 4.2% | 0.6% | 0.5% |
-| parent | 9.8% | 2.0% | 9.6% | 2.0% | 2.7% | 1.7% |
-| exposedParent | 31.3% | 1.0% | 29.9% | 1.1% | 3.6% | 2.6% |
-| chromeOnly | 10.3% | 1.9% | 10.6% | 2.0% | 8.8% | 7.0% |
-| oursOnly | 7.4% | 0.48% | 7.4% | 0.52% | 0.3% | 0.3% |
-| prop.focusable | 0.17% | 0.17% | 0.16% | 0.16% | 6.3% | 6.3% |
-| prop.level | 0.28% | 0.24% | 0.55% | 0.53% | 0% | 0% |
+| field | before (facts) | without facts | with facts |
+|---|---:|---:|---:|
+| ignored | 0.665% | 13.282% (199313) | 0.291% (5114) |
+| hidden | 0.375% | 0.088% (1323) | 0.06% (1053) |
+| ignoredReasons | 5.37% | 1.681% (1380) | 0.124% (491) |
+| role | 0.218% | 0.485% (5914) | 0.089% (1216) |
+| name | 1.53% | 0.658% (8027) | 0.591% (8027) |
+| nameSource | 0.0063% | 0.014% (102) | 0.012% (102) |
+| description | 1.05% | 0.151% (1836) | 0.135% (1836) |
+| parent | 1.75% | 0.422% (6332) | 0.307% (5398) |
+| exposedParent | 0.81% | 23.642% (354777) | 0.389% (6851) |
+| chromeOnly | 1.86% | 11.866% (164933) | 1.979% (27510) |
+| oursOnly | 0.372% | 8.231% (126706) | 0.347% (4733) |
+| chromeOnlyIgnored | 11.6% | 38.774% (174511) | 11.737% (52827) |
+| oursOnlyIgnored | 32.3% | 79.548% (341912) | 32.173% (189519) |
+| prop.checked | 0.388% | 0.039% (2) | 0.039% (2) |
+| prop.disabled | 5.17% | 6.623% (20) | 6.931% (21) |
+| prop.editable | 1.13% | 0.028% (1) | 0.028% (1) |
+| prop.expanded | 0.637% | 0.096% (5) | 0.097% (5) |
+| prop.focusable | 0.136% | 0.02% (58) | 0.02% (58) |
+| prop.hasPopup | 64.7% | 0.635% (19) | 0.635% (19) |
+| prop.invalid | 94% | 32.836% (22) | 32.836% (22) |
+| prop.level | 0.538% | 0.011% (21) | 0.011% (22) |
+| prop.posinset | 100% | 100% (28) | 100% (28) |
+| prop.readonly | 17.9% | 17.949% (7) | 17.949% (7) |
+| prop.roledescription | 5.07% | 5.069% (11) | 5.069% (11) |
+| prop.selected | 1.85% | 0.377% (58) | 0.377% (58) |
+| prop.setsize | 100% | 100% (28) | 100% (28) |
+| prop.url | 3.04% | 1.061% (2832) | 1.061% (2832) |
+| prop.valuemax | 2.57% | 2.572% (8) | 2.572% (8) |
+| prop.valuemin | 1.93% | 1.929% (6) | 1.929% (6) |
+| prop.valuetext | 9.57% | 9.565% (11) | 9.565% (11) |
 
-No field is worse with facts. The facts-free role rate also falls (about 1.7% to 0.6% on the earlier sample) because `svg` and the non-landmark `header` and `footer` now take Chrome's roles without facts (profile entries `svg-root-role`, `section-header-footer`). What is left:
+Without facts the tree cannot know what Chrome did not draw, so `ignored`, `exposedParent`, `chromeOnly` and `oursOnly` are high; with facts they are the figures above. No field is worse with facts than without by more than a few nodes (`prop.disabled` 20 to 21 nodes).
 
-| Class | Verdict |
-|---|---|
-| `oursOnlyIgnored`: `visibility: hidden`, `aria-hidden` and plain inline or block containers | **Representation.** We keep ignored nodes that Chrome does not list at all (an exposed tree is the same without them). Plain inline containers Chrome ignores are no longer nodes of ours (profile entry `layout-generic-pruning`); the others stay. |
-| `chromeOnlyIgnored`: `notRendered`, `aria-hidden` subtree | **Representation.** Chrome lists nodes that are not rendered or hidden; ours have no node (not rendered) or are listed elsewhere. |
-| `chromeOnly`: `StaticText` | **Chrome**, unexplained for 614 drawn spaces between inline elements; the rest is generated content, `::before` and `::after` text, and text of user-agent shadow trees (form controls, `video`). Generated text boxes could supply the first; not done. |
-| `chromeOnly`: `generic` | **Needs the user-agent shadow tree**: the inner editor of a text field and the controls of `video` and `audio`. |
-| `role`: `cell`, `row`, `table` against `LayoutTableCell`, `LayoutTableRow`, `LayoutTable` | **Chrome**, partly open: the data-table versus layout-table rule (profile entry `layout-table`) now reads only a table's own cells (nested tables were being counted) and treats 20 or more rows as a data table. About 50 small tables of 4,500 with no evidence of any kind are still data tables in Chrome; a background colour on the first cell is the only feature that separates them, and weakly. |
-| `role`: `image` against `SvgRoot` | **Fixed, not layout dependent** (profile entry `svg-root-role`): Chrome gives an `svg` the role `image`, and `SvgRoot` only when something inside it is exposed. The `svgprobe` fixture separates the cases. |
-| `sectionheader`, `sectionfooter` | **Fixed, not layout dependent** (profile entry `section-header-footer`): a `header` or `footer` that is not a landmark is `sectionheader` or `sectionfooter`. |
-| `prop.focusable` on `iframe` | **Chrome** does not report an iframe as focusable (51 nodes). Unchanged. |
-| `parent`: options under `none` | **Chrome** puts an ignored node between the popup and the options of a select with option groups (3 nodes in `forms.html`). |
+### Classes
 
-Chrome's `getFullAXTree` carries no bounding box, off-screen state or scrollable property (none of 121,682 nodes on 120 corpus pages), so the export has none; clipped, zero-size and off-screen elements stay in the tree (the `overflow` and `positioned` fixtures).
+A class is a field plus a pattern (see "Output"). The run has 62 classes above 0.1% of their field's compared count (for the small property fields, above one node). Dispositions:
+
+| Class | Count | Disposition |
+|---|---:|---|
+| `oursOnlyIgnored`: `none` with `notVisible`, `notRendered`, `ariaHiddenSubtree`, `ariaHiddenElement`, `uninteresting`, `emptyAlt`, `presentationalRole` | about 190,000 nodes | **Representation, deliberate.** Our tree keeps every DOM node with its hidden and ignored reasons so that edits and diffs map back to the markup. Chrome omits nodes it has no use for. An ignored node is never part of the exposed tree, and the exposed trees agree (`exposedParent` 0.53%). Not fixed. |
+| `chromeOnlyIgnored`: `notRendered`, `ariaHiddenSubtree`, `uninteresting`, `presentationalRole`, `notVisible` and no reason | about 52,000 nodes | **Representation.** Chrome creates ignored nodes (the children of `display: none` and `aria-hidden` subtrees it needs for relations, the `uninteresting` wrappers that carry layout objects) that have no DOM node of ours or are folded into a parent. Ignored, so not exposed. |
+| `ignoredReasons` (491 nodes, 0.12%) | 491 | **Closed to near the threshold.** The rest is `uninteresting` against no reason on SVG graphics elements (profile entry `layout-generic-pruning` covers HTML only); Chrome gives `notRendered` to `title`, `desc` and some `path` elements and `stop` under `defs` and `uninteresting` to others, which depends on layout objects we do not model. |
+| `ignored`: Chrome `generic`, ours ignored `uninteresting` (2,026 on 329 pages) | 2,026 | **Open, layout heuristic.** An attribute-free `span` or `div` with text inside an `a`, `button` or flex item. Chrome keeps about 40 of each 1,000 such spans where we drop them; among attribute-free spans Chrome exposes mostly those whose computed display is `inline-block` (which our rule already keeps) and ignores block-level ones, so the residue depends on something the capture's styles do not show. Not traced further. |
+| `ignored`: Chrome `image`, ours ignored `emptyAlt` (362 on 81 pages) | 362 | **Deviation.** An `img` with `alt=""` and a `title` is an `image` in Chrome 156 (47 of 47 in 400 pages); HTML-AAM and WPT `html-aam/roles-contextual.html` (`el-img-empty-alt-title`) give it no role. Kept at the specification's answer. |
+| `hidden` (1,053 nodes, 0.06%) | 1,053 | **Below the threshold.** The `ariaHiddenElement` against `ariaHiddenSubtree` choice is fixed (an element with its own `aria-hidden=true` is the element even inside another, profile entry `ignored-reasons`); a `wbr` is `notRendered` (profile entry `wbr-not-rendered`). What is left is `notRendered` subtrees of `display: none` ancestors that Chrome lists. |
+| `parent`, `exposedParent` against `none` or `generic` parents | 5,400 and 9,300 | **Follows from the two ignored classes above**: the nearest paired ancestor differs when one side has an extra generic. |
+| `chromeOnly`: `generic` (11,206) and `StaticText` (10,271) | 21,500 | **Needs layout text boxes and user-agent shadow trees.** Chrome adds a `generic` between a link and its text or image, text for `::before` and `::after` generated content (a "×" in a button), separators, and the inner editor and controls of form controls and media. Generated text boxes could supply part of it; not done. |
+| `oursOnly`: `StaticText` (2,888), `generic` (1,495) | 4,400 | **Open.** Text nodes Chrome merges with a neighbour or leaves out under `li`; generics of ours it prunes. |
+| `name`: `link differs` (4,592 on 262 pages) | 7,800 | **Mostly spacing.** Chrome puts a space around text of boxes that are blocks in layout; the blockification of positioned and floated elements (profile entry `positioned-blockification`) removed the largest group. What is left is spacing around flex and grid items and inline-block content, which needs layout; Chrome also includes the text of some hidden elements. Documented, not fixed. |
+| `role` (1,216 nodes, 0.089%) | 1,216 | **Below the threshold.** What is left is `cell`, `row`, `table` against `LayoutTableCell`, `LayoutTableRow`, `LayoutTable` (the data-table rule of profile entry `layout-table`: small tables with no evidence of any kind that Chrome still treats as data tables) and a few `image` against `SvgRoot`. |
+| `description`, `nameSource` | 1,783 and 54 | Below 0.15% of the field; the remainder is the `name` classes. |
+| `prop.url`: `image` (400, one page) and `srcset` w-descriptor cases | 2,927 | **Deviation.** Chrome reports the image chosen from `srcset` and `picture` for its viewport and density; we state the `src`, because choosing needs the layout width. |
+| `prop.disabled`, `invalid`, `hasPopup`, `readonly`, `selected`, `valuemin`, `valuemax`, `valuetext`, `roledescription`, `posinset`, `setsize` | 7 to 28 nodes each | **Open, small.** Disabled options inside an `optgroup`; invalid combobox and radio states from constraint validation; `hasPopup` on custom comboboxes and disclosure triangles; readonly on comboboxes; `posinset` and `setsize` that we state for menu items and Chrome does not; `valuemin` and `valuemax` for a number input whose bounds it reports as 0; `valuetext` of a progress bar; `roledescription` text that Chrome decodes twice (`KunngjÃ¸ring`: a Chrome defect we do not reproduce). The rates look large because the denominators are tiny (28 nodes). |
+| `value` | 66 | **Chrome user-interface text and form state.** "No file chosen", the selected option text of a select with `text-transform`, password bullets, the text of a textarea. Not reproduced. |
+| `rel.labelledby`, `rel.controls` | 298 and 14 | **Open.** Chrome lists the label for a radio, checkbox and textbox where our name came from another source; navigation landmarks whose label target is not in Chrome's tree. |
+
+The classes marked open were not traced to a specification or a Chrome rule. Every one is below 1% of its field except the small property fields, and none is in `role` above 0.09%.
 
 ## Findings on the fixture pages
 

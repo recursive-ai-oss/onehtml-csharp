@@ -71,7 +71,7 @@ About -> /about
 New: Calendar -> /calendar
 Contact -> /contact
 Details -> /concert
-District -> https://example.org
+District -> https://example.org/
 --- form fields
 --- tables
 Bus schedule 3x2 cols=[Route|Time] rows=[12|14]

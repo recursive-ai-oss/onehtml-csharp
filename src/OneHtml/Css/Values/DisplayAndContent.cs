@@ -209,6 +209,14 @@ public readonly struct DisplayValue : IEquatable<DisplayValue>
         return true;
     }
 
+    /// <summary>The blockified value (CSS Display 3 §2.7): an inline-level box becomes block-level with the same inner type, a table-internal type becomes <c>block</c>.</summary>
+    internal DisplayValue Blockified() => Kind switch
+    {
+        DisplayKind.Box => new DisplayValue(DisplayKind.Box, DisplayOutside.Block, Inside == DisplayInside.Ruby ? DisplayInside.Flow : Inside, IsListItem, null),
+        DisplayKind.Internal => new DisplayValue(DisplayKind.Box, DisplayOutside.Block, DisplayInside.Flow, false, null),
+        _ => this,
+    };
+
     /// <summary>The shortest serialization (CSS Display 3 §2.8): <c>block flow</c> is <c>block</c>, <c>inline flow-root</c> is <c>inline-block</c>, and so on.</summary>
     public string ToCss()
     {

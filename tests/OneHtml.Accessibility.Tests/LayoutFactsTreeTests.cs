@@ -270,7 +270,7 @@ public sealed class LayoutFactsTreeTests
         Assert.Same(map.Facts, withFacts.Facts);
         AccessibilityTree freshWith = AccessibilityTree.Build(edit.Document!, restyle.Styles, null, new AccessibilityOptions { Facts = map.Facts });
         Assert.Equal(freshWith.ToChromeJson(), withFacts.ToChromeJson());
-        Assert.Equal("Renamed", withFacts.Find(edit.Document!.Root.QuerySelector(".with-title"))!.Name.Value);
+        Assert.Equal("Renamed", withFacts.Find(edit.Document!.Root.QuerySelector(".with-title"))!.Description.Value);
 
         // The old facts do not describe the edited document.
         Assert.Throws<ArgumentException>(() => before.Update(edit, restyle, page.Facts));

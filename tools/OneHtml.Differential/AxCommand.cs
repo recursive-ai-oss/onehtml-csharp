@@ -49,6 +49,11 @@ internal static class AxCommand
     {
         string root = o.Corpus;
         List<CaptureRef> captures = FindCaptures(root);
+        if (o.Pages is { } pages)
+        {
+            captures.RemoveAll(c => !pages.Any(p => c.Sha.StartsWith(p, StringComparison.Ordinal)));
+        }
+
         if (captures.Count > o.Limit)
         {
             captures.RemoveRange(o.Limit, captures.Count - o.Limit);

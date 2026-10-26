@@ -1007,41 +1007,7 @@ internal sealed class NameComputer
     {
         string data = text.Data.ToString();
         Node parent = text.Parent;
-        if (!parent.IsElement)
-        {
-            return data;
-        }
-
-        string transform = _styles.GetStyle(parent).GetPropertyValue("text-transform");
-        if (transform.Length == 0 || transform == "none")
-        {
-            return data;
-        }
-
-        if (transform.StartsWith("uppercase", StringComparison.Ordinal))
-        {
-            return data.ToUpperInvariant();
-        }
-
-        if (transform.StartsWith("lowercase", StringComparison.Ordinal))
-        {
-            return data.ToLowerInvariant();
-        }
-
-        if (transform.StartsWith("capitalize", StringComparison.Ordinal))
-        {
-            var sb = new StringBuilder(data.Length);
-            bool start = true;
-            foreach (char c in data)
-            {
-                sb.Append(start && char.IsLetter(c) ? char.ToUpperInvariant(c) : c);
-                start = char.IsWhiteSpace(c) || (start && !char.IsLetter(c));
-            }
-
-            return sb.ToString();
-        }
-
-        return data;
+        return parent.IsElement ? TreeText.ApplyTextTransform(data, _styles.GetStyle(parent).GetPropertyValue("text-transform")) : data;
     }
 
     private bool IsInline(Node el)

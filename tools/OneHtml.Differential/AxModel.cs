@@ -127,7 +127,7 @@ internal static class AxNormalizer
     // role", false means "supported, off", which are different.
     private static readonly HashSet<string> s_falseIsAbsent = new(StringComparer.Ordinal)
     {
-        "focusable", "focused", "disabled", "required", "readonly", "modal", "multiselectable", "multiline", "busy",
+        "focusable", "focused", "disabled", "required", "readonly", "modal", "multiselectable", "multiline", "busy", "atomic",
     };
 
     /// <summary>
@@ -145,6 +145,11 @@ internal static class AxNormalizer
                 JsonValueKind.String => value.GetString() ?? string.Empty,
                 _ => value.GetRawText(),
             };
+        if (name == "busy" && text == "1")
+        {
+            text = "true";
+        }
+
         if (s_falseIsAbsent.Contains(name) && text == "false")
         {
             return null;
@@ -304,6 +309,11 @@ internal static class AxReader
             if (n.TryGetProperty("value", out JsonElement val) && val.ValueKind == JsonValueKind.Object && val.TryGetProperty("value", out JsonElement vv))
             {
                 value = vv.ValueKind == JsonValueKind.String ? vv.GetString() : vv.GetRawText();
+            }
+
+            if (value is { Length: 0 })
+            {
+                value = null;
             }
 
             if (value is not null && role is "meter" or "progressbar" or "slider" or "spinbutton" or "scrollbar")

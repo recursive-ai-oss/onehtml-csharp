@@ -158,8 +158,8 @@ internal static class AxComparer
         }
 
         string RoleOf(AxSide side, int i) => i < 0 ? "(none)" : side.Entries[i].Role;
-        int[] cExposedParent = ExposedParents(chrome);
-        int[] oExposedParent = ExposedParents(ours);
+        int[] cExposedParent = ExposedParents(chrome, c2o);
+        int[] oExposedParent = ExposedParents(ours, o2c);
 
         foreach (AxEntry c in chrome.Entries)
         {
@@ -325,26 +325,30 @@ internal static class AxComparer
     }
 
     private static string Describe(string side, AxEntry e) =>
-        side + ":" + e.Role + (e.Ignored ? " IGN[" + string.Join(',', e.IgnoredReasons) + "]" : string.Empty) + (e.Name.Length > 0 ? " \"" + Clipped(e.Name) + "\"" : string.Empty)
+        side + ":" + e.Role + (e.Ignored ? " IGN[" + string.Join(',', e.IgnoredReasons) + "]" : string.Empty) + (e.Name.Length > 0 ? " \"" + Clipped(e.Name) + "\"" : string.Empty) + (e.Description.Length > 0 ? " desc=\"" + Clipped(e.Description) + "\"" : string.Empty) + (e.Value is { Length: > 0 } ? " value=\"" + Clipped(e.Value) + "\"" : string.Empty)
         + (e.Props.Count > 0 ? " {" + string.Join(' ', e.Props.Select(p => p.Key + "=" + p.Value)) + "}" : string.Empty);
 
     private delegate void AddFn(string field, string pattern, string cv, string ov, AxEntry key, AxEntry? oursEntry);
 
     private static void CompareStructure(AxEntry c, AxEntry o, int[] c2o, int[] o2c, AxSide chrome, AxSide ours, int[] cExp, int[] oExp, Action<string, long> count, AddFn add, Func<AxSide, int, string> roleOf)
     {
+        // The parent is the nearest ancestor that has a counterpart on the other side: a node present on one side only (a hidden node that
+        // one tree lists and the other omits) is reported once as chromeOnly or oursOnly and does not also change every child's parent.
         count("parent", 1);
-        int cp = c.Parent < 0 ? -1 : c2o[c.Parent];
-        if (cp != o.Parent || (c.Parent >= 0 && cp < 0))
+        int cpa = PairedAncestor(chrome, c.Parent, c2o);
+        int cp = cpa < 0 ? -1 : c2o[cpa];
+        int op = PairedAncestor(ours, o.Parent, o2c);
+        if (cp != op)
         {
-            add("parent", "chrome-parent:" + roleOf(chrome, c.Parent) + (c.Parent >= 0 && cp < 0 ? "(chrome-only)" : string.Empty) + " ours-parent:" + roleOf(ours, o.Parent), roleOf(chrome, c.Parent), roleOf(ours, o.Parent), c, o);
+            add("parent", "chrome-parent:" + roleOf(chrome, c.Parent) + " ours-parent:" + roleOf(ours, o.Parent), roleOf(chrome, c.Parent), roleOf(ours, o.Parent), c, o);
         }
 
         count("exposedParent", 1);
         int cep = cExp[c.Index];
         int mapped = cep < 0 ? -1 : c2o[cep];
-        if (mapped != oExp[o.Index] || (cep >= 0 && mapped < 0))
+        if (mapped != oExp[o.Index])
         {
-            add("exposedParent", "chrome-parent:" + roleOf(chrome, cep) + (cep >= 0 && mapped < 0 ? "(chrome-only)" : string.Empty) + " ours-parent:" + roleOf(ours, oExp[o.Index]), roleOf(chrome, cep), roleOf(ours, oExp[o.Index]), c, o);
+            add("exposedParent", "chrome-parent:" + roleOf(chrome, cep) + " ours-parent:" + roleOf(ours, oExp[o.Index]), roleOf(chrome, cep), roleOf(ours, oExp[o.Index]), c, o);
         }
 
         if (!c.Ignored && !o.Ignored || c.IsRoot)
@@ -367,15 +371,28 @@ internal static class AxComparer
         }
     }
 
-    /// <summary>For each entry the index of its nearest unignored ancestor, or -1.</summary>
-    private static int[] ExposedParents(AxSide side)
+    /// <summary>The nearest ancestor from <paramref name="start"/> upwards (itself included) that has a counterpart, as an index on its own side, or -1.</summary>
+    private static int PairedAncestor(AxSide side, int start, int[] toOther)
+    {
+        int p = start;
+        int guard = 0;
+        while (p >= 0 && toOther[p] < 0 && guard++ < side.Entries.Count)
+        {
+            p = side.Entries[p].Parent;
+        }
+
+        return p;
+    }
+
+    /// <summary>For each entry the index of its nearest ancestor that is not ignored and has a counterpart on the other side, or -1.</summary>
+    private static int[] ExposedParents(AxSide side, int[] toOther)
     {
         int[] r = new int[side.Entries.Count];
         for (int i = 0; i < r.Length; i++)
         {
             int p = side.Entries[i].Parent;
             int guard = 0;
-            while (p >= 0 && side.Entries[p].Ignored && guard++ < r.Length)
+            while (p >= 0 && (side.Entries[p].Ignored || toOther[p] < 0) && guard++ < r.Length)
             {
                 p = side.Entries[p].Parent;
             }

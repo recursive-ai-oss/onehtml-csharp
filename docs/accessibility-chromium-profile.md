@@ -103,9 +103,9 @@ name computation, states and focus.
 ## `children-presentational`
 
 - **Topic:** Descendants of roles with presentational children
-- **Choice:** Reported as none with the origin ChildrenPresentational, unless focusable.
-- **Matches:** WAI-ARIA 1.2 section 5.2.9; wpt marks the nested-button cases ambiguous.
-- **Evidence:** **unverified until the Chrome differential**
+- **Choice:** Descendants of a button, tab or image role keep their own roles; they are not made presentational (WAI-ARIA 1.2 section 5.2.9 says they are).
+- **Matches:** Chrome 156 output on the corpus: svg, heading and span inside a button keep their roles.
+- **Evidence:** **observed in Chrome output**
 
 ## `static-focusable`
 
@@ -473,4 +473,172 @@ The entries below belong to the accessibility tree (`docs/accessibility-tree.md`
 - **Topic:** Hiding that depends on layout (with facts)
 - **Choice:** An HTML element whose style renders it but whose capture has no box is hidden as not rendered, except display: contents, option, optgroup, area, map, slot, html and body; SVG and MathML elements are never hidden this way. Zero size, clipping and an off-screen position do not hide anything: Chrome keeps such nodes in the tree. Chrome reports no bounding box, off-screen state or scrollable state in Accessibility.getFullAXTree, so the export has none.
 - **Matches:** Chrome 156 output on the overflow and positioned fixtures (clipped, rect-clipped and off-screen elements are exposed) and the corpus: of about 220,000 nodes with a box on 240 pages, 2 are notRendered; none of 121,682 nodes of 120 pages has a bounding-box, off-screen or scrollable property.
+- **Evidence:** **observed in Chrome output**
+
+## `text-transform-static-text`
+
+- **Topic:** text-transform on static text
+- **Choice:** The text of a static-text node is the rendered text: text-transform (uppercase, lowercase, capitalize) applies, as it does in names.
+- **Matches:** Chrome 156 output on the corpus: StaticText of an uppercased link is upper case.
+- **Evidence:** **observed in Chrome output**
+
+## `generic-title`
+
+- **Topic:** title on a generic element
+- **Choice:** A generic element with a title has the title as its description, not as its name: WAI-ARIA 1.2 lists generic as Name From: prohibited. Elements with other roles keep naming from title. The nine WPT html-aam cases that expect a name from title on b, bdi, bdo, i, q, samp, small, u and application are known failures; application is not an HTML element, so it is an unknown element with the generic role.
+- **Matches:** Chrome 156 output on the corpus: generic nodes with a title have no name and the title as description. HTML-AAM maps these elements to generic and its tooltip rule would name them; Chromium does not.
+- **Evidence:** **observed in Chrome output**
+
+## `description-repeats-name`
+
+- **Topic:** title that repeats the name
+- **Choice:** A title is not also the description when the name is made from text alone and equals the title.
+- **Matches:** Chrome 156 output on the corpus: no description on links whose text equals their title.
+- **Evidence:** **observed in Chrome output**
+
+## `description-list-role`
+
+- **Topic:** dl element
+- **Choice:** A dl has the role DescriptionList (an internal role), not list; its items do not count as list levels.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `figcaption-role`
+
+- **Topic:** figcaption element
+- **Choice:** A figcaption has the internal role Figcaption, not caption.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `orphan-list-item`
+
+- **Topic:** li outside a list
+- **Choice:** An li whose parent is not a list is still a listitem.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `aside-in-sectioning`
+
+- **Topic:** aside nested in sectioning content
+- **Choice:** An aside with no name inside article, aside, nav, section or a complementary role is generic, not a complementary landmark.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `presentational-table`
+
+- **Topic:** table with role none or presentation
+- **Choice:** Cells inside are generic; rows and row groups are ignored as uninteresting. WAI-ARIA 5.2.7 would make all of them presentational.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `noscript-not-rendered`
+
+- **Topic:** noscript
+- **Choice:** noscript is not rendered (display: none), as HTML section 15.3.1 says when scripting is enabled.
+- **Matches:** Chrome 156 lists noscript elements in body as ignored with the reason notRendered (corpus page 00c499). Hiding it adds 1,611 Chrome-only nodes and 235 name mismatches to the sample compared with leaving it visible; the cause is not traced.
+- **Evidence:** **observed in Chrome output**
+
+## `live-region-properties`
+
+- **Topic:** live region properties
+- **Choice:** live, atomic and relevant are exposed only on live regions. An alert, log or status is live by its role; relevant defaults to additions text; atomic defaults to the role's value, else false.
+- **Matches:** Chrome 156 output on the corpus: no live, atomic or relevant on other nodes; WAI-ARIA 1.2 defaults.
+- **Evidence:** **observed in Chrome output**
+
+## `accesskey-shortcut`
+
+- **Topic:** accesskey
+- **Choice:** An element with an accesskey has keyshortcuts Alt+key.
+- **Matches:** Chrome 156 output on the corpus (Linux).
+- **Evidence:** **observed in Chrome output**
+
+## `autocomplete-popup`
+
+- **Topic:** text field with suggestions
+- **Choice:** hasPopup is menu for true and listbox for aria-autocomplete list or both, and for a text field with a list attribute.
+- **Matches:** Chrome 156 output on the corpus; menu for aria-haspopup=true as WAI-ARIA 1.2 defines.
+- **Evidence:** **observed in Chrome output**
+
+## `option-selectedness`
+
+- **Topic:** selected state of options
+- **Choice:** An option is selected by its selectedness (HTML 4.10.7), including the first enabled option of a single-choice select that has none selected. aria-selected on the option overrides.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `constraint-invalid`
+
+- **Topic:** invalid from form constraints
+- **Choice:** invalid is true for a required unchecked checkbox, a required select showing its placeholder and a number outside min and max. Text fields are not reported even when required and empty. Kept internal; the public invalid state follows ARIA.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `required-exposure`
+
+- **Topic:** required
+- **Choice:** The export states required for roles that take it, and not for searchbox, native select, checkbox, radio, date and button.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `url-roles`
+
+- **Topic:** url property
+- **Choice:** Only a link and an image state a URL; an anchor an author gave another role does not.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `url-serialization`
+
+- **Topic:** url serialization
+- **Choice:** URLs are resolved and serialized as the URL Standard does: host lower-cased, default port dropped, dot segments removed, percent-escape case kept, and an empty path serialized as /.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `expanded-list-item`
+
+- **Topic:** expanded on a list item
+- **Choice:** aria-expanded is exposed on a list item although WAI-ARIA 1.2 does not allow it there.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `relation-targets`
+
+- **Topic:** relation targets in the export
+- **Choice:** controls, details, errormessage, flowto and activedescendant list only targets that are exposed; labelledby, describedby and owns list every referenced element. A target that is not rendered is still a node in Chromium when it computes a name.
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `ignored-reasons`
+
+- **Topic:** ignored reasons
+- **Choice:** The export gives one reason, the first that applies in the order notRendered, ariaHiddenElement, ariaHiddenSubtree, inertElement, inertSubtree, notVisible, emptyAlt, labelFor, presentationalRole, uninteresting. An img with an empty alt is emptyAlt. An element with aria-hidden=true of its own is ariaHiddenElement even inside another aria-hidden element; its descendants are ariaHiddenSubtree (Chrome 156 output on 400 corpus captures: 104 of 2,901 own-aria-hidden nodes were nested, and every one was the element).
+- **Matches:** Chrome 156 output on the corpus.
+- **Evidence:** **observed in Chrome output**
+
+## `positioned-blockification`
+
+- **Topic:** display of positioned and floated elements
+- **Choice:** An absolutely or fixed positioned or floated element has its display blockified (CSS Display 3 section 2.7) before names add spaces around inline-level text. Children of flex and grid containers are not, because Chromium adds no space for them.
+- **Matches:** Chrome 156 output on the corpus (hidden-text spans in links); CSS Display 3 section 2.7.
+- **Evidence:** **observed in Chrome output**
+
+## `list-item-in-widget`
+
+- **Topic:** li inside a list with another role
+- **Choice:** An li with no role of its own whose ul, ol or menu parent has an explicit role other than list, none, presentation or generic (menu, menubar, tablist) is ignored as presentational. An li whose parent is not a list element stays a listitem.
+- **Matches:** Chrome 156 output on 500 corpus captures: 273 such li ignored as presentationalRole (parents menu, menubar, tablist), none exposed as listitem; 40,000 li in plain lists are listitems.
+- **Evidence:** **observed in Chrome output**
+
+## `label-for`
+
+- **Topic:** text-only label of a checkbox or radio
+- **Choice:** A label that holds only text and labels a checkbox or a radio button is ignored with the reason labelFor, and its text nodes are ignored as presentational. A label with an element child, or a label of any other control, stays a LabelText.
+- **Matches:** Chrome 156 output on 300 corpus captures: all 65 text-only labels of checkboxes and radios are ignored as labelFor, all 66 labels with element children are LabelText, and text labels of text fields, selects and textareas are LabelText.
+- **Evidence:** **observed in Chrome output**
+
+## `wbr-not-rendered`
+
+- **Topic:** wbr
+- **Choice:** A wbr element is ignored with the reason notRendered.
+- **Matches:** Chrome 156 output on the corpus: every wbr in 600 captures (5,021 nodes).
 - **Evidence:** **observed in Chrome output**

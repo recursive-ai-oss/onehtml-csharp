@@ -8,7 +8,7 @@ namespace RecursiveAI.OneHtml.Accessibility.Tree;
 /// <summary>States and properties of an element: ARIA attributes the role supports, plus the HTML-AAM native mappings (WAI-ARIA 1.2 section 6, HTML-AAM section 3.6, Core-AAM section 5).</summary>
 internal static class StateBuilder
 {
-    public static AxStates Build(Node el, AriaRole? role, bool nativeDisabled, bool ariaDisabledChain, Func<string> selectValue)
+    public static AxStates Build(Node el, AriaRole? role, bool nativeDisabled, bool ariaDisabledChain, Func<string> selectValue, Func<Node, bool?>? optionSelected = null)
     {
         var s = new AxStates();
         bool html = el.Namespace == ElementNamespace.Html;
@@ -60,7 +60,9 @@ internal static class StateBuilder
         s.Disabled = nativeDisabled || Aria("aria-disabled") == "true" || ariaDisabledChain;
 
         // ---- expanded ----
-        string? expanded = Aria("aria-expanded") ?? Native("aria-expanded");
+        // Chromium states aria-expanded on a list item too, which WAI-ARIA 1.2 does not allow it (profile entry expanded-list-item).
+        string? expanded = Aria("aria-expanded") ?? Native("aria-expanded")
+            ?? (roleName == "listitem" && el.GetAttribute("aria-expanded") is { } rawExpanded && TreeText.AsciiLower(TreeText.Trim(rawExpanded)) is "true" or "false" ? TreeText.AsciiLower(TreeText.Trim(rawExpanded)) : null);
         if (expanded is "true" or "false")
         {
             s.Expanded = expanded == "true";
@@ -71,7 +73,8 @@ internal static class StateBuilder
         }
 
         // ---- checked ----
-        string? isChecked = Native("aria-checked") ?? Aria("aria-checked");
+        // A native checkbox given a role that has no checked state (button, say) states none.
+        string? isChecked = (role is null || Supported("aria-checked") ? Native("aria-checked") : null) ?? Aria("aria-checked");
         if (isChecked is "true" or "false" or "mixed")
         {
             s.Checked = isChecked == "true" ? AxTristate.True : isChecked == "mixed" ? AxTristate.Mixed : AxTristate.False;
@@ -83,7 +86,13 @@ internal static class StateBuilder
 
         // ---- selected ----
         string? selected = Native("aria-selected") ?? Aria("aria-selected");
-        if (selected is "true" or "false")
+        if (html && el.LocalName == "option" && optionSelected?.Invoke(el) is { } picked)
+        {
+            // A native option is selected when HTML's selectedness says so: the last option with a selected attribute, or the first
+            // enabled one of a single-choice select when none has it (HTML section 4.10.7, profile entry option-selectedness).
+            s.Selected = picked;
+        }
+        else if (selected is "true" or "false")
         {
             s.Selected = selected == "true";
         }
@@ -106,6 +115,8 @@ internal static class StateBuilder
         {
             s.Invalid = invalid;
         }
+
+        s.ConstraintInvalid = html && FailsConstraint(el, selectValue);
 
         // ---- level ----
         if (Aria("aria-level") is { } lv && TryInt(lv, out int level) && level >= 1)
@@ -170,29 +181,29 @@ internal static class StateBuilder
         }
 
         // ---- live regions ----
+        // Chromium states live, atomic and relevant together on a live region only: aria-live=off, or no live setting, states none of them
+        // (profile entry live-region-properties). An alert, log or status is live by its role; atomic defaults to the role's value, else false;
+        // relevant defaults to "additions text" (WAI-ARIA 1.2 aria-relevant).
         string? live = Aria("aria-live");
-        if (live is "off" or "polite" or "assertive")
+        if (live is not ("polite" or "assertive" or "off") && role is not null && role.ImplicitValues.TryGetValue("aria-live", out string? il))
+        {
+            live = il;
+        }
+
+        if (live is "polite" or "assertive")
         {
             s.Live = live;
-        }
-        else if (role is not null && role.ImplicitValues.TryGetValue("aria-live", out string? il))
-        {
-            s.Live = il;
-        }
+            string? atomic = Aria("aria-atomic");
+            if (atomic is "true" or "false")
+            {
+                s.Atomic = atomic == "true";
+            }
+            else
+            {
+                s.Atomic = role is not null && role.ImplicitValues.TryGetValue("aria-atomic", out string? ia) && ia == "true";
+            }
 
-        string? atomic = Aria("aria-atomic");
-        if (atomic is "true" or "false")
-        {
-            s.Atomic = atomic == "true";
-        }
-        else if (role is not null && role.ImplicitValues.TryGetValue("aria-atomic", out string? ia))
-        {
-            s.Atomic = ia == "true";
-        }
-
-        if (Aria("aria-relevant") is { } rel)
-        {
-            s.Relevant = rel;
+            s.Relevant = Aria("aria-relevant") is { Length: > 0 } rel ? rel : "additions text";
         }
 
         s.Busy = Aria("aria-busy") == "true";
@@ -207,12 +218,18 @@ internal static class StateBuilder
         string? popup = Aria("aria-haspopup");
         if (popup is not null && popup != "false")
         {
-            s.HasPopup = popup is "true" or "menu" or "listbox" or "tree" or "grid" or "dialog" ? popup : "true";
+            // WAI-ARIA 1.2 aria-haspopup: true is the same as menu; an unknown token is true.
+            s.HasPopup = popup is "menu" or "listbox" or "tree" or "grid" or "dialog" ? popup : "menu";
         }
         else if (popup is null && html && el.LocalName == "select" && roleName == "combobox")
         {
             // A drop-down select opens a menu of its options (profile entry select-popup).
             s.HasPopup = "menu";
+        }
+        else if (popup is null && roleName is "combobox" or "searchbox" or "textbox" && Aria("aria-autocomplete") is "list" or "both")
+        {
+            // A text field that offers a list of completions opens a listbox (profile entry autocomplete-popup).
+            s.HasPopup = "listbox";
         }
 
         string? orientation = Aria("aria-orientation");
@@ -237,17 +254,24 @@ internal static class StateBuilder
         {
             s.KeyShortcuts = TreeText.Trim(ks);
         }
+        else if (html && el.GetAttribute("accesskey") is { } access && AccessKey(access) is { } accessKey)
+        {
+            // HTML-AAM: an element with an accesskey exposes it as a keyboard shortcut; Chromium on Linux and Windows names it Alt+key
+            // (profile entry accesskey-shortcut).
+            s.KeyShortcuts = "Alt+" + accessKey;
+        }
 
         if (el.GetAttribute("aria-roledescription") is { } rd && TreeText.Trim(rd).Length > 0)
         {
             s.RoleDescription = TreeText.Trim(rd);
         }
 
-        if (html && el.LocalName is "a" or "area" && el.GetAttribute("href") is { } href)
+        // Only a link and an image state a URL; an anchor an author gave another role (button, menuitem, tab) does not (profile entry url-roles).
+        if (html && el.LocalName is "a" or "area" && roleName == "link" && el.GetAttribute("href") is { } href)
         {
             s.Url = href;
         }
-        else if (html && el.LocalName == "img" && el.GetAttribute("src") is { Length: > 0 } src)
+        else if (html && el.LocalName == "img" && roleName == "img" && el.GetAttribute("src") is { Length: > 0 } src)
         {
             s.Url = src;
         }
@@ -260,8 +284,9 @@ internal static class StateBuilder
             {
                 s.Editable = "richtext";
             }
-            else if (roleName is "textbox" or "searchbox" && el.LocalName is "input" or "textarea")
+            else if (el.LocalName == "textarea" || (el.LocalName == "input" && HtmlSemantics.GetInputType(el) is HtmlInputType.Text or HtmlInputType.Search or HtmlInputType.Telephone or HtmlInputType.Url or HtmlInputType.Email or HtmlInputType.Password))
             {
+                // Every text-entry control is editable, whatever role an author gives it (a text input with role=combobox).
                 s.Editable = "plaintext";
             }
             else if (roleName == "spinbutton" && el.LocalName == "input")
@@ -278,6 +303,71 @@ internal static class StateBuilder
         }
 
         return s;
+    }
+
+    /// <summary>The first key of an accesskey attribute (a space-separated list of single characters), or null.</summary>
+    private static string? AccessKey(string value)
+    {
+        foreach (string token in value.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (token.Length == 1 || (token.Length == 2 && char.IsSurrogatePair(token, 0)))
+            {
+                return token;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// The constraint-validation failures Chromium reports as invalid (HTML section 4.10.20.3): a required checkbox that is not checked, a
+    /// required drop-down select whose chosen option is the placeholder (empty value), and a number below its minimum or above its
+    /// maximum. Text fields are not reported even when required and empty (observed in Chromium; profile entry constraint-invalid).
+    /// </summary>
+    private static bool FailsConstraint(Node el, Func<string> selectValue)
+    {
+        switch (el.LocalName)
+        {
+            case "input":
+                switch (HtmlSemantics.GetInputType(el))
+                {
+                    case HtmlInputType.Checkbox:
+                        return HtmlSemantics.Has(el, "required") && !HtmlSemantics.Has(el, "checked");
+                    case HtmlInputType.Number:
+                        return Num(el.GetAttribute("value")) is { } v && (Num(el.GetAttribute("min")) is { } min && v < min || Num(el.GetAttribute("max")) is { } max && v > max);
+                    default:
+                        return false;
+                }
+
+            case "select":
+                return HtmlSemantics.Has(el, "required") && !HtmlSemantics.Has(el, "multiple") && IsPlaceholderSelected(el);
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>HTML section 4.10.7: a select whose chosen option is its first and has the empty value shows a placeholder label.</summary>
+    private static bool IsPlaceholderSelected(Node select)
+    {
+        Node first = default;
+        bool anySelected = false;
+        int visited = 0;
+        for (Node d = select.NextInDocumentOrder(select); !d.IsNull && visited++ < 100_000; d = d.NextInDocumentOrder(select))
+        {
+            if (!d.IsElement || d.Namespace != ElementNamespace.Html || d.LocalName != "option")
+            {
+                continue;
+            }
+
+            if (first.IsNull)
+            {
+                first = d;
+            }
+
+            anySelected |= d.HasAttribute("selected");
+        }
+
+        return !first.IsNull && !anySelected && (first.GetAttribute("value") ?? first.TextContent ?? string.Empty).Length == 0;
     }
 
     private static void BuildRange(Node el, bool html, string? roleName, Func<string, string?> aria, Func<string, string?> native, AxStates s)

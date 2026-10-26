@@ -74,7 +74,9 @@ public sealed class AxNode
 
     /// <summary>
     /// The name of the role Chromium gives the node when it is not a WAI-ARIA role (<c>LabelText</c>, <c>Legend</c>, <c>LineBreak</c>,
-    /// <c>Iframe</c>, <c>DisclosureTriangle</c>, <c>Date</c>, <c>ColorWell</c>, <c>SvgRoot</c>, <c>MathMLMath</c> and so on), or null. The
+    /// <c>Iframe</c>, <c>DisclosureTriangle</c>, <c>Date</c>, <c>ColorWell</c>, <c>SvgRoot</c>, <c>DescriptionList</c>, <c>Figcaption</c>,
+    /// <c>MathMLMath</c> and so on) or a WAI-ARIA role it gives in place of the computed one (<c>listitem</c> for a <c>li</c> outside a list,
+    /// <c>generic</c> for a nested unnamed <c>aside</c>), or null. The
     /// node keeps its Core-AAM <see cref="Role"/> (empty for elements with no role); an element with an internal role is not
     /// ignored as uninteresting. See profile entry <c>internal-roles</c>.
     /// </summary>
@@ -136,6 +138,12 @@ public sealed class AxNode
     }
 
     internal bool AriaDisabledChain { get; set; }
+
+    /// <summary>True for the element that has focus when the page has loaded: the first focusable, exposed element with an <c>autofocus</c> attribute (HTML section 6.6.4).</summary>
+    internal bool IsAutofocus { get; set; }
+
+    /// <summary>The label elements of a labelable control (HTML section 4.10.4), in tree order; empty for other nodes. The Chrome-shaped export reports them as <c>labelledby</c>.</summary>
+    internal IReadOnlyList<Node> NativeLabels { get; set; } = [];
 
     /// <inheritdoc />
     public override string ToString() => Kind == AxNodeKind.Text ? "StaticText \"" + Name.Value + "\"" : Role + (Name.IsEmpty ? string.Empty : " \"" + Name.Value + "\"");

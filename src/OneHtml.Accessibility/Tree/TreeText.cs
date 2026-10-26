@@ -74,6 +74,40 @@ internal static class TreeText
         return sb.ToString();
     }
 
+    /// <summary>Applies a computed <c>text-transform</c> keyword to text (CSS Text 3 section 2.1): <c>uppercase</c>, <c>lowercase</c> and <c>capitalize</c> (the first letter of each word); anything else leaves it unchanged.</summary>
+    public static string ApplyTextTransform(string data, string transform)
+    {
+        if (transform.Length == 0 || transform == "none")
+        {
+            return data;
+        }
+
+        if (transform.StartsWith("uppercase", StringComparison.Ordinal))
+        {
+            return data.ToUpperInvariant();
+        }
+
+        if (transform.StartsWith("lowercase", StringComparison.Ordinal))
+        {
+            return data.ToLowerInvariant();
+        }
+
+        if (transform.StartsWith("capitalize", StringComparison.Ordinal))
+        {
+            var sb = new StringBuilder(data.Length);
+            bool start = true;
+            foreach (char c in data)
+            {
+                sb.Append(start && char.IsLetter(c) ? char.ToUpperInvariant(c) : c);
+                start = char.IsWhiteSpace(c) || (start && !char.IsLetter(c));
+            }
+
+            return sb.ToString();
+        }
+
+        return data;
+    }
+
     public static bool HasNonWhitespace(StringBuilder sb, int from)
     {
         for (int i = from; i < sb.Length; i++)

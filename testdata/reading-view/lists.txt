@@ -1,0 +1,47 @@
+E heading level 1: Shopping  [en]
+> list with 3 items  [en]
+  E item 1 of 3  [en]
+  T Fruit  [en]
+  > list with 2 items  [en]
+    E item 1 of 2  [en]
+    T Apple  [en]
+    E item 2 of 2  [en]
+    T Pear  [en]
+  < end of list  [en]
+  E item 2 of 3  [en]
+  E link: Vegetables  [en]
+  E item 3 of 3  [en]
+  T Bread  [en]
+< end of list  [en]
+> list with 2 items  [en]
+  E item 1 of 2  [en]
+  T First  [en]
+  E item 2 of 2  [en]
+  T Second  [en]
+< end of list  [en]
+> list  [en]
+  E term  [en]
+  T Term  [en]
+  E definition  [en]
+  T Definition  [en]
+< end of list  [en]
+T Plain paragraph with bold, italic and a  [en]
+E link: same-page link  [en]
+T inside.  [en]
+T Second paragraph.  [en]
+E heading level 2  [en]
+T With  [en]
+E link: link  [en]
+T inside  [en]
+E heading level 3: Renamed  [en]
+--- headings
+1 Shopping
+2 With link inside
+3 Renamed
+--- landmarks
+--- links
+Vegetables -> /veg
+same-page link -> #top (same page)
+link -> /x
+--- form fields
+--- tables

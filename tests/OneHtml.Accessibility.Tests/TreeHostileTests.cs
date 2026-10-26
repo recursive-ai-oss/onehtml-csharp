@@ -139,4 +139,39 @@ public sealed class TreeHostileTests
         AccessibilityTree tree = Build(doc, new AccessibilityOptions { MaxNameLength = 1000 });
         Assert.Equal(1000, tree.Find(doc.Root.QuerySelector("#b"))!.Name.Value.Length);
     }
+
+    [Fact]
+    public void Updating_a_page_of_nested_labels_stays_bounded_and_correct()
+    {
+        string html = string.Concat(Enumerable.Repeat("<label>x", 40_000)) + "<input id=i>";
+        Document doc = Parse(html);
+        DocumentStyles styles = DocumentStyles.Create(doc);
+        AccessibilityTree tree = AccessibilityTree.Build(doc, styles);
+        Editing.EditResult edit = doc.Apply([Editing.Edit.SetAttribute(doc.Root.QuerySelector("#i"), "title", "t")]);
+        Assert.True(edit.Succeeded, edit.Failure);
+        Within(30_000, () =>
+        {
+            AccessibilityTree next = tree.Update(edit, styles.Restyle(edit));
+            Assert.False(next.UpdateInfo!.Incremental);
+            Assert.Contains("work bound", next.UpdateInfo.FullRebuildReason);
+            Assert.Equal(AccessibilityTree.Build(edit.Document!, DocumentStyles.Create(edit.Document!)).Nodes.Count, next.Nodes.Count);
+        });
+    }
+
+    [Fact]
+    public void Reading_view_and_lists_of_a_huge_table_and_deep_nesting_are_bounded()
+    {
+        string rows = string.Concat(Enumerable.Repeat("<tr><th>h<td>a<td>b<td>c</tr>", 10_000));
+        Document doc = Parse("<table>" + rows + "</table>" + string.Concat(Enumerable.Repeat("<ul><li>", 20_000)) + "end");
+        AccessibilityTree tree = Build(doc);
+        Within(30_000, () =>
+        {
+            ReadingView view = tree.CreateReadingView();
+            Assert.True(view.Items.Count > 40_000);
+            NavigationLists nav = tree.CreateNavigationLists();
+            Assert.Single(nav.Tables);
+            Assert.Equal(10_000, nav.Tables[0].Rows);
+            Assert.True(tree.Diff(tree).IsEmpty);
+        });
+    }
 }

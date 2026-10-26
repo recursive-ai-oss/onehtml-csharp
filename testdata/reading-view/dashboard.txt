@@ -1,0 +1,34 @@
+> tab list: Views
+  E tab, selected, 1 of 2: One (tab)
+  E tab, 2 of 2: Two (tab)
+< end of tab list
+E tab panel: One (tab)
+T Panel one
+E link: go
+> menu: Actions
+  E menu item, 1 of 2: Open
+  E checkbox menu item, checked: Auto
+< end of menu
+> grid with 2 rows and 2 columns: Grid
+  E column header: A
+  E column header: B
+  E cell: column header A
+  T 1
+  E cell: column header B
+  T 2
+< end of grid
+> group
+  T More
+  T Hidden when closed
+< end of group
+T Owner
+E button, collapsed, has popup: Menu
+E image: Chart
+E image: Logo
+--- headings
+--- landmarks
+--- links
+go -> # (same page)
+--- form fields
+--- tables
+Grid 2x2 cols=[A|B] rows=[]

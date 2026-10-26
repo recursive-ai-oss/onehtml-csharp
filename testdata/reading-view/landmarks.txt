@@ -1,0 +1,45 @@
+> banner landmark  [en]
+  T Site banner  [en]
+  > navigation landmark: Main  [en]
+    E link: Home  [en]
+    E link: A  [en]
+  < end of navigation landmark  [en]
+< end of banner landmark  [en]
+> main landmark  [en]
+  E heading level 1: Title  [en]
+  > region: Intro  [en]
+    T Intro text  [en]
+  < end of region  [en]
+  T Unnamed section  [en]
+  > article  [en]
+    E heading level 2: Story  [en]
+    T Body  [en]
+  < end of article  [en]
+  > complementary landmark  [en]
+    T Aside text  [en]
+  < end of complementary landmark  [en]
+  > search landmark  [en]
+    E search field: Find  [en]
+    E button: Go  [en]
+  < end of search landmark  [en]
+< end of main landmark  [en]
+> content info landmark  [en]
+  T Footer text  [en]
+< end of content info landmark  [en]
+--- headings
+1 Title
+2 Story
+--- landmarks
+banner
+  navigation: Main
+main
+  region: Intro
+  complementary
+  search
+contentinfo
+--- links
+Home -> /
+A -> /a
+--- form fields
+searchbox: Find
+--- tables

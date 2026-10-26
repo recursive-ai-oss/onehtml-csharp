@@ -1,0 +1,77 @@
+E link: Skip to content  [en]
+> banner landmark  [en]
+  E heading level 1: Maple Grove High School  [en]
+  > navigation landmark: Primary  [en]
+    > list with 3 items  [en]
+      E item 1 of 3  [en]
+      E link: About  [en]
+      E item 2 of 3  [en]
+      E link: New: Calendar  [en]
+      E item 3 of 3  [en]
+      E link: Contact  [en]
+    < end of list  [en]
+  < end of navigation landmark  [en]
+< end of banner landmark  [en]
+> main landmark  [en]
+  E heading level 2: News  [en]
+  > article  [en]
+    E heading level 3: Spring concert  [en]
+    T The concert is on May 2.  [en]
+    E link: Details  [en]
+  < end of article  [en]
+  > article  [en]
+    E heading level 3: Enrollment  [en]
+    > list with 2 items  [en]
+      E item 1 of 2  [en]
+      T Fill the form  [en]
+      E item 2 of 2  [en]
+      T Bring documents  [en]
+    < end of list  [en]
+  < end of article  [en]
+  > region: News  [en]
+    T Latest news  [en]
+  < end of region  [en]
+  > table with 3 rows and 2 columns: Bus schedule  [en]
+    E column header: Route  [en]
+    E column header: Time  [en]
+    E row header: 12  [en]
+    E cell: column header Time, row header 12  [en]
+    T 7:40  [en]
+    E row header: 14  [en]
+    E cell: column header Time, row header 14  [en]
+    T 7:55  [en]
+  < end of table  [en]
+< end of main landmark  [en]
+> complementary landmark: Links  [en]
+  E heading level 2: Links  [en]
+  > list with 1 item  [en]
+    E item 1 of 1  [en]
+    E link: District  [en]
+  < end of list  [en]
+< end of complementary landmark  [en]
+> content info landmark  [en]
+  T © Maple Grove  [en]
+< end of content info landmark  [en]
+--- headings
+1 Maple Grove High School
+2 News
+3 Spring concert
+3 Enrollment
+2 Links
+--- landmarks
+banner
+  navigation: Primary
+main
+  region: News
+complementary: Links
+contentinfo
+--- links
+Skip to content -> #main (same page)
+About -> /about
+New: Calendar -> /calendar
+Contact -> /contact
+Details -> /concert
+District -> https://example.org
+--- form fields
+--- tables
+Bus schedule 3x2 cols=[Route|Time] rows=[12|14]

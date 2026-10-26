@@ -13,6 +13,8 @@ internal sealed class TreeBuilder
     private readonly DocumentStyles _styles;
     private readonly AccessibilityOptions _opt;
     private readonly CancellationToken _ct;
+    private readonly UpdatePlan? _plan;
+    private CounterResolver _counters = null!;
 
     private HiddenMap _hidden = null!;
     private OwnsMap _owns = null!;
@@ -24,8 +26,9 @@ internal sealed class TreeBuilder
     private readonly List<AxDiagnostic> _diags = [];
     private readonly Dictionary<AxNode, List<AxDiagnostic>> _nodeDiags = [];
 
-    public TreeBuilder(Document doc, DocumentStyles styles, AccessibilityOptions options, CancellationToken ct)
+    public TreeBuilder(Document doc, DocumentStyles styles, AccessibilityOptions options, UpdatePlan? plan, CancellationToken ct)
     {
+        _plan = plan;
         _doc = doc;
         _styles = styles;
         _opt = options;
@@ -40,7 +43,7 @@ internal sealed class TreeBuilder
         // Roles that depend on a name (a section is a region only when named, a role=region token only when named) need
         // names, and names need roles for a few decisions (embedded controls, contents). A first pass with the
         // name-dependent roles unresolved gives names good enough to decide them; the second pass fixes the roles.
-        var counters = new CounterResolver(_doc, _styles, _hidden);
+        var counters = _counters = new CounterResolver(_doc, _styles, _hidden);
         RoleMap roles0 = RoleComputer.Compute(_doc, null, _ct);
         var probeNames = new NameComputer(_doc, _styles, _hidden, roles0, _owns, _opt, counters, _ct);
         _roles = RoleComputer.Compute(_doc, new RoleOptions { HasAccessibleName = n => !probeNames.ComputeName(n).IsEmpty }, _ct);
@@ -51,7 +54,9 @@ internal sealed class TreeBuilder
         CreateNodes();
         LinkChildren();
         AssignIds();
+        _plan?.Prepare(_hidden, _roles, _owns, _opt.MaxIdReferences, _ct);
         ComputeNodes();
+        _tree.UsedCounters = _counters.Walked;
         ComputeFocusOrder();
         ComputeChromiumFocusableOptions();
         ComputeListItemLevels();
@@ -417,9 +422,16 @@ internal sealed class TreeBuilder
 
         // Name and description. A role that prohibits author naming is still named from aria-label, aria-labelledby and the
         // title attribute, as the html-aam name pages expect of generic elements.
-        n.Name = _names.ComputeName(el);
-
-        n.Description = _names.ComputeDescription(el, n.Name.Source);
+        if (_plan is null || !_plan.TryReuse(el.Index, out AxText reusedName, out AxText reusedDescription))
+        {
+            n.Name = _names.ComputeName(el);
+            n.Description = _names.ComputeDescription(el, n.Name.Source);
+        }
+        else
+        {
+            n.Name = reusedName;
+            n.Description = reusedDescription;
+        }
 
         n.States = StateBuilder.Build(el, role, nr.IsDisabled, n.AriaDisabledChain, () => NameComputer.SelectedOptionsText(el));
         n.Relations = BuildRelations(n);

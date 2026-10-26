@@ -250,7 +250,7 @@ internal sealed class StyleEngine
     }
 
     /// <summary>The selectors of a rule set that match an element, as (rule id, selector index) pairs; used by overlay and restyle to see which rules a state change reaches.</summary>
-    public static void MatchSet(Node el, RuleIndex index, SelectorMatchOptions? options, List<RuleSel> candidates, List<RuleSel> matched)
+    public static void MatchSet(Node el, RuleIndex index, SelectorMatchOptions? options, List<RuleSel> candidates, List<RuleSel> matched, bool pseudo = false)
     {
         candidates.Clear();
         matched.Clear();
@@ -264,8 +264,21 @@ internal sealed class StyleEngine
         {
             lock (bulk)
             {
-                SelectorMatcher.FilterMatching(el, candidates, options, matched);
+                Filter(el, candidates, options, matched, pseudo);
             }
+        }
+        else
+        {
+            Filter(el, candidates, options, matched, pseudo);
+        }
+    }
+
+    // A pseudo-element selector matches when everything before the pseudo-element matches the originating element.
+    private static void Filter(Node el, List<RuleSel> candidates, SelectorMatchOptions? options, List<RuleSel> matched, bool pseudo)
+    {
+        if (pseudo)
+        {
+            SelectorMatcher.FilterMatchingPseudo(el, candidates, options, matched);
         }
         else
         {

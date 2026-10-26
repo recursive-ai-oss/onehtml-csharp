@@ -1,0 +1,35 @@
+> form: Contact form  [en]
+  > group: Your details  [en]
+    E text field, required: Name  [en]
+    T Full name  [en]
+    E text field, invalid entry: Email  [en]
+    E alert  [en]
+    T Enter a valid address  [en]
+    E combo box, collapsed, has popup: Topic, value Billing  [en]
+    E radio button, checked, 1 of 2: Yes  [en]
+    E radio button, not checked, 2 of 2: No  [en]
+  < end of group  [en]
+  E text area: Message  [en]
+  E button: Send  [en]
+  E button, unavailable: Cancel  [en]
+< end of form  [en]
+> dialog, modal: Confirm  [en]
+  E heading level 2: Confirm  [en]
+  T Sure?  [en]
+  E button: OK  [en]
+< end of dialog  [en]
+T Bonjour  [fr]
+T Welt  [de]
+--- headings
+2 Confirm
+--- landmarks
+form: Contact form
+--- links
+--- form fields
+textbox: Name required
+textbox: Email invalid
+combobox: Topic = Billing
+radio: Yes
+radio: No
+textbox: Message
+--- tables

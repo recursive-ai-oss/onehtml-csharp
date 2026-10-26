@@ -368,3 +368,15 @@ public sealed class AccessibilityOptions
     /// <summary>The most steps all <c>aria-owns</c> ancestor checks together may take; past it, further <c>aria-owns</c> references are ignored. Default 16 million.</summary>
     public int MaxOwnsWork { get; init; } = 16_000_000;
 }
+
+/// <summary>What an <see cref="AccessibilityTree.Update(Editing.EditResult, Css.RestyleResult, System.Threading.CancellationToken)"/> did.</summary>
+/// <param name="Incremental">True when names and descriptions of unchanged elements were carried over; false when the tree was built afresh (see <paramref name="FullRebuildReason"/>).</param>
+/// <param name="FullRebuildReason">Why the tree was built afresh; null when <paramref name="Incremental"/>.</param>
+/// <param name="ElementNodes">Element nodes in the new tree.</param>
+/// <param name="NamesRecomputed">Element nodes whose accessible name and description were computed again.</param>
+/// <param name="NamesReused">Element nodes whose name and description were carried over from the previous tree.</param>
+public sealed record TreeUpdateInfo(bool Incremental, string? FullRebuildReason, int ElementNodes, int NamesRecomputed, int NamesReused)
+{
+    /// <summary>The share of element nodes whose name and description were computed again, 0 to 1.</summary>
+    public double RecomputedShare => ElementNodes == 0 ? 0 : (double)NamesRecomputed / ElementNodes;
+}

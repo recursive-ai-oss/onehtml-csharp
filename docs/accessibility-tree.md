@@ -143,6 +143,66 @@ disabled), the parsed `TabIndex`, and `SequentialIndex` (position in `Accessibil
 | `AriaOwnsIgnored` | an `aria-owns` reference was not honoured (reason in the message) |
 | `LimitExceeded` | a limit was reached |
 
+## Updating after an edit
+
+`tree.Update(editResult, restyleResult)` (and the overload for an `EditBatch` result) returns the tree of the edited
+document. It equals `AccessibilityTree.Build` on the new document with the same options and a style context that
+`styles.Restyle(editResult)` carried over, field for field and in the same node order. `tree.WithContext(context)` does the
+same for another style context of the same document. `UpdateInfo` on the result says what happened.
+
+What is carried over is the accessible name and description of each element (with the elements they read mapped to the new
+snapshot through the change set); the rest of the pipeline (hidden status, `aria-owns`, roles, states, relations, focus
+order, position in set, diagnostics) is a linear pass and runs again, because it is cheap and because most of it reads
+neighbours. The names are the part that walks contents and references, so they are the part that is worth skipping.
+
+An element's name and description are recomputed when any of these holds, and so are the elements that read it:
+
+| Input | Seed |
+|---|---|
+| its attributes, children or text | the node is in the change set's `Changed` list; it is `Added` (no counterpart in the old snapshot) |
+| its style, or its `::before`, `::after` or `::marker` style | the element is in `RestyleResult.RestyledElements` or `PseudoElementsMayDiffer` |
+| hidden status of the node (display, visibility, `hidden`, `aria-hidden`, `inert`, closed `details`, `content-visibility`, template) | the hidden reasons differ from the old tree's |
+| role, role origin, disabled | the role layer's answer differs from the old tree's |
+| its parent, or the element that owns it through `aria-owns` | the new parent or owner is not the old one, mapped |
+| a removed node it read | the node was removed; what read it (below) is recomputed |
+
+Readers of a recomputed node, taken as a closure: its parent (name from content, and `legend`, `caption`, `figcaption`
+children); the elements that name its ID in `aria-labelledby`, `aria-describedby` or `aria-owns`; for a `label`, the element
+its `for` names and the elements inside it; for a child of a `figure`, the figure's other children (an `img` that fills its figure is named by the `figcaption`). The old snapshot's readers of a changed or removed node are included, mapped to
+the new snapshot, so a reference that lost its target is recomputed. An ID names the first element that carries it, so an
+element that gains, loses or changes an ID also recomputes the element that held the ID before and the one that holds it
+now (a label's control is found through the ID in `for`).
+
+The dependency index is the set of ID tokens of `aria-labelledby`, `aria-describedby` and `aria-owns` per document, built on
+first use and kept with the tree. Everything else the closure reads comes from the document.
+
+The tree is built afresh instead, and `UpdateInfo.Incremental` is false with the reason, when:
+
+- the restyle recomputed every style (`FullRecompute`);
+- the previous tree reached a work limit (the carried-over names could differ from a fresh run's);
+- CSS counters took part in a name (a counter value depends on every earlier element);
+- a context change has other media features, or a pseudo-element rule reads an interaction state (such a rule's reach is not
+  in `ChangedElements`);
+- the dependency walk reached its bound (eight visits per node plus 100,000, which nested `label` elements can force).
+
+`UpdateInfo` also gives the number of element nodes whose names were recomputed and reused.
+
+Measured on a page of 35,892 DOM nodes (32,624 tree nodes), one `aria-label` edit, steady state on a shared 32-core
+host: restyle 2 ms and update 27 ms (45 MB allocated, 6 of 16,313 element names recomputed), against 58 ms and 52 MB for
+a build of the new document. The rest of the update is the linear passes above and the tree's own objects.
+
+## Differences between trees
+
+`tree.Diff(laterTree, changeSet?)` returns a `TreeDiff`. Nodes are matched by identity: for one document (two style
+contexts) by DOM node; across an edit through `ChangeSet.MapToNew`, with the document node matching the document node and,
+when several text nodes merged into one, the first claiming it. `Added` lists the later tree's unmatched nodes and `Removed`
+the earlier tree's, in tree order, every node of an added or removed subtree. `Changed` lists matched nodes whose properties
+differ: role, name, description, ignored, hidden reasons, `focusable` and `tabbable`, each relation (the related elements' IDs,
+unresolved IDs after them with a leading `?`), and each state by its attribute-style name. A property that exists in only one tree has a null
+value in the other. The order of properties is fixed.
+
+`ReadingView.Diff` is the same for reading steps; see `reading-view.md`.
+
 ## Chrome-shaped export
 
 `AccessibilityTree.ToChromeJson()` writes `{"schema":"onehtml-ax/1","nodes":[…]}`. `nodes` is the array

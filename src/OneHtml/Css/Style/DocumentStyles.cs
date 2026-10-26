@@ -23,7 +23,8 @@ public enum PseudoElementKind : byte
 /// <param name="Styles">The styles of the new document.</param>
 /// <param name="RestyledElements">The indices (<see cref="Node.Index"/>) of the elements whose style object was replaced, ascending. Empty after a full recompute, which replaces everything.</param>
 /// <param name="FullRecompute">True when the change could not be applied incrementally (the tree shape differs) and every style is computed afresh.</param>
-public sealed record RestyleResult(DocumentStyles Styles, IReadOnlyList<int> RestyledElements, bool FullRecompute);
+/// <param name="PseudoElementsMayDiffer">The indices of the elements whose <c>::before</c>, <c>::after</c> or <c>::marker</c> style may differ from the old document's, ascending: a superset of <paramref name="RestyledElements"/> that adds the elements whose pseudo-element rules match differently (an attribute, class or id change reaching a selector before the pseudo-element, a shape change, an added, removed or edited rule). Without any pseudo-element rule it is just the changed elements; after a full recompute it is empty.</param>
+public sealed record RestyleResult(DocumentStyles Styles, IReadOnlyList<int> RestyledElements, bool FullRecompute, IReadOnlyList<int>? PseudoElementsMayDiffer = null);
 
 /// <summary>
 /// The computed styles of a document under a <see cref="StyleContext"/>: the cascade (CSS Cascade 5) run over the
@@ -83,6 +84,9 @@ public sealed class DocumentStyles
 
     /// <summary>What could not be gathered: missing sheets, import cycles, skipped rules, dropped selectors (at most 256 are kept).</summary>
     public IReadOnlyList<StyleDiagnostic> Diagnostics => _engine.Db.Diagnostics;
+
+    /// <summary>True when a rule that styles <c>::before</c>, <c>::after</c> or <c>::marker</c> reads an interaction state (<c>:hover</c>, <c>:focus</c>, …), so a change of <see cref="StyleContext"/> can change generated content that <see cref="ChangedElements"/> does not list.</summary>
+    public bool HasInteractivePseudoElementRules => _engine.Db.PseudoElementDynamic;
 
     /// <summary>The number of style rules (nested rules and declaration runs counted separately) in the cascade.</summary>
     public int RuleCount => _engine.Db.Rules.Count;
@@ -410,11 +414,33 @@ public sealed class DocumentStyles
             AddShapeChanges(newDocument, oldToNew!, newToOld, engine.UsesStructure, affected);
         }
 
+        // Pseudo-element rules are not part of an element's own style, so the reach below skips them. The elements they
+        // can restyle are found the same way, in a second pass over the pseudo-element selectors only, and reported apart.
+        bool anyPseudo = _engine.Db.PseudoIndex.Count > 0 || (engine.Db.PseudoIndex.Count > 0);
+        HashSet<int>? pseudoAffected = anyPseudo ? new HashSet<int>(affected) : null;
+
         foreach (ElementChange ch in change.Elements)
         {
             if (ch.NodeIndex >= 0 && ch.NodeIndex < newDocument.NodeCount && newDocument.Arena.Kind[ch.NodeIndex] == (byte)NodeKind.Element)
             {
                 affected.Add(ch.NodeIndex);
+            }
+        }
+
+        if (pseudoAffected is not null)
+        {
+            foreach (ElementChange ch in change.Elements)
+            {
+                if (ch.NodeIndex >= 0 && ch.NodeIndex < newDocument.NodeCount && newDocument.Arena.Kind[ch.NodeIndex] == (byte)NodeKind.Element)
+                {
+                    pseudoAffected.Add(ch.NodeIndex);
+                }
+            }
+
+            AddSelectorReach(view, change, newToOld, pseudoAffected, cancellationToken, pseudo: true);
+            if (newDb is not null)
+            {
+                AddRuleReach(view, newDb, newToOld, pseudoAffected, cancellationToken, pseudo: true);
             }
         }
 
@@ -427,7 +453,15 @@ public sealed class DocumentStyles
         view.RunWorklist(affected, !ReferenceEquals(engine, _engine), cancellationToken);
         var changed = new List<int>(view._overlay!.Keys);
         changed.Sort();
-        return new RestyleResult(view, changed, false);
+        List<int> pseudoList = [];
+        if (pseudoAffected is not null)
+        {
+            pseudoAffected.UnionWith(changed);
+            pseudoList.AddRange(pseudoAffected);
+            pseudoList.Sort();
+        }
+
+        return new RestyleResult(view, changed, false, pseudoList);
     }
 
     private static bool IsIdentity(int[] map, int newCount)
@@ -570,7 +604,7 @@ public sealed class DocumentStyles
             && x.Prev.AsSpan(0, n).SequenceEqual(y.Prev.AsSpan(0, n));
     }
 
-    private void AddSelectorReach(DocumentStyles view, StyleChange change, int[]? newToOld, HashSet<int> affected, CancellationToken ct)
+    private void AddSelectorReach(DocumentStyles view, StyleChange change, int[]? newToOld, HashSet<int> affected, CancellationToken ct, bool pseudo = false)
     {
         if (change.Elements.Count == 0)
         {
@@ -635,11 +669,16 @@ public sealed class DocumentStyles
         {
             for (int i = 0; i < r.Selectors!.Count; i++)
             {
-                if (!r.Selectors.HasPseudoElement(i))
+                if (r.Selectors.HasPseudoElement(i) == pseudo)
                 {
                     index.Add(new RuleSel(r, i, r.Selectors.GetSpecificity(i)), r.Selectors.GetKey(i));
                 }
             }
+        }
+
+        if (pseudo && index.Count == 0)
+        {
+            return;
         }
 
         // The old match context belongs to the old document; the new one to the new document.
@@ -661,8 +700,8 @@ public sealed class DocumentStyles
             }
 
             Node oldNode = _doc.GetNode(oi);
-            StyleEngine.MatchSet(oldNode, index, _match, cand, oldM);
-            StyleEngine.MatchSet(e, index, view._match, cand, newM);
+            StyleEngine.MatchSet(oldNode, index, _match, cand, oldM, pseudo);
+            StyleEngine.MatchSet(e, index, view._match, cand, newM, pseudo);
             if (!SameMatches(oldM, newM))
             {
                 affected.Add(e.Index);
@@ -720,7 +759,7 @@ public sealed class DocumentStyles
     /// <summary>Elements matched by a rule that exists in only one of the old and new rule sets (the rules between the common prefix and suffix, which also covers moved rules).</summary>
     private static int OldIndex(int[]? newToOld, int newIndex) => newToOld is null ? newIndex : newIndex >= 0 && newIndex < newToOld.Length ? newToOld[newIndex] : -1;
 
-    private void AddRuleReach(DocumentStyles view, RuleDatabase newDb, int[]? newToOld, HashSet<int> affected, CancellationToken ct)
+    private void AddRuleReach(DocumentStyles view, RuleDatabase newDb, int[]? newToOld, HashSet<int> affected, CancellationToken ct, bool pseudo = false)
     {
         string[] a = _engine.Db.Signatures;
         string[] b = newDb.Signatures;
@@ -738,8 +777,8 @@ public sealed class DocumentStyles
 
         var oldIndex = new RuleIndex(_engine.Db.Quirks);
         var newIndex = new RuleIndex(newDb.Quirks);
-        AddRange(oldIndex, _engine.Db.Rules, pre, a.Length - suf);
-        AddRange(newIndex, newDb.Rules, pre, b.Length - suf);
+        AddRange(oldIndex, _engine.Db.Rules, pre, a.Length - suf, pseudo);
+        AddRange(newIndex, newDb.Rules, pre, b.Length - suf, pseudo);
         if (oldIndex.Count == 0 && newIndex.Count == 0)
         {
             return;
@@ -761,28 +800,28 @@ public sealed class DocumentStyles
                 continue;
             }
 
-            StyleEngine.MatchSet(_doc.GetNode(oi), oldIndex, _match, cand, m);
+            StyleEngine.MatchSet(_doc.GetNode(oi), oldIndex, _match, cand, m, pseudo);
             if (m.Count > 0)
             {
                 affected.Add(e.Index);
                 continue;
             }
 
-            StyleEngine.MatchSet(e, newIndex, view._match, cand, m);
+            StyleEngine.MatchSet(e, newIndex, view._match, cand, m, pseudo);
             if (m.Count > 0)
             {
                 affected.Add(e.Index);
             }
         }
 
-        static void AddRange(RuleIndex index, List<StyleRule> rules, int from, int to)
+        static void AddRange(RuleIndex index, List<StyleRule> rules, int from, int to, bool pseudo)
         {
             for (int i = from; i < to; i++)
             {
                 StyleRule r = rules[i];
                 for (int s = 0; s < r.Selectors!.Count; s++)
                 {
-                    if (!r.Selectors.HasPseudoElement(s))
+                    if (r.Selectors.HasPseudoElement(s) == pseudo)
                     {
                         index.Add(new RuleSel(r, s, r.Selectors.GetSpecificity(s)), r.Selectors.GetKey(s));
                     }

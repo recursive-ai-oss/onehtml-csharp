@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Text;
 using RecursiveAI.OneHtml.Css;
@@ -239,4 +240,19 @@ bool validationOk = vreport.Count(RecursiveAI.OneHtml.Accessibility.Validation.O
     && nativeJson.Contains("\"onehtml-results\"", StringComparison.Ordinal) && axeJson.Contains("\"violations\"", StringComparison.Ordinal)
     && fixedResult.Succeeded && vafter.Count(RecursiveAI.OneHtml.Accessibility.Validation.Outcome.Failed) == vreport.Count(RecursiveAI.OneHtml.Accessibility.Validation.Outcome.Failed) - 1;
 Console.WriteLine($"validation={validationOk} results={vreport.Results.Count} native={nativeJson.Length} axe={axeJson.Length}");
-return validationOk && htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk && factsOk ? 0 : 1;
+
+// Edit -> restyle -> tree update -> diff, reading view and navigation lists.
+DocumentStyles tstyles = DocumentStyles.Create(tdoc);
+RecursiveAI.OneHtml.Accessibility.AccessibilityTree tree0 = RecursiveAI.OneHtml.Accessibility.AccessibilityTree.Build(tdoc, tstyles);
+RecursiveAI.OneHtml.Editing.EditResult treeEdit = RecursiveAI.OneHtml.DocumentEditing.Apply(tdoc, new[] { RecursiveAI.OneHtml.Editing.Edit.SetAttribute(tdoc.GetElementById("b"), "aria-label", "Start") });
+RestyleResult treeRestyle = tstyles.Restyle(treeEdit);
+RecursiveAI.OneHtml.Accessibility.AccessibilityTree tree1 = tree0.Update(treeEdit, treeRestyle);
+RecursiveAI.OneHtml.Accessibility.TreeDiff treeDiff = tree0.Diff(tree1, treeEdit.Changes);
+RecursiveAI.OneHtml.Accessibility.ReadingView reading = tree1.CreateReadingView();
+RecursiveAI.OneHtml.Accessibility.NavigationLists nav = tree1.CreateNavigationLists();
+bool updateOk = tree1.UpdateInfo is { Incremental: true } && tree1.ToChromeJson() == RecursiveAI.OneHtml.Accessibility.AccessibilityTree.Build(treeEdit.Document!, DocumentStyles.Create(treeEdit.Document!)).ToChromeJson()
+    && treeDiff.Changed.Count == 1 && treeDiff.Changed[0].Properties.Any(p => p.Property == "name" && p.NewValue == "Start")
+    && reading.Items.Any(i => i.Text == "button: Start") && nav.Headings.Count == 1 && nav.Links.Count == 1
+    && tree0.CreateReadingView().Diff(reading, treeEdit.Changes).Changed.Count == 1;
+Console.WriteLine($"update={updateOk} recomputed={tree1.UpdateInfo?.NamesRecomputed}/{tree1.UpdateInfo?.ElementNodes} reading={reading.Items.Count}");
+return validationOk && htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk && factsOk && updateOk ? 0 : 1;

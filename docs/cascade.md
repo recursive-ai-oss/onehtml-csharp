@@ -162,6 +162,19 @@ The restyle keeps an old style object for an element whose recomputed values are
 below the same parent style object: `em`, `%`, `currentcolor` and `bolder` resolve through the parent chain, so a
 replaced parent replaces every descendant style that the new rules reach.
 
+A retained style also needs the same origin for each winning declaration (user agent, user, author): the same `display: none`
+from the user-agent rule for `[hidden]` and from an author rule are different answers to the accessibility tree, which tells
+a hidden attribute from a style.
+
+`RestyleResult.PseudoElementsMayDiffer` lists, apart from `RestyledElements`, the elements whose `::before`, `::after` or
+`::marker` style may differ. An element's own style does not include its generated boxes, so a change that reaches only a
+pseudo-element rule (a class on an ancestor in `.on .b::before`, an edited `p::after` rule) restyles nothing. The list is the
+changed elements, the elements the shape change touches, the elements the pseudo-element selectors match differently before
+and after (matched up to the pseudo-element), the elements matched by an added, removed or edited pseudo-element rule, and
+`RestyledElements` (a pseudo-element inherits from its element). `GetPseudoStyle` always computes under the view's own
+element style, so a retained object is never reused under another parent. A change of `StyleContext` does not fill the list;
+`DocumentStyles.HasInteractivePseudoElementRules` says when such a rule exists (the `:hover` of `a:hover::before`).
+
 Measured on a 3,600-node page with 300 rules: a class change restyles 3 elements in 1.7 ms against 11 ms for a full
 compute of the new document; a declaration change in the `style` element takes 3.6 ms against 8 ms.
 

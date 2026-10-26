@@ -19,6 +19,9 @@ internal sealed class CounterResolver
     private readonly HiddenMap _hidden;
     private Dictionary<long, Dictionary<string, List<int>>>? _snapshots;
 
+    /// <summary>True once a name has asked for a counter value.</summary>
+    public bool Walked => _snapshots is not null;
+
     public CounterResolver(Document doc, DocumentStyles styles, HiddenMap hidden)
     {
         _doc = doc;

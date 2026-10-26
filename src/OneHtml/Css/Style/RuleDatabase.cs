@@ -122,6 +122,9 @@ internal sealed class RuleDatabase
     public RuleIndex Index = null!;
     public RuleIndex DynamicIndex = null!;
 
+    /// <summary>True when a rule styling <c>::before</c>, <c>::after</c> or <c>::marker</c> reads an interaction state (<c>:hover</c>, <c>:focus</c>, …).</summary>
+    public bool PseudoElementDynamic;
+
     /// <summary>Rules whose selector ends in <c>::before</c>, <c>::after</c> or <c>::marker</c>, by pseudo-element name; the index keys come from the originating element's compound.</summary>
     public readonly Dictionary<string, RuleIndex> PseudoIndex = new(StringComparer.Ordinal);
     public bool Quirks;
@@ -1063,6 +1066,7 @@ internal sealed class RuleGatherer
                         }
 
                         pi.Add(new RuleSel(r, i, list.GetSpecificity(i)), list.GetKey(i));
+                        _db.PseudoElementDynamic |= r.Dynamic;
                     }
 
                     continue;

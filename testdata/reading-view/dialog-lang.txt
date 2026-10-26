@@ -1,0 +1,23 @@
+T English text.  [en]
+T Texte français ici.  [fr]
+T Back to  [en]
+T hola  [es]
+T English.  [en]
+> dialog, modal: Settings  [en]
+  E checkbox, checked: Notifications  [en]
+  E button, pressed: Bold  [en]
+  E button, collapsed, has popup: More  [en]
+< end of dialog  [en]
+> alert dialog: Warning  [en]
+  T Careful  [en]
+< end of alert dialog  [en]
+E spin button, required, invalid entry: Age, value 12  [en]
+E combo box, collapsed, has popup: Size, value M  [en]
+--- headings
+--- landmarks
+--- links
+--- form fields
+checkbox: Notifications
+spinbutton: Age required invalid = 12
+combobox: Size = M
+--- tables

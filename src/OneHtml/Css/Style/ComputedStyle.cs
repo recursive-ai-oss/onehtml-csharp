@@ -442,7 +442,10 @@ public sealed partial class ComputedStyle
 
         for (int i = 0; i < _ownIds.Length; i++)
         {
-            if (_ownIds[i] != other._ownIds[i] || (!ReferenceEquals(_ownValues[i], other._ownValues[i]) && _ownValues[i].Text != other._ownValues[i].Text))
+            // The value text is not all there is: the origin of the winning declaration tells a user-agent default from an
+            // author's choice of the same value (the accessibility tree reads it for the hidden attribute).
+            if (_ownIds[i] != other._ownIds[i] || (!ReferenceEquals(_ownValues[i], other._ownValues[i])
+                && (_ownValues[i].Text != other._ownValues[i].Text || _ownValues[i].Source?.Origin != other._ownValues[i].Source?.Origin)))
             {
                 return false;
             }

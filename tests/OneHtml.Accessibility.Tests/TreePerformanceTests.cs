@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using RecursiveAI.OneHtml.Css;
+using RecursiveAI.OneHtml.Editing;
 using Xunit;
 
 namespace RecursiveAI.OneHtml.Accessibility.Tests;
@@ -45,6 +46,30 @@ public sealed class TreePerformanceTests
         sw.Restart();
         int exported = tree.ToChromeJson().Length;
         long export = sw.ElapsedMilliseconds;
-        File.WriteAllText(report, $"dom nodes={doc.NodeCount} tree nodes={tree.Nodes.Count} cascade_ms={cascade} tree_build_ms={build} tree_alloc_mb={allocated / 1048576.0:F1} export_ms={export} export_bytes={exported}\n");
+
+        // One attribute edit near the middle of the page: restyle plus Update against a full Build of the new document.
+        Node target = doc.Root.QuerySelector("section.card:nth-of-type(500) a");
+        string edited = "";
+        for (int round = 0; round < 5; round++)
+        {
+            EditResult edit = doc.Apply([Edit.SetAttribute(target, "aria-label", "Renamed " + round)]);
+            Assert.True(edit.Succeeded);
+            GC.Collect();
+            long b0 = GC.GetAllocatedBytesForCurrentThread();
+            sw.Restart();
+            RestyleResult rs = styles.Restyle(edit);
+            long restyleMs = sw.ElapsedMilliseconds;
+            AccessibilityTree updated = tree.Update(edit, rs);
+            long updateMs = sw.ElapsedMilliseconds - restyleMs;
+            long updateAlloc = GC.GetAllocatedBytesForCurrentThread() - b0;
+            DocumentStyles fresh = DocumentStyles.Create(edit.Document!);
+            fresh.ComputeAll();
+            sw.Restart();
+            AccessibilityTree rebuilt = AccessibilityTree.Build(edit.Document!, fresh);
+            long rebuildMs = sw.ElapsedMilliseconds;
+            edited += $"edit: restyle_ms={restyleMs} update_ms={updateMs} update_alloc_mb={updateAlloc / 1048576.0:F1} full_build_ms={rebuildMs} names_recomputed={updated.UpdateInfo!.NamesRecomputed}/{updated.UpdateInfo.ElementNodes} equal={updated.ToChromeJson() == rebuilt.ToChromeJson()}\n";
+        }
+
+        File.WriteAllText(report, edited + $"dom nodes={doc.NodeCount} tree nodes={tree.Nodes.Count} cascade_ms={cascade} tree_build_ms={build} tree_alloc_mb={allocated / 1048576.0:F1} export_ms={export} export_bytes={exported}\n");
     }
 }

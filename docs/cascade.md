@@ -117,7 +117,17 @@ media features. They feed the selector matcher's `InteractionState`:
 change. It matches the index of rules that read dynamic pseudo-classes (`Hover`, `Active`, `Focus`, `FocusWithin`,
 `Target`, including inside `:is()`, `:not()` and `:has()`) under the old and the new state, and recomputes the elements
 whose matches differ, parents before children, then the descendants whose inherited values changed. A media change rebuilds
-the base. Overlays share the engine's style table. `ChangedElements` lists the indices an overlay or restyle replaced.
+the base.
+
+When only the focused element differs, the matching is bounded instead of run over the page. Each compound of a rule that reads
+focus is an anchor; a selector's match can change only where an anchor compound matches differently, and from there only
+along the rest of the selector. The anchor compounds that can change are those of the old and new focused element and, for
+`:focus-within` and for focus read inside `:has()`, of their ancestors; a `:has()` argument with a sibling combinator also
+reaches the earlier siblings of those ancestors. Anchors are bucketed by the id, class or type their compound requires, so an
+element is tried against only the anchors it could satisfy. What follows the anchor in the selector reaches below it and
+beside it: all descendants after a descendant combinator, but only as many levels as there are child combinators when
+no descendant combinator follows (`li:focus-within > a` reaches the li's children, not its subtree). Hover, active and
+target changes, and focus changes together with them, test every element against the index of dynamic rules. Overlays share the engine's style table. `ChangedElements` lists the indices an overlay or restyle replaced.
 
 ## Restyle after a change
 

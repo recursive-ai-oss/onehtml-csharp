@@ -29,7 +29,8 @@ public sealed class CheckPerformanceTests
         }
 
         sb.Append("</main></body>");
-        Document doc = Document.Parse(sb.ToString());
+        string html = sb.ToString();
+        Document doc = Document.Parse(html);
         DocumentStyles styles = DocumentStyles.Create(doc);
         styles.ComputeAll();
         _ = AccessibilityTree.Build(doc, styles);
@@ -61,12 +62,25 @@ public sealed class CheckPerformanceTests
         CheckReport area = checker.Check(tree, areaOptions);
         long areaMs = sw.ElapsedMilliseconds;
         long areaAlloc = GC.GetAllocatedBytesForCurrentThread() - before;
+        var focusOnly = new CheckOptions { RuleIds = ["focus-visible-indicator"] };
+        _ = checker.Check(tree, focusOnly);
+        sw.Restart();
+        CheckReport focus = checker.Check(tree, focusOnly);
+        long focusMs = sw.ElapsedMilliseconds;
+        // The same page with the focus rules sites write: a rule on the focusable itself, :focus-within on a container, :has() on a container.
+        Document focusDoc = Document.Parse(html.Replace("<style>", "<style>a:focus-visible,button:focus-visible{outline:2px solid blue} .card:focus-within h2{color:red} .card:has(:focus-visible){background-color:#eee} main > section:focus-within > ul > li{color:green} ", StringComparison.Ordinal));
+        DocumentStyles focusStyles = DocumentStyles.Create(focusDoc);
+        focusStyles.ComputeAll();
+        AccessibilityTree focusTree = AccessibilityTree.Build(focusDoc, focusStyles);
+        sw.Restart();
+        CheckReport focusRules = checker.Check(focusTree, focusOnly);
+        long focusRulesMs = sw.ElapsedMilliseconds;
         sw.Restart();
         int native = r.ToNativeJson().Length;
         long nativeMs = sw.ElapsedMilliseconds;
         sw.Restart();
         int axe = r.ToAxeJson().Length;
         long axeMs = sw.ElapsedMilliseconds;
-        File.WriteAllText(report, $"dom nodes={doc.NodeCount} tree nodes={tree.Nodes.Count} tree_build_ms={treeMs} rules={r.RulesRun.Count} results={r.Results.Count} check_ms={ms} check_alloc_mb={alloc / 1048576.0:F1} names_rules={nr.RulesRun.Count} names_results={nr.Results.Count} names_ms={nameMs} names_alloc_mb={nameAlloc / 1048576.0:F1} native_json_ms={nativeMs} native_bytes={native} axe_json_ms={axeMs} axe_bytes={axe} structure_rules={area.RulesRun.Count} structure_results={area.Results.Count} structure_check_ms={areaMs} structure_check_alloc_mb={areaAlloc / 1048576.0:F1}\n");
+        File.WriteAllText(report, $"dom nodes={doc.NodeCount} tree nodes={tree.Nodes.Count} tree_build_ms={treeMs} rules={r.RulesRun.Count} results={r.Results.Count} check_ms={ms} check_alloc_mb={alloc / 1048576.0:F1} names_rules={nr.RulesRun.Count} names_results={nr.Results.Count} names_ms={nameMs} names_alloc_mb={nameAlloc / 1048576.0:F1} native_json_ms={nativeMs} native_bytes={native} axe_json_ms={axeMs} axe_bytes={axe} structure_rules={area.RulesRun.Count} structure_results={area.Results.Count} focus_visible_ms={focusMs} focus_results={focus.Results.Count} focus_rules_ms={focusRulesMs} focus_rules_results={focusRules.Results.Count} structure_check_ms={areaMs} structure_check_alloc_mb={areaAlloc / 1048576.0:F1}\n");
     }
 }

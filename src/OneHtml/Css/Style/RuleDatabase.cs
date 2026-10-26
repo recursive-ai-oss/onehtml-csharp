@@ -10,8 +10,12 @@ namespace RecursiveAI.OneHtml.Css;
 /// <summary>A complex selector of a rule, as stored in the rule index.</summary>
 internal readonly record struct RuleSel(StyleRule Rule, int Sel, Specificity Spec);
 
-/// <summary>A compound of a selector that reads keyboard focus, and whether what follows it in the selector reaches below or beside the element it matches.</summary>
-internal readonly record struct FocusAnchor(ComplexSelector Selector, Compound Compound, bool ReachesBelow, bool ReachesBeside, bool Within);
+/// <summary>
+/// A compound of a selector that reads keyboard focus, and whether what follows it in the selector reaches below or beside the element it matches.
+/// <paramref name="MaxDepth"/> bounds how many levels below the element (or below its later siblings) the rest of the selector can reach:
+/// the number of child combinators when no descendant combinator follows, otherwise unbounded.
+/// </summary>
+internal readonly record struct FocusAnchor(ComplexSelector Selector, Compound Compound, bool ReachesBelow, bool ReachesBeside, bool Within, bool ViaHas = false, bool HasSideways = false, int MaxDepth = int.MaxValue);
 
 /// <summary>Rules bucketed by the id, class or type of their rightmost compound (the usual right-to-left cascade index).</summary>
 internal sealed class RuleIndex
@@ -127,10 +131,19 @@ internal sealed class RuleDatabase
 
     /// <summary>
     /// The compounds of dynamic selectors that read keyboard focus (<c>:focus</c>, <c>:focus-visible</c>, <c>:focus-within</c>), with how far
-    /// a change at one of them reaches along the selector's combinators. Null when one of those selectors uses <c>:has()</c>, whose reach
-    /// is not bounded this way.
+    /// a change at one of them reaches along the selector's combinators. A compound that reads focus inside <c>:has()</c> is marked: it can change
+    /// only at the focused element's ancestors, and at the earlier siblings of those when the <c>:has()</c> argument uses a sibling combinator.
     /// </summary>
     public List<FocusAnchor>? FocusAnchors;
+
+    /// <summary>
+    /// The focus anchors bucketed by the id, class or type their compound requires, so that testing an element touches only the anchors it
+    /// could satisfy. Each entry's <c>Sel</c> is the position in <see cref="FocusAnchors"/>; the rule is unused.
+    /// </summary>
+    public RuleIndex? FocusAnchorIndex;
+
+    /// <summary>True when some focus anchor reads focus inside a <c>:has()</c> that uses a sibling combinator.</summary>
+    public bool HasSidewaysFocus;
 
     /// <summary>True when a rule styling <c>::before</c>, <c>::after</c> or <c>::marker</c> reads an interaction state (<c>:hover</c>, <c>:focus</c>, …).</summary>
     public bool PseudoElementDynamic;
@@ -1058,7 +1071,6 @@ internal sealed class RuleGatherer
         var all = new RuleIndex(_db.Quirks);
         var dynamic = new RuleIndex(_db.Quirks);
         List<FocusAnchor>? focusAnchors = [];
-        bool focusUnbounded = false;
         var sigs = new string[_db.Rules.Count];
         foreach (StyleRule r in _db.Rules)
         {
@@ -1097,34 +1109,38 @@ internal sealed class RuleGatherer
                             continue;
                         }
 
-                        for (int j = 0; j < cs.Compounds.Length && !focusUnbounded; j++)
+                        for (int j = 0; j < cs.Compounds.Length; j++)
                         {
-                            bool reads = false, within = false;
+                            bool reads = false, within = false, viaHas = false, sideways = false;
                             foreach (Simple part in cs.Compounds[j].Parts)
                             {
                                 if ((part.Deps & (SelectorDependencies.Focus | SelectorDependencies.FocusWithin)) != 0)
                                 {
                                     reads = true;
                                     within |= (part.Deps & SelectorDependencies.FocusWithin) != 0;
-                                    // Focus inside a :has() is read from far away from the focused element: no bound.
+                                    // Focus inside a :has() is read from the ancestors (and, for a sibling combinator inside the
+                                    // :has(), from the earlier siblings of the ancestors) of the focused element.
                                     if ((part.Deps & SelectorDependencies.Has) != 0)
                                     {
-                                        focusAnchors = null;
-                                        focusUnbounded = true;
+                                        viaHas = true;
+                                        sideways |= (part.Deps & SelectorDependencies.SiblingCombinator) != 0;
                                     }
                                 }
                             }
 
-                            if (reads && !focusUnbounded)
+                            if (reads)
                             {
-                                bool below = false, beside = false;
+                                bool below = false, beside = false, deep = false;
+                                int children = 0;
                                 for (int k = j; k < cs.Combs.Length; k++)
                                 {
                                     below |= cs.Combs[k] is Combinator.Descendant or Combinator.Child;
                                     beside |= cs.Combs[k] is Combinator.NextSibling or Combinator.SubsequentSibling;
+                                    deep |= cs.Combs[k] is not (Combinator.Child or Combinator.NextSibling or Combinator.SubsequentSibling);
+                                    children += cs.Combs[k] == Combinator.Child ? 1 : 0;
                                 }
 
-                                focusAnchors!.Add(new FocusAnchor(cs, cs.Compounds[j], below, beside, within));
+                                focusAnchors!.Add(new FocusAnchor(cs, cs.Compounds[j], below, beside, within, viaHas, sideways, deep ? int.MaxValue : children));
                             }
                         }
                     }
@@ -1136,9 +1152,41 @@ internal sealed class RuleGatherer
 
         _db.Index = all;
         _db.DynamicIndex = dynamic;
-        _db.FocusAnchors = focusUnbounded ? null : focusAnchors;
+        _db.FocusAnchors = focusAnchors;
+        var anchorIndex = new RuleIndex(_db.Quirks);
+        for (int i = 0; i < focusAnchors.Count; i++)
+        {
+            anchorIndex.Add(new RuleSel(null!, i, default), CompoundKey(focusAnchors[i].Compound));
+        }
+
+        _db.FocusAnchorIndex = anchorIndex;
+        _db.HasSidewaysFocus = focusAnchors.Exists(a => a.HasSideways);
         _db.Signatures = sigs;
         _db.LayerSignature = _db.Layers.Signature();
+    }
+
+    // The bucket key of a compound, chosen as the parser chooses the key of a selector's rightmost compound: id, else class, else type.
+    private static SelectorKey CompoundKey(Compound compound)
+    {
+        SelectorKey key = default;
+        foreach (Simple p in compound.Parts)
+        {
+            if (p.Kind == SimpleKind.Id)
+            {
+                return new SelectorKey(SelectorKeyKind.Id, p.Name);
+            }
+
+            if (p.Kind == SimpleKind.Class && key.Kind != SelectorKeyKind.Class)
+            {
+                key = new SelectorKey(SelectorKeyKind.Class, p.Name);
+            }
+            else if (p.Kind == SimpleKind.Type && !p.IsUniversal && key.Kind == SelectorKeyKind.None)
+            {
+                key = new SelectorKey(SelectorKeyKind.Tag, p.LowerName);
+            }
+        }
+
+        return key;
     }
 
     private static string Signature(StyleRule r)

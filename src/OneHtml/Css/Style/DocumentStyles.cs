@@ -317,6 +317,8 @@ public sealed class DocumentStyles
         }
 
         var changed = new List<FocusAnchor>();
+        var picked = new List<FocusAnchor>();
+        var cand = new List<RuleSel>();
         foreach (Node x in new[] { from.Focus, to.Focus })
         {
             for (Node p = x; !p.IsNull && p.IsElement; p = p.ParentElement)
@@ -324,15 +326,48 @@ public sealed class DocumentStyles
                 cancellationToken.ThrowIfCancellationRequested();
                 // Only :focus-within compounds can change at an ancestor of the focused element.
                 changed.Clear();
-                SelectorMatcher.ChangedFocusAnchors(p, anchors, _match, toOptions, p.Index != x.Index, changed);
+                SelectorMatcher.ChangedFocusAnchors(p, CandidateAnchors(p, anchors, picked, cand), _match, toOptions, p.Index != x.Index, changed);
                 foreach (FocusAnchor a in changed)
                 {
                     TestReach(p, a, toOptions, affected, cancellationToken);
+                }
+
+                // An earlier sibling of the focused element or of one of its ancestors can match a :has() with a sibling combinator.
+                if (_engine.Db.HasSidewaysFocus)
+                {
+                    for (Node s = p.PreviousSibling; !s.IsNull; s = s.PreviousSibling)
+                    {
+                        if (!s.IsElement)
+                        {
+                            continue;
+                        }
+
+                        changed.Clear();
+                        SelectorMatcher.ChangedFocusAnchors(s, CandidateAnchors(s, anchors, picked, cand), _match, toOptions, true, changed, true);
+                        foreach (FocusAnchor a in changed)
+                        {
+                            TestReach(s, a, toOptions, affected, cancellationToken);
+                        }
+                    }
                 }
             }
         }
 
         return true;
+    }
+
+    // The anchors whose compound the element could satisfy (by its id, class or type), in a reused list.
+    private List<FocusAnchor> CandidateAnchors(Node e, List<FocusAnchor> anchors, List<FocusAnchor> into, List<RuleSel> scratch)
+    {
+        into.Clear();
+        scratch.Clear();
+        _engine.Db.FocusAnchorIndex!.Collect(e, scratch);
+        foreach (RuleSel rs in scratch)
+        {
+            into.Add(anchors[rs.Sel]);
+        }
+
+        return into;
     }
 
     private void TestReach(Node p, FocusAnchor a, SelectorMatchOptions toOptions, HashSet<int> affected, CancellationToken cancellationToken)
@@ -346,10 +381,7 @@ public sealed class DocumentStyles
         int n = 0;
         if (a.ReachesBelow)
         {
-            foreach (Node d in p.DescendantElements)
-            {
-                TestOne(d, a, toOptions, affected, ref n, cancellationToken);
-            }
+            TestBelow(p, a, toOptions, affected, ref n, cancellationToken);
         }
 
         if (a.ReachesBeside)
@@ -362,9 +394,44 @@ public sealed class DocumentStyles
                 }
 
                 TestOne(sib, a, toOptions, affected, ref n, cancellationToken);
-                foreach (Node d in sib.DescendantElements)
+                if (a.ReachesBelow)
                 {
-                    TestOne(d, a, toOptions, affected, ref n, cancellationToken);
+                    TestBelow(sib, a, toOptions, affected, ref n, cancellationToken);
+                }
+            }
+        }
+    }
+
+    // The descendant elements of an element that the rest of the selector can reach: all of them, or only as many levels as the
+    // selector's child combinators allow ("li:focus-within > a" reaches the li's children, not its whole subtree).
+    private void TestBelow(Node root, FocusAnchor a, SelectorMatchOptions toOptions, HashSet<int> affected, ref int n, CancellationToken cancellationToken)
+    {
+        if (a.MaxDepth == int.MaxValue)
+        {
+            foreach (Node d in root.DescendantElements)
+            {
+                TestOne(d, a, toOptions, affected, ref n, cancellationToken);
+            }
+
+            return;
+        }
+
+        var stack = new Stack<(Node Parent, int Level)>();
+        stack.Push((root, 1));
+        while (stack.Count > 0)
+        {
+            (Node parent, int level) = stack.Pop();
+            for (Node c = parent.FirstChild; !c.IsNull; c = c.NextSibling)
+            {
+                if (!c.IsElement)
+                {
+                    continue;
+                }
+
+                TestOne(c, a, toOptions, affected, ref n, cancellationToken);
+                if (level < a.MaxDepth)
+                {
+                    stack.Push((c, level + 1));
                 }
             }
         }

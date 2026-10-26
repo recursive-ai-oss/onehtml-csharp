@@ -284,7 +284,10 @@ Per page, the whole rule set (`checkMs` of each page), 1,000 pages; "before" is 
 | With facts, after | 9 ms | 259 ms | 7,973 ms | 58.0 s |
 
 The saving is the focus overlays: `focus-visible-indicator` restyles only what a focus reaches instead of the whole page per focusable. The slowest
-page (06e2ed1a8276, 8 s) was not analysed further. Numbers are from one run each and the worker was shared.
+page (06e2ed1a8276, 8 s) had a `.x:has(:focus-visible)` rule, which made every focus overlay match every element; focus read inside
+`:has()` is now bounded to the focused element's ancestors (see `cascade.md`). On the same 1,000 pages the check then takes a median of
+6 ms, p95 169 ms and a maximum of 982 ms without facts (9 ms, 174 ms, 1,006 ms with), with native result JSON byte-identical to before. The
+slowest pages now spend most of the time in `css-orientation-lock`, which styles the page in two viewports. Numbers are from one run each and the worker was shared.
 
 ### Pages written for the differential
 

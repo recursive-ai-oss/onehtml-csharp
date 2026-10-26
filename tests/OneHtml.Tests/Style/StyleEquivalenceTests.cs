@@ -219,7 +219,8 @@ public class StyleEquivalenceTests
     private static readonly string[] HasRules =
     [
         ".c1:has(.c2){color:red}", "div:has(+ .c3){background-color:blue}", "ul:has(li:last-child){color:green}", "section:has(> a){color:red}",
-        "li:has(:focus){background-color:green}",
+        "li:has(:focus){background-color:green}", "div:has(:focus-visible){color:red}", "div:has(+ a:focus){background-color:blue}",
+        ".c1:has(~ input:focus-within) .c2{color:green}", "ul:not(:has(:focus)) li{color:blue}", "section:has(> div > :focus) + div{opacity:.4}",
     ];
 
     private static string Sheet(Random r, bool useHas)
@@ -557,6 +558,8 @@ public class StyleEquivalenceTests
             .wrap:focus-within .box a { border-top-color: red } div > a:focus-visible { outline: 2px solid blue }
             :is(button, input):focus { background-color: pink } a:not(:focus) { text-decoration-color: gray }
             .x { .y:focus-within { color: teal } }
+            .box:focus-within > .item { color: olive } .box:focus-within > .y > a { color: navy } .box:focus-within > .y a { text-decoration-color: red }
+            .wrap:focus-within > p + p b { color: maroon } .wrap:focus-within > .box ~ p > b { background-color: lime } .box:focus-within > input ~ em { color: gold }
             </style>
             <div class=wrap><div class=box id=bx><a id=a1 href=/a class=item>A</a><input id=i1><span>s</span><em>e</em>
             <button id=b1><b>bold</b></button><div class=y id=y1><a id=a2 href=/b>B</a></div></div>
@@ -567,6 +570,64 @@ public class StyleEquivalenceTests
         DocumentStyles baseStyles = DocumentStyles.Create(doc);
         baseStyles.ComputeAll();
         string[] ids = ["a1", "i1", "b1", "a2", "i2", "a3"];
+        foreach (string from in ids.Prepend(null!))
+        {
+            foreach (string to in ids)
+            {
+                StyleContext a = from is null ? StyleContext.Default : StyleContext.Default.WithFocus(doc.GetElementById(from));
+                StyleContext b = StyleContext.Default.WithFocus(doc.GetElementById(to));
+                DocumentStyles start = baseStyles.WithContext(a);
+                AssertEqual(start.WithContext(b), DocumentStyles.Create(doc, b), "focus " + (from ?? "none") + " -> " + to);
+            }
+        }
+    }
+
+    // Each reach rule alone, so that no other rule restyles the element the rule's bound would otherwise miss.
+    [Theory]
+    [InlineData(".box:focus-within > .y > a { color: navy }")]
+    [InlineData(".box:focus-within > .y a { color: navy }")]
+    [InlineData(".box:focus-within > .item ~ .y > a { color: navy }")]
+    [InlineData(".box:focus-within + p > b { color: navy }")]
+    [InlineData(".box:focus-within ~ p b { color: navy }")]
+    [InlineData(".wrap:focus-within > .box > .y > a { color: navy }")]
+    public void Focus_overlay_reach_of_one_rule_equals_full_recompute(string rule)
+    {
+        string page = "<style>" + rule + "</style><div class=wrap><div class=box><a id=a1 href=/a class=item>A</a>"
+            + "<div class=y><a id=a2 href=/b>B</a><div><a id=a4 href=/d>D</a></div></div></div><p>p <b>b</b></p><p><b>b2</b></p></div><a id=a3 href=/c>C</a>";
+        Document doc = Document.Parse(page);
+        DocumentStyles baseStyles = DocumentStyles.Create(doc);
+        baseStyles.ComputeAll();
+        string[] ids = ["a1", "a2", "a3", "a4"];
+        foreach (string to in ids)
+        {
+            StyleContext b = StyleContext.Default.WithFocus(doc.GetElementById(to));
+            AssertEqual(baseStyles.WithContext(b), DocumentStyles.Create(doc, b), rule + " focus " + to);
+        }
+    }
+
+    // Focus read inside :has(): only the focused element's ancestors, and the earlier siblings of those for a sibling combinator inside
+    // the :has(), can change; the overlay tries just those and must still equal a full recompute.
+    [Fact]
+    public void Focus_overlays_with_has_selectors_equal_full_recompute()
+    {
+        const string page = """
+            <style>
+            .card:has(:focus-visible) { outline: 2px solid red } .card:has(:focus-visible) .t { color: red }
+            .row:has(+ .row a:focus) { background-color: blue } .row:has(~ .row input:focus) { color: green }
+            .card:has(> .in > a:focus) + .card { opacity: .5 } .nav:not(:has(:focus)) a { color: gray }
+            .row:has(:focus-within) ~ .row .t { color: orange } :is(.card, .row):has(button:focus) { background-color: pink }
+            </style>
+            <div class=card id=c1><span class=t>t</span><div class=in><a id=a1 href=/a>A</a></div></div>
+            <div class=card id=c2><span class=t>t2</span><div class=in><button id=b1>B</button></div></div>
+            <div class=row id=r1><span class=t>x</span><a id=a2 href=/b>r1</a></div>
+            <div class=row id=r2><span class=t>y</span><div><input id=i1></div></div>
+            <div class=row id=r3><span class=t>z</span><a id=a3 href=/c>r3</a></div>
+            <ul class=nav><li><a id=a4 href=/d>d</a></li></ul>
+            """;
+        Document doc = Document.Parse(page);
+        DocumentStyles baseStyles = DocumentStyles.Create(doc);
+        baseStyles.ComputeAll();
+        string[] ids = ["a1", "b1", "a2", "i1", "a3", "a4"];
         foreach (string from in ids.Prepend(null!))
         {
             foreach (string to in ids)

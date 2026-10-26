@@ -226,6 +226,13 @@ internal static class AxeCommand
         var clock = Stopwatch.StartNew();
         CheckReport report = s_checker.Check(tree, new CheckOptions { Facts = facts }, ct);
         long checkMs = clock.ElapsedMilliseconds;
+        if (Environment.GetEnvironmentVariable("ONEHTML_AXE_NATIVE_DIR") is { Length: > 0 } nativeDir)
+        {
+            // Investigation aid: the native result JSON of each page, to compare two builds byte for byte.
+            Directory.CreateDirectory(nativeDir);
+            File.WriteAllText(System.IO.Path.Combine(nativeDir, page + "-" + (facts is null ? "off" : "on") + ".json"), report.ToNativeJson());
+        }
+
         if (Environment.GetEnvironmentVariable("ONEHTML_AXE_PROFILE") is { Length: > 0 })
         {
             // Investigation aid: the time each rule takes alone on this page (the tree and the cascade are already built).

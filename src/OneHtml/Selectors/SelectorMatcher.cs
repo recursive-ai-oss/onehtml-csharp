@@ -381,16 +381,17 @@ internal static class SelectorMatcher
 
     /// <summary>
     /// Appends the anchors whose compound matches the element differently under the two options. With <paramref name="onlyWithin"/> only
-    /// the <c>:focus-within</c> compounds are tried (the element is an ancestor of the focused one, which a plain <c>:focus</c> cannot see).
+    /// the <c>:focus-within</c> and <c>:has()</c> compounds are tried (the element is an ancestor of the focused one, which a plain <c>:focus</c> cannot see).
+    /// With <paramref name="onlySideways"/> only the compounds whose <c>:has()</c> uses a sibling combinator are tried (the element is an earlier sibling of such an ancestor).
     /// One match context per option serves all anchors.
     /// </summary>
-    internal static void ChangedFocusAnchors(Node element, List<Css.FocusAnchor> anchors, SelectorMatchOptions? from, SelectorMatchOptions? to, bool onlyWithin, List<Css.FocusAnchor> changed)
+    internal static void ChangedFocusAnchors(Node element, List<Css.FocusAnchor> anchors, SelectorMatchOptions? from, SelectorMatchOptions? to, bool onlyWithin, List<Css.FocusAnchor> changed, bool onlySideways = false)
     {
         MatchCtx a = Create(element, from, false);
         MatchCtx b = Create(element, to, false);
         foreach (Css.FocusAnchor anchor in anchors)
         {
-            if ((onlyWithin && !anchor.Within) || MatchCompound(ref a, anchor.Compound, element.Index) == MatchCompound(ref b, anchor.Compound, element.Index))
+            if ((onlySideways && !anchor.HasSideways) || (onlyWithin && !anchor.Within && !anchor.ViaHas) || MatchCompound(ref a, anchor.Compound, element.Index) == MatchCompound(ref b, anchor.Compound, element.Index))
             {
                 continue;
             }

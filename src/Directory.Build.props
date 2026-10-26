@@ -3,6 +3,8 @@
 
   <PropertyGroup>
     <IsAotCompatible>true</IsAotCompatible>
+    <!-- Deterministic source paths on CI, for the shipped libraries only: tests find their data files through their own source paths. -->
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <IsTrimmable>true</IsTrimmable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>$(PackagePrefix).$(MSBuildProjectName)</AssemblyName>

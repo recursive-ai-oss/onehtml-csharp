@@ -30,6 +30,8 @@ public class NestedIsQueryCostTests
     // Never matches when the document has no .x, so every ancestor is tried at every level.
     private const string Nested = ":is(:is(:is(:is(.x) *) *) *) *";
 
+    // The bound catches exponential matching, which takes minutes; these queries take about 0.1 s alone,
+    // so the headroom is for a busy machine running every test assembly at once.
     private static void Within(TimeSpan limit, Action work)
     {
         var sw = Stopwatch.StartNew();
@@ -42,7 +44,7 @@ public class NestedIsQueryCostTests
     {
         Document doc = Deep(false);
         Node leaf = doc.Root.QuerySelector("#leaf");
-        Within(TimeSpan.FromSeconds(1), () => Assert.False(leaf.Matches(Nested)));
+        Within(TimeSpan.FromSeconds(5), () => Assert.False(leaf.Matches(Nested)));
     }
 
     [Fact]
@@ -50,7 +52,7 @@ public class NestedIsQueryCostTests
     {
         Document doc = Deep(true);
         Node leaf = doc.Root.QuerySelector("#leaf");
-        Within(TimeSpan.FromSeconds(1), () =>
+        Within(TimeSpan.FromSeconds(5), () =>
         {
             _ = leaf.Matches(":not(:not(:not(:not(:is(*) *) *) *) *) *");
             Assert.True(leaf.Matches(":where(:where(:where(.x) *) *) *"));
@@ -63,7 +65,7 @@ public class NestedIsQueryCostTests
     {
         Document doc = Deep(false);
         Node leaf = doc.Root.QuerySelector("#leaf");
-        Within(TimeSpan.FromSeconds(1), () =>
+        Within(TimeSpan.FromSeconds(5), () =>
         {
             Assert.Empty(doc.Root.QuerySelectorAll(Nested));
             Assert.True(leaf.Closest(Nested).IsNull);

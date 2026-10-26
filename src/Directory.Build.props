@@ -14,12 +14,23 @@
     <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <IsPackable>true</IsPackable>
-    <!-- Pre-release until the first stable release is cut. -->
-    <Version>0.1.0-dev</Version>
+    <!-- The one place the package version lives. All three packages ship with the same version. -->
+    <Version>1.0.0-rc.1</Version>
+    <PackageProjectUrl>https://github.com/recursive-ai-oss/onehtml-csharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/recursive-ai-oss/onehtml-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <!-- Every public type and member carries an XML doc comment; a missing one fails the build. -->
+    <WarningsAsErrors>$(WarningsAsErrors);CS1591</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="/" />
+    <!-- Each package folder holds its own README.md. -->
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="$(MSBuildThisFileDirectory)../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="/" Visible="false" />
   </ItemGroup>
 </Project>

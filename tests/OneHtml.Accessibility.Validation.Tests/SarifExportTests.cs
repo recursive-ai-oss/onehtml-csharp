@@ -498,7 +498,11 @@ public sealed class SarifExportTests
     public void Golden_sarif_matches_the_file()
     {
         string path = Path.Combine(GoldenDir, "aria-page.sarif.json");
-        string actual = CheckPage("aria-page").ToSarifJson(new ExportOptions { Indented = true, Url = "https://example.test/page" });
+        // The tool's semantic version is the package version, which changes with every release; the golden keeps a fixed one.
+        string actual = System.Text.RegularExpressions.Regex.Replace(
+            CheckPage("aria-page").ToSarifJson(new ExportOptions { Indented = true, Url = "https://example.test/page" }),
+            "\"semanticVersion\": \"[^\"]*\"",
+            "\"semanticVersion\": \"0.1.0\"");
         if (Environment.GetEnvironmentVariable("ONEHTML_UPDATE_GOLDEN") == "1")
         {
             File.WriteAllText(path, actual);

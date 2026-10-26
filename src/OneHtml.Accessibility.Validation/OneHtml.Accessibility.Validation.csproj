@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Accessibility checks over OneHtml documents, without a browser. In development.</Description>
+    <Description>Accessibility checks that need no browser: one rule catalogue across WCAG 2.0, 2.1 and 2.2 and best practices, labelled results, suggested edits where one fix exists, and native, axe-compatible and SARIF 2.1.0 output.</Description>
+    <PackageTags>accessibility a11y wcag act-rules axe sarif html validation</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../OneHtml.Accessibility/OneHtml.Accessibility.csproj" />

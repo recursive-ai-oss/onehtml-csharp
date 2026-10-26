@@ -15,6 +15,14 @@
     <Compile Include="../../tools/OneHtml.Differential/AxeCompare.cs" Link="Differential/AxeCompare.cs" />
   </ItemGroup>
   <ItemGroup>
+    <!-- ReadmeSampleTests checks the README code blocks against ReadmeSamples.cs. -->
+    <None Include="../../README.md" Link="README.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../src/OneHtml/README.md" Link="README.OneHtml.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../src/OneHtml.Accessibility/README.md" Link="README.Accessibility.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../src/OneHtml.Accessibility.Validation/README.md" Link="README.Validation.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="ReadmeSamples.cs" Link="ReadmeSamples.cs.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />
   </ItemGroup>
 </Project>

@@ -26,3 +26,20 @@ bash bench/run-worker.sh ~/onehtml/corpus/<version> ~/onehtml/u7/bench-out/<name
 ```
 
 Optional: `ONEHTML_BENCH_SAMPLE_SIZE`, `ONEHTML_BENCH_BAND_CAP`, `ONEHTML_BENCH_MAX_SECONDS` (default 7200), and BenchmarkDotNet arguments after the out dir (for example `--job short`). The script claims `~/WORKER-BENCH.lock` atomically and exits with status 3 at once if it is held, builds in Release, records CPU model, cores, SDK, package versions and the load average before, during (every 30 s) and after, and runs the benchmark under `timeout`. Outputs in the out dir: `environment.txt`, `load.log`, `bench.log`, `bdn/results/*`. A run that overlapped another heavy job is not publishable; check `load.log`.
+
+## Checker against axe-core in Chrome
+
+The same pages, three measurements, ours in process and axe-core 4.14.0 in the pinned Chrome (a black box: its bundle is injected as an opaque string and run, never read; pages are served offline from the corpus with page script off, as in `tools/capture`).
+
+| Measurement | Ours (`CheckBenchmarks`, `CheckPerPage`) | axe-core (`axe-bench/axe_bench.py`) |
+|---|---|---|
+| Full check | `Checker.Check(document)`: cascade, tree and every rule, from a parsed document | `axe.run` over the document, every rule enabled, all result types, no xpath |
+| Re-check after one edit | `Apply` of one `SetAttribute` on the first element in `<body>`, `Restyle`, `AccessibilityTree.Update`, then every rule over the new tree | `setAttribute('data-bench', '1')` on the same element, then a full `axe.run` (axe has no incremental mode) |
+| Focus overlays | for each of the first 20 focusable nodes: the tree with that node focused (`StyleContext.WithFocus`) and the `color-contrast` rule re-run | for each of the first 20 focusable elements: `focus()`, then `axe.run` with only `color-contrast` |
+
+Differences to keep in mind when reading the numbers: our side reads the page's own bytes and does not get the linked stylesheets, while Chrome loads them; Chrome's time is measured inside the page around the awaited `axe.run` (`performance.now()`), so it excludes protocol and load time; the focusable sets are each side's own notion of focusable (the counts are printed); and the first edit and focus runs of each side are warm-ups that are not reported.
+
+- `BenchmarkDotNet` rows (time and allocation per sweep of the sample): `--filter '*CheckBenchmarks*'`.
+- Per-page timings: `dotnet OneHtml.Benchmarks.dll --check-per-page ours.jsonl` (median of `ONEHTML_BENCH_REPEATS`, default 3, after one warm-up).
+- Chrome side and comparison: `python3 bench/axe-bench/axe_bench.py run --corpus <corpus> --ours ours.jsonl --out axe.jsonl`, then `axe_bench.py compare ours.jsonl axe.jsonl`.
+- On the worker, all of it under the lock: `bash bench/run-worker.sh checker ~/onehtml/corpus/<version> ~/onehtml/bench-out/<name>` (extra variables: `ONEHTML_BENCH_FOCUS_CAP`, `ONEHTML_BENCH_AXE_LIMIT`, `ONEHTML_BENCH_SKIP_BDN`).

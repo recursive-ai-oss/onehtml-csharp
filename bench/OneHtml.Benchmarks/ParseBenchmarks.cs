@@ -184,7 +184,7 @@ public class ParseBenchmarks
     }
 }
 
-/// <summary>Runs the benchmarks; pass BenchmarkDotNet arguments such as <c>--filter</c> and <c>--job dry</c>.</summary>
+/// <summary>Runs the benchmarks; pass BenchmarkDotNet arguments such as <c>--filter</c> and <c>--job dry</c>, or <c>--check-per-page out.jsonl</c> for the checker's per-page timings.</summary>
 internal static class Program
 {
     private static int Main(string[] args)
@@ -193,6 +193,12 @@ internal static class Program
         {
             Console.Error.WriteLine($"set {Sample.CorpusVariable} to a corpus version directory (or a directory of HTML files)");
             return 2;
+        }
+
+        int perPage = Array.IndexOf(args, "--check-per-page");
+        if (perPage >= 0 && perPage + 1 < args.Length)
+        {
+            return CheckPerPage.Run(args[perPage + 1], int.TryParse(Environment.GetEnvironmentVariable("ONEHTML_BENCH_REPEATS"), out int r) && r > 0 ? r : 3);
         }
 
         BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);

@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>HTML and CSS parsing, selectors, cascade and lossless editing. In development.</Description>
+    <Description>HTML and CSS parsing, selectors, cascade and lossless editing: a WHATWG-conformant parser, an immutable arena DOM with a byte-exact source map, Selectors Level 4, CSS cascade under a style context, and edits that change only the bytes they touch. Pure C#, safe code, NativeAOT-compatible.</Description>
+    <PackageTags>html html5 parser dom css selectors cascade lossless-editing nativeaot</PackageTags>
   </PropertyGroup>
 </Project>

@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: ${{ matrix.name }}
@@ -16,9 +19,12 @@ jobs:
           - { name: linux-x64, os: ubuntu-latest, rid: linux-x64 }
           - { name: linux-arm64, os: ubuntu-24.04-arm, rid: linux-arm64 }
           - { name: osx-arm64, os: macos-latest, rid: osx-arm64 }
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           global-json-file: global.json
       - name: Build
@@ -31,3 +37,8 @@ jobs:
         shell: bash
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then ./aot-out/OneHtml.AotSmoke.exe; else ./aot-out/OneHtml.AotSmoke; fi
+      - name: Pack
+        run: dotnet pack -c Release --no-build -o pack
+      - name: Inspect the packages
+        if: matrix.rid == 'linux-x64'
+        run: python3 tools/check-packages.py pack

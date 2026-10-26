@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>The accessibility tree for OneHtml documents. In development.</Description>
+    <Description>The accessibility tree for OneHtml documents, computed without a browser from WAI-ARIA 1.2, HTML-AAM and AccName 1.2 with Chromium choices documented: roles, names, states, relations, reading view, navigation lists, diffs and incremental updates.</Description>
+    <PackageTags>accessibility a11y aria accname accessibility-tree screen-reader html</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../OneHtml/OneHtml.csproj" />

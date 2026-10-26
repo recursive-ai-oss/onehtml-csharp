@@ -418,7 +418,10 @@ internal sealed partial class TreeBuilder
 
                 if (_a.Ns[src] == Html && _a.Name[src] == N.Template)
                 {
-                    _a.Aux[e] = _a.AddNode(NodeKind.DocumentFragment, Html, -1);
+                    // Add the fragment first: AddNode can grow (replace) the columns, and an assignment target
+                    // such as `_a.Aux[e]` is evaluated before the call, so the write would land in the old array.
+                    int fragment = _a.AddNode(NodeKind.DocumentFragment, Html, -1);
+                    _a.Aux[e] = fragment;
                 }
 
                 break;

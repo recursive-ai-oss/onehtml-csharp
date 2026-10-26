@@ -141,7 +141,8 @@ internal sealed class ReplayMutations
 
         // attribute order: swap the first two attributes of the target's start tag
         {
-            if (t.Attributes.Count >= 2 && t.Attributes[0].Range.End <= t.Attributes[1].Range.Start && t.Attributes[0].Namespace == AttributeNamespace.None)
+            // The attributes must be separated by white space: with none (`a="x""b"`), swapping them changes what the tokenizer reads.
+            if (t.Attributes.Count >= 2 && t.Attributes[0].Range.End < t.Attributes[1].Range.Start && t.Attributes[0].Namespace == AttributeNamespace.None && html.AsSpan(t.Attributes[0].Range.End, t.Attributes[1].Range.Start - t.Attributes[0].Range.End).Trim(" \t\n\f").IsEmpty)
             {
                 SourceRange a = t.Attributes[0].Range;
                 SourceRange b = t.Attributes[1].Range;
@@ -201,7 +202,7 @@ internal sealed class ReplayMutations
         {
             string? id = t.GetAttribute("id");
             Attr? idAttr = FindAttr(t, "id");
-            if (id is not null && idAttr is { } ia && ia.ValueRange.End > ia.ValueRange.Start && !Hashy(id))
+            if (id is not null && idAttr is { } ia && ia.ValueRange.End > ia.ValueRange.Start && !GeneratedNames.IsHashLike(id))
             {
                 string m = html[..ia.ValueRange.End] + "x" + html[ia.ValueRange.End..];
                 Check("id-changed", env, m, doc, elements, ordinal, ordinal, 0, tag, originalOuter, pathText, mustApply: false, mustNotApply: true);
@@ -212,7 +213,7 @@ internal sealed class ReplayMutations
             }
 
             Attr? ca = FindAttr(t, "class");
-            if (ca is { } cl && cl.ValueRange.End > cl.ValueRange.Start && t.GetAttribute("class") is { } cv && cv.Any(char.IsLetter) && !Hashy(cv.Split(' ')[0]))
+            if (ca is { } cl && cl.ValueRange.End > cl.ValueRange.Start && t.GetAttribute("class") is { } cv && cv.Any(char.IsLetter) && !char.IsWhiteSpace(cv[0]) && !GeneratedNames.IsHashLike(cv.Split(' ')[0]))
             {
                 string m = html[..cl.ValueRange.Start] + "zz-" + html[cl.ValueRange.Start..];
                 Check("class-changed", env, m, doc, elements, ordinal, ordinal, 0, tag, originalOuter, pathText, mustApply: false, mustNotApply: true);
@@ -395,7 +396,12 @@ internal sealed class ReplayMutations
                     row.Applied++;
                     CssNode got = o.Rule!.Value;
                     string gotNorm = SheetLayout_Norm(got.Raw.ToString());
-                    if (!string.Equals(gotNorm, originalRule, StringComparison.Ordinal))
+                    if (!string.Equals(gotNorm, originalRule, StringComparison.Ordinal) && string.Equals(StripSpace(gotNorm), StripSpace(originalRule), StringComparison.Ordinal))
+                    {
+                        // The same selector and declarations written with other spacing: the format cannot tell it from the target.
+                        row.Lookalike++;
+                    }
+                    else if (!string.Equals(gotNorm, originalRule, StringComparison.Ordinal))
                     {
                         row.Wrong++;
                         Findings.Add($"WRONG RULE {mutation}: resolved '{Short(gotNorm)}' for '{Short(originalRule)}'");
@@ -443,12 +449,12 @@ internal sealed class ReplayMutations
 
     private static string Short(string s) => s.Length <= 300 ? s : s[..300] + "...";
 
+    private static string StripSpace(string s) => string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
+
     private static string SheetLayout_Norm(string s) => string.Join(' ', s.Split([' ', '\t', '\n', '\r', '\f'], StringSplitOptions.RemoveEmptyEntries));
 
     /// <summary>Saves and reads back, so replay always runs from parsed JSON.</summary>
     private static EditEnvelope Roundtrip(EditEnvelope e) => EditJson.Parse(e.ToJson());
-
-    private static bool Hashy(string s) => s.Length >= 8 && s.Any(char.IsDigit);
 
     private static Attr? FindAttr(Node e, string name)
     {

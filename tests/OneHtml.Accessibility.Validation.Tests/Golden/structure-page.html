@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Structure page</title>
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<meta http-equiv="refresh" content="30; url=/next">
+</head>
+<body>
+<a href="#content">Skip to content</a>
+<a href="#missing">Skip to nowhere</a>
+<header>
+  <nav>Site</nav>
+  <nav>Section</nav>
+</header>
+<main id="content">
+  <h2>Starts at two</h2>
+  <h4>Skips a level</h4>
+  <p><b>Looks like a heading</b></p>
+  <p>The paragraph that follows it, with ordinary text.</p>
+  <ul><li>fine</li><div>stray</div></ul>
+  <div><li>orphan one</li><li>orphan two</li></div>
+  <dl><dt>Term</dt><dd>Definition</dd><dt>No definition</dt></dl>
+  <div id="twin">a</div><div id="twin">b</div>
+  <button id="go">Go</button><button id="go">Go again</button>
+  <a href="/x" tabindex="1">first</a><a href="/y" tabindex="2">second</a>
+  <div tabindex="0">focusable, no role</div>
+  <a href="/k" accesskey="k">k</a><button accesskey="K">K</button>
+  <button><a href="/inner">nested</a></button>
+  <iframe tabindex="-1" srcdoc="<a href='/'>inside</a>"></iframe>
+  <blink>old</blink>
+  <a href="/map"><img src="map.png" alt="Map" ismap></a>
+  <div style="display:none">hidden words</div>
+</main>
+<footer>Footer</footer>
+<footer>Second footer</footer>
+<p>Outside every landmark.</p>
+</body>
+</html>

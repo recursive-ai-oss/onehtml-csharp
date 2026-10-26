@@ -45,7 +45,6 @@ public static class BuiltInRules
             new ThHasDataCellsRule(),
             new ValidLangRule(),
             new PresentationRoleConflictRule(),
-            new PresentationalChildrenFocusableRule(),
             new RoleNameRule("aria-command-name", "A button, link or menu item given its role by the role attribute must have an accessible name.", "Give the control a visible text label, an aria-label or an aria-labelledby.", ["button", "link", "menuitem"], ["m6b1q3", "97a4e1", "c487ae"]),
             new RoleNameRule("aria-dialog-name", "A dialog or alert dialog given its role by the role attribute should have an accessible name.", "Name the dialog with aria-labelledby pointing at its title, or with aria-label.", ["dialog", "alertdialog"]),
             new RoleNameRule("aria-input-field-name", "A combo box, list box, search box, slider, spin button or text box given its role by the role attribute must have an accessible name.", "Label the field with a visible label, aria-label or aria-labelledby.", ["combobox", "listbox", "searchbox", "slider", "spinbutton", "textbox"], ["e086e5"]),
@@ -57,6 +56,7 @@ public static class BuiltInRules
             new RoleNameRule("aria-treeitem-name", "A tree item given its role by the role attribute should have an accessible name.", "Give the tree item text, an aria-label or an aria-labelledby.", ["treeitem"]),
         };
         list.AddRange(NameRuleSet.Create());
+        list.AddRange(StructureRuleSet.Create());
         list.Sort((a, b) => string.CompareOrdinal(a.Descriptor.Id, b.Descriptor.Id));
         return [.. list];
     }

@@ -10,6 +10,9 @@ namespace RecursiveAI.OneHtml.Accessibility.Tests;
 internal sealed class FakeLayout
 {
     public double X, Y, W = 10, H = 10;
+
+    /// <summary>The element's scroll size when it differs from its box (scrollWidth, scrollHeight); null means no overflow.</summary>
+    public (double Width, double Height)? ScrollSize { get; set; }
     public int Paint = 1;
     public bool Stacking;
     public string? Text;
@@ -317,7 +320,14 @@ internal static class FakeSnapshot
                 else
                 {
                     FakeLayout l = flat[i].Node.Layout!;
-                    WriteRect(w, l.X, l.Y, l.W, l.H);
+                    if (rect == "scrollRects" && l.ScrollSize is { } sz)
+                    {
+                        WriteRect(w, l.X, l.Y, sz.Width, sz.Height);
+                    }
+                    else
+                    {
+                        WriteRect(w, l.X, l.Y, l.W, l.H);
+                    }
                 }
             }
 

@@ -43,10 +43,9 @@ rule names exactly one correct, judgement-free fix; the library never applies it
 | aria-valid-attr | axe, ACT 5f99a7 | 4.1.2 | critical | remove the attribute |
 | aria-valid-attr-value | axe, ACT 6a7281 | 4.1.2 | critical | remove the attribute (not a required one) |
 | presentation-role-conflict | axe, ACT 46ca7f | best practice | minor | none |
-| presentational-children-focusable | ACT 307n5z | 4.1.2 | serious | none |
 
-`presentational-children-focusable` is ours by id: its counterpart in axe (`nested-interactive`) belongs to another rule
-area and is not the same check.
+`nested-interactive` (axe, ACT 307n5z) is the same check as the ACT rule about presentational children; it is listed in
+[structure.md](structure.md) with the other focus rules.
 
 ### What each rule checks and why it has the fix it has
 
@@ -99,10 +98,6 @@ area and is not the same check.
 - **aria-hidden-focus** (ACT 6cfa84). An element with `aria-hidden="true"` and every element inside it are not part of
   sequential focus navigation (not focusable, or `tabindex` negative, disabled, inert or not rendered). *No fix:* hiding
   from assistive technology, making unfocusable, and showing are three different outcomes.
-- **presentational-children-focusable** (ACT 307n5z). An element whose role has presentational children (button,
-  checkbox, img, menuitemcheckbox, menuitemradio, meter, option, progressbar, radio, scrollbar, separator, slider, switch, tab,
-  doc-pagebreak, graphics-symbol) has no descendant in sequential focus navigation. *No fix:* removing, moving, or changing the outer role each
-  change the page.
 - **presentation-role-conflict** (ACT 46ca7f). An element marked decorative (`role=none` or `presentation`, or an `img`
   with `alt=""`) that is in the accessibility tree must end up with the role `none`/`presentation`. Conflict resolution
   (WAI-ARIA 1.2 section 8.4) takes the presentational role away from a focusable element or one with a global attribute;
@@ -146,7 +141,7 @@ script are N/A, with the reason in `testdata/act/aria-expectations.tsv`.
 
 | ACT rule | Our rule(s) | Cases | Pass | N/A | Fail |
 |---|---|---|---|---|---|
-| 307n5z Element with presentational children has no focusable content | presentational-children-focusable | 7 | 7 | 0 | 0 |
+| 307n5z Element with presentational children has no focusable content | nested-interactive | 7 | 7 | 0 | 0 |
 | 46ca7f Element marked as decorative is not exposed | presentation-role-conflict | 10 | 10 | 0 | 0 |
 | 4e8ab6 Element with role attribute has required states and properties | aria-required-attr | 8 | 8 | 0 | 0 |
 | 5c01ea ARIA state or property is permitted | aria-allowed-attr, aria-prohibited-attr, aria-conditional-attr | 15 | 15 | 0 | 0 |

@@ -19,6 +19,27 @@
   "limitReached": false,
   "rules": [
     {
+      "id": "accesskeys",
+      "description": "Each accesskey value must be unique.",
+      "help": "Give every element that has an accesskey its own key.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "accesskeys"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Which element keeps the key, and what the others use, is the author's decision."
+    },
+    {
       "id": "area-alt",
       "description": "An area element of an image map that is a link must have alternative text.",
       "help": "Add an alt attribute to the area that says where the link goes.",
@@ -933,6 +954,43 @@
       "noFixReason": "Removing a bad value would only hide the problem; the right token depends on what the field collects."
     },
     {
+      "id": "blink",
+      "description": "The blink element makes text flash, which WCAG forbids for more than five seconds.",
+      "help": "Remove the blink element and mark emphasis another way.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "blink"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.2.2",
+          "handle": "Pause, Stop, Hide",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag222",
+        "section508",
+        "section508.22.j",
+        "TTv5",
+        "TT2.b",
+        "EN-301-549",
+        "EN-9.2.2.2",
+        "RGAAv4",
+        "RGAA-13.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Removing the element drops the author's intended effect, and CSS the library cannot see may style the element, so the author decides what replaces it."
+    },
+    {
       "id": "button-name",
       "description": "A button element must have an accessible name.",
       "help": "Put text in the button, or add an aria-label or aria-labelledby.",
@@ -975,6 +1033,113 @@
       "noFixReason": "The name is content: only the author knows what the element is called or shows."
     },
     {
+      "id": "bypass",
+      "description": "A page must give a way to skip blocks of content that repeat across pages: a heading, a main landmark or a skip link.",
+      "help": "Add a skip link to the main content, mark it up with a main element, or start it with a heading.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "bypass"
+        },
+        {
+          "kind": "act",
+          "id": "cf77f2"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.4.1",
+          "handle": "Bypass Blocks",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.keyboard",
+        "wcag2a",
+        "wcag241",
+        "section508",
+        "section508.22.o",
+        "TTv5",
+        "TT9.a",
+        "EN-301-549",
+        "EN-9.2.4.1",
+        "RGAAv4",
+        "RGAA-12.7.1"
+      ],
+      "fix": null,
+      "noFixReason": "Choosing where the main content starts, and what the skip link says, is the author's decision."
+    },
+    {
+      "id": "definition-list",
+      "description": "A dl may only directly contain well-ordered dt and dd groups, div, script and template elements.",
+      "help": "Order the terms and descriptions as dt then dd, and move other content out of the dl.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "definition-list"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.3"
+      ],
+      "fix": null,
+      "noFixReason": "Which terms and descriptions belong together is the author's decision."
+    },
+    {
+      "id": "dlitem",
+      "description": "A dt or dd element must be inside a dl.",
+      "help": "Put the dt and dd elements in a dl.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "dlitem"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.3"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the content is a definition list at all is the author's decision."
+    },
+    {
       "id": "document-title",
       "description": "The document must have a title element with text in it.",
       "help": "Add a title element to the head of the document and say in it what the page is.",
@@ -1013,6 +1178,111 @@
       ],
       "fix": null,
       "noFixReason": "The title is content: only the author knows what the page is called."
+    },
+    {
+      "id": "duplicate-id",
+      "description": "An id value should be used by one element only.",
+      "help": "Give each element its own id.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "duplicate-id"
+        },
+        {
+          "kind": "act",
+          "id": "3ea0c8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.1",
+          "handle": "Parsing",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.parsing",
+        "wcag2a-obsolete",
+        "wcag411",
+        "deprecated"
+      ],
+      "fix": null,
+      "noFixReason": "Which element should keep the id, and what the others are called, is the author's decision; stylesheets and scripts the library cannot see may depend on either."
+    },
+    {
+      "id": "duplicate-id-active",
+      "description": "A focusable element must not share its id with another element.",
+      "help": "Give each focusable element its own id.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "duplicate-id-active"
+        },
+        {
+          "kind": "act",
+          "id": "3ea0c8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.1",
+          "handle": "Parsing",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.parsing",
+        "wcag2a-obsolete",
+        "wcag411",
+        "deprecated"
+      ],
+      "fix": null,
+      "noFixReason": "Which element should keep the id, and what the others are called, is the author's decision; stylesheets and scripts the library cannot see may depend on either."
+    },
+    {
+      "id": "duplicate-id-aria",
+      "description": "An id that a label or an ARIA attribute refers to must be used by one element only.",
+      "help": "Give each element its own id and keep the reference pointing at the right one.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "duplicate-id-aria"
+        },
+        {
+          "kind": "act",
+          "id": "3ea0c8"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.parsing",
+        "wcag2a",
+        "wcag412",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-8.2.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which element should keep the id, and what the others are called, is the author's decision; stylesheets and scripts the library cannot see may depend on either."
     },
     {
       "id": "element-lang-matches-content",
@@ -1086,6 +1356,30 @@
       "noFixReason": "What the header should say is a content decision."
     },
     {
+      "id": "focus-order-semantics",
+      "description": "An element made focusable with tabindex should have a role that says what it is.",
+      "help": "Give the element a widget, landmark or dialog role, or take it out of the tab order.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "focus-order-semantics"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-12.8.1",
+        "experimental"
+      ],
+      "fix": null,
+      "noFixReason": "Which role fits the element depends on what it does, which only the author knows."
+    },
+    {
       "id": "form-field-multiple-labels",
       "description": "A form field should not have more than one label element.",
       "help": "Use one label element for the field and put the extra text inside it.",
@@ -1119,6 +1413,45 @@
       ],
       "fix": null,
       "noFixReason": "Which label to keep, or how to merge them, is a content decision."
+    },
+    {
+      "id": "frame-focusable-content",
+      "description": "A frame removed from the tab order must not contain focusable content.",
+      "help": "Remove the negative tabindex from the frame, or remove the focusable content.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "frame-focusable-content"
+        },
+        {
+          "kind": "act",
+          "id": "akn7bn"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.1.1",
+          "handle": "Keyboard",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.keyboard",
+        "wcag2a",
+        "wcag211",
+        "TTv5",
+        "TT4.a",
+        "EN-301-549",
+        "EN-9.2.1.1",
+        "RGAAv4",
+        "RGAA-7.3.2"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the frame or its content should change is the author's decision."
     },
     {
       "id": "frame-title",
@@ -1199,6 +1532,50 @@
       ],
       "fix": null,
       "noFixReason": "Naming a frame is a content decision."
+    },
+    {
+      "id": "heading-order",
+      "description": "Heading levels should only increase by one.",
+      "help": "Change the heading's level so it is at most one deeper than the heading before it.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "heading-order"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Whether the heading or its predecessor has the wrong level is the author's decision."
+    },
+    {
+      "id": "hidden-content",
+      "description": "Content hidden with CSS should be checked: confirm that it is meant to be hidden.",
+      "help": "Confirm the content is not needed by anyone, or show it.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "hidden-content"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.structure",
+        "best-practice",
+        "experimental",
+        "review-item"
+      ],
+      "fix": null,
+      "noFixReason": "Whether hidden content should be shown or removed is the author's decision."
     },
     {
       "id": "html-has-lang",
@@ -1661,6 +2038,196 @@
       "noFixReason": "The label is content: its wording and place on the page are the author's."
     },
     {
+      "id": "landmark-banner-is-top-level",
+      "description": "A banner landmark must not sit inside another landmark.",
+      "help": "Move the banner out of the other landmark, or give the inner element a role that is not banner.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-banner-is-top-level"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-complementary-is-top-level",
+      "description": "A complementary landmark (an aside) should not sit inside another landmark.",
+      "help": "Move the aside out of the other landmark, or give it a role that is not complementary.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-complementary-is-top-level"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice",
+        "deprecated"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-contentinfo-is-top-level",
+      "description": "A contentinfo landmark (a page footer) must not sit inside another landmark.",
+      "help": "Move the footer out of the other landmark, or give the inner element a role that is not contentinfo.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-contentinfo-is-top-level"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-main-is-top-level",
+      "description": "A main landmark must not sit inside another landmark.",
+      "help": "Move the main element out of the other landmark.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-main-is-top-level"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-no-duplicate-banner",
+      "description": "A page should have at most one banner landmark.",
+      "help": "Keep one banner; give the other elements a role that is not banner, or use header inside sectioning content.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-no-duplicate-banner"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-no-duplicate-contentinfo",
+      "description": "A page should have at most one contentinfo landmark.",
+      "help": "Keep one page footer; give the other elements a role that is not contentinfo.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-no-duplicate-contentinfo"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-no-duplicate-main",
+      "description": "A page should have at most one main landmark.",
+      "help": "Keep one main element; remove the role or element from the others.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-no-duplicate-main"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Moving a landmark, removing one or renaming one changes how the page is organised; the author has to decide which."
+    },
+    {
+      "id": "landmark-one-main",
+      "description": "A page should have a main landmark.",
+      "help": "Wrap the page's primary content in a main element.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-one-main"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Which part of the page is its main content is the author's decision."
+    },
+    {
+      "id": "landmark-unique",
+      "description": "Landmarks that share a role must have different accessible names.",
+      "help": "Give each landmark of the same role a distinct aria-label or aria-labelledby.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "landmark-unique"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The names are content: only the author knows what to call each landmark."
+    },
+    {
       "id": "link-in-context-descriptive",
       "description": "A link's purpose should be clear from its name and its context.",
       "help": "Reword the link, or put the missing context in its sentence, paragraph, list item or table cell.",
@@ -1744,6 +2311,284 @@
       "noFixReason": "The name is content: only the author knows what the element is called or shows."
     },
     {
+      "id": "list",
+      "description": "A ul or ol may only directly contain li, script and template elements.",
+      "help": "Move other elements and text into li elements, or out of the list.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "list"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": null,
+      "noFixReason": "Where stray content belongs, and whether it should be a list item at all, is the author's decision."
+    },
+    {
+      "id": "listitem",
+      "description": "An li element must be inside a ul, an ol or a list.",
+      "help": "Put the li in a ul or ol, or give its parent the role list.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "listitem"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.structure",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.3.1"
+      ],
+      "fix": "Wrap a run of sibling li elements that have no role and no value attribute in a ul.",
+      "noFixReason": null
+    },
+    {
+      "id": "marquee",
+      "description": "The marquee element scrolls text on its own, which a user must be able to stop.",
+      "help": "Replace the marquee with static content, or with an animation a user can pause.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "marquee"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.2.2",
+          "handle": "Pause, Stop, Hide",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.parsing",
+        "wcag2a",
+        "wcag222",
+        "TTv5",
+        "TT2.b",
+        "EN-301-549",
+        "EN-9.2.2.2",
+        "RGAAv4",
+        "RGAA-13.8.1"
+      ],
+      "fix": null,
+      "noFixReason": "Static text, a slower effect or a control to pause it are all valid replacements, so the author decides."
+    },
+    {
+      "id": "meta-refresh",
+      "description": "A page must not refresh or redirect on a timer, unless the delay is zero or longer than twenty hours.",
+      "help": "Remove the timed refresh, redirect on the server, or add a way to turn it off.",
+      "impact": "critical",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "meta-refresh"
+        },
+        {
+          "kind": "act",
+          "id": "bc659a"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.2.1",
+          "handle": "Timing Adjustable",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2a",
+        "wcag221",
+        "TTv5",
+        "TT8.a",
+        "EN-301-549",
+        "EN-9.2.2.1",
+        "RGAAv4",
+        "RGAA-13.1.2"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to redirect on the server, remove the refresh or give users a control is the author's decision."
+    },
+    {
+      "id": "meta-refresh-no-exceptions",
+      "description": "A page must not refresh or redirect on a timer at all, other than immediately.",
+      "help": "Remove the timed refresh and redirect on the server instead.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "meta-refresh-no-exceptions"
+        },
+        {
+          "kind": "act",
+          "id": "bisz58"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.2.4",
+          "handle": "Interruptions",
+          "level": "AAA",
+          "version": "2.0"
+        },
+        {
+          "number": "3.2.5",
+          "handle": "Change on Request",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.time-and-media",
+        "wcag2aaa",
+        "wcag224",
+        "wcag325"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to redirect on the server, remove the refresh or give users a control is the author's decision."
+    },
+    {
+      "id": "meta-viewport",
+      "description": "The viewport meta element must not stop a user from zooming in, or limit zoom below two times.",
+      "help": "Remove user-scalable=no and any maximum-scale below 2 from the viewport content.",
+      "impact": "moderate",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "meta-viewport"
+        },
+        {
+          "kind": "act",
+          "id": "b4f0c3"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.4.4",
+          "handle": "Resize Text",
+          "level": "AA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.sensory-and-visual-cues",
+        "wcag2aa",
+        "wcag144",
+        "EN-301-549",
+        "EN-9.1.4.4",
+        "ACT",
+        "RGAAv4",
+        "RGAA-10.4.2"
+      ],
+      "fix": null,
+      "noFixReason": "Removing the restriction and raising the limit both make zoom possible, so there is more than one correct edit."
+    },
+    {
+      "id": "meta-viewport-large",
+      "description": "The viewport meta element should let a user zoom to at least five times.",
+      "help": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.",
+      "impact": "minor",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "meta-viewport-large"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.sensory-and-visual-cues",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "Removing the restriction and raising the limit both make zoom possible, so there is more than one correct edit."
+    },
+    {
+      "id": "nested-interactive",
+      "description": "An element whose role makes its children presentational (a button, a tab, an image) must not contain anything reachable with the Tab key.",
+      "help": "Move the focusable element out, or change the outer role to one that exposes its children.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "nested-interactive"
+        },
+        {
+          "kind": "act",
+          "id": "307n5z"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "4.1.2",
+          "handle": "Name, Role, Value",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.keyboard",
+        "wcag2a",
+        "wcag412",
+        "TTv5",
+        "TT6.a",
+        "EN-301-549",
+        "EN-9.4.1.2",
+        "RGAAv4",
+        "RGAA-7.1.1"
+      ],
+      "fix": null,
+      "noFixReason": "Removing the focusable child, moving it or changing the outer role each change the page; the author must choose."
+    },
+    {
       "id": "object-alt",
       "description": "An object element that shows non-text content must have an accessible name.",
       "help": "Name the object with aria-label, aria-labelledby or a title attribute.",
@@ -1783,6 +2628,61 @@
       "noFixReason": "The name is content: only the author knows what the embedded resource is."
     },
     {
+      "id": "p-as-heading",
+      "description": "A paragraph styled to look like a heading should be a real heading.",
+      "help": "Use a heading element (h1 to h6) for the text and style it with CSS.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "p-as-heading"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "1.3.1",
+          "handle": "Info and Relationships",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.semantics",
+        "wcag2a",
+        "wcag131",
+        "EN-301-549",
+        "EN-9.1.3.1",
+        "RGAAv4",
+        "RGAA-9.1.3",
+        "experimental"
+      ],
+      "fix": null,
+      "noFixReason": "The right heading level depends on the page's outline, which is the author's decision."
+    },
+    {
+      "id": "page-has-heading-one",
+      "description": "A page should contain a level-one heading.",
+      "help": "Add an h1 that says what the page is about.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "page-has-heading-one"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.semantics",
+        "best-practice"
+      ],
+      "fix": null,
+      "noFixReason": "The heading's text is content, and which existing heading should be level one is the author's decision."
+    },
+    {
       "id": "presentation-role-conflict",
       "description": "An element marked as decorative must really be presentational: it may not be focusable or carry a global WAI-ARIA attribute.",
       "help": "Either make the element non-interactive without WAI-ARIA attributes, or drop the presentational role and give it a real one.",
@@ -1809,29 +2709,27 @@
       "noFixReason": "Two fixes exist (remove the role or remove what conflicts with it) and which one is right depends on the author's intent."
     },
     {
-      "id": "presentational-children-focusable",
-      "description": "An element whose role makes its children presentational (a button, a tab, an image) must not contain anything reachable with the Tab key.",
-      "help": "Move the focusable element out, or change the outer role to one that exposes its children.",
-      "impact": "serious",
-      "bestPractice": false,
+      "id": "region",
+      "description": "All page content should sit inside a landmark.",
+      "help": "Put the content inside a header, nav, main, aside, footer or a named section or region.",
+      "impact": "moderate",
+      "bestPractice": true,
       "needs": "static",
       "sources": [
         {
-          "kind": "act",
-          "id": "307n5z"
+          "kind": "axe",
+          "id": "region"
         }
       ],
-      "criteria": [
-        {
-          "number": "4.1.2",
-          "handle": "Name, Role, Value",
-          "level": "A",
-          "version": "2.0"
-        }
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-9.2.1"
       ],
-      "tags": [],
       "fix": null,
-      "noFixReason": "Removing the focusable child, moving it or changing the outer role each change the page; the author must choose."
+      "noFixReason": "Choosing the landmark that fits each block of content is the author's decision."
     },
     {
       "id": "role-img-alt",
@@ -1897,6 +2795,53 @@
       "noFixReason": null
     },
     {
+      "id": "scrollable-region-focusable",
+      "description": "A scrollable region must be reachable with the keyboard.",
+      "help": "Give the region tabindex 0, or put a focusable element inside it.",
+      "impact": "serious",
+      "bestPractice": false,
+      "needs": "rendered-facts",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "scrollable-region-focusable"
+        },
+        {
+          "kind": "act",
+          "id": "0ssw9k"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.1.1",
+          "handle": "Keyboard",
+          "level": "A",
+          "version": "2.0"
+        },
+        {
+          "number": "2.1.3",
+          "handle": "Keyboard (No Exception)",
+          "level": "AAA",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.keyboard",
+        "wcag2a",
+        "wcag211",
+        "wcag213",
+        "TTv5",
+        "TT4.a",
+        "EN-301-549",
+        "EN-9.2.1.1",
+        "EN-9.2.1.3",
+        "RGAAv4",
+        "RGAA-7.3.2"
+      ],
+      "fix": null,
+      "noFixReason": "Whether to make the region focusable or to supply another way to scroll it is the author's decision."
+    },
+    {
       "id": "select-name",
       "description": "A select element must have an accessible name.",
       "help": "Associate a label element with the select, or add an aria-label or aria-labelledby.",
@@ -1937,6 +2882,66 @@
       ],
       "fix": null,
       "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "server-side-image-map",
+      "description": "A server-side image map cannot be used with a keyboard.",
+      "help": "Replace the server-side image map with a client-side map or plain links.",
+      "impact": "minor",
+      "bestPractice": false,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "server-side-image-map"
+        }
+      ],
+      "criteria": [
+        {
+          "number": "2.1.1",
+          "handle": "Keyboard",
+          "level": "A",
+          "version": "2.0"
+        }
+      ],
+      "tags": [
+        "cat.text-alternatives",
+        "wcag2a",
+        "wcag211",
+        "section508",
+        "section508.22.f",
+        "TTv5",
+        "TT4.a",
+        "EN-301-549",
+        "EN-9.2.1.1",
+        "RGAAv4",
+        "RGAA-1.1.4"
+      ],
+      "fix": null,
+      "noFixReason": "How the map's regions become links is design, so the author decides."
+    },
+    {
+      "id": "skip-link",
+      "description": "A link to a place on the same page must have a target that exists and is not hidden.",
+      "help": "Point the link at the id of an element that is on the page, or remove the link.",
+      "impact": "moderate",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "skip-link"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice",
+        "RGAAv4",
+        "RGAA-12.7.1"
+      ],
+      "fix": null,
+      "noFixReason": "Which element the link should reach is the author's decision."
     },
     {
       "id": "summary-name",
@@ -2014,6 +3019,27 @@
       ],
       "fix": null,
       "noFixReason": "The name is content: only the author knows what the element is called or shows."
+    },
+    {
+      "id": "tabindex",
+      "description": "A tabindex above 0 should not be used.",
+      "help": "Reorder the elements in the document and use tabindex 0 or -1.",
+      "impact": "serious",
+      "bestPractice": true,
+      "needs": "static",
+      "sources": [
+        {
+          "kind": "axe",
+          "id": "tabindex"
+        }
+      ],
+      "criteria": [],
+      "tags": [
+        "cat.keyboard",
+        "best-practice"
+      ],
+      "fix": "Set tabindex to 0, when the page's focus order already follows the document order.",
+      "noFixReason": null
     },
     {
       "id": "table-duplicate-name",
@@ -2236,6 +3262,21 @@
     }
   ],
   "results": [
+    {
+      "rule": "accesskeys",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
     {
       "rule": "area-alt",
       "outcome": "inapplicable",
@@ -3573,7 +4614,74 @@
       "suggested": []
     },
     {
+      "rule": "blink",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "button-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "bypass",
+      "outcome": "failed",
+      "message": "The page has no heading, no main landmark and no skip link.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "definition-list",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "dlitem",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,
@@ -3599,6 +4707,58 @@
           "end": 32
         }
       },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "duplicate-id",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "#f1",
+        "source": {
+          "start": 89,
+          "end": 153
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "duplicate-id-active",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "duplicate-id-aria",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
       "findings": [],
       "taskImpact": {
         "blocksTask": false,
@@ -3655,7 +4815,72 @@
       "suggested": []
     },
     {
+      "rule": "focus-order-semantics",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"checkbox\"]",
+        "source": {
+          "start": 162,
+          "end": 196
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "focus-order-semantics",
+      "outcome": "failed",
+      "message": "The element is in the tab order but its role (img) says nothing about what it does.",
+      "target": {
+        "tag": "img",
+        "locator": "img",
+        "source": {
+          "start": 439,
+          "end": 476
+        }
+      },
+      "findings": [
+        {
+          "attribute": "role",
+          "value": "img",
+          "message": "Not a widget, landmark or dialog role."
+        }
+      ],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "form-field-multiple-labels",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "frame-focusable-content",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,
@@ -3686,6 +4911,36 @@
     },
     {
       "rule": "frame-title-unique",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "heading-order",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "hidden-content",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,
@@ -3948,6 +5203,148 @@
       "suggested": []
     },
     {
+      "rule": "landmark-banner-is-top-level",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-complementary-is-top-level",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-contentinfo-is-top-level",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-main-is-top-level",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-no-duplicate-banner",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-no-duplicate-contentinfo",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-no-duplicate-main",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-one-main",
+      "outcome": "failed",
+      "message": "The page has no main landmark.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "landmark-unique",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "link-in-context-descriptive",
       "outcome": "needs-review",
       "message": "Check that the link's purpose is clear from its name together with its context.",
@@ -3991,10 +5388,240 @@
       "suggested": []
     },
     {
+      "rule": "list",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "listitem",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "marquee",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "meta-refresh",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "meta-refresh-no-exceptions",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "meta-viewport",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "meta-viewport-large",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "nested-interactive",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"checkbox\"]",
+        "source": {
+          "start": 162,
+          "end": 196
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "nested-interactive",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "button",
+        "locator": "button",
+        "source": {
+          "start": 324,
+          "end": 351
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "nested-interactive",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "input",
+        "locator": "input",
+        "source": {
+          "start": 395,
+          "end": 438
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "nested-interactive",
+      "outcome": "passed",
+      "message": "Meets the rule.",
+      "target": {
+        "tag": "img",
+        "locator": "img",
+        "source": {
+          "start": 439,
+          "end": 476
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "object-alt",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "p-as-heading",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "page-has-heading-one",
+      "outcome": "failed",
+      "message": "The page has no level-one heading.",
+      "target": {
+        "tag": "html",
+        "locator": "html",
+        "source": {
+          "start": 16,
+          "end": 32
+        }
+      },
       "findings": [],
       "taskImpact": {
         "blocksTask": false,
@@ -4034,21 +5661,43 @@
       "suggested": []
     },
     {
-      "rule": "presentational-children-focusable",
-      "outcome": "passed",
-      "message": "Meets the rule.",
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "form",
+        "locator": "form",
+        "source": {
+          "start": 80,
+          "end": 86
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": true,
+        "reason": "form"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
       "target": {
         "tag": "div",
-        "locator": "[role=\"checkbox\"]",
+        "locator": "[role=\"lnik\"]",
         "source": {
-          "start": 162,
-          "end": 196
+          "start": 216,
+          "end": 233
         }
       },
       "findings": [],
       "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
+        "blocksTask": false,
+        "reason": null
       },
       "cssOnly": false,
       "factsUsed": [],
@@ -4056,21 +5705,21 @@
       "suggested": []
     },
     {
-      "rule": "presentational-children-focusable",
-      "outcome": "passed",
-      "message": "Meets the rule.",
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
       "target": {
-        "tag": "button",
-        "locator": "button",
+        "tag": "p",
+        "locator": "p",
         "source": {
-          "start": 324,
-          "end": 351
+          "start": 244,
+          "end": 265
         }
       },
       "findings": [],
       "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
+        "blocksTask": false,
+        "reason": null
       },
       "cssOnly": false,
       "factsUsed": [],
@@ -4078,9 +5727,31 @@
       "suggested": []
     },
     {
-      "rule": "presentational-children-focusable",
-      "outcome": "passed",
-      "message": "Meets the rule.",
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"list\"]",
+        "source": {
+          "start": 274,
+          "end": 291
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
       "target": {
         "tag": "input",
         "locator": "input",
@@ -4100,9 +5771,9 @@
       "suggested": []
     },
     {
-      "rule": "presentational-children-focusable",
-      "outcome": "passed",
-      "message": "Meets the rule.",
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
       "target": {
         "tag": "img",
         "locator": "img",
@@ -4115,6 +5786,28 @@
       "taskImpact": {
         "blocksTask": true,
         "reason": "interactive"
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "region",
+      "outcome": "failed",
+      "message": "This content is outside every landmark.",
+      "target": {
+        "tag": "div",
+        "locator": "[role=\"directory\"]",
+        "source": {
+          "start": 477,
+          "end": 499
+        }
+      },
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
       },
       "cssOnly": false,
       "factsUsed": [],
@@ -4152,7 +5845,52 @@
       "suggested": []
     },
     {
+      "rule": "scrollable-region-focusable",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
       "rule": "select-name",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "server-side-image-map",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "skip-link",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,
@@ -4183,6 +5921,21 @@
     },
     {
       "rule": "svg-img-alt",
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
+      "findings": [],
+      "taskImpact": {
+        "blocksTask": false,
+        "reason": null
+      },
+      "cssOnly": false,
+      "factsUsed": [],
+      "factsMissing": [],
+      "suggested": []
+    },
+    {
+      "rule": "tabindex",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",
       "target": null,

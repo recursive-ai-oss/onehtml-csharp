@@ -32,8 +32,8 @@ public sealed class CheckerTests
             Assert.NotEmpty(r.Description);
             Assert.NotEmpty(r.Help);
             Assert.True((r.Descriptor.Fix is null) != (r.Descriptor.NoFixReason is null), r.Descriptor.Id);
-            // Only a rule that reads text laid out on the page needs rendered facts.
-            Assert.Equal(r.Descriptor.Id == "label-content-name-mismatch" ? RuleNeeds.RenderedFacts : RuleNeeds.Static, r.Descriptor.Needs);
+            // Only rules that read layout (text laid out on the page, the scroll size of a region) need rendered facts.
+            Assert.Equal(r.Descriptor.Id is "label-content-name-mismatch" or "scrollable-region-focusable" ? RuleNeeds.RenderedFacts : RuleNeeds.Static, r.Descriptor.Needs);
         }
 
         // Every non-deprecated axe rule of the ARIA area, and presentation-role-conflict, is implemented.

@@ -28,7 +28,7 @@ Criteria with at least one rule: 42 of 87.
 | 1.2.7 | Extended Audio Description (Prerecorded) | AAA | 2.0+ |  |  |  | unassessed |
 | 1.2.8 | Media Alternative (Prerecorded) | AAA | 2.0+ | 1a02b0, c5a4ea |  |  | unassessed |
 | 1.2.9 | Audio-only (Live) | AAA | 2.0+ |  |  |  | unassessed |
-| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | unassessed |
+| 1.3.1 | Info and Relationships | A | 2.0+ | 1a02b0, 4e8ab6, 5c01ea, 5f99a7, 674b10, 6a7281, a25f45, bc4a75, d0f69e, e086e5, ee13b5, ff89c9, in6db8 (deprecated), kb1m8s | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | aria-hidden-body, aria-required-children, aria-required-parent, definition-list, dlitem, list, listitem, p-as-heading, table-fake-caption, td-has-header, td-headers-attr, th-has-data-cells | unassessed |
 | 1.3.2 | Meaningful Sequence | A | 2.0+ |  |  |  | unassessed |
 | 1.3.3 | Sensory Characteristics | A | 2.0+ | 9bd38c |  |  | unassessed |
 | 1.3.4 | Orientation | AA | 2.1+ | b33eff | css-orientation-lock |  | unassessed |
@@ -37,7 +37,7 @@ Criteria with at least one rule: 42 of 87.
 | 1.4.1 | Use of Color | A | 2.0+ |  | link-in-text-block |  | unassessed |
 | 1.4.2 | Audio Control | A | 2.0+ | 80f0bf | no-autoplay-audio |  | unassessed |
 | 1.4.3 | Contrast (Minimum) | AA | 2.0+ | 09o5cg, afw4f7 | color-contrast |  | unassessed |
-| 1.4.4 | Resize Text | AA | 2.0+ | 59br37, b4f0c3 | meta-viewport |  | unassessed |
+| 1.4.4 | Resize Text | AA | 2.0+ | 59br37, b4f0c3 | meta-viewport | meta-viewport | unassessed |
 | 1.4.5 | Images of Text | AA | 2.0+ | 0va7u6 |  |  | unassessed |
 | 1.4.6 | Contrast (Enhanced) | AAA | 2.0+ | 09o5cg, afw4f7 | color-contrast-enhanced |  | unassessed |
 | 1.4.7 | Low or No Background Audio | AAA | 2.0+ |  |  |  | unassessed |
@@ -47,20 +47,20 @@ Criteria with at least one rule: 42 of 87.
 | 1.4.11 | Non-text Contrast | AA | 2.1+ |  |  |  | unassessed |
 | 1.4.12 | Text Spacing | AA | 2.1+ | 24afc2, 78fd32, 9e45ec | avoid-inline-spacing |  | unassessed |
 | 1.4.13 | Content on Hover or Focus | AA | 2.1+ |  |  |  | unassessed |
-| 2.1.1 | Keyboard | A | 2.0+ | 0ssw9k, akn7bn | frame-focusable-content, scrollable-region-focusable, server-side-image-map |  | unassessed |
+| 2.1.1 | Keyboard | A | 2.0+ | 0ssw9k, akn7bn | frame-focusable-content, scrollable-region-focusable, server-side-image-map | frame-focusable-content, scrollable-region-focusable, server-side-image-map | unassessed |
 | 2.1.2 | No Keyboard Trap | A | 2.0+ | 80af7b |  |  | unassessed |
-| 2.1.3 | Keyboard (No Exception) | AAA | 2.0+ | 0ssw9k, akn7bn | scrollable-region-focusable |  | unassessed |
+| 2.1.3 | Keyboard (No Exception) | AAA | 2.0+ | 0ssw9k, akn7bn | scrollable-region-focusable | scrollable-region-focusable | unassessed |
 | 2.1.4 | Character Key Shortcuts | A | 2.1+ | ffbc54 |  |  | unassessed |
-| 2.2.1 | Timing Adjustable | A | 2.0+ | bc659a, bisz58 | meta-refresh |  | unassessed |
-| 2.2.2 | Pause, Stop, Hide | A | 2.0+ | efbfc7 | blink, marquee |  | unassessed |
+| 2.2.1 | Timing Adjustable | A | 2.0+ | bc659a, bisz58 | meta-refresh | meta-refresh | unassessed |
+| 2.2.2 | Pause, Stop, Hide | A | 2.0+ | efbfc7 | blink, marquee | blink, marquee | unassessed |
 | 2.2.3 | No Timing | AAA | 2.0+ |  |  |  | unassessed |
-| 2.2.4 | Interruptions | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions |  | unassessed |
+| 2.2.4 | Interruptions | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions | meta-refresh-no-exceptions | unassessed |
 | 2.2.5 | Re-authenticating | AAA | 2.0+ |  |  |  | unassessed |
 | 2.2.6 | Timeouts | AAA | 2.1+ |  |  |  | unassessed |
 | 2.3.1 | Three Flashes or Below Threshold | A | 2.0+ |  |  |  | unassessed |
 | 2.3.2 | Three Flashes | AAA | 2.0+ |  |  |  | unassessed |
 | 2.3.3 | Animation from Interactions | AAA | 2.1+ |  |  |  | unassessed |
-| 2.4.1 | Bypass Blocks | A | 2.0+ | cf77f2 | bypass |  | unassessed |
+| 2.4.1 | Bypass Blocks | A | 2.0+ | cf77f2 | bypass | bypass | unassessed |
 | 2.4.2 | Page Titled | A | 2.0+ | 2779a5, c4a8a4 | document-title | document-title | unassessed |
 | 2.4.3 | Focus Order | A | 2.0+ |  |  |  | unassessed |
 | 2.4.4 | Link Purpose (In Context) | A | 2.0+ | 5effbb, c487ae, fd3a94 | area-alt, link-name | area-alt, link-in-context-descriptive, link-name | unassessed |
@@ -91,7 +91,7 @@ Criteria with at least one rule: 42 of 87.
 | 3.2.2 | On Input | A | 2.0+ |  |  |  | unassessed |
 | 3.2.3 | Consistent Navigation | AA | 2.0+ |  |  |  | unassessed |
 | 3.2.4 | Consistent Identification | AA | 2.0+ |  |  |  | unassessed |
-| 3.2.5 | Change on Request | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions |  | unassessed |
+| 3.2.5 | Change on Request | AAA | 2.0+ | bc659a, bisz58 | meta-refresh-no-exceptions | meta-refresh-no-exceptions | unassessed |
 | 3.2.6 | Consistent Help | A | 2.2+ |  |  |  | unassessed |
 | 3.3.1 | Error Identification | A | 2.0+ | 36b590 |  |  | unassessed |
 | 3.3.2 | Labels or Instructions | A | 2.0+ |  | form-field-multiple-labels | form-field-multiple-labels | unassessed |
@@ -102,8 +102,8 @@ Criteria with at least one rule: 42 of 87.
 | 3.3.7 | Redundant Entry | A | 2.2+ |  |  |  | unassessed |
 | 3.3.8 | Accessible Authentication (Minimum) | AA | 2.2+ |  |  |  | unassessed |
 | 3.3.9 | Accessible Authentication (Enhanced) | AAA | 2.2+ |  |  |  | unassessed |
-| 4.1.1 | Parsing | A | 2.0 (removed in 2.2) | 3ea0c8 (deprecated), e6952f (deprecated) | duplicate-id (deprecated), duplicate-id-active (deprecated) |  | unassessed |
-| 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, presentational-children-focusable, select-name, summary-name | unassessed |
+| 4.1.1 | Parsing | A | 2.0 (removed in 2.2) | 3ea0c8 (deprecated), e6952f (deprecated) | duplicate-id (deprecated), duplicate-id-active (deprecated) | duplicate-id, duplicate-id-active | unassessed |
+| 4.1.2 | Name, Role, Value | A | 2.0+ | 2t702h, 307n5z, 4b1c6c, 4e8ab6, 59796f, 5c01ea, 5f99a7, 674b10, 6a7281, 6cfa84, 97a4e1, c487ae, cae760, e086e5, in6db8 (deprecated), m6b1q3 | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roledescription (deprecated), aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | area-alt, aria-allowed-attr, aria-braille-equivalent, aria-command-name, aria-conditional-attr, aria-deprecated-role, aria-hidden-body, aria-hidden-focus, aria-input-field-name, aria-prohibited-attr, aria-required-attr, aria-roles, aria-tab-name, aria-toggle-field-name, aria-tooltip-name, aria-valid-attr, aria-valid-attr-value, button-name, duplicate-id-aria, frame-title, frame-title-unique, input-button-name, input-image-alt, label, link-name, nested-interactive, select-name, summary-name | unassessed |
 | 4.1.3 | Status Messages | AA | 2.1+ |  |  |  | unassessed |
 
-Implemented best-practice rules, which check no criterion: aria-allowed-role, aria-dialog-name, aria-text, aria-treeitem-name, empty-heading, empty-table-header, image-redundant-alt, label-title-only, presentation-role-conflict, scope-attr-valid, table-duplicate-name.
+Implemented best-practice rules, which check no criterion: accesskeys, aria-allowed-role, aria-dialog-name, aria-text, aria-treeitem-name, empty-heading, empty-table-header, focus-order-semantics, heading-order, hidden-content, image-redundant-alt, label-title-only, landmark-banner-is-top-level, landmark-complementary-is-top-level, landmark-contentinfo-is-top-level, landmark-main-is-top-level, landmark-no-duplicate-banner, landmark-no-duplicate-contentinfo, landmark-no-duplicate-main, landmark-one-main, landmark-unique, meta-viewport-large, page-has-heading-one, presentation-role-conflict, region, scope-attr-valid, skip-link, tabindex, table-duplicate-name.

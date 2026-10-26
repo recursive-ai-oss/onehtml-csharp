@@ -48,6 +48,35 @@ public sealed class GoldenTests
         Compare("names-page.axe.json", Report("names-page").ToAxeJson(new ExportOptions { Indented = true, Url = "https://example.test/names" }));
 
     [Fact]
+    public void Structure_page_native_json_matches_the_golden_file() =>
+        Compare("structure-page.native.json", Report(page: "structure-page").ToNativeJson(new ExportOptions { Indented = true, Url = "https://example.test/structure" }));
+
+    [Fact]
+    public void Structure_page_axe_compatible_json_matches_the_golden_file() =>
+        Compare("structure-page.axe.json", Report(page: "structure-page").ToAxeJson(new ExportOptions { Indented = true, Url = "https://example.test/structure" }));
+
+    [Fact]
+    public void Structure_page_reports_each_structure_rule_it_was_written_for()
+    {
+        CheckReport r = Report(page: "structure-page");
+        var missing = new System.Collections.Generic.List<string>();
+        foreach (string rule in new[]
+        {
+            "skip-link", "landmark-unique", "landmark-no-duplicate-contentinfo", "heading-order", "page-has-heading-one", "p-as-heading", "list", "listitem",
+            "definition-list", "duplicate-id", "duplicate-id-active", "tabindex", "focus-order-semantics", "accesskeys", "nested-interactive", "frame-focusable-content",
+            "blink", "server-side-image-map", "hidden-content", "meta-refresh", "meta-viewport", "region",
+        })
+        {
+            if (!System.Linq.Enumerable.Any(r.Results, x => x.RuleId == rule && x.Outcome is Outcome.Failed or Outcome.NeedsReview))
+            {
+                missing.Add(rule);
+            }
+        }
+
+        Assert.Empty(missing);
+    }
+
+    [Fact]
     public void Exports_do_not_depend_on_the_run()
     {
         Assert.Equal(Report().ToNativeJson(), Report().ToNativeJson());

@@ -290,45 +290,6 @@ internal sealed class AriaHiddenFocusRule : AriaRule
     }
 }
 
-// ACT 307n5z: a role whose children are presentational (button, checkbox, img, tab, …) hides its descendants from
-// assistive technology, so none of them may be tabbable (WAI-ARIA 1.2 section 5.2.7, "Children Presentational").
-internal sealed class PresentationalChildrenFocusableRule : AriaRule
-{
-    public PresentationalChildrenFocusableRule()
-        : base(
-            "presentational-children-focusable",
-            "An element whose role makes its children presentational (a button, a tab, an image) must not contain anything reachable with the Tab key.",
-            "Move the focusable element out, or change the outer role to one that exposes its children.",
-            null,
-            "Removing the focusable child, moving it or changing the outer role each change the page; the author must choose.",
-            axe: false,
-            actIds: ["307n5z"])
-    {
-    }
-
-    public override void Evaluate(CheckContext context, RuleReporter reporter)
-    {
-        bool[]? tabbable = null;
-        foreach (Node el in Elements(context))
-        {
-            if (!IsHtmlOrSvg(el) || context.Tree.Roles[el].Role is not { ChildrenPresentational: true } role)
-            {
-                continue;
-            }
-
-            tabbable ??= SubtreeHas(context, n => context.Find(n) is { } ax && ax.Focus.IsTabbable, includeSelf: false);
-            if (tabbable[el.Index])
-            {
-                reporter.Failed(el, "The role " + role.Name + " makes its children presentational, yet it contains something reachable with the Tab key.");
-            }
-            else
-            {
-                reporter.Passed(el);
-            }
-        }
-    }
-}
-
 // Accessible-name rules for widget roles that only exist by explicit role (axe aria-*-name rules); ACT m6b1q3 is the
 // menuitem case. WCAG 4.1.2 Name, Role, Value (1.1.1 for meter and progressbar).
 internal sealed class RoleNameRule : AriaRule

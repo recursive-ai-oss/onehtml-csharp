@@ -1,0 +1,12 @@
+# ACT test cases the page-structure rules cannot judge without layout or script. Columns: case id, status, reason.
+# A case listed here must still be wrong (or the test says the entry is stale).
+8e277e6e6ac3bf67d39209f4803e5dfbe9c6676d	n/a	cf77f2 Passed Example 1: the instrument is a link whose click handler (script) hides the navigation; the page has no heading, main landmark or skip link
+1f9a7ee1127cdd0b3d69ddc2bda291b09432eac2	n/a	cf77f2 Passed Example 7: passes because the only repeated content comes after the main content, which needs to know what repeats across pages
+1a1b01ced3bd2b68b8f492dae3a932ff69e5b1d2	n/a	cf77f2 Passed Example 8: the instrument is a button whose click handler (script) moves focus
+89851e69dbc45b06a62deac922eeaa47eb814570	n/a	cf77f2 Passed Example 11: the instrument is a button whose click handler (script) hides the navigation
+dcbcf5ec6abec70fff5879f6bb485488a5aa4224	n/a	cf77f2 Inapplicable Example 1: an SVG document served as image/svg+xml, which is not a web page; parsed as text/html it gets an html wrapper
+1dca03a88ba0738f5a15e7636f534b826af870dc	n/a	akn7bn Passed Example 3: passes because the one-pixel iframe is not visible, which is layout (with facts showing a box of one pixel or less the rule passes it)
+bb02a546c1736f5ab2330293a59f05e0083d1051	n/a	0ssw9k Failed Example 1: whether the section scrolls is layout; needs-render without rendered facts
+388f1c845cae7dddc06fa706d2bf850cc0f8ca77	n/a	0ssw9k Failed Example 2: whether the section scrolls is layout; needs-render without rendered facts
+f212c413aa44af24e4f91145ef693c9af8afa43e	n/a	0ssw9k Inapplicable Example 2: the section has overflow auto but nothing to scroll; without facts the link inside makes it reachable, so it passes (with facts it is not applicable)
+3dae0395b45b6fd720b1984f732897357f590399	n/a	0ssw9k Inapplicable Example 5: whether padding or content makes the section scroll is layout; needs-render without rendered facts

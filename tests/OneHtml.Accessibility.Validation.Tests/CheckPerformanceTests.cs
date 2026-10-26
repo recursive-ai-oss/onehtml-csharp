@@ -52,12 +52,21 @@ public sealed class CheckPerformanceTests
         CheckReport nr = checker.Check(tree, only);
         long nameMs = nameTimer.ElapsedMilliseconds;
         long nameAlloc = GC.GetAllocatedBytesForCurrentThread() - nameBefore;
+        // The page-structure area alone.
+        var areaOptions = new CheckOptions { RuleIds = StructureRuleTests.AxeIds };
+        _ = checker.Check(tree, areaOptions);
+        GC.Collect();
+        before = GC.GetAllocatedBytesForCurrentThread();
+        sw.Restart();
+        CheckReport area = checker.Check(tree, areaOptions);
+        long areaMs = sw.ElapsedMilliseconds;
+        long areaAlloc = GC.GetAllocatedBytesForCurrentThread() - before;
         sw.Restart();
         int native = r.ToNativeJson().Length;
         long nativeMs = sw.ElapsedMilliseconds;
         sw.Restart();
         int axe = r.ToAxeJson().Length;
         long axeMs = sw.ElapsedMilliseconds;
-        File.WriteAllText(report, $"dom nodes={doc.NodeCount} tree nodes={tree.Nodes.Count} tree_build_ms={treeMs} rules={r.RulesRun.Count} results={r.Results.Count} check_ms={ms} check_alloc_mb={alloc / 1048576.0:F1} names_rules={nr.RulesRun.Count} names_results={nr.Results.Count} names_ms={nameMs} names_alloc_mb={nameAlloc / 1048576.0:F1} native_json_ms={nativeMs} native_bytes={native} axe_json_ms={axeMs} axe_bytes={axe}\n");
+        File.WriteAllText(report, $"dom nodes={doc.NodeCount} tree nodes={tree.Nodes.Count} tree_build_ms={treeMs} rules={r.RulesRun.Count} results={r.Results.Count} check_ms={ms} check_alloc_mb={alloc / 1048576.0:F1} names_rules={nr.RulesRun.Count} names_results={nr.Results.Count} names_ms={nameMs} names_alloc_mb={nameAlloc / 1048576.0:F1} native_json_ms={nativeMs} native_bytes={native} axe_json_ms={axeMs} axe_bytes={axe} structure_rules={area.RulesRun.Count} structure_results={area.Results.Count} structure_check_ms={areaMs} structure_check_alloc_mb={areaAlloc / 1048576.0:F1}\n");
     }
 }

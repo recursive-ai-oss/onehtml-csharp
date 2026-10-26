@@ -25,7 +25,7 @@ public sealed class AriaActTests
         ("4e8ab6", ["aria-required-attr"]),
         ("bc4a75", ["aria-required-children"]),
         ("ff89c9", ["aria-required-parent"]),
-        ("307n5z", ["presentational-children-focusable"]),
+        ("307n5z", ["nested-interactive"]),
         ("6cfa84", ["aria-hidden-focus"]),
         ("46ca7f", ["presentation-role-conflict"]),
         ("m6b1q3", ["aria-command-name"]),

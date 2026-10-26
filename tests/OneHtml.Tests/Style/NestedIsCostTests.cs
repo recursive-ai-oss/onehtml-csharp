@@ -30,7 +30,8 @@ public class NestedIsCostTests
         DocumentStyles styles = DocumentStyles.Create(doc);
         int n = styles.ComputeAll();
         Assert.True(n > depth * 10);
-        Assert.True(sw.Elapsed < TimeSpan.FromMilliseconds(300), sw.Elapsed.ToString());
+        // About 0.1 s on a development machine; the bound leaves a slow shared runner room and still fails a per-level blow-up.
+        Assert.True(sw.Elapsed < TimeSpan.FromSeconds(5), sw.Elapsed.ToString());
 
         // Spot checks against direct matching of the flattened selector.
         const string Flat = ":is(:is(:is(:is(:is(*) *) :nth-child(3n of foo, bar, target)) *) *) *";

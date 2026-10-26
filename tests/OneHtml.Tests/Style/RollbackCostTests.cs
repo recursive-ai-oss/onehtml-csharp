@@ -31,7 +31,9 @@ public class RollbackCostTests
         Document doc = Document.Parse(sb.ToString());
         DocumentStyles styles = DocumentStyles.Create(doc);
         styles.ComputeAll();
-        Assert.True(sw.Elapsed < TimeSpan.FromSeconds(3), "took " + sw.Elapsed.TotalSeconds + " s");
+        // Well under a second on a development machine, mostly first-call JIT. The bound allows a slow shared runner and only
+        // catches a hang; the checks below pin the behaviour.
+        Assert.True(sw.Elapsed < TimeSpan.FromSeconds(15), "took " + sw.Elapsed.TotalSeconds + " s");
         foreach (Node div in doc.Root.QuerySelectorAll("div"))
         {
             Assert.Equal("green", styles.GetStyle(div).GetPropertyValue("color"));

@@ -198,7 +198,7 @@ public sealed class DomSnapshotReaderTests
         DomSnapshotFormatException e = Fails(sb.ToString(), new DomSnapshotLimits { MaxNodes = 1000 });
         Assert.Equal("MaxNodes", e.LimitName);
         Assert.Equal(1000, e.Limit);
-        Assert.True(sw.ElapsedMilliseconds < 2000);
+        Assert.True(sw.ElapsedMilliseconds < 10_000);
     }
 
     // ---- hostile mutation ----

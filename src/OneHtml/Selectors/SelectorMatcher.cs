@@ -19,8 +19,27 @@ internal ref struct MatchCtx
     /// <summary>True for a query over many elements, which makes per-query caches worthwhile.</summary>
     public bool Bulk;
 
-    /// <summary>Root of the tree being queried (for the <c>:has()</c> marks).</summary>
-    public int TreeRoot;
+    /// <summary>The node the query started from; <see cref="TreeRoot"/> walks up from it.</summary>
+    public int Origin;
+
+    private int _treeRootPlusOne;
+
+    /// <summary>
+    /// Root of the tree being queried (for the <c>:has()</c> marks). Found on first use: the walk up is as long as the
+    /// document is deep, and most matches (a cascade over a deeply nested page) never need it.
+    /// </summary>
+    public int TreeRoot
+    {
+        get
+        {
+            if (_treeRootPlusOne == 0)
+            {
+                _treeRootPlusOne = Node.RootIndex(A, Origin) + 1;
+            }
+
+            return _treeRootPlusOne - 1;
+        }
+    }
 
     public int Steps;
     public bool UseMemo;
@@ -227,7 +246,7 @@ internal static class SelectorMatcher
             State = options?.State,
             Quirks = doc.Mode == QuirksMode.Quirks,
             Bulk = bulk,
-            TreeRoot = Node.RootIndex(a, context.Index),
+            Origin = context.Index,
         };
     }
 

@@ -28,6 +28,8 @@ public sealed class TreeHostileTests
     {
         string html = string.Concat(Enumerable.Repeat("<div>", 100_000)) + "<button id=b>deep</button>";
         Document doc = Parse(html);
+        // Linear in depth: about 0.7 s here (style computation plus tree build). The bound leaves a slow 4-core runner room,
+        // while a quadratic walk up the ancestors (about 6 s here, over 40 s on such a runner) still fails.
         Within(20_000, () =>
         {
             AccessibilityTree tree = Build(doc);

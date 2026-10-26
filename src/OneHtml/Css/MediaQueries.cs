@@ -497,7 +497,14 @@ internal static class MediaQueryParser
 
     internal static string RawOf(TokenRange r, int from, int to)
     {
-        string raw = r.Tree.Text.Substring(r.Tree.Tokens[from].Start, r.Tree.Tokens[to - 1].End - r.Tree.Tokens[from].Start).Trim();
+        // Only whitespace tokens are dropped from the end: an escaped space ("\ ") belongs to the token before it.
+        int lastIndex = to - 1;
+        while (lastIndex > from && r.Kind(lastIndex) == CssTokenKind.Whitespace)
+        {
+            lastIndex--;
+        }
+
+        string raw = r.Tree.Text.Substring(r.Tree.Tokens[from].Start, r.Tree.Tokens[lastIndex].End - r.Tree.Tokens[from].Start);
 
         // CSS Syntax 5: blocks and functions still open at the end of the input are closed there. The serialization writes
         // those closers out, so that it parses back to the same query.
@@ -523,17 +530,18 @@ internal static class MediaQueryParser
             }
         }
 
-        int lastIndex = to - 1;
-        while (lastIndex > from && r.Kind(lastIndex) == CssTokenKind.Whitespace)
-        {
-            lastIndex--;
-        }
-
         ref readonly Token last = ref r.Tree.Tokens[lastIndex];
         if (last.Kind == CssTokenKind.BadString && open.Count > 0)
         {
             // A bad string runs up to a newline that the trimmed text no longer has; a closer would end up inside it.
             raw += "\n";
+        }
+        else if (last.Kind is CssTokenKind.Url or CssTokenKind.BadUrl && (last.Flags & Token.Terminated) == 0)
+        {
+            // CSS Syntax 4.3.6 and 4.3.15: a url or bad-url token cut off by the end of the input is a token like any other.
+            // Written with the closers after it, the first closer would end the url and leave its block open, so it is closed here.
+            // A backslash at the end would escape the closer ("\)" is an escape), so it gets a line continuation first.
+            raw += (OddBackslashes(raw) ? "\n" : string.Empty) + ")";
         }
         else if (last.Kind == CssTokenKind.QuotedString && (last.Flags & Token.Terminated) == 0)
         {

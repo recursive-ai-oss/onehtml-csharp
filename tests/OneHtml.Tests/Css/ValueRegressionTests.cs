@@ -18,6 +18,19 @@ public class ValueRegressionTests
     [InlineData("f(a, \\")]
     [InlineData("f(\"a\\")]
     [InlineData("f(a}{, 1)\\")]
+    [InlineData("(url(")]
+    [InlineData("(url(a")]
+    [InlineData("(a, (url( ")]
+    [InlineData("f(g(url(x")]
+    [InlineData("(url(\u0001")]
+    [InlineData("(url(p /")]
+    [InlineData("(url(o\"")]
+    [InlineData("(url(a b) (url(a b")]
+    [InlineData("(url(a\\)")]
+    [InlineData("(url(\\")]
+    [InlineData("(url(a\\")]
+    [InlineData("(a\\ ")]
+    [InlineData("f(a\\ ")]
     public void Media_query_list_serializes_to_text_that_parses_back_to_itself(string query)
     {
         string css = MediaQueryList.Parse(query).ToCss();

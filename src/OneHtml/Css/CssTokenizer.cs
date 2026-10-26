@@ -642,8 +642,7 @@ internal sealed class CssTokenizer
                 }
                 else
                 {
-                    ConsumeBadUrlRemnants();
-                    Add(CssTokenKind.BadUrl, s);
+                    Add(CssTokenKind.BadUrl, s, 0, ConsumeBadUrlRemnants());
                 }
 
                 return;
@@ -652,8 +651,7 @@ internal sealed class CssTokenizer
             if (c is '"' or '\'' or '(' || CssChars.IsNonPrintable(c))
             {
                 _pos++;
-                ConsumeBadUrlRemnants();
-                Add(CssTokenKind.BadUrl, s);
+                Add(CssTokenKind.BadUrl, s, 0, ConsumeBadUrlRemnants());
                 return;
             }
 
@@ -667,8 +665,7 @@ internal sealed class CssTokenizer
                 }
 
                 _pos++;
-                ConsumeBadUrlRemnants();
-                Add(CssTokenKind.BadUrl, s);
+                Add(CssTokenKind.BadUrl, s, 0, ConsumeBadUrlRemnants());
                 return;
             }
 
@@ -677,7 +674,8 @@ internal sealed class CssTokenizer
     }
 
     // §4.3.15 "consume the remnants of a bad url".
-    private void ConsumeBadUrlRemnants()
+    // Returns Token.Terminated when the closing parenthesis was consumed, and 0 when the input ended first.
+    private byte ConsumeBadUrlRemnants()
     {
         while (_pos < _end)
         {
@@ -685,7 +683,7 @@ internal sealed class CssTokenizer
             if (c == ')')
             {
                 _pos++;
-                return;
+                return Token.Terminated;
             }
 
             if (c == '\\' && ValidEscapeAt(_pos))
@@ -697,6 +695,8 @@ internal sealed class CssTokenizer
                 _pos++;
             }
         }
+
+        return 0;
     }
 
     // §4.3.11 "check if three code points would start a unicode-range".

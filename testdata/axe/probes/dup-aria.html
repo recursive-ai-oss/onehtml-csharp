@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Duplicate ids referenced by ARIA</title></head>
+<body><main>
+<span id="lblx">First label</span><span id="lblx">Second</span>
+<button aria-labelledby="lblx">x</button>
+<p id="dd">desc</p><p id="dd">desc2</p>
+<input type="text" aria-describedby="dd" aria-label="In">
+<div id="plain">a</div><div id="plain">b</div>
+<div id="three">a</div><div id="three">b</div><div id="three">c</div>
+<a href="/x" id="lk">a</a><a href="/y" id="lk">b</a>
+</main></body></html>

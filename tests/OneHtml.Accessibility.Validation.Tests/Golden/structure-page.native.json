@@ -2,7 +2,7 @@
   "format": "onehtml-results",
   "version": 1,
   "document": {
-    "sha256": "add9d26bbdbb6d8257ee5afe73fec29e847b8a3a94e9567e6d0e797c83184c3b",
+    "sha256": "718cf1956eb31211f1b19b0d0ee2a757ba1c486a092731746fbcaf413dc03ac8",
     "url": "https://example.test/structure"
   },
   "styleContext": {
@@ -3052,8 +3052,8 @@
     },
     {
       "id": "meta-viewport-large",
-      "description": "The viewport meta element should let a user zoom to at least five times.",
-      "help": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.",
+      "description": "The viewport meta element should not cap zoom at less than five times.",
+      "help": "Remove the maximum-scale cap, or raise it to 5 or more.",
       "impact": "minor",
       "bestPractice": true,
       "needs": "static",
@@ -4244,8 +4244,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [
@@ -4272,8 +4272,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(3)",
         "source": {
-          "start": 955,
-          "end": 977
+          "start": 988,
+          "end": 1010
         }
       },
       "findings": [
@@ -4772,8 +4772,8 @@
         "tag": "blink",
         "locator": "blink",
         "source": {
-          "start": 1103,
-          "end": 1110
+          "start": 1136,
+          "end": 1143
         }
       },
       "findings": [
@@ -4800,8 +4800,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(1)",
         "source": {
-          "start": 741,
-          "end": 757
+          "start": 774,
+          "end": 790
         }
       },
       "findings": [],
@@ -4822,8 +4822,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(2)",
         "source": {
-          "start": 768,
-          "end": 784
+          "start": 801,
+          "end": 817
         }
       },
       "findings": [],
@@ -4844,8 +4844,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(3)",
         "source": {
-          "start": 955,
-          "end": 977
+          "start": 988,
+          "end": 1010
         }
       },
       "findings": [],
@@ -4866,8 +4866,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(4)",
         "source": {
-          "start": 990,
-          "end": 998
+          "start": 1023,
+          "end": 1031
         }
       },
       "findings": [],
@@ -5039,11 +5039,11 @@
       "outcome": "passed",
       "message": "Meets the rule.",
       "target": {
-        "tag": "b",
-        "locator": "b",
+        "tag": "p",
+        "locator": "#content > p:nth-of-type(1)",
         "source": {
-          "start": 441,
-          "end": 444
+          "start": 438,
+          "end": 481
         }
       },
       "findings": [],
@@ -5064,8 +5064,8 @@
         "tag": "p",
         "locator": "#content > p:nth-of-type(2)",
         "source": {
-          "start": 475,
-          "end": 478
+          "start": 508,
+          "end": 511
         }
       },
       "findings": [],
@@ -5086,8 +5086,8 @@
         "tag": "li",
         "locator": "ul > li",
         "source": {
-          "start": 539,
-          "end": 543
+          "start": 572,
+          "end": 576
         }
       },
       "findings": [],
@@ -5108,8 +5108,8 @@
         "tag": "div",
         "locator": "ul > div",
         "source": {
-          "start": 552,
-          "end": 557
+          "start": 585,
+          "end": 590
         }
       },
       "findings": [],
@@ -5130,8 +5130,8 @@
         "tag": "li",
         "locator": "#content > div:nth-of-type(1) > li:nth-of-type(1)",
         "source": {
-          "start": 581,
-          "end": 585
+          "start": 614,
+          "end": 618
         }
       },
       "findings": [],
@@ -5152,8 +5152,8 @@
         "tag": "li",
         "locator": "#content > div:nth-of-type(1) > li:nth-of-type(2)",
         "source": {
-          "start": 600,
-          "end": 604
+          "start": 633,
+          "end": 637
         }
       },
       "findings": [],
@@ -5174,8 +5174,8 @@
         "tag": "dt",
         "locator": "dl > dt:nth-of-type(1)",
         "source": {
-          "start": 632,
-          "end": 636
+          "start": 665,
+          "end": 669
         }
       },
       "findings": [],
@@ -5196,8 +5196,8 @@
         "tag": "dd",
         "locator": "dd",
         "source": {
-          "start": 645,
-          "end": 649
+          "start": 678,
+          "end": 682
         }
       },
       "findings": [],
@@ -5218,8 +5218,8 @@
         "tag": "dt",
         "locator": "dl > dt:nth-of-type(2)",
         "source": {
-          "start": 664,
-          "end": 668
+          "start": 697,
+          "end": 701
         }
       },
       "findings": [],
@@ -5240,8 +5240,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(2)",
         "source": {
-          "start": 694,
-          "end": 709
+          "start": 727,
+          "end": 742
         }
       },
       "findings": [],
@@ -5262,8 +5262,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(3)",
         "source": {
-          "start": 716,
-          "end": 731
+          "start": 749,
+          "end": 764
         }
       },
       "findings": [],
@@ -5284,8 +5284,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(1)",
         "source": {
-          "start": 741,
-          "end": 757
+          "start": 774,
+          "end": 790
         }
       },
       "findings": [],
@@ -5306,8 +5306,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(2)",
         "source": {
-          "start": 768,
-          "end": 784
+          "start": 801,
+          "end": 817
         }
       },
       "findings": [],
@@ -5328,8 +5328,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [],
@@ -5350,8 +5350,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [],
@@ -5372,8 +5372,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(4)",
         "source": {
-          "start": 878,
-          "end": 896
+          "start": 911,
+          "end": 929
         }
       },
       "findings": [],
@@ -5394,8 +5394,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [],
@@ -5416,8 +5416,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(3)",
         "source": {
-          "start": 955,
-          "end": 977
+          "start": 988,
+          "end": 1010
         }
       },
       "findings": [],
@@ -5438,8 +5438,8 @@
         "tag": "a",
         "locator": "#content > button:nth-of-type(4) > a",
         "source": {
-          "start": 998,
-          "end": 1015
+          "start": 1031,
+          "end": 1048
         }
       },
       "findings": [],
@@ -5460,8 +5460,8 @@
         "tag": "blink",
         "locator": "blink",
         "source": {
-          "start": 1103,
-          "end": 1110
+          "start": 1136,
+          "end": 1143
         }
       },
       "findings": [],
@@ -5482,8 +5482,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(1)",
         "source": {
-          "start": 1234,
-          "end": 1242
+          "start": 1267,
+          "end": 1275
         }
       },
       "findings": [],
@@ -5504,8 +5504,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(2)",
         "source": {
-          "start": 1258,
-          "end": 1266
+          "start": 1291,
+          "end": 1299
         }
       },
       "findings": [],
@@ -5526,8 +5526,8 @@
         "tag": "p",
         "locator": "body > p",
         "source": {
-          "start": 1289,
-          "end": 1292
+          "start": 1322,
+          "end": 1325
         }
       },
       "findings": [],
@@ -5677,11 +5677,11 @@
       "outcome": "passed",
       "message": "Meets the rule.",
       "target": {
-        "tag": "b",
-        "locator": "b",
+        "tag": "p",
+        "locator": "#content > p:nth-of-type(1)",
         "source": {
-          "start": 441,
-          "end": 444
+          "start": 438,
+          "end": 481
         }
       },
       "findings": [],
@@ -5702,8 +5702,8 @@
         "tag": "p",
         "locator": "#content > p:nth-of-type(2)",
         "source": {
-          "start": 475,
-          "end": 478
+          "start": 508,
+          "end": 511
         }
       },
       "findings": [],
@@ -5724,8 +5724,8 @@
         "tag": "li",
         "locator": "ul > li",
         "source": {
-          "start": 539,
-          "end": 543
+          "start": 572,
+          "end": 576
         }
       },
       "findings": [],
@@ -5746,8 +5746,8 @@
         "tag": "div",
         "locator": "ul > div",
         "source": {
-          "start": 552,
-          "end": 557
+          "start": 585,
+          "end": 590
         }
       },
       "findings": [],
@@ -5768,8 +5768,8 @@
         "tag": "li",
         "locator": "#content > div:nth-of-type(1) > li:nth-of-type(1)",
         "source": {
-          "start": 581,
-          "end": 585
+          "start": 614,
+          "end": 618
         }
       },
       "findings": [],
@@ -5790,8 +5790,8 @@
         "tag": "li",
         "locator": "#content > div:nth-of-type(1) > li:nth-of-type(2)",
         "source": {
-          "start": 600,
-          "end": 604
+          "start": 633,
+          "end": 637
         }
       },
       "findings": [],
@@ -5812,8 +5812,8 @@
         "tag": "dt",
         "locator": "dl > dt:nth-of-type(1)",
         "source": {
-          "start": 632,
-          "end": 636
+          "start": 665,
+          "end": 669
         }
       },
       "findings": [],
@@ -5834,8 +5834,8 @@
         "tag": "dd",
         "locator": "dd",
         "source": {
-          "start": 645,
-          "end": 649
+          "start": 678,
+          "end": 682
         }
       },
       "findings": [],
@@ -5856,8 +5856,8 @@
         "tag": "dt",
         "locator": "dl > dt:nth-of-type(2)",
         "source": {
-          "start": 664,
-          "end": 668
+          "start": 697,
+          "end": 701
         }
       },
       "findings": [],
@@ -5878,8 +5878,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(2)",
         "source": {
-          "start": 694,
-          "end": 709
+          "start": 727,
+          "end": 742
         }
       },
       "findings": [],
@@ -5900,8 +5900,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(3)",
         "source": {
-          "start": 716,
-          "end": 731
+          "start": 749,
+          "end": 764
         }
       },
       "findings": [],
@@ -5922,8 +5922,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(1)",
         "source": {
-          "start": 741,
-          "end": 757
+          "start": 774,
+          "end": 790
         }
       },
       "findings": [],
@@ -5944,8 +5944,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(2)",
         "source": {
-          "start": 768,
-          "end": 784
+          "start": 801,
+          "end": 817
         }
       },
       "findings": [],
@@ -5966,8 +5966,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [],
@@ -5988,8 +5988,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [],
@@ -6010,8 +6010,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(4)",
         "source": {
-          "start": 878,
-          "end": 896
+          "start": 911,
+          "end": 929
         }
       },
       "findings": [],
@@ -6032,8 +6032,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [],
@@ -6054,8 +6054,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(3)",
         "source": {
-          "start": 955,
-          "end": 977
+          "start": 988,
+          "end": 1010
         }
       },
       "findings": [],
@@ -6076,8 +6076,8 @@
         "tag": "a",
         "locator": "#content > button:nth-of-type(4) > a",
         "source": {
-          "start": 998,
-          "end": 1015
+          "start": 1031,
+          "end": 1048
         }
       },
       "findings": [],
@@ -6098,8 +6098,8 @@
         "tag": "blink",
         "locator": "blink",
         "source": {
-          "start": 1103,
-          "end": 1110
+          "start": 1136,
+          "end": 1143
         }
       },
       "findings": [],
@@ -6120,8 +6120,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(1)",
         "source": {
-          "start": 1234,
-          "end": 1242
+          "start": 1267,
+          "end": 1275
         }
       },
       "findings": [],
@@ -6142,8 +6142,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(2)",
         "source": {
-          "start": 1258,
-          "end": 1266
+          "start": 1291,
+          "end": 1299
         }
       },
       "findings": [],
@@ -6164,8 +6164,8 @@
         "tag": "p",
         "locator": "body > p",
         "source": {
-          "start": 1289,
-          "end": 1292
+          "start": 1322,
+          "end": 1325
         }
       },
       "findings": [],
@@ -6201,8 +6201,8 @@
         "tag": "dl",
         "locator": "dl",
         "source": {
-          "start": 628,
-          "end": 632
+          "start": 661,
+          "end": 665
         }
       },
       "findings": [
@@ -6229,8 +6229,8 @@
         "tag": "dt",
         "locator": "dl > dt:nth-of-type(1)",
         "source": {
-          "start": 632,
-          "end": 636
+          "start": 665,
+          "end": 669
         }
       },
       "findings": [],
@@ -6251,8 +6251,8 @@
         "tag": "dd",
         "locator": "dd",
         "source": {
-          "start": 645,
-          "end": 649
+          "start": 678,
+          "end": 682
         }
       },
       "findings": [],
@@ -6273,8 +6273,8 @@
         "tag": "dt",
         "locator": "dl > dt:nth-of-type(2)",
         "source": {
-          "start": 664,
-          "end": 668
+          "start": 697,
+          "end": 701
         }
       },
       "findings": [],
@@ -6367,8 +6367,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(2)",
         "source": {
-          "start": 694,
-          "end": 709
+          "start": 727,
+          "end": 742
         }
       },
       "findings": [
@@ -6395,8 +6395,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(3)",
         "source": {
-          "start": 716,
-          "end": 731
+          "start": 749,
+          "end": 764
         }
       },
       "findings": [
@@ -6423,8 +6423,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(1)",
         "source": {
-          "start": 741,
-          "end": 757
+          "start": 774,
+          "end": 790
         }
       },
       "findings": [
@@ -6451,8 +6451,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(2)",
         "source": {
-          "start": 768,
-          "end": 784
+          "start": 801,
+          "end": 817
         }
       },
       "findings": [
@@ -6568,8 +6568,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(4)",
         "source": {
-          "start": 878,
-          "end": 896
+          "start": 911,
+          "end": 929
         }
       },
       "findings": [
@@ -6640,8 +6640,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(1)",
         "source": {
-          "start": 741,
-          "end": 757
+          "start": 774,
+          "end": 790
         }
       },
       "findings": [],
@@ -6662,8 +6662,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(2)",
         "source": {
-          "start": 768,
-          "end": 784
+          "start": 801,
+          "end": 817
         }
       },
       "findings": [],
@@ -6684,8 +6684,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [],
@@ -6706,8 +6706,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [],
@@ -6728,8 +6728,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(4)",
         "source": {
-          "start": 878,
-          "end": 896
+          "start": 911,
+          "end": 929
         }
       },
       "findings": [],
@@ -6750,8 +6750,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [],
@@ -6772,8 +6772,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(3)",
         "source": {
-          "start": 955,
-          "end": 977
+          "start": 988,
+          "end": 1010
         }
       },
       "findings": [],
@@ -6794,8 +6794,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(4)",
         "source": {
-          "start": 990,
-          "end": 998
+          "start": 1023,
+          "end": 1031
         }
       },
       "findings": [],
@@ -6816,8 +6816,8 @@
         "tag": "a",
         "locator": "#content > button:nth-of-type(4) > a",
         "source": {
-          "start": 998,
-          "end": 1015
+          "start": 1031,
+          "end": 1048
         }
       },
       "findings": [],
@@ -6838,8 +6838,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(4)",
         "source": {
-          "start": 1124,
-          "end": 1139
+          "start": 1157,
+          "end": 1172
         }
       },
       "findings": [],
@@ -6875,8 +6875,8 @@
         "tag": "iframe",
         "locator": "iframe",
         "source": {
-          "start": 1037,
-          "end": 1091
+          "start": 1070,
+          "end": 1124
         }
       },
       "findings": [],
@@ -7033,8 +7033,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(5)",
         "source": {
-          "start": 1181,
-          "end": 1207
+          "start": 1214,
+          "end": 1240
         }
       },
       "findings": [
@@ -7178,8 +7178,8 @@
         "tag": "img",
         "locator": "img",
         "source": {
-          "start": 1139,
-          "end": 1174
+          "start": 1172,
+          "end": 1207
         }
       },
       "findings": [],
@@ -7215,8 +7215,8 @@
         "tag": "img",
         "locator": "img",
         "source": {
-          "start": 1139,
-          "end": 1174
+          "start": 1172,
+          "end": 1207
         }
       },
       "findings": [
@@ -7243,8 +7243,8 @@
         "tag": "img",
         "locator": "img",
         "source": {
-          "start": 1139,
-          "end": 1174
+          "start": 1172,
+          "end": 1207
         }
       },
       "findings": [],
@@ -7265,8 +7265,8 @@
         "tag": "img",
         "locator": "img",
         "source": {
-          "start": 1139,
-          "end": 1174
+          "start": 1172,
+          "end": 1207
         }
       },
       "findings": [],
@@ -7414,8 +7414,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(1)",
         "source": {
-          "start": 1234,
-          "end": 1242
+          "start": 1267,
+          "end": 1275
         }
       },
       "findings": [],
@@ -7436,8 +7436,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(2)",
         "source": {
-          "start": 1258,
-          "end": 1266
+          "start": 1291,
+          "end": 1299
         }
       },
       "findings": [],
@@ -7502,8 +7502,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(1)",
         "source": {
-          "start": 1234,
-          "end": 1242
+          "start": 1267,
+          "end": 1275
         }
       },
       "findings": [
@@ -7530,8 +7530,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(2)",
         "source": {
-          "start": 1258,
-          "end": 1266
+          "start": 1291,
+          "end": 1299
         }
       },
       "findings": [
@@ -7702,8 +7702,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(1)",
         "source": {
-          "start": 1234,
-          "end": 1242
+          "start": 1267,
+          "end": 1275
         }
       },
       "findings": [
@@ -7730,8 +7730,8 @@
         "tag": "footer",
         "locator": "body > footer:nth-of-type(2)",
         "source": {
-          "start": 1258,
-          "end": 1266
+          "start": 1291,
+          "end": 1299
         }
       },
       "findings": [
@@ -7814,8 +7814,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [
@@ -7842,8 +7842,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [
@@ -7870,8 +7870,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [
@@ -7898,8 +7898,8 @@
         "tag": "a",
         "locator": "#content > button:nth-of-type(4) > a",
         "source": {
-          "start": 998,
-          "end": 1015
+          "start": 1031,
+          "end": 1048
         }
       },
       "findings": [
@@ -7926,8 +7926,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(4)",
         "source": {
-          "start": 1124,
-          "end": 1139
+          "start": 1157,
+          "end": 1172
         }
       },
       "findings": [
@@ -8010,8 +8010,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [
@@ -8038,8 +8038,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [
@@ -8066,8 +8066,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [
@@ -8094,8 +8094,8 @@
         "tag": "a",
         "locator": "#content > button:nth-of-type(4) > a",
         "source": {
-          "start": 998,
-          "end": 1015
+          "start": 1031,
+          "end": 1048
         }
       },
       "findings": [
@@ -8122,8 +8122,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(4)",
         "source": {
-          "start": 1124,
-          "end": 1139
+          "start": 1157,
+          "end": 1172
         }
       },
       "findings": [
@@ -8150,8 +8150,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [],
@@ -8172,8 +8172,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [],
@@ -8194,8 +8194,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [],
@@ -8216,8 +8216,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(4)",
         "source": {
-          "start": 1124,
-          "end": 1139
+          "start": 1157,
+          "end": 1172
         }
       },
       "findings": [],
@@ -8282,8 +8282,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [],
@@ -8304,8 +8304,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [],
@@ -8326,8 +8326,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [],
@@ -8348,8 +8348,8 @@
         "tag": "a",
         "locator": "#content > button:nth-of-type(4) > a",
         "source": {
-          "start": 998,
-          "end": 1015
+          "start": 1031,
+          "end": 1048
         }
       },
       "findings": [],
@@ -8370,8 +8370,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(4)",
         "source": {
-          "start": 1124,
-          "end": 1139
+          "start": 1157,
+          "end": 1172
         }
       },
       "findings": [],
@@ -8392,8 +8392,8 @@
         "tag": "ul",
         "locator": "ul",
         "source": {
-          "start": 535,
-          "end": 539
+          "start": 568,
+          "end": 572
         }
       },
       "findings": [
@@ -8420,8 +8420,8 @@
         "tag": "li",
         "locator": "ul > li",
         "source": {
-          "start": 539,
-          "end": 543
+          "start": 572,
+          "end": 576
         }
       },
       "findings": [],
@@ -8442,8 +8442,8 @@
         "tag": "li",
         "locator": "#content > div:nth-of-type(1) > li:nth-of-type(1)",
         "source": {
-          "start": 581,
-          "end": 585
+          "start": 614,
+          "end": 618
         }
       },
       "findings": [
@@ -8475,8 +8475,8 @@
         "tag": "li",
         "locator": "#content > div:nth-of-type(1) > li:nth-of-type(2)",
         "source": {
-          "start": 600,
-          "end": 604
+          "start": 633,
+          "end": 637
         }
       },
       "findings": [
@@ -8596,8 +8596,8 @@
     },
     {
       "rule": "meta-viewport-large",
-      "outcome": "failed",
-      "message": "The viewport restricts zooming.",
+      "outcome": "passed",
+      "message": "Meets the rule.",
       "target": {
         "tag": "meta",
         "locator": "meta[name=\"viewport\"]",
@@ -8606,13 +8606,7 @@
           "end": 162
         }
       },
-      "findings": [
-        {
-          "attribute": "user-scalable",
-          "value": "no",
-          "message": "Zooming is switched off."
-        }
-      ],
+      "findings": [],
       "taskImpact": {
         "blocksTask": false,
         "reason": null
@@ -8630,8 +8624,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(1)",
         "source": {
-          "start": 741,
-          "end": 757
+          "start": 774,
+          "end": 790
         }
       },
       "findings": [],
@@ -8652,8 +8646,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(2)",
         "source": {
-          "start": 768,
-          "end": 784
+          "start": 801,
+          "end": 817
         }
       },
       "findings": [],
@@ -8674,8 +8668,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(3)",
         "source": {
-          "start": 955,
-          "end": 977
+          "start": 988,
+          "end": 1010
         }
       },
       "findings": [],
@@ -8696,8 +8690,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(4)",
         "source": {
-          "start": 990,
-          "end": 998
+          "start": 1023,
+          "end": 1031
         }
       },
       "findings": [],
@@ -8718,8 +8712,8 @@
         "tag": "img",
         "locator": "img",
         "source": {
-          "start": 1139,
-          "end": 1174
+          "start": 1172,
+          "end": 1207
         }
       },
       "findings": [],
@@ -8765,20 +8759,20 @@
     {
       "rule": "p-as-heading",
       "outcome": "failed",
-      "message": "This paragraph looks like a heading (bold) but is not one.",
+      "message": "This paragraph looks like a heading (bold and larger) but is not one.",
       "target": {
         "tag": "p",
         "locator": "#content > p:nth-of-type(1)",
         "source": {
           "start": 438,
-          "end": 441
+          "end": 481
         }
       },
       "findings": [
         {
           "attribute": null,
           "value": null,
-          "message": "All its text is bold; the next paragraph's is not."
+          "message": "Its text is bold and larger."
         }
       ],
       "taskImpact": {
@@ -8857,8 +8851,8 @@
         "tag": "p",
         "locator": "body > p",
         "source": {
-          "start": 1289,
-          "end": 1292
+          "start": 1322,
+          "end": 1325
         }
       },
       "findings": [],
@@ -8939,8 +8933,8 @@
         "tag": "img",
         "locator": "img",
         "source": {
-          "start": 1139,
-          "end": 1174
+          "start": 1172,
+          "end": 1207
         }
       },
       "findings": [
@@ -9047,8 +9041,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [
@@ -9075,8 +9069,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [
@@ -9183,8 +9177,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(1)",
         "source": {
-          "start": 741,
-          "end": 757
+          "start": 774,
+          "end": 790
         }
       },
       "findings": [],
@@ -9208,8 +9202,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(2)",
         "source": {
-          "start": 768,
-          "end": 784
+          "start": 801,
+          "end": 817
         }
       },
       "findings": [],
@@ -9233,8 +9227,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(1)",
         "source": {
-          "start": 804,
-          "end": 830
+          "start": 837,
+          "end": 863
         }
       },
       "findings": [],
@@ -9258,8 +9252,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(2)",
         "source": {
-          "start": 839,
-          "end": 865
+          "start": 872,
+          "end": 898
         }
       },
       "findings": [],
@@ -9283,8 +9277,8 @@
         "tag": "div",
         "locator": "#content > div:nth-of-type(4)",
         "source": {
-          "start": 878,
-          "end": 896
+          "start": 911,
+          "end": 929
         }
       },
       "findings": [],
@@ -9308,8 +9302,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
-          "start": 923,
-          "end": 950
+          "start": 956,
+          "end": 983
         }
       },
       "findings": [],
@@ -9333,8 +9327,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(3)",
         "source": {
-          "start": 955,
-          "end": 977
+          "start": 988,
+          "end": 1010
         }
       },
       "findings": [],
@@ -9358,8 +9352,8 @@
         "tag": "button",
         "locator": "#content > button:nth-of-type(4)",
         "source": {
-          "start": 990,
-          "end": 998
+          "start": 1023,
+          "end": 1031
         }
       },
       "findings": [],
@@ -9383,8 +9377,8 @@
         "tag": "a",
         "locator": "#content > button:nth-of-type(4) > a",
         "source": {
-          "start": 998,
-          "end": 1015
+          "start": 1031,
+          "end": 1048
         }
       },
       "findings": [],
@@ -9408,8 +9402,8 @@
         "tag": "iframe",
         "locator": "iframe",
         "source": {
-          "start": 1037,
-          "end": 1091
+          "start": 1070,
+          "end": 1124
         }
       },
       "findings": [],
@@ -9433,8 +9427,8 @@
         "tag": "a",
         "locator": "#content > a:nth-of-type(4)",
         "source": {
-          "start": 1124,
-          "end": 1139
+          "start": 1157,
+          "end": 1172
         }
       },
       "findings": [],
@@ -9710,7 +9704,7 @@
     "format": "onehtml-edits",
     "version": 1,
     "document": {
-      "sha256": "add9d26bbdbb6d8257ee5afe73fec29e847b8a3a94e9567e6d0e797c83184c3b"
+      "sha256": "718cf1956eb31211f1b19b0d0ee2a757ba1c486a092731746fbcaf413dc03ac8"
     },
     "edits": [
       {
@@ -9723,8 +9717,8 @@
             "path": "sha256:473057654c029b5bb7d131f5fe03e43b161851c11b1531a6091703d94da94e26"
           },
           "anchor": {
-            "start": 581,
-            "end": 600,
+            "start": 614,
+            "end": 633,
             "bytes": "sha256:dcb05dc22ab56922de579190a1d3290e2b16fa29d4965e92c66dcd059842860f"
           }
         },

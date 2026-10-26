@@ -68,6 +68,12 @@ cases and asks for samples instead. With a gradient anywhere on the path and a h
 
 The checker never guesses a colour: a missing background is a needs-render result naming exactly what to capture.
 
+## Form controls
+
+A `button`, `input`, `select` or `textarea` whose `color` no declaration of its own sets takes the browser's control colour (`ButtonText`
+or `FieldText`, black under the default colour scheme), not its parent's: the rendering section of the HTML Standard does not give controls
+a colour, but every browser's own sheet does, and Chrome's output on a white-on-teal cookie button confirms it (black, 7.16:1).
+
 ## link-in-text-block
 
 A link (`a[href]`, inline) in a block that also holds other visible text (the first such run of text, outside links and

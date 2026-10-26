@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Table headers</title></head>
+<body><main>
+<table id="t1"><caption>Good</caption><tr><th>A</th><th>B</th></tr><tr><td>1</td><td>2</td></tr></table>
+<table id="t2"><tr><td>A</td><td>B</td></tr><tr><td>1</td><td>2</td></tr><tr><td>3</td><td>4</td></tr></table>
+<table id="t3"><tr><th></th><th>B</th></tr><tr><td>1</td><td>2</td></tr></table>
+<table id="t4"><tr><th>Row</th><td>1</td></tr><tr><th>Row2</th><td>2</td></tr></table>
+<table id="t5"><tr><td id="h1">H1</td><td id="h2">H2</td></tr><tr><td headers="h1">1</td><td headers="h2">2</td></tr><tr><td headers="zz">3</td><td>4</td></tr></table>
+<table id="t6"><tr><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th></tr><tr><td>1</td><td></td><td>3</td></tr><tr><td colspan="2">12</td><td>3</td></tr></table>
+<table id="t7" role="presentation"><tr><td>layout</td><td>layout</td></tr></table>
+<table id="t8"><tr><td>Caption-like text in a cell</td></tr><tr><td>1</td></tr></table>
+<table id="t9"><tr><td colspan="3"><b>Fake caption</b></td></tr><tr><th>A</th><th>B</th><th>C</th></tr><tr><td>1</td><td>2</td><td>3</td></tr></table>
+<table id="t10"><tr><td colspan="2">Student scores for the term</td></tr><tr><td>Ann</td><td>90</td></tr><tr><td>Bob</td><td>85</td></tr></table>
+<table id="t11"><tr><th>x</th><th>y</th></tr><tr><td scope="row">r</td><td>1</td></tr></table>
+<table id="t12"><thead><tr><th>A</th></tr></thead><tbody><tr><td>1</td></tr></tbody><tfoot><tr><td>sum</td></tr></tfoot></table>
+<table id="t13"><tr><td>a</td></tr><tr><td></td></tr></table>
+<table id="t14" summary="S"><caption>Same</caption><tr><th>A</th></tr><tr><td>1</td></tr></table>
+</main></body></html>

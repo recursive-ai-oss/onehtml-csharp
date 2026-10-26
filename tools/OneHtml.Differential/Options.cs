@@ -41,6 +41,12 @@ internal sealed class Options
     /// <summary>The <c>ax</c> command's rendered-facts mode: <c>on</c>, <c>off</c> or <c>both</c>.</summary>
     public string Facts { get; private set; } = "both";
 
+    /// <summary>With <c>axe</c>, stop starting captures after this many seconds (0 = no limit); the run can be repeated to continue.</summary>
+    public int MaxSeconds { get; private set; }
+
+    /// <summary>With <c>axe</c>, discard earlier per-capture results and redo every capture.</summary>
+    public bool Fresh { get; private set; }
+
     /// <summary>Restricts <c>roundtrip</c> to <c>pages</c> or <c>stylesheets</c>; null for both.</summary>
     public string? Only { get; private set; }
 
@@ -59,6 +65,12 @@ internal sealed class Options
             if (a == "--dump")
             {
                 o.Dump = true;
+                continue;
+            }
+
+            if (a == "--fresh")
+            {
+                o.Fresh = true;
                 continue;
             }
 
@@ -92,6 +104,7 @@ internal sealed class Options
                 case "--timeout": o.TimeoutSeconds = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--top": o.Top = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--max-reduce": o.MaxReduce = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
+                case "--max-seconds": o.MaxSeconds = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--seed": o.Seed = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--skip": o.Skip = Math.Max(0, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--sample": o.Sample = Math.Max(0, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
@@ -110,6 +123,8 @@ internal sealed class Options
           --seed <n> (default 1) --per-page <targets per page> (default 5), replay only
           --skip <n> (items skipped first, to resume), --sample <n> (locators: elements per page checked by a whole-document query, default 2000)
           locators, styles, editfuzz: --per-page is the contexts and edit steps (styles) or transactions (editfuzz) per page; --corpus supplies stylesheets for styles (default: the corpus itself)
+          axe: the positional argument is the capture directory; --corpus, --facts as for ax; --max-seconds <n> stops starting captures after n seconds (resume by running again),
+            --fresh redoes every capture
           ax: the positional argument is the capture directory; --corpus <dir> supplies stylesheets (a corpus version or a directory of
           pages), --facts on|off|both (default both), --dump (also write dump/<sha>-<viewport>.txt)
         """;

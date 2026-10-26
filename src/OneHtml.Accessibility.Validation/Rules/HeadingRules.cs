@@ -67,8 +67,8 @@ internal sealed class PageHasHeadingOneRule : StructureRule
 
 // axe p-as-heading (experimental). WCAG 1.3.1, technique F2: a short paragraph that looks like a heading (bold, italic or
 // bigger than the paragraph after it) but is marked up as a paragraph. Font weight, style and size are computed style, so
-// the cascade decides and no layout is needed. Bold or larger type is reported as a failure; italic alone as a review item,
-// since italic is often just emphasis.
+// the cascade decides and no layout is needed. Two signs together are a failure; a much larger size alone is a review item;
+// bold or italic alone is ordinary emphasis and passes (axe agrees on black-box probes).
 internal sealed class ParagraphAsHeadingRule : StructureRule
 {
     private const int MaxLength = 140;
@@ -108,17 +108,20 @@ internal sealed class ParagraphAsHeadingRule : StructureRule
                 continue;
             }
 
-            bool bold = mine.AllBold && !theirs.AllBold;
-            bool bigger = mine.MinSize > theirs.MaxSize + 0.5;
+            // Bold type, a size clearly above the next paragraph's and italic each count as a sign of a heading. Two signs together fail; a much larger size alone is left to review; one bold or italic paragraph alone passes.
+            bool bold = mine.AllBold;
+            bool bigger = mine.MinSize >= theirs.MaxSize * 1.4;
+            bool muchBigger = bigger;
             bool italic = mine.AllItalic && !theirs.AllItalic;
-            if (bold || bigger)
+            if ((bold && bigger) || (bold && italic) || (italic && bigger))
             {
-                reporter.Failed(p, "This paragraph looks like a heading (" + (bold ? "bold" : "larger text") + ") but is not one.",
-                    [new Finding(null, null, bold ? "All its text is bold; the next paragraph's is not." : "Its text is larger than the next paragraph's.")]);
+                string how = bold && bigger ? "bold and larger" : bold ? "bold and italic" : "italic and larger";
+                reporter.Failed(p, "This paragraph looks like a heading (" + how + ") but is not one.",
+                    [new Finding(null, null, "Its text is " + how + ".")]);
             }
-            else if (italic)
+            else if (muchBigger)
             {
-                reporter.NeedsReview(p, "This paragraph is all italic and may be a heading.", [new Finding(null, null, "All its text is italic; the next paragraph's is not.")]);
+                reporter.NeedsReview(p, "This paragraph is much larger than the next one and may be a heading.", [new Finding(null, null, "Its text is at least 1.4 times the size of the next paragraph's.")]);
             }
             else
             {

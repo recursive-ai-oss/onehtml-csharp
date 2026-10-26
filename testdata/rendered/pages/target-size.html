@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Target size</title>
+<style>
+  body { margin: 0; font: 16px/24px sans-serif; }
+  nav a { display: inline-block; padding: 0; margin-right: 2px; font-size: 12px; line-height: 14px; }
+  nav.spaced a { margin-right: 40px; }
+  .big { display: inline-block; width: 44px; height: 44px; }
+  .tiny { width: 12px; height: 12px; }
+  .sized { width: 16px; height: 16px; padding: 0; border: 0; }
+  .roomy { width: 48px; height: 32px; }
+  .row { margin: 20px 0; }
+</style>
+</head>
+<body>
+<main>
+  <p>An inline <a href="/one">link</a> inside a sentence of ordinary running text is exempt, and so is <a href="/two">this one</a>.</p>
+  <nav class="row" aria-label="Crowded"><a href="/a">A</a><a href="/b">B</a><a href="/c">C</a><a href="/d">D</a></nav>
+  <nav class="row spaced" aria-label="Spaced"><a href="/e">E</a><a href="/f">F</a><a href="/g">G</a></nav>
+  <div class="row"><a class="big" href="/h" aria-label="Large target"></a></div>
+  <form class="row">
+    <label><input type="checkbox" name="c"> Plain checkbox, user agent size</label>
+    <p><input type="checkbox" class="tiny" name="t" aria-label="Author-sized tiny checkbox"></p>
+    <p><button type="button" class="sized" aria-label="Sized button, 16 px">x</button></p>
+    <p><button type="button" class="roomy">OK</button> <button type="button">Default button</button></p>
+    <p><button type="button" class="sized" aria-label="Neighbour one">1</button><button type="button" class="sized" aria-label="Neighbour two">2</button></p>
+  </form>
+</main>
+</body>
+</html>

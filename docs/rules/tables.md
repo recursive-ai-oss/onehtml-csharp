@@ -76,7 +76,19 @@ reads, and the right change (make it a `th`, or drop the attribute) depends on t
   violation where axe would report an incomplete one.
 - **td-headers-attr.** ACT's expectation applies to `headers` on a "cell"; we apply it to `td` and `th` only, since the
   attribute is not defined on `div role=cell`. ACT's test case for that (headers on `div role="cell"`) is inapplicable.
-- **td-has-header and table-fake-caption** follow axe's one-line descriptions; thresholds are our choice (see above) and
-  the axe differential will measure them.
+- **td-has-header and table-fake-caption** apply only to a table that looks like a data table by its markup: a `th`, a
+  `caption`, a `scope` or `headers` attribute, or a `summary` attribute (axe applies neither rule to a plain grid of `td`
+  cells; measured on 14 probe tables). They still also require the table's role to be `table`. Axe reports the table where
+  we report its cells; the comparison treats a container and its contents as one finding.
+- **table-fake-caption** is reported only for a `td` first row cell. Axe also reports a `th` that spans the first row and a
+  table that has a real `caption` and a spanning first row; we keep those as passes (a `th` title row and a captioned table
+  are not a caption in disguise).
+- **td-has-header** counts an empty `th` as a header; axe does not (a header row whose first cell is empty is a violation
+  there).
+- **td-headers-attr** accepts the id of any cell of the table (ACT a25f45); axe requires the ids to be `th` cells and
+  reports a `headers` that points at a `td`. The HTML standard also asks for `th`; ACT wins here.
+- **th-has-data-cells** fails a header with no cells (ACT d0f69e); axe reports a table with only a header as incomplete.
+- **empty-table-header** is needs-review for an empty `th` (it may be a deliberate corner cell); axe reports a violation,
+  also for a `th` with only an `aria-label`.
 - **ACT cases not judged:** a25f45 inapplicable example 3 (a table moved off-screen with `position: absolute` and
   negative offsets) needs layout to see that it is not visible; it is listed in `testdata/act/tables-forms-language-expectations.tsv`.

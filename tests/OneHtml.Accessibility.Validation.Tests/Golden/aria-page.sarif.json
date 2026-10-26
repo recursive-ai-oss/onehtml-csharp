@@ -5549,13 +5549,13 @@
             {
               "id": "meta-viewport-large",
               "shortDescription": {
-                "text": "The viewport meta element should let a user zoom to at least five times."
+                "text": "The viewport meta element should not cap zoom at less than five times."
               },
               "fullDescription": {
-                "text": "The viewport meta element should let a user zoom to at least five times. A best-practice check that no success criterion requires."
+                "text": "The viewport meta element should not cap zoom at less than five times. A best-practice check that no success criterion requires."
               },
               "help": {
-                "text": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content. No suggested edit: Removing the restriction and raising the limit both make zoom possible, so there is more than one correct edit."
+                "text": "Remove the maximum-scale cap, or raise it to 5 or more. No suggested edit: Removing the restriction and raising the limit both make zoom possible, so there is more than one correct edit."
               },
               "helpUri": "https://dequeuniversity.com/rules/axe/4.14/meta-viewport-large",
               "defaultConfiguration": {
@@ -7990,7 +7990,7 @@
               {
                 "attribute": "aria-checked",
                 "value": "true",
-                "message": "The checkbox is natively unchecked."
+                "message": "The control is natively unchecked."
               }
             ],
             "factsUsed": [],

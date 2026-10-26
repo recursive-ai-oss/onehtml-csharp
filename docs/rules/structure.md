@@ -121,9 +121,9 @@ landmarks or replacing a marquee all need the author.
   flagged. Headings are exposed `heading` nodes: `h1`–`h6` and `role=heading` with `aria-level` (default 2).
 - **page-has-heading-one** (axe). At least one exposed level-one heading.
 - **p-as-heading** (axe, experimental; WCAG 1.3.1, technique F2). A `p` of at most 140 characters whose next sibling
-  element is a `p`, all of whose text is bold (weight 700 or more) while the next paragraph's is not, or whose smallest font
-  size is more than half a pixel above the next paragraph's largest, fails. All italic against non-italic is
-  needs-review. Weight, style and size are *computed style*, so the cascade decides and no layout is needed: this rule
+  element is a `p` shows signs of a heading: all its text bold (weight 700 or more), all italic against a next paragraph that is
+  not, or a smallest font size at least 1.4 times the next paragraph's largest. Two signs together fail; a size sign alone is
+  needs-review; one bold or italic paragraph alone passes (as in axe, from probes). Weight, style and size are *computed style*, so the cascade decides and no layout is needed: this rule
   does not need rendered facts.
 - **list** (axe). A `ul` or `ol` without a role, or with `role=list`, has only `li`, `script`, `template` and elements with
   `role=listitem` as rendered children, and no loose text. An `li` with another role fails.
@@ -178,8 +178,8 @@ landmarks or replacing a marquee all need the author.
 
 ## Where ACT and axe differ
 
-ACT wins, and each difference is a place to expect a mismatch against axe until the axe captures are compared. These
-come from the ACT texts and test cases and our reading of axe's public rule descriptions, not yet from axe's output.
+ACT wins. The first list comes from the ACT texts and test cases; "Measured against axe-core 4.14.0" below it comes from
+the axe differential (`docs/axe-differential.md`).
 
 - **Duplicate ids:** every element that shares an id fails (ACT 3ea0c8 applies to every id attribute). Whether axe reports
   one result per id value is for the axe differential to record.
@@ -195,6 +195,36 @@ come from the ACT texts and test cases and our reading of axe's public rule desc
   padding is not applicable); we use the scroll and client sizes the facts report.
 - **p-as-heading and hidden-content** use the cascade, not layout facts.
 - **aria-hidden or hidden content** is not counted by the landmark and heading rules; only exposed elements are.
+
+### Measured against axe-core 4.14.0
+
+Fixed after the differential:
+
+- **region:** a `button`, an `iframe`, an inline `svg` and the text inside a button are not page content (axe does not
+  report an element that holds only these); an element with `role="region"` counts as a region even without a name
+  (an unnamed `section` still does not). Skip-link targets are *not* exempt in either checker; the skip link itself is.
+- **landmark-complementary-is-top-level:** a complementary landmark directly inside `main` passes, as the ARIA Authoring
+  Practices allow.
+- **meta-viewport-large:** reports only `maximum-scale` from 2 up to (not including) 5. Switching zoom off or capping it
+  below 2 is `meta-viewport`'s finding; axe reports it once.
+- **hidden-content:** content hidden with the `hidden` attribute counts, as it does with `display: none`.
+
+Reported once per group by axe (the comparison folds them: `duplicate-id`, `duplicate-id-active`, `duplicate-id-aria`,
+`accesskeys`, `landmark-unique`, `landmark-no-duplicate-banner`, `-contentinfo`, `-main`, `identical-links-same-purpose`).
+Axe puts the finding on the first element of the group; we put it on every member, as ACT 3ea0c8 requires for ids.
+
+Differences kept on purpose:
+
+| Rule | Ours | axe-core |
+|---|---|---|
+| `meta-refresh` and `-no-exceptions` | Follow ACT: the first valid refresh decides; `meta-refresh` fails a delay of 1 to 72000 s, `-no-exceptions` any delay above 0. | Judges every `meta` separately, and its `-no-exceptions` rule fails only delays above 72000 s (a delay of 600 s passes it). |
+| `bypass` | Fails a page with no heading, no `main` and no skip link (ACT cf77f2). | Applies only to pages with at least one link; reports incomplete, not a violation; accepts any in-page link as a mechanism, even to a missing or hidden target. |
+| `skip-link` | A fragment link whose target is missing or hidden fails. | Inapplicable for a link whose target does not exist. |
+| `definition-list` | Each `dt` group must be followed by a `dd`. | Passes a `dl` that holds at least one `dt` and one `dd`. |
+| `p-as-heading` | Two signs (bold, italic, size at least 1.4 times the next paragraph's) fail; a size alone is needs-review. | Same on the probes; the rest of the mismatches on real pages (bold with a size alone, a few italic cases) are not reproduced. |
+| `hidden-content` | An element whose own computed display is none (the `hidden` attribute included), or whose visibility is hidden under a visible parent, and that holds text (white space and `&nbsp;` do not count) or an image, frame, media or object, is needs-review. | Same on the probes; on real pages it flags about 8 % more hidden roots (elements without text or media) than we do. |
+| `region` (granularity) | Reports the topmost element with content that holds no landmark. | Same on the probes. On real pages it reports some wrappers' children and passes the wrapper (the Divi `#main-content` case); not reproduced, so the differential compares `region` once per page. |
+| `landmark-one-main` | No main landmark in the DOM fails. | Also passes when a rendered `role="dialog"` or `dialog` element exists (probes; 11 of 17 sample pages); a dialog is not main content, so we keep failing. 6 pages unexplained. |
 
 ## ACT test cases
 

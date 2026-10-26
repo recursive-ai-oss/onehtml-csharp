@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Native checkbox with aria-checked</title></head>
+<body><main><form>
+<label><input type="checkbox" aria-checked="true"> checked attr missing, aria true</label>
+<label><input type="checkbox" checked aria-checked="true"> both true</label>
+<label><input type="checkbox" checked aria-checked="false"> conflict</label>
+<label><input type="checkbox" aria-checked="mixed"> mixed</label>
+<label><input type="radio" aria-checked="true" name="r"> radio</label>
+<label><input type="text" aria-checked="true"> text with aria-checked</label>
+<button aria-checked="true">Button aria-checked</button>
+<div role="checkbox" aria-checked="true" tabindex="0">Custom</div>
+<div role="checkbox" tabindex="0">Custom missing state</div>
+</form></main></body></html>

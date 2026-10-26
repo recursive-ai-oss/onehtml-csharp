@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using RecursiveAI.OneHtml.Accessibility.Validation.Catalogue;
+using RecursiveAI.OneHtml.Css;
 
 namespace RecursiveAI.OneHtml.Accessibility.Validation.Rules;
 
@@ -53,7 +54,7 @@ internal static class MiscRuleSet
         yield return new MetaRefreshRule("meta-refresh", false, "A page must not refresh or redirect on a timer, unless the delay is zero or longer than twenty hours.", "Remove the timed refresh, redirect on the server, or add a way to turn it off.", ["bc659a"]);
         yield return new MetaRefreshRule("meta-refresh-no-exceptions", true, "A page must not refresh or redirect on a timer at all, other than immediately.", "Remove the timed refresh and redirect on the server instead.", ["bisz58"]);
         yield return new MetaViewportRule("meta-viewport", 2, "The viewport meta element must not stop a user from zooming in, or limit zoom below two times.", "Remove user-scalable=no and any maximum-scale below 2 from the viewport content.", ["b4f0c3"]);
-        yield return new MetaViewportRule("meta-viewport-large", 5, "The viewport meta element should let a user zoom to at least five times.", "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.", null);
+        yield return new MetaViewportRule("meta-viewport-large", 5, "The viewport meta element should not cap zoom at less than five times.", "Remove the maximum-scale cap, or raise it to 5 or more.", null);
     }
 }
 
@@ -84,21 +85,61 @@ internal sealed class HiddenContentRule : StructureRule
             }
 
             HiddenInfo h = context.Tree.GetHidden(e);
-            const HiddenReasons css = HiddenReasons.DisplayNone | HiddenReasons.VisibilityHidden;
-            if ((h.Reasons & css) == 0 || h.IsInherited || (h.Reasons & HiddenReasons.Template) != 0 || e.Parent.IsNull || (e.TextContent is not { } text || IsBlank(text)))
+            if ((h.Reasons & HiddenReasons.Template) != 0 || e.Parent.IsNull)
             {
                 continue;
             }
 
-            reporter.NeedsReview(e, "This content is hidden with CSS.", [new Finding(null, null, (h.Reasons & HiddenReasons.DisplayNone) != 0 ? "display: none" : "visibility: hidden")]);
+            // An element counts when its own computed style hides it: display none (the hidden attribute is display none in the
+            // user-agent sheet), or visibility other than visible where its parent is visible. A child of a hidden element whose
+            // own display is not none is not reported. Text or an embedded object inside makes it content; so does being an embedded object that cannot be read
+            // from the markup (an image, frame or media element), even with no text.
+            ComputedStyle own = context.Styles.GetStyle(e);
+            bool displayNone = !own.Display.IsRendered;
+            bool visibilityHidden = own.Visibility != VisibilityValue.Visible && (e.ParentElement.IsNull || context.Styles.GetStyle(e.ParentElement).Visibility == VisibilityValue.Visible);
+            bool embedded = IsEmbedded(e);
+            if (!(displayNone || visibilityHidden) || (!embedded && !HasContent(e)))
+            {
+                continue;
+            }
+
+            reporter.NeedsReview(e, "This content is hidden with CSS.", [new Finding(null, null, (h.Reasons & HiddenReasons.HiddenAttribute) != 0 ? "the hidden attribute" : (h.Reasons & HiddenReasons.DisplayNone) != 0 ? "display: none" : "visibility: hidden")]);
         }
     }
+
+    // Non-blank text, or an embedded object below (an image, frame or media element). The look below stops after a bounded
+    // number of elements so a long chain of nested hidden elements cannot make the rule quadratic.
+    private static bool HasContent(Node e)
+    {
+        if (e.TextContent is { } text && !string.IsNullOrWhiteSpace(text))
+        {
+            return true;
+        }
+
+        int budget = 2000;
+        foreach (Node d in e.DescendantElements)
+        {
+            if (--budget < 0)
+            {
+                return false;
+            }
+
+            if (IsEmbedded(d))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsEmbedded(Node e) => e.LocalName is "img" or "iframe" or "video" or "audio" or "object" or "embed" or "canvas";
 
     private static bool InSkipped(Node e)
     {
         for (Node p = e.ParentElement; !p.IsNull; p = p.ParentElement)
         {
-            if (s_skip.Contains(p.LocalName))
+            if (p.LocalName != "noscript" && s_skip.Contains(p.LocalName))
             {
                 return true;
             }
@@ -277,12 +318,15 @@ internal sealed class MetaViewportRule : StructureRule
             }
 
             var findings = new List<Finding>();
-            if (hasScalable && Number(us!) is { } u && Math.Abs(u) < 1)
+            // The large-zoom variant (limit 5) reports only a cap between two and five times. Switching zoom off, or capping below two,
+            // is the meta-viewport rule's finding, and reporting it twice would count one fault twice.
+            bool largeVariant = _limit >= 5;
+            if (hasScalable && !largeVariant && Number(us!) is { } u && Math.Abs(u) < 1)
             {
                 findings.Add(new Finding("user-scalable", us, "Zooming is switched off."));
             }
 
-            if (hasMax && Number(ms!) is { } mx && mx >= 0 && mx < _limit)
+            if (hasMax && Number(ms!) is { } mx && mx >= (largeVariant ? 2 : 0) && mx < _limit)
             {
                 findings.Add(new Finding("maximum-scale", ms, "Zooming stops below " + _limit.ToString(CultureInfo.InvariantCulture) + " times."));
             }

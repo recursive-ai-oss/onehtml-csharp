@@ -60,7 +60,8 @@ internal sealed class LandmarkTopLevelRule : StructureRule
                 }
             }
 
-            if (outer is null)
+            // A complementary landmark may sit directly in the main landmark: the ARIA Authoring Practices place sidebars there.
+            if (outer is null || (_role == "complementary" && outer.AriaRole!.Name == "main"))
             {
                 reporter.Passed(n.DomNode);
             }
@@ -175,7 +176,7 @@ internal sealed class RegionRule : StructureRule
 {
     private static readonly HashSet<string> s_contentTags = new(StringComparer.Ordinal)
     {
-        "img", "svg", "video", "audio", "canvas", "iframe", "object", "embed", "input", "button", "select", "textarea", "meter", "progress", "math",
+        "img", "video", "audio", "canvas", "object", "embed", "input", "select", "textarea", "meter", "progress", "math",
     };
 
     private static readonly HashSet<string> s_inert = new(StringComparer.Ordinal)
@@ -261,7 +262,8 @@ internal sealed class RegionRule : StructureRule
             return false;
         }
 
-        return IsLandmark(ax) || IsRole(ax, "dialog") || IsRole(ax, "alertdialog") || (ax.States.Live is { } l && l != "off");
+        // An element given role=region is taken as a region even without a name, as axe-core does for this rule.
+        return IsLandmark(ax) || EqualsAscii(e.GetAttribute("role")?.Trim(), "region") || IsRole(ax, "dialog") || IsRole(ax, "alertdialog") || (ax.States.Live is { } l && l != "off");
     }
 
     private static bool IsExempt(CheckContext c, Node e) => !SkipTarget(c, e).IsNull;
@@ -286,7 +288,8 @@ internal sealed class RegionRule : StructureRule
 
     private static bool HasOwnContent(CheckContext c, Node e)
     {
-        if (s_inert.Contains(e.LocalName) || IsExempt(c, e) || !IsRendered(c, e) || !c.IsExposed(e))
+        // axe-core does not count a button, a frame or an inline graphic (or the text inside a button) as page content for this rule.
+        if (s_inert.Contains(e.LocalName) || IsHtml(e, "button") || IsExempt(c, e) || !IsRendered(c, e) || !c.IsExposed(e))
         {
             return false;
         }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Misc probes</title></head>
+<body><main>
+<p><b>Bold paragraph that looks like a heading</b></p>
+<p>Normal text paragraph that is longer than the bold paragraphs above and below it, to compare.</p>
+<p style="font-weight:bold">Styled bold paragraph</p>
+<p><strong>Strong paragraph</strong></p>
+<p style="font-size:20px">Big paragraph</p>
+<p><b>Bold</b> with trailing text</p>
+<button aria-label="Close">X</button>
+<button aria-label="Submit now">Submit</button>
+<button aria-label="Go">Submit</button>
+<a href="/x" aria-label="Different">Visible text</a>
+<img src="a.png" alt="" tabindex="0">
+<img src="a.png" alt="" role="button" tabindex="0">
+<img src="a.png" alt="" onclick="x()">
+<dl><dt>T</dt><dd>D</dd><dt>T2</dt></dl>
+<dl><dt>Only dt</dt></dl>
+<dl><dd>Only dd</dd></dl>
+<dl><div><dt>T</dt></div><div><dd>D</dd></div></dl>
+<div role="combobox" aria-owns="x" aria-expanded="false" tabindex="0" aria-label="C1"></div>
+<div role="combobox" aria-controls="x" aria-expanded="false" tabindex="0" aria-label="C2"></div>
+<div role="combobox" aria-expanded="false" tabindex="0" aria-label="C3"></div>
+<div role="combobox" aria-controls="x" tabindex="0" aria-label="C4"></div>
+<div role="menu"></div>
+<div role="menu" aria-busy="true"></div>
+<div role="list"></div>
+<div role="listbox" aria-label="lb"></div>
+<div role="directory"><div role="listitem">i</div></div>
+<div role="group"><div role="listitem">i</div></div>
+<div role="list"><div role="listitem">i</div></div>
+<span role="text" aria-label="txt">t</span>
+<span role="text" aria-labelledby="x">t</span>
+<div aria-braillelabel="b" role="heading" aria-level="2">Heading</div>
+<div role="paragraph" aria-label="p">p</div>
+<div role="generic" aria-label="g">g</div>
+<span aria-label="nothing">s</span>
+<div aria-label="nothing2">d</div>
+<ul><li role="menuitem">x</li></ul>
+<ul role="menu"><li role="menuitem">x</li></ul>
+<ul><li role="tab">x</li></ul>
+<ul><li role="option">x</li></ul>
+</main></body></html>

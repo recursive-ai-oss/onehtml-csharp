@@ -17,3 +17,5 @@ with the reason, in `tests/OneHtml.Tests/Html5lib/KnownDifferences.cs`. The tree
 `tests/OneHtml.Tests/Html5lib/TreeConstructionTests.cs`.
 
 The ACT test cases refer to media and other assets under `test-assets/` in the repository named above; those assets are not copied.
+
+`axe/` holds pages written for this repository (`pages/`, `probes/`) and `expectations.tsv`, the axe-core 4.14.0 outcomes recorded by running those pages in Chrome for Testing 156.0.8078.47 (`docs/axe-differential.md`). They are ours and carry the repository licence; they are not listed in `SHA256SUMS`, which covers files copied from elsewhere.

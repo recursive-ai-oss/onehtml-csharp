@@ -1119,8 +1119,8 @@
         "cat.sensory-and-visual-cues",
         "best-practice"
       ],
-      "description": "The viewport meta element should let a user zoom to at least five times.",
-      "help": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.",
+      "description": "The viewport meta element should not cap zoom at less than five times.",
+      "help": "Remove the maximum-scale cap, or raise it to 5 or more.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/meta-viewport-large",
       "nodes": []
     },
@@ -4042,32 +4042,6 @@
           "onehtml": {
             "outcome": "failed",
             "blocksTask": false,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<button disabled style=\"color:#ccc\">",
-          "impact": "moderate",
-          "target": [
-            "button"
-          ],
-          "any": [
-            {
-              "id": "region",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "moderate",
-              "message": "This content is outside every landmark."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "This content is outside every landmark.",
-          "onehtml": {
-            "outcome": "failed",
-            "blocksTask": true,
             "cssOnly": false,
             "factsMissing": [],
             "suggestedEdits": 0

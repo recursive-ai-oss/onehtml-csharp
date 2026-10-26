@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Broken references</title></head>
+<body><main>
+<button aria-labelledby="missing">Visible text</button>
+<button aria-labelledby="missing lbl1">Other</button>
+<span id="lbl1">Label one</span>
+<input type="text" aria-describedby="nothere" aria-label="Field">
+<div role="tablist"><button role="tab" aria-controls="panel-x" aria-selected="true">Tab</button></div>
+<div role="combobox" aria-owns="gone" aria-expanded="false" tabindex="0" aria-label="Combo"></div>
+<input type="text" aria-errormessage="err-none" aria-invalid="true" aria-label="Err">
+<div role="region" aria-labelledby="" aria-label="Empty ref">r</div>
+<div aria-flowto="nowhere">flow</div>
+<div role="group" aria-activedescendant="nothing" tabindex="0" aria-label="G">g</div>
+<label for="nope">Label for missing</label>
+</main></body></html>

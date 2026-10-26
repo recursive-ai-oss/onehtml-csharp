@@ -162,9 +162,72 @@ internal sealed class AriaValidAttrValueRule : AriaRule
                 }
             }
 
+            // Beyond what a role requires: an ID reference that names no element anywhere in the page. axe-core reports these, and the
+            // split is the one it makes: a label or description may be added after load (needs review); a control, owned, flow-to,
+            // active-descendant or details reference that points nowhere is wrong. A closed control (aria-expanded=false) may
+            // refer to content that is not in the page yet, so aria-controls is not checked there. aria-errormessage is only
+            // used while the element is invalid.
+            List<Finding>? dangling = null;
+            List<Finding>? review = null;
+            foreach (Attr a in el.Attributes)
+            {
+                string an = a.QualifiedName;
+                if (an is not ("aria-labelledby" or "aria-describedby" or "aria-controls" or "aria-owns" or "aria-flowto" or "aria-activedescendant" or "aria-details" or "aria-errormessage")
+                    || IsBlank(a.Value))
+                {
+                    continue;
+                }
+
+                string v = a.Value.ToString();
+                bool alreadyReported = bad is not null && bad.Exists(f => f.Attribute == an);
+                bool found = false;
+                foreach (string id in Tokens(v))
+                {
+                    if (!context.Document.GetElementById(id).IsNull)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found || alreadyReported)
+                {
+                    continue;
+                }
+
+                if (an == "aria-controls" && EqualsAscii(el.GetAttribute("aria-expanded"), "false"))
+                {
+                    continue;
+                }
+
+                if (an == "aria-errormessage" && !EqualsAscii(el.GetAttribute("aria-invalid"), "true"))
+                {
+                    continue;
+                }
+
+                // A popup trigger's controlled element is often created when it opens.
+                if (an is "aria-labelledby" or "aria-describedby" or "aria-errormessage" || (an == "aria-controls" && el.HasAttribute("aria-haspopup") && !EqualsAscii(el.GetAttribute("aria-haspopup"), "false")))
+                {
+                    (review ??= []).Add(new Finding(an, v, an + " names no element in the page; it may be added later."));
+                }
+                else
+                {
+                    (dangling ??= []).Add(new Finding(an, v, an + " names no element in the page."));
+                }
+            }
+
+            if (dangling is not null)
+            {
+                (bad ??= []).AddRange(dangling);
+            }
+
             if (bad is not null)
             {
                 reporter.Failed(el, "A WAI-ARIA state or property has a value it cannot have.", bad, fixes);
+            }
+            else if (review is not null)
+            {
+                reporter.NeedsReview(el, "An ID reference names no element in the page.", review);
             }
             else
             {
@@ -292,7 +355,7 @@ internal static class AttributeDiagnosticRules
     };
 }
 
-// axe "aria-conditional-attr": the native state wins over aria-checked on a native checkbox (ARIA in HTML, input type=checkbox).
+// axe "aria-conditional-attr": the native state wins over aria-checked on a native checkbox or radio button (ARIA in HTML, input type=checkbox and radio).
 internal sealed class AriaConditionalAttrRule : AriaRule
 {
     public AriaConditionalAttrRule()
@@ -310,14 +373,14 @@ internal sealed class AriaConditionalAttrRule : AriaRule
     {
         foreach (Node el in Elements(context))
         {
-            if (el.LocalName != "input" || !IsHtmlOrSvg(el) || el.NamespaceURI != "http://www.w3.org/1999/xhtml" || !EqualsAscii(el.GetAttribute("type"), "checkbox")
+            if (el.LocalName != "input" || !IsHtmlOrSvg(el) || el.NamespaceURI != "http://www.w3.org/1999/xhtml" || !(EqualsAscii(el.GetAttribute("type"), "checkbox") || EqualsAscii(el.GetAttribute("type"), "radio"))
                 || el.GetAttribute("aria-checked") is not { } value || IsBlank(value) || !context.IsExposed(el))
             {
                 continue;
             }
 
             bool native = el.HasAttribute("checked");
-            if (EqualsAscii(value, "mixed"))
+            if (EqualsAscii(value, "mixed") && EqualsAscii(el.GetAttribute("type"), "checkbox"))
             {
                 // Indeterminate is a script-set state, invisible to a static check.
                 reporter.NeedsReview(el, "aria-checked is mixed; whether the checkbox is indeterminate cannot be read from the markup.", [new Finding("aria-checked", value, "mixed")]);
@@ -328,7 +391,7 @@ internal sealed class AriaConditionalAttrRule : AriaRule
             }
             else
             {
-                reporter.Failed(el, "aria-checked disagrees with the checked attribute.", [new Finding("aria-checked", value, "The checkbox is natively " + (native ? "checked" : "unchecked") + ".")],
+                reporter.Failed(el, "aria-checked disagrees with the checked attribute.", [new Finding("aria-checked", value, "The control is natively " + (native ? "checked" : "unchecked") + ".")],
                     [RemoveAttribute(reporter, el, "aria-checked")]);
             }
         }
@@ -369,9 +432,10 @@ internal sealed class AriaBrailleEquivalentRule : AriaRule
             }
 
             List<Finding>? bad = null;
-            if (hasLabel && node.Name.IsEmpty)
+            // The ordinary text a braille label abbreviates may be the name or, on an element that takes no name, its text content.
+            if (hasLabel && node.Name.IsEmpty && IsBlank(el.TextContent ?? string.Empty))
             {
-                (bad ??= []).Add(new Finding("aria-braillelabel", label, "The element has no accessible name for the braille label to refine."));
+                (bad ??= []).Add(new Finding("aria-braillelabel", label, "The element has no accessible name or text for the braille label to refine."));
             }
 
             if (hasRoleDesc && (el.GetAttribute("aria-roledescription") is not { } rd || IsBlank(rd)))
@@ -385,7 +449,9 @@ internal sealed class AriaBrailleEquivalentRule : AriaRule
             }
             else
             {
-                reporter.Failed(el, "A braille property has no ordinary equivalent.", bad);
+                // A braille property without its ordinary counterpart is something an author has to look at: the counterpart may be
+                // supplied by script or by a name the static tree cannot see, so the verdict is a review, not a failure.
+                reporter.NeedsReview(el, "A braille property has no ordinary equivalent.", bad);
             }
         }
     }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>ID reference attributes</title></head>
+<body><main>
+<span id="ok">Target</span>
+<button aria-labelledby="nolabel" id="r1">btn</button>
+<button aria-describedby="nodesc" id="r2">btn</button>
+<button aria-controls="noctl" id="r3">btn</button>
+<button aria-controls="noctl2" aria-expanded="false" id="r3b">btn</button>
+<div role="group" aria-owns="noown" id="r4">g</div>
+<div role="group" aria-flowto="nofl" id="r5">g</div>
+<div role="listbox" tabindex="0" aria-activedescendant="noad" id="r6" aria-label="L"></div>
+<input type="text" aria-errormessage="noerr" aria-label="E" id="r7">
+<input type="text" aria-errormessage="noerr2" aria-invalid="true" aria-label="E2" id="r7b">
+<div role="group" aria-details="nodet" id="r8">g</div>
+<button aria-labelledby="ok" id="g1">fine</button>
+<button aria-controls="ok" id="g2">fine</button>
+<button aria-labelledby="ok missing" id="m1">one missing</button>
+<button aria-controls="ok missing" id="m2">one missing</button>
+<button aria-labelledby="" id="e1">empty</button>
+<button aria-labelledby="   " id="e2">blank</button>
+<div id="dupd">A</div>
+</main></body></html>

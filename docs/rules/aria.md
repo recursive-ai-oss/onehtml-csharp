@@ -119,8 +119,8 @@ rule names exactly one correct, judgement-free fix; the library never applies it
 
 ## Where the rules follow ACT instead of axe
 
-The ACT rule wins where the two differ, and each difference is a place to expect a mismatch against axe until the axe
-captures are compared. These are from reading the rule texts and the test cases, not yet from axe output.
+The ACT rule wins where the two differ. The first group below was read from the rule texts and test cases; the second is
+what the axe differential found on pages written for it and on a sample of 279 corpus pages (`docs/axe-differential.md`).
 
 - `aria-roles`: a list of fallback roles passes if any token is valid.
 - `aria-valid-attr-value`: a broken ID reference to a property the role does not require passes.
@@ -128,10 +128,39 @@ captures are compared. These are from reading the rule texts and the test cases,
   `list` also accepts `group > listitem`; the role data lists that chain for `list` (see `accessibility-roles.md`).
 - `aria-required-attr`: an empty value counts as missing.
 - `aria-allowed-attr`: on an element with no role only global attributes (and the ARIA in HTML grants above) pass.
-- Results here never use needs-review except `aria-conditional-attr` with `mixed`. Axe lists "needs review" outcomes for
-  several of these rules (for example broken references and `aria-braille-equivalent`); where ours decides statically,
-  expect a `violations` or `passes` entry for axe's `incomplete` one.
+- Needs-review is used by `aria-conditional-attr` with `mixed`, by `aria-braille-equivalent` and by `aria-valid-attr-value`
+  for an ID reference to a label, description or error message that names nothing (see below). Elsewhere axe's
+  `incomplete` is a static `violations` or `passes` entry here.
 - Nothing is evaluated for `aria-roledescription` (deprecated in axe 4.14.0) or ACT in6db8 (deprecated in ACT).
+
+### Measured against axe-core 4.14.0
+
+Fixed after the differential:
+
+- `aria-valid-attr-value` also looks at ID references the role does not require, as axe does. `aria-labelledby`,
+  `aria-describedby` and (while `aria-invalid="true"`) `aria-errormessage` that name no element are **needs-review** (a
+  label or message can be added after load; axe: incomplete). `aria-controls`, `aria-owns`, `aria-flowto`,
+  `aria-activedescendant` and `aria-details` that name no element **fail** (axe: violation), except `aria-controls` on a
+  control with `aria-expanded="false"` (closed content may not exist yet) and on a pop-up trigger (`aria-haspopup`), which is
+  needs-review. A reference list passes when any id exists. The ACT cases are unaffected (ACT 6a7281 only speaks about
+  references a role requires).
+- `aria-braille-equivalent` is needs-review, not a failure (axe: incomplete), and `aria-braillelabel` counts as having its
+  ordinary text when the element has an accessible name **or** text content.
+- `aria-conditional-attr` also covers a native radio button (axe flags `aria-checked="true"` on a radio that is not
+  checked).
+
+Differences kept on purpose (the right column is what axe reports):
+
+| Rule | Ours | axe-core |
+|---|---|---|
+| `aria-allowed-role` | The pinned ARIA in HTML table: an `li` in a list may only be `listitem`; a `section` with `role="region"` is redundant and not allowed. | Accepts `role="menuitem"`, `tab`, `option` on `li` (an older table); rejects `role="region"` on `section`. |
+| `aria-roles` | `text` is not a WAI-ARIA role and fails (ACT 674b10). `generic` is accepted as a token. | Accepts `text`; rejects `generic` (authors may not use it). |
+| `aria-prohibited-attr` | Prohibits what the role data lists (`accessibility-roles.md`), which includes `aria-braillelabel` on `generic` and `aria-label` on `text`. | Passes braille attributes; reports `aria-label` on a `presentation` table, a `paragraph` role, or `span`/`div` with no role as incomplete ("not well supported"). |
+| `aria-required-attr` | ARIA 1.2: `combobox` requires `aria-controls` and `aria-expanded`. | Needs only `aria-expanded` (the ARIA 1.3 draft relaxed `aria-controls`). The same reference makes `aria-valid-attr-value` fail on a `combobox` whose `aria-controls` is dangling. |
+| `aria-required-children` | An empty `menu`, `list` or `listbox` fails (ACT bc4a75). | Incomplete: children may be added later. |
+| `aria-required-parent` | `menuitem` needs a `menu`/`menubar`/`group` parent and `listitem` accepts `directory` (a subclass of `list` in the pinned taxonomy). | Reports `listitem` in `directory` as a violation; accepts some menu items we fail. |
+| `aria-hidden-focus` | Decides from the document. | Incomplete while a modal dialog is open on the page ("focusable-modal-open"), which depends on script state. |
+| `focus-order-semantics` | A fallback role list (`foo button`) counts the role Chrome uses; an `img` or `listitem` in the tab order fails. | Reads only the first role token (a `foo button` fallback is not a widget); has no verdict for `img` or `listitem` in the tab order; passes some focusable `article` containers as scrollable regions. |
 
 ## ACT test cases
 

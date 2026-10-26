@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Fallback roles</title></head>
+<body><main>
+<div role="foo button" tabindex="0" id="a">fallback to button</div>
+<div role="foo bar" id="b">no valid role</div>
+<div role="  link   button " tabindex="0" id="c">spaces</div>
+<div role="BUTTON" tabindex="0" id="d">upper</div>
+<span role="presentation img" aria-label="x" id="e">pres first</span>
+<div role="doc-chapter region" aria-label="Chapter" id="f">dpub</div>
+<div role="" id="g">empty role</div>
+<ul role="menubar"><li role="menuitem">One</li></ul>
+</main></body></html>

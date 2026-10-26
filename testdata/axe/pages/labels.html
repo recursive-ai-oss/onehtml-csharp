@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Labels and controls</title></head>
+<body><main><form>
+<label for="a">For label</label><input id="a">
+<label>Wrapping <input id="b"></label>
+<label>Text after<input id="c" type="email"></label>
+<input id="d" type="text"><label for="d">After control</label>
+<label for="e">Select</label><select id="e"><option>x</option></select>
+<label for="f">Area</label><textarea id="f"></textarea>
+<label>Checkbox <input type="checkbox"></label>
+<label><input type="radio" name="r"> Radio</label>
+<label for="g">Button</label><button id="g">B</button>
+<label for="h">Meter</label><meter id="h" value="1"></meter>
+<label for="i">Progress</label><progress id="i"></progress>
+<label for="j">Output</label><output id="j"></output>
+<label for="k">Hidden</label><input id="k" type="hidden">
+<label for="l">Range</label><input id="l" type="range">
+<label for="m">File</label><input id="m" type="file">
+<label for="n">Image</label><input id="n" type="image" alt="Go" src="x.png">
+<label for="o">Submit</label><input id="o" type="submit">
+<input type="text" title="Only title"><input type="text" placeholder="Only placeholder">
+<input type="text" aria-label=""><input type="text" aria-labelledby="a">
+<label>Two <input id="p"></label><label for="p">Labels</label>
+<fieldset><legend>Group</legend><input type="text" aria-label="in group"></fieldset>
+<div role="textbox" contenteditable="true" tabindex="0"></div>
+<label>Nested <label>inner <input id="q"></label></label>
+<label for="r"><input id="r"></label>
+</form></main></body></html>

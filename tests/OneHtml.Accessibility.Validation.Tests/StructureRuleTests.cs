@@ -117,9 +117,12 @@ public sealed class StructureRuleTests
     [Fact]
     public void A_paragraph_that_looks_like_a_heading_is_reported_from_computed_style()
     {
-        Assert.Equal("F:p", V("<p><b>Chapter one</b></p><p>The long text of the chapter goes on and on.</p>", "p-as-heading"));
-        Assert.Equal("F:p", V("<p style='font-size:24px'>Title</p><p>Body text.</p>", "p-as-heading"));
-        Assert.Equal("R:p", V("<p style='font-style:italic'>Note</p><p>Body text.</p>", "p-as-heading"));
+        // Two signs together fail; a much larger size alone is left to review; bold or italic alone is ordinary emphasis.
+        Assert.Equal("P:p", V("<p><b>Chapter one</b></p><p>The long text of the chapter goes on and on.</p>", "p-as-heading"));
+        Assert.Equal("F:p", V("<p style='font-weight:bold;font-size:24px'>Title</p><p>Body text.</p>", "p-as-heading"));
+        Assert.Equal("R:p", V("<p style='font-size:24px'>Title</p><p>Body text.</p>", "p-as-heading"));
+        Assert.Equal("F:p", V("<p style='font-style:italic;font-weight:bold'>Note</p><p>Body text.</p>", "p-as-heading"));
+        Assert.Equal("P:p", V("<p style='font-style:italic'>Note</p><p>Body text.</p>", "p-as-heading"));
         Assert.Equal("P:p", V("<p>One</p><p>Two</p>", "p-as-heading"));
         Assert.Equal("-", V("<p><b>Lonely bold</b></p>", "p-as-heading"));
     }

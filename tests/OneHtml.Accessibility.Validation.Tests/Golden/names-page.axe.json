@@ -882,8 +882,8 @@
         "cat.sensory-and-visual-cues",
         "best-practice"
       ],
-      "description": "The viewport meta element should let a user zoom to at least five times.",
-      "help": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.",
+      "description": "The viewport meta element should not cap zoom at less than five times.",
+      "help": "Remove the maximum-scale cap, or raise it to 5 or more.",
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/meta-viewport-large",
       "nodes": []
     },
@@ -4842,166 +4842,10 @@
           }
         },
         {
-          "html": "<button type=\"button\">",
-          "impact": "moderate",
-          "target": [
-            "body > button:nth-of-type(1)"
-          ],
-          "any": [
-            {
-              "id": "region",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "moderate",
-              "message": "This content is outside every landmark."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "This content is outside every landmark.",
-          "onehtml": {
-            "outcome": "failed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<button type=\"button\" aria-label=\"Close dialog\">",
-          "impact": "moderate",
-          "target": [
-            "[aria-label=\"Close dialog\"]"
-          ],
-          "any": [
-            {
-              "id": "region",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "moderate",
-              "message": "This content is outside every landmark."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "This content is outside every landmark.",
-          "onehtml": {
-            "outcome": "failed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<button type=\"button\" aria-label=\"Next\">",
-          "impact": "moderate",
-          "target": [
-            "[aria-label=\"Next\"]"
-          ],
-          "any": [
-            {
-              "id": "region",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "moderate",
-              "message": "This content is outside every landmark."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "This content is outside every landmark.",
-          "onehtml": {
-            "outcome": "failed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
           "html": "<form>",
           "impact": "moderate",
           "target": [
             "form"
-          ],
-          "any": [
-            {
-              "id": "region",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "moderate",
-              "message": "This content is outside every landmark."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "This content is outside every landmark.",
-          "onehtml": {
-            "outcome": "failed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<iframe src=\"/a.html\" title=\"Contributors\">",
-          "impact": "moderate",
-          "target": [
-            "body > iframe:nth-of-type(1)"
-          ],
-          "any": [
-            {
-              "id": "region",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "moderate",
-              "message": "This content is outside every landmark."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "This content is outside every landmark.",
-          "onehtml": {
-            "outcome": "failed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<iframe src=\"/b.html\" title=\"Contributors\">",
-          "impact": "moderate",
-          "target": [
-            "body > iframe:nth-of-type(2)"
-          ],
-          "any": [
-            {
-              "id": "region",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "moderate",
-              "message": "This content is outside every landmark."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "This content is outside every landmark.",
-          "onehtml": {
-            "outcome": "failed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<iframe src=\"/c.html\">",
-          "impact": "moderate",
-          "target": [
-            "body > iframe:nth-of-type(3)"
           ],
           "any": [
             {

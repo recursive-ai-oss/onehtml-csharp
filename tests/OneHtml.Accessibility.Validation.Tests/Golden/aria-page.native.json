@@ -3052,8 +3052,8 @@
     },
     {
       "id": "meta-viewport-large",
-      "description": "The viewport meta element should let a user zoom to at least five times.",
-      "help": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.",
+      "description": "The viewport meta element should not cap zoom at less than five times.",
+      "help": "Remove the maximum-scale cap, or raise it to 5 or more.",
       "impact": "minor",
       "bestPractice": true,
       "needs": "static",
@@ -4551,7 +4551,7 @@
         {
           "attribute": "aria-checked",
           "value": "true",
-          "message": "The checkbox is natively unchecked."
+          "message": "The control is natively unchecked."
         }
       ],
       "taskImpact": {

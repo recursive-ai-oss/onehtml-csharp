@@ -11,6 +11,34 @@ internal static class TableSupport
     /// <summary>The most cells of one table the rules look at; a table past it is skipped.</summary>
     public const int MaxCells = 200_000;
 
+    /// <summary>
+    /// Whether a table looks like a data table by its markup: it has a header cell, a caption, a cell with a <c>scope</c> or <c>headers</c>
+    /// attribute, or a <c>summary</c> attribute. The two rules that apply this gate ask for more structure than a grid of plain cells,
+    /// which may be a layout the author never meant to be read cell by cell; axe-core applies the same kind of gate (see docs/axe-differential.md).
+    /// </summary>
+    public static bool LooksLikeDataTable(Node table)
+    {
+        if (table.HasAttribute("summary"))
+        {
+            return true;
+        }
+
+        foreach (Node d in table.DescendantElements)
+        {
+            if (d.Namespace != ElementNamespace.Html)
+            {
+                continue;
+            }
+
+            if (d.LocalName is "th" or "caption" || d.HasAttribute("scope") || d.HasAttribute("headers"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static string Collapse(string s)
     {
         var sb = new StringBuilder(s.Length);
@@ -195,7 +223,7 @@ internal sealed class TdHasHeaderRule : AriaRule
         // The cells checked are td elements that hold content; a header is any cell assigned by headers or by position.
         foreach (TableGrid grid in TableGrid.All(context, TableSupport.MaxCells, reporter.CancellationToken))
         {
-            if (grid.Truncated || grid.Table.Role != "table" || grid.Rows < 3 || grid.Columns < 3 || !context.IsExposed(grid.Table.DomNode))
+            if (grid.Truncated || grid.Table.Role != "table" || grid.Rows < 3 || grid.Columns < 3 || !context.IsExposed(grid.Table.DomNode) || !TableSupport.LooksLikeDataTable(grid.Table.DomNode))
             {
                 continue;
             }
@@ -246,7 +274,7 @@ internal sealed class TableFakeCaptionRule : AriaRule
         // no caption element: the cell is acting as a caption.
         foreach (TableGrid grid in TableGrid.All(context, TableSupport.MaxCells, reporter.CancellationToken))
         {
-            if (grid.Truncated || grid.Table.Role != "table" || grid.Rows < 2 || grid.Columns < 2 || !context.IsExposed(grid.Table.DomNode))
+            if (grid.Truncated || grid.Table.Role != "table" || grid.Rows < 2 || grid.Columns < 2 || !context.IsExposed(grid.Table.DomNode) || !TableSupport.LooksLikeDataTable(grid.Table.DomNode))
             {
                 continue;
             }

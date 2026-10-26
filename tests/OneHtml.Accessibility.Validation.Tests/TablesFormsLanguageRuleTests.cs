@@ -96,14 +96,17 @@ public sealed class TablesFormsLanguageRuleTests
     {
         string small = "<table><tr><td>a<td>b<tr><td>c<td>d</table>";
         Assert.Empty(Reported(Check(small, "td-has-header")));
-        string big = "<table><tr><td>a<td>b<td>c<tr><td>d<td>e<td>f<tr><td>g<td>h<td>i</table>";
+        // A plain grid of cells is not taken for a data table (axe-core gates on the same markup evidence); a summary attribute is evidence.
+        string plain = "<table><tr><td>a<td>b<td>c<tr><td>d<td>e<td>f<tr><td>g<td>h<td>i</table>";
+        Assert.Empty(Reported(Check(plain, "td-has-header")));
+        string big = "<table summary=s><tr><td>a<td>b<td>c<tr><td>d<td>e<td>f<tr><td>g<td>h<td>i</table>";
         Assert.Equal(9, Count(Check(big, "td-has-header"), "td-has-header", Outcome.Failed));
         string withTh = "<table><tr><th>A<th>B<th>C<tr><td>d<td>e<td>f<tr><td>g<td>h<td>i</table>";
         CheckReport r = Check(withTh, "td-has-header");
         Assert.Equal(6, Count(r, "td-has-header", Outcome.Passed));
         Assert.Equal(0, Count(r, "td-has-header", Outcome.Failed));
         // An empty cell is not checked.
-        Assert.Equal(8, Count(Check("<table><tr><td>a<td>b<td>c<tr><td>d<td>e<td>f<tr><td>g<td>h<td> </table>", "td-has-header"), "td-has-header", Outcome.Failed));
+        Assert.Equal(8, Count(Check("<table summary=s><tr><td>a<td>b<td>c<tr><td>d<td>e<td>f<tr><td>g<td>h<td> </table>", "td-has-header"), "td-has-header", Outcome.Failed));
     }
 
     [Fact]

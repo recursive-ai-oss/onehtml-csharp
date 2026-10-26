@@ -124,7 +124,7 @@ internal static class AxCommand
         return list;
     }
 
-    private static string ReadEnvironment(string root)
+    internal static string ReadEnvironment(string root)
     {
         string? dir = root;
         for (int i = 0; i < 3 && dir is not null; i++, dir = System.IO.Path.GetDirectoryName(dir))
@@ -155,7 +155,7 @@ internal static class AxCommand
         return string.Empty;
     }
 
-    private static byte[]? ReadFile(string dir, string name)
+    internal static byte[]? ReadFile(string dir, string name)
     {
         string gz = System.IO.Path.Combine(dir, name + ".json.gz");
         if (File.Exists(gz))

@@ -92,9 +92,9 @@ internal static class NameSupport
     {
         private readonly Uri _base;
 
-        internal TargetResolver(Document doc)
+        internal TargetResolver(Document doc, string? documentUrl = null)
         {
-            _base = new Uri(PlaceholderBase);
+            _base = documentUrl is { Length: > 0 } && Uri.TryCreate(documentUrl, UriKind.Absolute, out Uri? docUri) ? docUri : new Uri(PlaceholderBase);
             foreach (Node e in doc.Root.DescendantElements)
             {
                 if (Is(e, "base") && e.GetAttribute("href") is { } bh)
@@ -580,7 +580,7 @@ internal sealed class FrameTitleUniqueRule : AriaRule
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
-        var targets = new NameSupport.TargetResolver(context.Document);
+        var targets = new NameSupport.TargetResolver(context.Document, context.Tree.Options.BaseUrl);
         var groups = new Dictionary<string, List<AxNode>>(StringComparer.Ordinal);
         var order = new List<string>();
         foreach (AxNode node in context.Tree.Nodes)
@@ -646,7 +646,7 @@ internal sealed class IdenticalLinksRule : AriaRule
 
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
-        var targets = new NameSupport.TargetResolver(context.Document);
+        var targets = new NameSupport.TargetResolver(context.Document, context.Tree.Options.BaseUrl);
         var groups = new Dictionary<string, List<AxNode>>(StringComparer.Ordinal);
         var order = new List<string>();
         foreach (AxNode node in context.Tree.Nodes)
@@ -745,7 +745,7 @@ internal sealed class ImageRedundantAltRule : AriaRule
                 texts[container.Id] = text = NameSupport.Fold(sb.ToString());
             }
 
-            if (text.Contains(a, StringComparison.Ordinal))
+            if (text == a)
             {
                 reporter.Failed(img.DomNode, "The image's alt text repeats text beside it.", [new Finding("alt", alt, "The same words are in the " + container.DomNode.LocalName + ".")]);
             }

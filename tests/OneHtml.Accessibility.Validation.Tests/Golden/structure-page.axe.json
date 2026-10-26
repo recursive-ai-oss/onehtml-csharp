@@ -1508,10 +1508,10 @@
           }
         },
         {
-          "html": "<b>",
+          "html": "<p style=\"font-size:24px;font-weight:bold\">",
           "impact": null,
           "target": [
-            "b"
+            "#content > p:nth-of-type(1)"
           ],
           "any": [],
           "all": [],
@@ -2016,10 +2016,10 @@
           }
         },
         {
-          "html": "<b>",
+          "html": "<p style=\"font-size:24px;font-weight:bold\">",
           "impact": null,
           "target": [
-            "b"
+            "#content > p:nth-of-type(1)"
           ],
           "any": [],
           "all": [],
@@ -3482,6 +3482,36 @@
           "impact": null,
           "target": [
             "ul > li"
+          ],
+          "any": [],
+          "all": [],
+          "none": [],
+          "onehtml": {
+            "outcome": "passed",
+            "blocksTask": false,
+            "cssOnly": false,
+            "factsMissing": [],
+            "suggestedEdits": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "meta-viewport-large",
+      "impact": null,
+      "tags": [
+        "cat.sensory-and-visual-cues",
+        "best-practice"
+      ],
+      "description": "The viewport meta element should not cap zoom at less than five times.",
+      "help": "Remove the maximum-scale cap, or raise it to 5 or more.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/meta-viewport-large",
+      "nodes": [
+        {
+          "html": "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\">",
+          "impact": null,
+          "target": [
+            "meta[name=\"viewport\"]"
           ],
           "any": [],
           "all": [],
@@ -5760,50 +5790,6 @@
       ]
     },
     {
-      "id": "meta-viewport-large",
-      "impact": "minor",
-      "tags": [
-        "cat.sensory-and-visual-cues",
-        "best-practice"
-      ],
-      "description": "The viewport meta element should let a user zoom to at least five times.",
-      "help": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.",
-      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/meta-viewport-large",
-      "nodes": [
-        {
-          "html": "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\">",
-          "impact": "minor",
-          "target": [
-            "meta[name=\"viewport\"]"
-          ],
-          "any": [
-            {
-              "id": "meta-viewport-large",
-              "data": [
-                {
-                  "attribute": "user-scalable",
-                  "value": "no"
-                }
-              ],
-              "relatedNodes": [],
-              "impact": "minor",
-              "message": "The viewport restricts zooming."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "The viewport restricts zooming.\nZooming is switched off.",
-          "onehtml": {
-            "outcome": "failed",
-            "blocksTask": false,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        }
-      ]
-    },
-    {
       "id": "nested-interactive",
       "impact": "serious",
       "tags": [
@@ -5867,7 +5853,7 @@
       "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/p-as-heading",
       "nodes": [
         {
-          "html": "<p>",
+          "html": "<p style=\"font-size:24px;font-weight:bold\">",
           "impact": "serious",
           "target": [
             "#content > p:nth-of-type(1)"
@@ -5883,12 +5869,12 @@
               ],
               "relatedNodes": [],
               "impact": "serious",
-              "message": "This paragraph looks like a heading (bold) but is not one."
+              "message": "This paragraph looks like a heading (bold and larger) but is not one."
             }
           ],
           "all": [],
           "none": [],
-          "failureSummary": "This paragraph looks like a heading (bold) but is not one.\nAll its text is bold; the next paragraph's is not.",
+          "failureSummary": "This paragraph looks like a heading (bold and larger) but is not one.\nIts text is bold and larger.",
           "onehtml": {
             "outcome": "failed",
             "blocksTask": false,

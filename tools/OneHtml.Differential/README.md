@@ -52,6 +52,10 @@ The three share the conventions of `roundtrip` and `replay`: items in sha256 ord
 
 Takes a `tools/capture` output directory instead of a corpus: compares our tree with Chrome's `Accessibility.getFullAXTree` node by node and writes mismatch rates per field and mismatch classes with examples (`summary.md`, `summary.json`, `classes.json`, `captures.jsonl`). `--corpus` supplies the stylesheets the pages link; `--facts on|off|both` and `--dump` as described in `docs/chrome-ax-differential.md`, which is the normative description of the matching, the normalization and the output.
 
+## `axe`: axe-core differential
+
+Takes a `tools/capture` output directory and compares the checker's results with the axe-core 4.14.0 results recorded in it, per rule and per element, with and without rendered facts (`--facts on|off|both`, `--corpus` for stylesheets). Writes `summary.md`, `summary.json`, `classes.json` and `parts/`; resumable (`--max-seconds`, `--fresh`). `docs/axe-differential.md` is the normative description of the matching, the normalizations and the findings.
+
 ## Worker commands
 
 Every command takes the worker's shared-job lock inside the job (`~/WORKER-BENCH.lock`) and exit with status 3 at once if it is held; they never wait. Run from the repo root on the worker, after the repo is synced:
@@ -62,6 +66,7 @@ bash tools/OneHtml.Differential/run-worker.sh angle     ~/onehtml/corpus/<versio
 bash tools/OneHtml.Differential/run-worker.sh locators  ~/onehtml/corpus/<version> ~/onehtml/out/locators  --jobs 8
 bash tools/OneHtml.Differential/run-worker.sh styles    ~/onehtml/corpus/<version> ~/onehtml/out/styles    --jobs 8 --timeout 120
 bash tools/OneHtml.Differential/run-worker.sh editfuzz  ~/onehtml/corpus/<version> ~/onehtml/out/editfuzz  --jobs 8 --per-page 20
+bash tools/OneHtml.Differential/run-worker.sh axe ~/onehtml/capture-out/<version> ~/onehtml/out/axe --corpus ~/onehtml/corpus/<version> --jobs 8
 bash tools/OneHtml.Differential/run-worker.sh ax ~/onehtml/capture-out/<version> ~/onehtml/out/ax --corpus ~/onehtml/corpus/<version> --jobs 8
 ```
 

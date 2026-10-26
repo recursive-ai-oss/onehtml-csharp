@@ -11,6 +11,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../OneHtml.Accessibility.Tests/FakeSnapshot.cs" Link="FakeSnapshot.cs" />
+    <Compile Include="../../tools/OneHtml.Differential/AxeModel.cs" Link="Differential/AxeModel.cs" />
+    <Compile Include="../../tools/OneHtml.Differential/AxeCompare.cs" Link="Differential/AxeCompare.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/OneHtml.Accessibility.Validation/OneHtml.Accessibility.Validation.csproj" />

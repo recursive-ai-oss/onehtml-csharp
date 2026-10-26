@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Nested and presentational tables</title></head>
+<body><main>
+<table role="presentation"><tr><td><table><tr><th>A</th><th>B</th></tr><tr><td>1</td><td>2</td></tr></table></td><td>side</td></tr></table>
+<table><tr><th>Outer</th><td><table><tr><td>x</td><td>y</td></tr></table></td></tr></table>
+<table role="none"><tr><th>th in none</th><td>1</td></tr></table>
+<table role="presentation"><tr><th>th in pres</th></tr><tr><td>1</td></tr></table>
+<table role="grid"><tr><th>g</th><td role="gridcell">1</td></tr></table>
+<table><tr><td><table><tr><td><table><tr><th>deep</th></tr></table></td></tr></table></td></tr></table>
+<table border="1" cellpadding="0"><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>
+<table role="presentation" aria-label="named"><tr><td>named pres</td></tr></table>
+</main></body></html>

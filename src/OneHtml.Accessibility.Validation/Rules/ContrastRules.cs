@@ -369,9 +369,23 @@ internal sealed class ColorContrastRule : AriaRule
         return null;
     }
 
+    private static bool IsFormControl(Node e) =>
+        e.Namespace == ElementNamespace.Html && (e.LocalName is "button" or "select" or "textarea" or "input");
+
+    // The colour is the parent's when no declaration of this element won for it.
+    private static bool ColorIsInherited(CheckContext c, Node e, ComputedStyle s) =>
+        !e.ParentElement.IsNull && ReferenceEquals(s.GetSource("color"), c.Styles.GetStyle(e.ParentElement).GetSource("color"));
+
     private void Check(CheckContext context, RuleReporter reporter, Node element, ComputedStyle style, PaintState state, string? pseudo)
     {
         (byte fr, byte fg, byte fb, double fa) = style.Color.ToRgba8();
+        if (pseudo is null && IsFormControl(element) && ColorIsInherited(context, element, style))
+        {
+            // A browser's own sheet gives a form control its own text colour (ButtonText or FieldText, black with the default
+            // colour scheme) instead of the parent's; the HTML Standard's rendering sheet does not say so.
+            (fr, fg, fb, fa) = (0, 0, 0, 1.0);
+        }
+
         double alpha = fa * state.Opacity;
         if (alpha <= 0)
         {

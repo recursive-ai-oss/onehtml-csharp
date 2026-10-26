@@ -3052,8 +3052,8 @@
     },
     {
       "id": "meta-viewport-large",
-      "description": "The viewport meta element should let a user zoom to at least five times.",
-      "help": "Remove user-scalable=no and any maximum-scale below 5 from the viewport content.",
+      "description": "The viewport meta element should not cap zoom at less than five times.",
+      "help": "Remove the maximum-scale cap, or raise it to 5 or more.",
       "impact": "minor",
       "bestPractice": true,
       "needs": "static",
@@ -6847,28 +6847,6 @@
       "taskImpact": {
         "blocksTask": false,
         "reason": null
-      },
-      "cssOnly": false,
-      "factsUsed": [],
-      "factsMissing": [],
-      "suggested": []
-    },
-    {
-      "rule": "region",
-      "outcome": "failed",
-      "message": "This content is outside every landmark.",
-      "target": {
-        "tag": "button",
-        "locator": "button",
-        "source": {
-          "start": 872,
-          "end": 908
-        }
-      },
-      "findings": [],
-      "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
       },
       "cssOnly": false,
       "factsUsed": [],

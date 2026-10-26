@@ -83,8 +83,8 @@ several rules; the test harness lists which.
 - **role-img-alt** (ACT 23a2a8). An element other than `img` and the SVG elements with the explicit role `img` needs a
   name. *No fix.*
 - **image-redundant-alt**. An `img` with an `alt` inside a link, button, paragraph, list item or table cell is reported when
-  the container's other text already contains the alt (compared after lower-casing ASCII letters and collapsing white
-  space). The nearest such container is used; the text is read once per container. *No fix:* the alt can be emptied or
+  the container's other text equals the alt (compared after lower-casing ASCII letters and collapsing white
+  space; a container whose text only contains the alt is not reported, as in axe). The nearest such container is used; the text is read once per container. *No fix:* the alt can be emptied or
   reworded, and which depends on what the image shows.
 - **image-name-descriptive** (ACT qt1vmo). Review only: every exposed image with a name (an `img`, an element with the role
   `img`, an SVG graphic, a `canvas`) is listed as needs-review with the name found. A graphic inside a link or button is
@@ -155,6 +155,18 @@ several rules; the test harness lists which.
   same resource in the real page are the same here). SVG links with an `href` or `xlink:href` are links. *No fix.*
 - **link-in-context-descriptive** (ACT 5effbb). Review only: every exposed link with a name is listed as needs-review with
   the name found. *No fix.*
+
+## Measured against axe-core 4.14.0
+
+Differences from the differential that we keep (axe-core 4.14.0 on the right):
+
+- **image-alt:** `<img alt="" tabindex="0">` fails (a focusable image is not decorative; ACT 23a2a8). Axe passes any image with an `alt` attribute.
+- **link-name:** a link whose only content is an element with a `title` (a `picture`, say) has a name here, by AccName 2F and 2I; axe reports a violation because it wants visible text, an `aria-label` or an image `alt` (21 nodes in the sample; one more link there, whose content is an empty icon `span`, passes here and fails in axe).
+- **label, form-field-multiple-labels:** with a duplicated id a `label for` points at the first element only; the second
+  field has no name here, while axe reports it as labelled or as incomplete.
+- **label-content-name-mismatch:** visible text of a single character, such as the "X" of a close button named "Close", is non-text content for axe (incomplete); we pass it.
+- **identical-links-same-purpose:** reported for the later links of a group (axe reports the first link of the group).
+- **aria-dialog-name, form-field-multiple-labels:** the sample shows differences that have not been explained; they are listed in the differential's classes (`docs/axe-differential.md`, "Open"). `image-redundant-alt` is explained there (fail|none: images in `noscript`).
 
 ## ACT results
 

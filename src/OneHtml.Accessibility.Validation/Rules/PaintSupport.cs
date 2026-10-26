@@ -90,6 +90,23 @@ internal sealed class PaintState
     /// <summary>True when the element or an ancestor is moved far off the page or reduced to a clipped one-pixel box.</summary>
     internal bool Offscreen { get; }
 
+    /// <summary>The same state with what may overlap the text from outside the ancestor chain added (see <see cref="BackdropIndex"/>).</summary>
+    internal PaintState With(Overlap overlap)
+    {
+        if (!overlap.Any)
+        {
+            return this;
+        }
+
+        Backing[] backings = Backings;
+        if (overlap.Image)
+        {
+            backings = [.. backings, new Backing(default, true)];
+        }
+
+        return new PaintState(backings, Opacity, Hazard ?? overlap.Solid, Gradient, Offscreen);
+    }
+
     internal bool HasUnknown
     {
         get
@@ -162,7 +179,7 @@ internal sealed class PaintCalculator
 
         for (int i = chain.Count - 1; i >= 0; i--)
         {
-            below = Apply(below, _context.Styles.GetStyle(chain[i]), _context.Styles.GetPseudoStyle(chain[i], PseudoElementKind.Before), _context.Styles.GetPseudoStyle(chain[i], PseudoElementKind.After));
+            below = Apply(below, _context.Styles.GetStyle(chain[i]), _context.Styles.GetPseudoStyle(chain[i], PseudoElementKind.Before), _context.Styles.GetPseudoStyle(chain[i], PseudoElementKind.After), NativeFill(chain[i], _context.Styles.GetStyle(chain[i])));
             _memo[chain[i].Index] = below;
         }
 
@@ -170,9 +187,9 @@ internal sealed class PaintCalculator
     }
 
     /// <summary>The state after painting a generated box (<c>::before</c>, <c>::after</c>) of the element, which sits inside the element.</summary>
-    internal PaintState OfPseudo(Node host, ComputedStyle pseudo) => Apply(Of(host), pseudo, null, null);
+    internal PaintState OfPseudo(Node host, ComputedStyle pseudo) => Apply(Of(host), pseudo, null, null, null);
 
-    private static PaintState Apply(PaintState parent, ComputedStyle s, ComputedStyle? before, ComputedStyle? after)
+    private static PaintState Apply(PaintState parent, ComputedStyle s, ComputedStyle? before, ComputedStyle? after, Rgb8? nativeFill)
     {
         double opacity = parent.Opacity * Math.Clamp(s.Opacity, 0, 1);
         string? hazard = parent.Hazard ?? HazardOf(s);
@@ -201,6 +218,13 @@ internal sealed class PaintCalculator
             {
                 hazard = null;
             }
+        }
+
+        if (nativeFill is { } native)
+        {
+            // The face of a form control the page has not restyled (HTML Standard, Rendering, "Form controls": the control is drawn natively).
+            backings = OverEach(backings, native, 1);
+            hazard = null;
         }
 
         string images = s.GetPropertyValue("background-image");
@@ -234,6 +258,32 @@ internal sealed class PaintCalculator
         }
 
         return new PaintState(backings, opacity, hazard, gradient, offscreen);
+    }
+
+    // Buttons, selects and text fields have a background colour of their own (a browser's own sheet: ButtonFace, light grey for buttons,
+    // and Field, white, for fields) that applies unless the author sets a background; a border or appearance: none does not remove it,
+    // it only changes how the control is drawn. The exact grey is the one a browser uses with its default colour scheme and is checked
+    // against the browser's own blended colour (docs/axe-differential.md).
+    private static Rgb8? NativeFill(Node element, ComputedStyle s)
+    {
+        if (element.Namespace != ElementNamespace.Html || element.LocalName is not ("button" or "input" or "select" or "textarea")
+            || s.IsDeclared("background-color") || s.IsDeclared("background-image") || element.HasAttribute("disabled"))
+        {
+            return null;
+        }
+
+        if (element.LocalName == "input")
+        {
+            string type = (element.GetAttribute("type") ?? string.Empty).Trim().ToLowerInvariantAscii();
+            return type switch
+            {
+                "button" or "submit" or "reset" => new Rgb8(239, 239, 239),
+                "" or "text" or "search" or "email" or "url" or "tel" or "password" or "number" => new Rgb8(255, 255, 255),
+                _ => null,
+            };
+        }
+
+        return element.LocalName == "button" ? new Rgb8(239, 239, 239) : new Rgb8(255, 255, 255);
     }
 
     private static Backing[] OverEach(Backing[] below, Rgb8 color, double alpha)

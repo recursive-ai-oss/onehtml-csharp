@@ -496,12 +496,28 @@ internal sealed class StylesheetStore
             item = _loose.FirstOrDefault(i => path.EndsWith(i.Url.Replace('\\', '/'), StringComparison.Ordinal));
         }
 
-        if (item is null || !File.Exists(item.Path))
+        if (item is null || !File.Exists(item.Path) || !IsCss(item.ContentType))
         {
             return null;
         }
 
         return new StylesheetResource(File.ReadAllBytes(item.Path), Charset(item.ContentType));
+    }
+
+    /// <summary>
+    /// A browser in standards mode applies a linked sheet only when the response says <c>text/css</c> (a crawl that stored an HTML error page
+    /// under a stylesheet's URL gave Chrome nothing, so it must give the cascade nothing). A missing header is accepted.
+    /// </summary>
+    internal static bool IsCss(string? contentType)
+    {
+        if (string.IsNullOrWhiteSpace(contentType))
+        {
+            return true;
+        }
+
+        int semi = contentType.IndexOf(';', StringComparison.Ordinal);
+        string essence = (semi >= 0 ? contentType[..semi] : contentType).Trim();
+        return essence.Equals("text/css", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string? Charset(string? contentType)

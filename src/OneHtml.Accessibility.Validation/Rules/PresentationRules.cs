@@ -468,8 +468,11 @@ internal sealed class TargetSizeRule : AriaRule
                 reporter.CancellationToken.ThrowIfCancellationRequested();
             }
 
-            if (n.Kind == AxNodeKind.Element && n.Focus.IsFocusable && !n.States.Disabled && context.IsExposed(n.DomNode) && n.DomNode.NamespaceURI == TextSupport.Html
-                && n.AriaRole is not { Name: "none" or "presentation" } && IsDrawnNode(context, n.DomNode))
+            // A pointer target is a control that does something when pressed: an element with a widget role, or a disclosure summary. A
+            // focusable box with no role (a scroll container, a tabindex on a div) takes no pointer action. Controls hidden from the
+            // accessibility tree (aria-hidden, inert) still sit on the page, so they take up space as neighbours, but get no verdict.
+            if (n.Kind == AxNodeKind.Element && !n.States.Disabled && n.DomNode.NamespaceURI == TextSupport.Html && IsDrawnNode(context, n.DomNode)
+                && ((n.Focus.IsFocusable && TextSupport.IsWidget(n.AriaRole)) || IsSummary(n.DomNode)))
             {
                 targets.Add(n);
             }
@@ -490,16 +493,30 @@ internal sealed class TargetSizeRule : AriaRule
             return;
         }
 
+        var paint = new PaintCalculator(context);
+        var urls = new NameSupport.TargetResolver(context.Document, context.Tree.Options.BaseUrl);
         var boxes = new List<(AxNode Node, LayoutRect Box)>();
+        var destinations = new List<string?>();
+        var judged = new List<bool>();
         foreach (AxNode n in targets)
         {
-            if (facts.TryGet(n.DomNode, out NodeFacts nf) && nf.HasLayout && !nf.Layout.BorderBox.IsEmpty)
+            if (reporter.CancellationToken.IsCancellationRequested)
             {
-                boxes.Add((n, nf.Layout.BorderBox));
+                reporter.CancellationToken.ThrowIfCancellationRequested();
+            }
+
+            if (VisibleBox(context, facts, paint, n.DomNode) is { } visible)
+            {
+                boxes.Add((n, visible));
+                judged.Add(context.IsExposed(n.DomNode));
+                // Links to the same address are one target: pressing either does the same thing (WCAG 2.5.8 "Equivalent").
+                destinations.Add(n.DomNode.LocalName == "a" && n.DomNode.GetAttribute("href") is { } href && HasDestination(href) ? urls.Resolve(href) : null);
             }
         }
 
-        var grid = new TargetGrid(boxes);
+        var grid = new TargetGrid(boxes, destinations);
+        var occlusion = new Occlusion(context, facts, boxes);
+        var sentences = new Dictionary<int, bool>();
         string[] used = ["border boxes of the targets"];
         for (int i = 0; i < boxes.Count; i++)
         {
@@ -509,13 +526,18 @@ internal sealed class TargetSizeRule : AriaRule
             }
 
             (AxNode node, LayoutRect box) = boxes[i];
+            if (!judged[i])
+            {
+                continue;
+            }
+
             if (box.Width >= Minimum - 1e-6 && box.Height >= Minimum - 1e-6)
             {
                 reporter.Passed(node.DomNode, "The target is " + Dim(box) + " CSS pixels.", used);
                 continue;
             }
 
-            if (IsInSentence(context, node.DomNode))
+            if (IsInSentence(context, node.DomNode, sentences))
             {
                 reporter.Passed(node.DomNode, "The target is a link inside a sentence, which the criterion exempts.", used);
                 continue;
@@ -527,41 +549,195 @@ internal sealed class TargetSizeRule : AriaRule
                 continue;
             }
 
+            // A target that another element covers completely cannot be pressed, so it is not a target (and takes no space from its neighbours).
+            if (occlusion.IsCovered(i))
+            {
+                reporter.Passed(node.DomNode, "Another element covers the target completely, so it cannot be pressed.", used);
+                continue;
+            }
+
             double cx = box.X + (box.Width / 2), cy = box.Y + (box.Height / 2);
-            int blocker = grid.FirstNear(i, cx, cy, Minimum / 2);
+            int blocker = grid.FirstNear(i, cx, cy, Minimum / 2, occlusion.IsCovered);
             if (blocker < 0)
             {
-                reporter.Passed(node.DomNode, "The target is " + Dim(box) + " CSS pixels, and a 24-pixel circle around it touches no other target.", used);
+                reporter.Passed(node.DomNode, "The target is " + Dim(box) + " CSS pixels" + " at " + box.X.ToString("0.#", CultureInfo.InvariantCulture) + ", " + box.Y.ToString("0.#", CultureInfo.InvariantCulture) + ", and a 24-pixel circle around it touches no other target.", used);
+                continue;
             }
-            else
+
+            // Content that sticks out of the target's own box means the area a pointer can hit is not the box: the size cannot be taken
+            // from the layout (axe-core reports "content overflow" only after the size and spacing tests have both failed).
+            if (ContentOverflows(context, facts, node.DomNode, box))
             {
-                LayoutRect other = boxes[blocker].Box;
-                reporter.Failed(node.DomNode, "The target is " + Dim(box) + " CSS pixels, under 24 by 24, and another target is too close.",
-                    [new Finding(null, Dim(box), "Width and height of the target."), new Finding(null, Dim(other), "Size of the target that is too close. Exceptions that need a person (an equivalent control, an essential size) are not evaluated.")], null, used);
+                reporter.NeedsReview(node.DomNode, "The target is " + Dim(box) + " CSS pixels with another target close by, but its content sticks out of its box, so the area a pointer can hit is not known from the layout; check that it is at least 24 by 24.", null, used);
+                continue;
+            }
+
+            // Focusable only by script (tabindex below zero): whether it counts as a target depends on how the page uses it.
+            if (node.Focus.TabIndex < 0 || boxes[blocker].Node.Focus.TabIndex < 0)
+            {
+                reporter.NeedsReview(node.DomNode, "The target is " + Dim(box) + " CSS pixels with another target close by, and it or its neighbour is reachable only by script (negative tabindex); check whether it is meant to be pressed.", null, used);
+                continue;
+            }
+
+            LayoutRect other = boxes[blocker].Box;
+            reporter.Failed(node.DomNode, "The target is " + Dim(box) + " CSS pixels" + " at " + box.X.ToString("0.#", CultureInfo.InvariantCulture) + ", " + box.Y.ToString("0.#", CultureInfo.InvariantCulture) + ", under 24 by 24, and another target (" + Dim(other) + " at " + other.X.ToString("0.#", CultureInfo.InvariantCulture) + ", " + other.Y.ToString("0.#", CultureInfo.InvariantCulture) + ") is too close.",
+                [new Finding(null, Dim(box), "Width and height of the target."), new Finding(null, Dim(other), "Size of the target that is too close. Exceptions that need a person (an equivalent control, an essential size) are not evaluated.")], null, used);
+        }
+    }
+
+    // A link that goes nowhere in particular ("#" alone, javascript:) is not a shared destination: two of them are two controls (measured with axe-core on probe pages).
+    private static bool HasDestination(string href)
+    {
+        string t = href.Trim();
+        return t != "#" && !t.StartsWith("javascript:", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsSummary(Node element) => element.LocalName == "summary" && element.ParentElement is { IsNull: false } p && p.LocalName == "details";
+
+    // True when an in-flow descendant's box extends past the element's own box (before clipping by ancestors).
+    private static bool ContentOverflows(CheckContext context, RenderedFacts facts, Node element, LayoutRect box)
+    {
+        int budget = 2000;
+        for (Node d = element.NextInDocumentOrder(element); !d.IsNull && budget-- > 0; d = d.NextInDocumentOrder(element))
+        {
+            if (!d.IsElement || !facts.TryGet(d, out NodeFacts df) || !df.HasLayout || df.Layout.BorderBox.IsEmpty)
+            {
+                continue;
+            }
+
+            LayoutRect b = df.Layout.BorderBox;
+            double x0 = b.X, y0 = b.Y, x1 = b.Right, y1 = b.Bottom;
+            if (ClipByAncestors(context, facts, d, element, ref x0, ref y0, ref x1, ref y1)
+                && (x0 < box.X - 0.5 || y0 < box.Y - 0.5 || x1 > box.Right + 0.5 || y1 > box.Bottom + 0.5))
+            {
+                return true;
             }
         }
+
+        return false;
     }
 
     private static string Dim(LayoutRect r) => r.Width.ToString("0.##", CultureInfo.InvariantCulture) + " by " + r.Height.ToString("0.##", CultureInfo.InvariantCulture);
 
+    // What a pointer can hit: the element's box, cut down by every ancestor that clips its overflow, and nothing at all for an
+    // element that is fully transparent or ignores the pointer. Null when nothing of it can be hit.
+    private static LayoutRect? VisibleBox(CheckContext context, RenderedFacts facts, PaintCalculator paint, Node element)
+    {
+        ComputedStyle style = context.Styles.GetStyle(element);
+        if (!facts.TryGet(element, out NodeFacts nf) || !nf.HasLayout || nf.Layout.BorderBox.IsEmpty || paint.Of(element).Opacity <= 0
+            || style.GetPropertyValue("pointer-events").Trim().Equals("none", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        // The target is the element's own border box, as the browser reports it (axe-core measures the same rectangle: measured on
+        // probe pages with content that sticks out of a link, a button and a block). Descendants' boxes do not enlarge it.
+        LayoutRect box = nf.Layout.BorderBox;
+        double x0 = box.X, y0 = box.Y, x1 = box.Right, y1 = box.Bottom;
+        return ClipByAncestors(context, facts, element, default, ref x0, ref y0, ref x1, ref y1) ? new LayoutRect(x0, y0, x1 - x0, y1 - y0) : null;
+    }
+
+    // Cuts the rectangle down by the ancestors of `from` that clip their overflow, up to `until` (inclusive; the root when null). A box
+    // taken out of flow is clipped only from its containing block inwards. With `until` set (a descendant of the target), a box under an
+    // out-of-flow ancestor does not count as part of the target. False when nothing is left.
+    internal static bool ClipByAncestors(CheckContext context, RenderedFacts facts, Node from, Node until, ref double x0, ref double y0, ref double x1, ref double y1)
+    {
+        bool outOfFlow = false;
+        ComputedStyle childStyle = context.Styles.GetStyle(from);
+        if (!until.IsNull && IsOutOfFlow(childStyle))
+        {
+            return false;
+        }
+
+        for (Node a = from.ParentElement; !a.IsNull; a = a.ParentElement)
+        {
+            outOfFlow |= IsOutOfFlow(childStyle);
+            ComputedStyle s = context.Styles.GetStyle(a);
+            childStyle = s;
+            bool atUntil = !until.IsNull && a == until;
+            if (!atUntil && !until.IsNull && IsOutOfFlow(s))
+            {
+                return false;
+            }
+
+            bool positioned = !s.GetPropertyValue("position").Equals("static", StringComparison.OrdinalIgnoreCase) || !s.GetPropertyValue("transform").Equals("none", StringComparison.OrdinalIgnoreCase);
+            if (outOfFlow && !positioned)
+            {
+                if (atUntil)
+                {
+                    break;
+                }
+
+                continue;
+            }
+
+            if (positioned)
+            {
+                outOfFlow = false;
+            }
+
+            // The root element and body hand their overflow to the viewport, which scrolls: their box does not cut content off.
+            bool isRoot = a.LocalName is "html" or "body" && a.NamespaceURI == TextSupport.Html;
+            bool clipX = !isRoot && Clips(s.GetPropertyValue("overflow-x")), clipY = !isRoot && Clips(s.GetPropertyValue("overflow-y"));
+            if ((clipX || clipY) && facts.TryGet(a, out NodeFacts af) && af.HasLayout)
+            {
+                LayoutRect ab = af.Layout.BorderBox;
+                if (clipX)
+                {
+                    x0 = Math.Max(x0, ab.X);
+                    x1 = Math.Min(x1, ab.Right);
+                }
+
+                if (clipY)
+                {
+                    y0 = Math.Max(y0, ab.Y);
+                    y1 = Math.Min(y1, ab.Bottom);
+                }
+
+                if (x1 <= x0 || y1 <= y0)
+                {
+                    return false;
+                }
+            }
+
+            if (atUntil)
+            {
+                break;
+            }
+        }
+
+        // Left of or above the page's origin nothing can be scrolled to or pressed (a skip link parked off the page until it takes focus).
+        return x1 > x0 && y1 > y0 && (until.IsNull ? x1 > 0 && y1 > 0 : true);
+    }
+
+    private static bool IsOutOfFlow(ComputedStyle s)
+    {
+        string pos = s.GetPropertyValue("position");
+        return pos.Equals("absolute", StringComparison.OrdinalIgnoreCase) || pos.Equals("fixed", StringComparison.OrdinalIgnoreCase);
+    }
+
+    // Content outside a box with overflow hidden or clip cannot be reached; outside a scroll container (auto, scroll) it can be scrolled to.
+    private static bool Clips(string overflow) => overflow.Equals("hidden", StringComparison.OrdinalIgnoreCase) || overflow.Equals("clip", StringComparison.OrdinalIgnoreCase);
+
     private static bool IsDrawnNode(CheckContext context, Node element) => context.Styles.GetStyle(element).Visibility == VisibilityValue.Visible;
 
-    // WCAG 2.5.8 "Inline": the target is inside a sentence or its size is otherwise constrained by the line of text around it.
-    private static bool IsInSentence(CheckContext context, Node element)
+    // WCAG 2.5.8 "Inline": the target is inside a sentence or its size is otherwise constrained by the line of text around it. A
+    // target in a line of inline content that also holds words of its own (links and controls aside) is exempt; one that stands
+    // alone, or beside only other links, is not (axe-core gives the same result for the probe pages in testdata/axe).
+    private static bool IsInSentence(CheckContext context, Node element, Dictionary<int, bool> cache)
     {
-        ComputedStyle s = context.Styles.GetStyle(element);
-        if (!LinkInTextBlockRule.IsInline(s))
+        if (!LinkInTextBlockRule.IsInlineLevel(context.Styles.GetStyle(element)))
         {
             return false;
         }
 
         Node block = element.ParentElement;
-        while (!block.IsNull && LinkInTextBlockRule.IsInline(context.Styles.GetStyle(block)))
+        while (!block.IsNull && LinkInTextBlockRule.IsInlineLevel(context.Styles.GetStyle(block)))
         {
             block = block.ParentElement;
         }
 
-        return !block.IsNull && LinkInTextBlockRule.TryReferenceText(context, block, out _);
+        return !block.IsNull && LinkInTextBlockRule.HasOtherText(context, block, cache);
     }
 
     // WCAG 2.5.8 "User agent control": a control whose size the page leaves to the browser.
@@ -584,6 +760,135 @@ internal sealed class TargetSizeRule : AriaRule
         return true;
     }
 
+    /// <summary>
+    /// Whether a target is covered completely by another element painted after it, so that a pointer hits the other element (the
+    /// browser's hit test, from the box and paint order of each element). Elements that ignore the pointer or are not visible do not
+    /// cover; a descendant or an ancestor of the target is part of the same control. The work is bounded: past the budget nothing is
+    /// reported as covered.
+    /// </summary>
+    private sealed class Occlusion
+    {
+        private const long Budget = 200_000_000;
+        private readonly CheckContext _context;
+        private readonly RenderedFacts _facts;
+        private readonly List<(AxNode Node, LayoutRect Box)> _targets;
+        private readonly Dictionary<int, bool> _cache = [];
+        private List<(Node Element, LayoutRect Box, int Paint)>? _covers;
+        private long _spent;
+
+        internal Occlusion(CheckContext context, RenderedFacts facts, List<(AxNode Node, LayoutRect Box)> targets)
+        {
+            _context = context;
+            _facts = facts;
+            _targets = targets;
+        }
+
+        internal bool IsCovered(int target)
+        {
+            if (_cache.TryGetValue(target, out bool known))
+            {
+                return known;
+            }
+
+            return _cache[target] = Compute(target);
+        }
+
+        private bool Compute(int target)
+        {
+            Node element = _targets[target].Node.DomNode;
+            LayoutRect box = _targets[target].Box;
+            if (!_facts.TryGet(element, out NodeFacts nf) || !nf.HasLayout || nf.Layout.PaintOrder is not { } mine)
+            {
+                return false;
+            }
+
+            List<(Node Element, LayoutRect Box, int Paint)> covers = Covers();
+            _spent += covers.Count;
+            if (_spent > Budget)
+            {
+                return false;
+            }
+
+            int root = nf.StackingContextNodeIndex;
+            bool? targetLifted = null;
+            foreach ((Node other, LayoutRect b, int paint) in covers)
+            {
+                // One element spans the whole target. (Axe-core also measures a target that is only partly covered by the part left
+                // open; that is not reproduced here, see docs/rules/target-size.md.)
+                if (!(b.X <= box.X + 0.5 && b.Y <= box.Y + 0.5 && b.Right >= box.Right - 0.5 && b.Bottom >= box.Bottom - 0.5)
+                    || other.Contains(element) || element.Contains(other))
+                {
+                    continue;
+                }
+
+                if (paint > mine)
+                {
+                    return true;
+                }
+
+                // The browser hits what is later in tree order first among ordinary in-flow content: a box with no background of its own
+                // that comes after the target and spans it takes the pointer, although its paint order is earlier (measured with axe-core:
+                // the links of an open mobile menu under the page body are "fully obscured"). Positioned content paints in its own layer
+                // and keeps the paint-order answer.
+                if (other.Index > element.Index && _facts.TryGet(other, out NodeFacts of) && of.StackingContextNodeIndex == root)
+                {
+                    targetLifted ??= InPositionedLayer(element);
+                    if (!targetLifted.Value && !InPositionedLayer(other))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        // True when the element or an ancestor is positioned, floated or transformed: it paints in a layer above ordinary in-flow content.
+        private bool InPositionedLayer(Node element)
+        {
+            for (Node e = element; !e.IsNull; e = e.ParentElement)
+            {
+                ComputedStyle s = _context.Styles.GetStyle(e);
+                if (!s.GetPropertyValue("position").Equals("static", StringComparison.OrdinalIgnoreCase) || !s.GetPropertyValue("float").Equals("none", StringComparison.OrdinalIgnoreCase)
+                    || !s.GetPropertyValue("transform").Equals("none", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private List<(Node Element, LayoutRect Box, int Paint)> Covers()
+        {
+            if (_covers is not null)
+            {
+                return _covers;
+            }
+
+            _covers = [];
+            foreach (Node e in _context.Elements())
+            {
+                // The shapes inside an svg report their boxes in the drawing's own units, not in page pixels: only HTML elements and the svg root cover.
+                if (e.NamespaceURI != TextSupport.Html && !(e.LocalName == "svg" && !e.ParentElement.IsNull && e.ParentElement.NamespaceURI == TextSupport.Html))
+                {
+                    continue;
+                }
+
+                if (_facts.TryGet(e, out NodeFacts f) && f.HasLayout && !f.Layout.BorderBox.IsEmpty && f.Layout.PaintOrder is { } paint)
+                {
+                    ComputedStyle s = _context.Styles.GetStyle(e);
+                    if (s.Visibility == VisibilityValue.Visible && !s.GetPropertyValue("pointer-events").Trim().Equals("none", StringComparison.OrdinalIgnoreCase))
+                    {
+                        _covers.Add((e, f.Layout.BorderBox, paint));
+                    }
+                }
+            }
+
+            return _covers;
+        }
+    }
+
     /// <summary>A uniform grid over the targets' boxes so that the spacing test looks only at neighbours.</summary>
     private sealed class TargetGrid
     {
@@ -593,9 +898,12 @@ internal sealed class TargetSizeRule : AriaRule
         private readonly Dictionary<(int, int), List<int>> _cells = [];
         private readonly List<int> _large = [];
 
-        internal TargetGrid(List<(AxNode Node, LayoutRect Box)> boxes)
+        private readonly List<string?> _destinations;
+
+        internal TargetGrid(List<(AxNode Node, LayoutRect Box)> boxes, List<string?> destinations)
         {
             _boxes = boxes;
+            _destinations = destinations;
             for (int i = 0; i < boxes.Count; i++)
             {
                 LayoutRect b = boxes[i].Box;
@@ -625,7 +933,7 @@ internal sealed class TargetSizeRule : AriaRule
         private static (int, int) Span(double a, double b) => ((int)Math.Floor(Math.Clamp(a, -1e9, 1e9) / Cell), (int)Math.Floor(Math.Clamp(b, -1e9, 1e9) / Cell));
 
         /// <summary>The index of the first other target whose box touches the circle, or whose own circle (if undersized) overlaps it; -1 for none.</summary>
-        internal int FirstNear(int self, double cx, double cy, double radius)
+        internal int FirstNear(int self, double cx, double cy, double radius, Func<int, bool> ignore)
         {
             (int x0, int x1) = Span(cx - (2 * radius), cx + (2 * radius));
             (int y0, int y1) = Span(cy - (2 * radius), cy + (2 * radius));
@@ -638,7 +946,7 @@ internal sealed class TargetSizeRule : AriaRule
                     {
                         foreach (int j in list)
                         {
-                            best = Closer(best, Test(self, j, cx, cy, radius));
+                            best = Closer(best, Test(self, j, cx, cy, radius, ignore));
                         }
                     }
                 }
@@ -646,7 +954,7 @@ internal sealed class TargetSizeRule : AriaRule
 
             foreach (int j in _large)
             {
-                best = Closer(best, Test(self, j, cx, cy, radius));
+                best = Closer(best, Test(self, j, cx, cy, radius, ignore));
             }
 
             return best;
@@ -654,9 +962,9 @@ internal sealed class TargetSizeRule : AriaRule
 
         private static int Closer(int a, int b) => a < 0 ? b : b < 0 ? a : Math.Min(a, b);
 
-        private int Test(int self, int j, double cx, double cy, double r)
+        private int Test(int self, int j, double cx, double cy, double r, Func<int, bool> ignore)
         {
-            if (j == self)
+            if (j == self || (_destinations[self] is { } d && d == _destinations[j]) || ignore(j))
             {
                 return -1;
             }

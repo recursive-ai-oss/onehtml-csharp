@@ -372,6 +372,33 @@ internal static class SelectorMatcher
 
     // ---- compounds and simple selectors ----
 
+    /// <summary>Tests one complex selector against an element.</summary>
+    internal static bool MatchesComplex(Node element, ComplexSelector selector, SelectorMatchOptions? options)
+    {
+        MatchCtx c = Create(element, options, false);
+        return MatchComplex(ref c, selector, element.Index);
+    }
+
+    /// <summary>
+    /// Appends the anchors whose compound matches the element differently under the two options. With <paramref name="onlyWithin"/> only
+    /// the <c>:focus-within</c> compounds are tried (the element is an ancestor of the focused one, which a plain <c>:focus</c> cannot see).
+    /// One match context per option serves all anchors.
+    /// </summary>
+    internal static void ChangedFocusAnchors(Node element, List<Css.FocusAnchor> anchors, SelectorMatchOptions? from, SelectorMatchOptions? to, bool onlyWithin, List<Css.FocusAnchor> changed)
+    {
+        MatchCtx a = Create(element, from, false);
+        MatchCtx b = Create(element, to, false);
+        foreach (Css.FocusAnchor anchor in anchors)
+        {
+            if ((onlyWithin && !anchor.Within) || MatchCompound(ref a, anchor.Compound, element.Index) == MatchCompound(ref b, anchor.Compound, element.Index))
+            {
+                continue;
+            }
+
+            changed.Add(anchor);
+        }
+    }
+
     private static bool MatchCompound(ref MatchCtx c, Compound k, int el)
     {
         if (k.HasPseudoElement && !c.IgnoreTrailingPseudo)

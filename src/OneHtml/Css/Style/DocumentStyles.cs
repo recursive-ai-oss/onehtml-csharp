@@ -276,28 +276,111 @@ public sealed class DocumentStyles
         var affected = new HashSet<int>();
         if (_engine.Db.DynamicIndex.Count > 0 && !SameInteraction(_context, context))
         {
-            var cand = new List<RuleSel>();
-            var oldM = new List<RuleSel>();
-            var newM = new List<RuleSel>();
-            int n = 0;
-            foreach (Node e in _doc.Root.DescendantElements)
+            if (!TryFocusAffected(_context, context, view._match, affected, cancellationToken))
             {
-                if ((++n & 255) == 0)
+                var cand = new List<RuleSel>();
+                var oldM = new List<RuleSel>();
+                var newM = new List<RuleSel>();
+                int n = 0;
+                foreach (Node e in _doc.Root.DescendantElements)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
+                    if ((++n & 255) == 0)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
 
-                StyleEngine.MatchSet(e, _engine.Db.DynamicIndex, _match, cand, oldM);
-                StyleEngine.MatchSet(e, _engine.Db.DynamicIndex, view._match, cand, newM);
-                if (!SameMatches(oldM, newM))
-                {
-                    affected.Add(e.Index);
+                    StyleEngine.MatchSet(e, _engine.Db.DynamicIndex, _match, cand, oldM);
+                    StyleEngine.MatchSet(e, _engine.Db.DynamicIndex, view._match, cand, newM);
+                    if (!SameMatches(oldM, newM))
+                    {
+                        affected.Add(e.Index);
+                    }
                 }
             }
         }
 
         view.RunWorklist(affected, false, cancellationToken);
         return view;
+    }
+
+    // When only the focused element differs and no rule that reads focus uses :focus inside :has(), a selector's match can change only
+    // at an "anchor": an element, among the two focused ones and their ancestors (for :focus-within), whose compound with the focus
+    // pseudo-class matches differently. From an anchor a match reaches only along the rest of that selector: its descendants, and its
+    // later siblings with their descendants. So only the selectors whose anchor changed are tested, and only over that reach: the
+    // cost of one overlay follows the part of the page the focus can reach, not the page. False when the case does not apply.
+    private bool TryFocusAffected(StyleContext from, StyleContext to, SelectorMatchOptions toOptions, HashSet<int> affected, CancellationToken cancellationToken)
+    {
+        List<FocusAnchor>? anchors = _engine.Db.FocusAnchors;
+        if (anchors is null || !from.Hover.Equals(to.Hover) || !from.Active.Equals(to.Active) || !from.Target.Equals(to.Target))
+        {
+            return false;
+        }
+
+        var changed = new List<FocusAnchor>();
+        foreach (Node x in new[] { from.Focus, to.Focus })
+        {
+            for (Node p = x; !p.IsNull && p.IsElement; p = p.ParentElement)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                // Only :focus-within compounds can change at an ancestor of the focused element.
+                changed.Clear();
+                SelectorMatcher.ChangedFocusAnchors(p, anchors, _match, toOptions, p.Index != x.Index, changed);
+                foreach (FocusAnchor a in changed)
+                {
+                    TestReach(p, a, toOptions, affected, cancellationToken);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void TestReach(Node p, FocusAnchor a, SelectorMatchOptions toOptions, HashSet<int> affected, CancellationToken cancellationToken)
+    {
+        // The element itself first: the anchor compound may be the selector's subject.
+        if (SelectorMatcher.MatchesComplex(p, a.Selector, _match) != SelectorMatcher.MatchesComplex(p, a.Selector, toOptions))
+        {
+            affected.Add(p.Index);
+        }
+
+        int n = 0;
+        if (a.ReachesBelow)
+        {
+            foreach (Node d in p.DescendantElements)
+            {
+                TestOne(d, a, toOptions, affected, ref n, cancellationToken);
+            }
+        }
+
+        if (a.ReachesBeside)
+        {
+            for (Node sib = p.NextSibling; !sib.IsNull; sib = sib.NextSibling)
+            {
+                if (!sib.IsElement)
+                {
+                    continue;
+                }
+
+                TestOne(sib, a, toOptions, affected, ref n, cancellationToken);
+                foreach (Node d in sib.DescendantElements)
+                {
+                    TestOne(d, a, toOptions, affected, ref n, cancellationToken);
+                }
+            }
+        }
+    }
+
+    private void TestOne(Node e, FocusAnchor a, SelectorMatchOptions toOptions, HashSet<int> affected, ref int n, CancellationToken cancellationToken)
+    {
+        if ((++n & 1023) == 0)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+        }
+
+        if (!affected.Contains(e.Index) && SelectorMatcher.MatchesComplex(e, a.Selector, _match) != SelectorMatcher.MatchesComplex(e, a.Selector, toOptions))
+        {
+            affected.Add(e.Index);
+        }
     }
 
     private static bool SameInteraction(StyleContext a, StyleContext b) =>

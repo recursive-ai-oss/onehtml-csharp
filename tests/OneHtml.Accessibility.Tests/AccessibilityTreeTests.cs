@@ -19,6 +19,16 @@ public sealed class AccessibilityTreeTests
     private static AxNode Find(Document doc, AccessibilityTree tree, string selector) =>
         tree.Find(doc.Root.QuerySelector(selector)) ?? throw new InvalidOperationException("not in the tree: " + selector);
 
+    [Fact]
+    public void A_heading_inside_a_button_keeps_its_role_and_is_named_from_its_contents()
+    {
+        // Chromium does not make the descendants of a button presentational (profile entry children-presentational).
+        (Document doc, AccessibilityTree tree) = Build("<button><div><span><h2 id=t>Location</h2></span></div></button>");
+        AxNode h = Find(doc, tree, "#t");
+        Assert.Equal("heading", h.Role);
+        Assert.Equal("Location", h.Name.Value);
+    }
+
     // ---- hidden status ----
 
     [Theory]

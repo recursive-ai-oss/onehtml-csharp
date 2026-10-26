@@ -94,7 +94,15 @@ internal static class TextSupport
 
         if (context.Facts is { } facts)
         {
-            return facts.TryGet(element, out NodeFacts nf) && nf.HasLayout && nf.Layout.BorderBox.Right > 0 && nf.Layout.BorderBox.Bottom > 0;
+            if (!facts.TryGet(element, out NodeFacts nf) || !nf.HasLayout || nf.Layout.BorderBox.Right <= 0 || nf.Layout.BorderBox.Bottom <= 0)
+            {
+                return false;
+            }
+
+            // Clipped away by an ancestor with hidden overflow (a closed drop-down panel): nothing of the element is on screen.
+            LayoutRect b = nf.Layout.BorderBox;
+            double x0 = b.X, y0 = b.Y, x1 = b.Right, y1 = b.Bottom;
+            return TargetSizeRule.ClipByAncestors(context, facts, element, default, ref x0, ref y0, ref x1, ref y1);
         }
 
         return true;
@@ -243,6 +251,7 @@ internal sealed class ColorContrastRule : AriaRule
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         var paint = new PaintCalculator(context);
+        var backdrop = new BackdropIndex(context, paint);
         var exempt = new TextSupport.ExemptCache(context, TextSupport.DisabledLabels(context, new CancellationTokenLike(reporter.CancellationToken)));
         int counter = 0;
         foreach (Node element in Elements(context))
@@ -273,6 +282,19 @@ internal sealed class ColorContrastRule : AriaRule
                 }
             }
 
+            // The label of a push button made with <input> is drawn from its value (or the browser's default label), not from a text node.
+            bool inputLabel = false;
+            if (element.LocalName == "input" && element.GetAttribute("type") is { } inputType && (inputType.Equals("submit", StringComparison.OrdinalIgnoreCase) || inputType.Equals("button", StringComparison.OrdinalIgnoreCase) || inputType.Equals("reset", StringComparison.OrdinalIgnoreCase)))
+            {
+                string value = element.GetAttribute("value") ?? string.Empty;
+                inputLabel = TextSupport.HasVisibleChar(value) || !inputType.Equals("button", StringComparison.OrdinalIgnoreCase);
+                if (inputLabel)
+                {
+                    hasText = true;
+                    language |= value.Length == 0 || TextSupport.HasLetterOrDigit(value);
+                }
+            }
+
             ComputedStyle? before = Generated(context, element, PseudoElementKind.Before);
             ComputedStyle? after = Generated(context, element, PseudoElementKind.After);
             if (!hasText && before is null && after is null)
@@ -287,11 +309,11 @@ internal sealed class ColorContrastRule : AriaRule
 
             PaintState state = paint.Of(element);
             if (hasText && !state.Offscreen && style.GetPropertyValue("text-indent") is var indent && !(CssLength.TryPx(indent, style.FontSizePx, out double ind) && ind <= -1000)
-                && TextSupport.VisibleTextChildren(context, element).Count > 0)
+                && (inputLabel || TextSupport.VisibleTextChildren(context, element).Count > 0))
             {
                 if (language)
                 {
-                    Check(context, reporter, element, style, state, pseudo: null);
+                    Check(context, reporter, element, style, state.With(backdrop.Query(element, inputLabel)), pseudo: null);
                 }
                 else
                 {
@@ -305,7 +327,11 @@ internal sealed class ColorContrastRule : AriaRule
                 if (ps is not null && !state.Offscreen && ps.Visibility == VisibilityValue.Visible && (context.Facts is not { } pf || (pf.TryGet(element, out NodeFacts pnf) && pnf.GeneratedBoxes.Count > 0)))
                 {
                     // Generated text has no node of its own: the cascade decides, and with facts only a pseudo-element that was laid out counts.
-                    Check(context, reporter, element, ps, paint.OfPseudo(element, ps), name);
+                    // Like element text, content made only of symbols (a ">" breadcrumb separator) expresses nothing in human language and is exempt.
+                    if (GeneratedHasLanguage(ps))
+                    {
+                        Check(context, reporter, element, ps, paint.OfPseudo(element, ps).With(backdrop.Query(element, true)), name);
+                    }
                 }
             }
         }
@@ -371,17 +397,29 @@ internal sealed class ColorContrastRule : AriaRule
         return null;
     }
 
+    private static bool GeneratedHasLanguage(ComputedStyle ps)
+    {
+        foreach (ContentItem item in ps.Content?.Items ?? [])
+        {
+            if (item.Kind == ContentItemKind.Text && item.Text is not null && TextSupport.HasLetterOrDigit(item.Text))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static bool IsFormControl(Node e) =>
         e.Namespace == ElementNamespace.Html && (e.LocalName is "button" or "select" or "textarea" or "input");
 
-    // The colour is the parent's when no declaration of this element won for it.
-    private static bool ColorIsInherited(CheckContext c, Node e, ComputedStyle s) =>
-        !e.ParentElement.IsNull && ReferenceEquals(s.GetSource("color"), c.Styles.GetStyle(e.ParentElement).GetSource("color"));
+    // The colour is only inherited when no declaration (an explicit "color: inherit" included) won for this element.
+    private static bool ColorIsInherited(ComputedStyle s) => s.Parent is not null && !s.IsDeclared("color");
 
     private void Check(CheckContext context, RuleReporter reporter, Node element, ComputedStyle style, PaintState state, string? pseudo)
     {
         (byte fr, byte fg, byte fb, double fa) = style.Color.ToRgba8();
-        if (pseudo is null && IsFormControl(element) && ColorIsInherited(context, element, style))
+        if (pseudo is null && IsFormControl(element) && ColorIsInherited(style))
         {
             // A browser's own sheet gives a form control its own text colour (ButtonText or FieldText, black with the default
             // colour scheme) instead of the parent's; the HTML Standard's rendering sheet does not say so.
@@ -536,8 +574,12 @@ internal sealed class ColorContrastRule : AriaRule
 
 // axe link-in-text-block (WCAG 1.4.1 Use of Color, technique G183 and failure F73): a link inside a block of text must be
 // told apart from the text around it by more than colour, or by a colour contrast of at least 3:1 with that text.
-// Cues read from the cascade: a text decoration line, a border, a different font weight or style. The extra cue on hover
-// and focus that G183 asks for with the colour route is script- and state-dependent and is not checked.
+// Cues read from the cascade: a text decoration line, a border, an outline, a different font weight, style, size or family.
+// The extra cue on hover and focus that G183 asks for with the colour route is script- and state-dependent and is not checked.
+// A "block of text" is the nearest block container of the link when the text of its inline content outside links is longer
+// than the text of its links (white space collapsed): a row of navigation links or a link standing alone is not a sentence,
+// and the criterion is about links that are read among words. This is the reading axe-core's results show for 100+ probe
+// links (docs/axe-differential.md); WCAG 1.4.1 itself only says "within a block of text".
 internal sealed class LinkInTextBlockRule : AriaRule
 {
     public LinkInTextBlockRule()
@@ -550,6 +592,7 @@ internal sealed class LinkInTextBlockRule : AriaRule
     public override void Evaluate(CheckContext context, RuleReporter reporter)
     {
         var paint = new PaintCalculator(context);
+        var blocks = new Dictionary<int, BlockText>();
         int counter = 0;
         foreach (Node link in Elements(context))
         {
@@ -576,10 +619,23 @@ internal sealed class LinkInTextBlockRule : AriaRule
                 block = block.ParentElement;
             }
 
-            if (block.IsNull || !TryReferenceText(context, block, out Node reference))
+            if (block.IsNull)
             {
                 continue;
             }
+
+            if (!blocks.TryGetValue(block.Index, out BlockText? text))
+            {
+                blocks[block.Index] = text = BlockText.Measure(context, block);
+            }
+
+            // Not a link among words: no words around it, or the links carry most of the text; the link has no text of its own.
+            if (text.Reference.IsNull || text.OtherLength <= text.LinkLength || !HasText(link))
+            {
+                continue;
+            }
+
+            Node reference = text.Reference;
 
             ComputedStyle rs = context.Styles.GetStyle(reference);
             bool linkLine = HasLine(context, link, block, includeSelf: true);
@@ -596,9 +652,23 @@ internal sealed class LinkInTextBlockRule : AriaRule
                 continue;
             }
 
-            if (Math.Abs(ls.FontWeight - rs.FontWeight) >= 100 || ls.FontStyle != rs.FontStyle)
+            if (Math.Abs(ls.FontWeight - rs.FontWeight) >= 100 || ls.FontStyle != rs.FontStyle
+                || Math.Abs(ls.FontSizePx - rs.FontSizePx) > 0.01 || !ls.GetPropertyValue("font-family").Equals(rs.GetPropertyValue("font-family"), StringComparison.Ordinal))
             {
-                reporter.Passed(link, "The link differs from the surrounding text in font weight or style.");
+                reporter.Passed(link, "The link differs from the surrounding text in font weight, style, size or family.");
+                continue;
+            }
+
+            if (HasOutline(ls) && !HasOutline(rs))
+            {
+                reporter.Passed(link, "The link has an outline the surrounding text does not.");
+                continue;
+            }
+
+            // A background image on the link only (an underline drawn as a gradient, an animated highlight) is a visual cue (measured with axe-core).
+            if (HasBackgroundImage(ls) && !HasBackgroundImage(rs))
+            {
+                reporter.Passed(link, "The link has a background image the surrounding text does not.");
                 continue;
             }
 
@@ -622,6 +692,133 @@ internal sealed class LinkInTextBlockRule : AriaRule
             else
             {
                 reporter.Failed(link, "Only colour sets the link apart from the surrounding text, and the contrast between them is " + ContrastMath.Format(ratio) + ":1.", findings);
+            }
+        }
+    }
+
+    /// <summary>True when the block has visible text of its own outside links and controls: the link sits in a line of words.</summary>
+    internal static bool HasOtherText(CheckContext context, Node block, Dictionary<int, bool> cache)
+    {
+        if (!cache.TryGetValue(block.Index, out bool has))
+        {
+            cache[block.Index] = has = !BlockText.Measure(context, block).Reference.IsNull;
+        }
+
+        return has;
+    }
+
+    /// <summary>True for an element that sits in a line of text: its outer display type is inline (inline-block included).</summary>
+    internal static bool IsInlineLevel(ComputedStyle s) => s.Display.Kind == DisplayKind.Box && s.Display.Outside == DisplayOutside.Inline;
+
+    private static bool HasText(Node link)
+    {
+        for (Node n = link.NextInDocumentOrder(link); !n.IsNull; n = n.NextInDocumentOrder(link))
+        {
+            if (n.Kind == NodeKind.Text && TextSupport.HasVisibleChar(n.Data))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasBackgroundImage(ComputedStyle s)
+    {
+        string image = s.GetPropertyValue("background-image").Trim();
+        return image.Length > 0 && !image.Equals("none", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool HasOutline(ComputedStyle s)
+    {
+        string style = s.GetPropertyValue("outline-style");
+        return style.Length > 0 && !style.Equals("none", StringComparison.OrdinalIgnoreCase) && !style.Equals("hidden", StringComparison.OrdinalIgnoreCase)
+            && CssLength.TryPx(s.GetPropertyValue("outline-width"), s.FontSizePx, out double w) && w > 0;
+    }
+
+    /// <summary>The text of one block container: what is in its inline content outside links, and what is in links.</summary>
+    private sealed class BlockText
+    {
+        internal Node Reference { get; private init; }
+
+        internal int OtherLength { get; private init; }
+
+        internal int LinkLength { get; private init; }
+
+        /// <summary>One walk over the block's inline-level content (nested blocks, out-of-flow boxes and controls are not part of its line of text).</summary>
+        internal static BlockText Measure(CheckContext context, Node block)
+        {
+            var other = new CollapsedLength();
+            var links = new CollapsedLength();
+            Node reference = default;
+            var stack = new Stack<(Node Node, bool InLink)>();
+            for (Node c = block.LastChild; !c.IsNull; c = c.PreviousSibling)
+            {
+                stack.Push((c, false));
+            }
+
+            int budget = 200_000;
+            while (stack.Count > 0 && budget-- > 0)
+            {
+                (Node n, bool inLink) = stack.Pop();
+                if (n.Kind == NodeKind.Text)
+                {
+                    (inLink ? links : other).Add(n.Data);
+                    if (!inLink && reference.IsNull && TextSupport.HasVisibleChar(n.Data))
+                    {
+                        reference = n.ParentElement;
+                    }
+
+                    continue;
+                }
+
+                if (!n.IsElement || n.NamespaceURI != TextSupport.Html || n.LocalName is "script" or "style" or "template" or "button" or "select" or "textarea" or "input" or "object" or "video" or "audio" or "canvas")
+                {
+                    continue;
+                }
+
+                ComputedStyle s = context.Styles.GetStyle(n);
+                if (!s.Display.IsRendered || s.Display.Outside != DisplayOutside.Inline)
+                {
+                    continue;
+                }
+
+                bool nowInLink = inLink || (n.LocalName == "a" && n.HasAttribute("href"));
+                for (Node c = n.LastChild; !c.IsNull; c = c.PreviousSibling)
+                {
+                    stack.Push((c, nowInLink));
+                }
+            }
+
+            return new BlockText { Reference = reference, OtherLength = other.Length, LinkLength = links.Length };
+        }
+    }
+
+    /// <summary>Length of text with runs of white space counted as one character and the ends trimmed.</summary>
+    private sealed class CollapsedLength
+    {
+        private int _length;
+        private bool _pendingSpace;
+
+        internal int Length => _length;
+
+        internal void Add(ReadOnlySpan<char> text)
+        {
+            foreach (char ch in text)
+            {
+                if (char.IsWhiteSpace(ch))
+                {
+                    _pendingSpace = _length > 0;
+                    continue;
+                }
+
+                if (_pendingSpace)
+                {
+                    _length++;
+                    _pendingSpace = false;
+                }
+
+                _length++;
             }
         }
     }

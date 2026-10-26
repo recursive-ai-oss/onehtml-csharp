@@ -37,6 +37,14 @@ public sealed class StructureRuleTests
     ];
 
     [Fact]
+    public void A_plain_container_between_a_context_role_and_its_child_is_looked_through_but_one_with_aria_is_not()
+    {
+        Assert.Equal("P:div", V("<div role=tablist><div class=panel><div role=tab>a</div></div></div>", "aria-required-parent"));
+        Assert.Equal("P:a", V("<ul role=menu><li><a role=menuitem href=x>a</a></li></ul>", "aria-required-parent"));
+        Assert.Equal("F:div", V("<div role=tablist><div aria-live=polite><div role=tab>a</div></div></div>", "aria-required-parent"));
+    }
+
+    [Fact]
     public void Every_axe_rule_of_the_area_is_implemented_with_its_catalogue_tags()
     {
         foreach (string id in AxeIds)

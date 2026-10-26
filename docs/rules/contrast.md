@@ -53,13 +53,38 @@ with that element's opacity chain. The result is a set of possible backdrop colo
 Hazards: an element that is `position: absolute|fixed`, transformed, filtered, or has a blend mode may have other content
 behind it. An opaque background of its own, or a gradient with only opaque stops, clears the hazard for its subtree.
 
+### Content that is not an ancestor
+
+The walk above sees only the element and its ancestors. Something else can paint behind text: an image, a video or a canvas pulled
+under it by a negative margin or a position, a positioned box with its own background, a background image on an overlay. The checker
+never assumes the page colour for such text, so it asks what else may be there (`BackdropIndex`):
+
+- **Painters that count.** Replaced content (`img`, `video`, `canvas`, `iframe`, `object`, `embed`, `svg`, `input type=image`) and any
+  element with a `background-image` (not `background-clip: text`) are *image-like*: only pixels know what shows. A positioned or
+  transformed element with a visible `background-color` is *solid*: it may repaint the colour behind the text. Boxes smaller than 3 px
+  (spacer pixels, hairlines), hidden or fully transparent boxes and boxes clipped away by an ancestor do not count. Ancestors of the
+  text never count (the walk already has them).
+- **With rendered facts**, geometry decides: a painter counts when its clipped box meets one of the text's boxes (by more than half a
+  pixel on each axis; the whole box for input labels and generated content) and it paints before the text (paint order; a missing
+  order counts as before). An image-like painter makes the backdrop **unknown**: the result needs background samples or is
+  needs-render. A solid painter sets the hazard: the browser's blended colour is used when facts have it, otherwise needs-render.
+- **Without facts** there is no geometry, so every painter that *may* reach the text counts. An `absolute` painter reaches everything
+  inside its containing block (the nearest positioned, transformed or filtered ancestor, else the whole page); a `fixed` one reaches the
+  page; a transformed painter, and an image-like painter pulled by a negative margin or a relative or sticky offset, reach the subtree
+  of its parent. The result is needs-render, naming the same missing facts.
+- Not covered even with facts: an ordinary in-flow sibling never overlaps text, and a solid painter that is not positioned is not
+  looked for; floats do not overlap text.
+
+On the 1,000-page sample this moved 309 more `color-contrast` nodes with facts to needs-render and removed 20 `fail|pass` nodes (page
+06fe9c4a687c: near-white text on a dark image the cascade could not see, judged against white before).
+
 ## Outcomes
 
 | Situation | With no facts | With facts |
 |---|---|---|
 | Known backdrop colour(s) | passed, or failed with the ratio | same |
-| Hazard (out of flow, transformed, ...) | needs-render, missing: *blended background colors of the element*, *paint order and stacking of the element* | the browser's blended background colour of the element replaces the chain; `FactsUsed` has *blended background color* |
-| Unknown backdrop (image, gradient not read, generated panel) | needs-render, missing: *background samples (median and 5th/95th percentile colours) behind the text* | the nearest element at or above the text with a supplied sample (see `rendered-facts.md`): the median, 5th and 95th percentile colours are the backdrops. All pass: passed. All fail: failed. Mixed: needs-review. `FactsUsed` has *background samples* |
+| Hazard (out of flow, transformed, a positioned box with a background that may overlap, ...) | needs-render, missing: *blended background colors of the element*, *paint order and stacking of the element* | the browser's blended background colour of the element replaces the chain; `FactsUsed` has *blended background color* |
+| Unknown backdrop (image, gradient not read, generated panel, or an image-like painter that may overlap the text) | needs-render, missing: *background samples (median and 5th/95th percentile colours) behind the text* | the nearest element at or above the text with a supplied sample (see `rendered-facts.md`): the median, 5th and 95th percentile colours are the backdrops. All pass: passed. All fail: failed. Mixed: needs-review. `FactsUsed` has *background samples* |
 | Facts say the text was not laid out, or lies wholly above/left of the page | no result | no result |
 
 Two Chrome behaviours seen in the captures: the blended background colour of an element ignores a positioned
@@ -74,6 +99,23 @@ A `button`, `input`, `select` or `textarea` whose `color` no declaration of its 
 or `FieldText`, black under the default colour scheme), not its parent's: the rendering section of the HTML Standard does not give controls
 a colour, but every browser's own sheet does, and Chrome's output on a white-on-teal cookie button confirms it (black, 7.16:1).
 
+## Measured against axe-core 4.14.0
+
+1,000-page sample, with facts (nodes; `docs/axe-differential.md` has the method). `color-contrast` agrees on 92.4 % of compared nodes,
+`color-contrast-enhanced` on 92.5 %; the rest is almost all kept divergences:
+
+| Class (ours\|axe) | Nodes | Disposition |
+|---|---:|---|
+| pass\|incomplete | 9,849 (enhanced 9,328) | Kept. Text made only of symbols (icon-font glyphs): axe says "only non-text characters" and is incomplete; ACT afw4f7 does not apply to text without letters or digits, and ACT wins. |
+| none\|incomplete | 1,871 | Kept. Empty fields, hidden text, 1:1 colour pairs and elements axe thinks are overlapped; there is nothing to read. |
+| fail\|incomplete | 850 | Kept. axe cannot decide because another element overlaps; with facts we know the stacking and the browser's blended colour. |
+| fail\|none | 294 | Open. Text axe does not examine (mostly text it treats as hidden or clipped by layout it computes differently). |
+| pass\|violation | 34 | Kept. axe checks text made of punctuation only; ACT exempts it. |
+| fail\|pass | 20 (was 34; enhanced 168) | The `body link` attribute caused 14 (page 0ebed22c12e5: `link="#840000"` coloured the links, the cascade used the user-agent blue); fixed in the cascade. The rest is open (17 on page 1372fac512b6). |
+
+The near-white-text-on-an-image class (54 nodes on page 06fe9c4a687c) is fixed by the non-ancestor painters above. Text-shadow colours count
+as backdrops (ACT afw4f7 Passed Example 4); axe ignores shadows.
+
 ## link-in-text-block
 
 A link (`a[href]`, inline) in a block that also holds other visible text (the first such run of text, outside links and
@@ -84,9 +126,22 @@ nested blocks, is the reference). Passed when one of these tells the link apart:
 3. a font weight differing by 100 or more, or a different font style;
 4. a link colour with at least 3:1 contrast against the reference text colour (both composited over the backdrop).
 
+5. a background image on the link that the reference has not (an underline drawn as a gradient, a highlight).
+
 Otherwise failed. The extra cue on hover and focus that technique G183 asks for with route 4 is state-dependent and is not
 checked. Links alone in a list item or other block are not applicable. Difference from axe: axe also asks the link text for
 contrast with its background; that is `color-contrast`.
+
+### Measured against axe-core 4.14.0
+
+1,000-page sample, with facts: 90.6 % of nodes agree (10,663 mismatching nodes before the rule followed axe, 250 now).
+
+| Situation | Ours | axe-core |
+|---|---|---|
+| A "block of text" | The nearest block container whose text outside links is longer than the text of its links (white space collapsed); script text is not counted. | The same on 100+ probe links, except that `<script>` text counts as text (probe `s17`). |
+| Link colour equal to the text colour | Fails: the colour contrast is 1:1 and nothing else sets the link apart (F73). | Passes (probes `s24`, `r24`; 66 sample nodes `fail|pass`). Divergence kept: F73 names exactly this failure. |
+| Link wrapped in a block of other content | Skipped when the link has no text of its own. | `fail|none` 60 nodes on 32 pages (links with large boxes, such as image or card links): axe does not select them; the criterion for choosing them was not pinned down. Open. |
+| Another element overlaps the link | Judged from the cascade. | Incomplete ("element overlap", 79 nodes `fail|incomplete`). Kept: our verdict does not depend on overlap. |
 
 ## ACT results and known gaps
 

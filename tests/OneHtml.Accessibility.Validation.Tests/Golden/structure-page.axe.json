@@ -782,6 +782,25 @@
       "nodes": []
     },
     {
+      "id": "link-in-text-block",
+      "impact": null,
+      "tags": [
+        "cat.color",
+        "wcag2a",
+        "wcag141",
+        "TTv5",
+        "TT13.a",
+        "EN-301-549",
+        "EN-9.1.4.1",
+        "RGAAv4",
+        "RGAA-10.6.1"
+      ],
+      "description": "A link inside a block of text must be distinguishable from the surrounding text by more than colour.",
+      "help": "Underline the link, or give it a colour with at least 3:1 contrast against the surrounding text.",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/link-in-text-block",
+      "nodes": []
+    },
+    {
       "id": "marquee",
       "impact": null,
       "tags": [
@@ -3230,94 +3249,6 @@
       ]
     },
     {
-      "id": "link-in-text-block",
-      "impact": null,
-      "tags": [
-        "cat.color",
-        "wcag2a",
-        "wcag141",
-        "TTv5",
-        "TT13.a",
-        "EN-301-549",
-        "EN-9.1.4.1",
-        "RGAAv4",
-        "RGAA-10.6.1"
-      ],
-      "description": "A link inside a block of text must be distinguishable from the surrounding text by more than colour.",
-      "help": "Underline the link, or give it a colour with at least 3:1 contrast against the surrounding text.",
-      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/link-in-text-block",
-      "nodes": [
-        {
-          "html": "<a href=\"/x\" tabindex=\"1\">",
-          "impact": null,
-          "target": [
-            "#content > a:nth-of-type(1)"
-          ],
-          "any": [],
-          "all": [],
-          "none": [],
-          "onehtml": {
-            "outcome": "passed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<a href=\"/y\" tabindex=\"2\">",
-          "impact": null,
-          "target": [
-            "#content > a:nth-of-type(2)"
-          ],
-          "any": [],
-          "all": [],
-          "none": [],
-          "onehtml": {
-            "outcome": "passed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<a href=\"/k\" accesskey=\"k\">",
-          "impact": null,
-          "target": [
-            "#content > a:nth-of-type(3)"
-          ],
-          "any": [],
-          "all": [],
-          "none": [],
-          "onehtml": {
-            "outcome": "passed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<a href=\"/map\">",
-          "impact": null,
-          "target": [
-            "#content > a:nth-of-type(4)"
-          ],
-          "any": [],
-          "all": [],
-          "none": [],
-          "onehtml": {
-            "outcome": "passed",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [],
-            "suggestedEdits": 0
-          }
-        }
-      ]
-    },
-    {
       "id": "link-name",
       "impact": null,
       "tags": [
@@ -4627,35 +4558,6 @@
           }
         },
         {
-          "html": "<div tabindex=\"0\">",
-          "impact": "serious",
-          "target": [
-            "#content > div:nth-of-type(4)"
-          ],
-          "any": [
-            {
-              "id": "target-size",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "serious",
-              "message": "The size of a pointer target is known only after layout."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "The size of a pointer target is known only after layout.",
-          "onehtml": {
-            "outcome": "needs-render",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [
-              "border box of the target",
-              "border boxes of the targets near it"
-            ],
-            "suggestedEdits": 0
-          }
-        },
-        {
           "html": "<a href=\"/k\" accesskey=\"k\">",
           "impact": "serious",
           "target": [
@@ -4747,35 +4649,6 @@
           "impact": "serious",
           "target": [
             "#content > button:nth-of-type(4) > a"
-          ],
-          "any": [
-            {
-              "id": "target-size",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "serious",
-              "message": "The size of a pointer target is known only after layout."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "The size of a pointer target is known only after layout.",
-          "onehtml": {
-            "outcome": "needs-render",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [
-              "border box of the target",
-              "border boxes of the targets near it"
-            ],
-            "suggestedEdits": 0
-          }
-        },
-        {
-          "html": "<iframe tabindex=\"-1\" srcdoc=\"<a href='/'>inside</a>\">",
-          "impact": "serious",
-          "target": [
-            "iframe"
           ],
           "any": [
             {

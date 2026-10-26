@@ -128,7 +128,8 @@ landmarks or replacing a marquee all need the author.
 - **list** (axe). A `ul` or `ol` without a role, or with `role=list`, has only `li`, `script`, `template` and elements with
   `role=listitem` as rendered children, and no loose text. An `li` with another role fails.
 - **listitem** (axe). An `li` without a role (or `role=listitem`) must have a parent `ul`, `ol` or `menu` that has no role,
-  `none` or `presentation`, or any parent with `role=list`.
+  `none` or `presentation`, or any parent with `role=list`. An `li` hidden from assistive technology (`aria-hidden`, `display: none`) is
+  not examined: axe reports nothing for it (581 `fail|none` nodes on the 1,000-page sample before this, none now).
 - **definition-list** (axe, HTML 4.4.9). A `dl` without a role holds groups of one or more `dt` then one or more `dd`,
   optionally each group in a `div`, plus `script` and `template`. An empty `dl` passes; loose text, other elements, a `dd`
   before any `dt` and a `dt` with no `dd` fail.
@@ -224,7 +225,9 @@ Differences kept on purpose:
 | `p-as-heading` | Two signs (bold, italic, size at least 1.4 times the next paragraph's) fail; a size alone is needs-review. | Same on the probes; the rest of the mismatches on real pages (bold with a size alone, a few italic cases) are not reproduced. |
 | `hidden-content` | An element whose own computed display is none (the `hidden` attribute included), or whose visibility is hidden under a visible parent, and that holds text (white space and `&nbsp;` do not count) or an image, frame, media or object, is needs-review. | Same on the probes; on real pages it flags about 8 % more hidden roots (elements without text or media) than we do. |
 | `region` (granularity) | Reports the topmost element with content that holds no landmark. | Same on the probes. On real pages it reports some wrappers' children and passes the wrapper (the Divi `#main-content` case); not reproduced, so the differential compares `region` once per page. |
-| `landmark-one-main` | No main landmark in the DOM fails. | Also passes when a rendered `role="dialog"` or `dialog` element exists (probes; 11 of 17 sample pages); a dialog is not main content, so we keep failing. 6 pages unexplained. |
+| `landmark-one-main` | No main landmark in the DOM fails, whatever else is on the page (ACT and the HTML Standard: the page's main content needs a `main`). Kept on purpose. | Also passes when a rendered `role="dialog"` or `dialog` element exists (probes; 43 `fail|pass` nodes on the 1,000-page sample); a dialog is not main content. |
+| `p-as-heading` | The thresholds above (best practice, no ACT rule behind it, so nothing external can settle them). Kept on purpose. | Passes bold alone; a violation for bold with a size well above the next paragraph's; incomplete for a size 1.5 times alone. 119 mismatching nodes of 4,726 on the sample (96.1 % agree): `pass|violation` 38, `review|violation` 28, `review|pass` 16. |
+| `aria-required-parent` and `aria-required-children` | An element with nothing but class, style, id or data attributes between the context role and its child is looked through, as an ignored node is; one with a role, an `aria-*` attribute, a `tabindex` or a title is part of the tree and counts (ACT ff89c9 Failed Example 3). An `li` between `ul[role=menu]` and its `menuitem` is ignored by Chrome's tree and so by ours. | Reads an `li` there as a list item and reports the missing parent (`pass|violation` 137 and 27 nodes, 112 and 21 of them on one page). Kept: the AX tree Chrome gives assistive technology has `menu > menuitem`. |
 
 ## ACT test cases
 

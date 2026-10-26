@@ -140,9 +140,6 @@ internal sealed class DocumentTitleDescriptiveRule : AriaRule
 // cascade does not see, so an element with a focus handler attribute is needs-review instead of failed.
 internal sealed class FocusVisibleIndicatorRule : AriaRule
 {
-    // Elements whose focus state is compared for every other element of the page; past it only the element itself is compared.
-    private const long WorkBudget = 20_000_000;
-
     private const int MaxFocusables = 2000;
 
     private static readonly string[] s_paintProperties =
@@ -176,8 +173,6 @@ internal sealed class FocusVisibleIndicatorRule : AriaRule
 
         StyleContext plain = context.StyleContext.WithoutInteraction();
         DocumentStyles baseline = context.Styles.WithContext(plain, reporter.CancellationToken);
-        var elements = new List<Node>(Elements(context));
-        long budget = WorkBudget;
         int done = 0;
         foreach (AxNode ax in order)
         {
@@ -189,20 +184,18 @@ internal sealed class FocusVisibleIndicatorRule : AriaRule
                 continue;
             }
 
-            DocumentStyles focused = context.Styles.WithContext(plain.WithFocus(e, FocusSource.Keyboard), reporter.CancellationToken);
+            // The overlay is made from the plain view, so its changed elements are exactly the ones this focus restyles.
+            DocumentStyles focused = baseline.WithContext(plain.WithFocus(e, FocusSource.Keyboard), reporter.CancellationToken);
             bool changed = Differs(baseline.GetStyle(e), focused.GetStyle(e));
             if (!changed)
             {
-                if (budget > 0)
+                foreach (int index in focused.ChangedElements)
                 {
-                    budget -= elements.Count;
-                    foreach (Node other in elements)
+                    Node other = context.Document.GetNode(index);
+                    if (other.IsElement && Differs(baseline.GetStyle(other), focused.GetStyle(other)))
                     {
-                        if (Differs(baseline.GetStyle(other), focused.GetStyle(other)))
-                        {
-                            changed = true;
-                            break;
-                        }
+                        changed = true;
+                        break;
                     }
                 }
             }

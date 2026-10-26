@@ -48,6 +48,14 @@ internal static class PresentationalHints
                 }
 
                 break;
+            case "a" or "area":
+                // HTML 15.3.1 "Page": the body element's link attribute colours the unvisited links of the document. (:visited never matches here.)
+                if (element.HasAttribute("href") && BodyOf(element) is { IsNull: false } body && body.GetAttribute("link") is { } link && TryLegacyColor(link, out string lc))
+                {
+                    Append(ref sb, "color", lc);
+                }
+
+                break;
             case "font":
                 if (element.GetAttribute("color") is { } fc && TryLegacyColor(fc, out string fcc))
                 {
@@ -101,6 +109,26 @@ internal static class PresentationalHints
         }
 
         return sb?.ToString();
+    }
+
+    // The body element of the document (HTML 3.1.3): the first body child of the root element.
+    private static Node BodyOf(Node element)
+    {
+        Node root = element.Document!.DocumentElement;
+        if (root.IsNull)
+        {
+            return default;
+        }
+
+        for (Node c = root.FirstChild; !c.IsNull; c = c.NextSibling)
+        {
+            if (c.IsElement && c.Namespace == ElementNamespace.Html && c.LocalName == "body")
+            {
+                return c;
+            }
+        }
+
+        return default;
     }
 
     private static void Append(ref StringBuilder? sb, string property, string value)

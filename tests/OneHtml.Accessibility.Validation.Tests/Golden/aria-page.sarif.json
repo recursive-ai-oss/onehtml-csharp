@@ -9625,32 +9625,32 @@
                   "index": 0
                 },
                 "region": {
-                  "startLine": 14,
+                  "startLine": 12,
                   "startColumn": 1,
-                  "endLine": 14,
-                  "endColumn": 44,
-                  "byteOffset": 395,
-                  "byteLength": 43,
+                  "endLine": 12,
+                  "endColumn": 28,
+                  "byteOffset": 324,
+                  "byteLength": 27,
                   "snippet": {
-                    "text": "<input type=\"checkbox\" aria-checked=\"true\">"
+                    "text": "<button aria-hidden=\"true\">"
                   }
                 }
               },
               "logicalLocations": [
                 {
-                  "name": "input",
-                  "fullyQualifiedName": "input",
+                  "name": "button",
+                  "fullyQualifiedName": "button",
                   "kind": "element"
                 }
               ]
             }
           ],
           "partialFingerprints": {
-            "onehtml/v1": "28327cf5e84cd435629ebc2b18684370"
+            "onehtml/v1": "3979bb352d27eedc6b20b03252733441"
           },
           "properties": {
             "outcome": "needs-render",
-            "locator": "input",
+            "locator": "button",
             "blocksTask": true,
             "taskImpactReason": "interactive",
             "cssOnly": false,
@@ -9679,32 +9679,32 @@
                   "index": 0
                 },
                 "region": {
-                  "startLine": 15,
+                  "startLine": 14,
                   "startColumn": 1,
-                  "endLine": 15,
-                  "endColumn": 38,
-                  "byteOffset": 439,
-                  "byteLength": 37,
+                  "endLine": 14,
+                  "endColumn": 44,
+                  "byteOffset": 395,
+                  "byteLength": 43,
                   "snippet": {
-                    "text": "<img src=\"a.png\" alt=\"\" tabindex=\"0\">"
+                    "text": "<input type=\"checkbox\" aria-checked=\"true\">"
                   }
                 }
               },
               "logicalLocations": [
                 {
-                  "name": "img",
-                  "fullyQualifiedName": "img",
+                  "name": "input",
+                  "fullyQualifiedName": "input",
                   "kind": "element"
                 }
               ]
             }
           ],
           "partialFingerprints": {
-            "onehtml/v1": "5a4f536ce01070a40bae6e443045c391"
+            "onehtml/v1": "28327cf5e84cd435629ebc2b18684370"
           },
           "properties": {
             "outcome": "needs-render",
-            "locator": "img",
+            "locator": "input",
             "blocksTask": true,
             "taskImpactReason": "interactive",
             "cssOnly": false,

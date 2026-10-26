@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>link-in-text-block probes</title>
+<style>
+body{color:#333;font:16px sans-serif;background:#fff}
+a{color:#4a6fa5;text-decoration:none}
+.flex{display:flex}
+.ib{display:inline-block}
+.u a{text-decoration:underline}
+</style></head><body>
+<main>
+<p>t1 Some words <a id="t1" href="#x">linked words</a> more words.</p>
+<div>t2 plain text in a div <a id="t2" href="#x">linked</a> trailing</div>
+<div id="t3d"><a id="t3" href="#x">only link</a></div>
+<div><a id="t4a" href="#x">two links a</a> <a id="t4b" href="#x">two links b</a></div>
+<div><a id="t5a" href="#x">sep a</a> | <a id="t5b" href="#x">sep b</a></div>
+<ul><li id="t6li"><a id="t6" href="#x">list item only link</a></li></ul>
+<ul><li>t7 text and <a id="t7" href="#x">link in li</a></li></ul>
+<nav><ul><li><a id="t8" href="#x">nav link</a></li></ul></nav>
+<nav>t9 nav with words <a id="t9" href="#x">nav link with text</a></nav>
+<div>t10 <div>nested block text</div><a id="t10" href="#x">link after block</a></div>
+<div><div>t11 text in a child block</div><div><a id="t11" href="#x">link in sibling block</a></div></div>
+<div class="flex">t12 flex text <a id="t12" href="#x">flex link</a></div>
+<div>t13 <a id="t13" class="ib" href="#x">inline-block link</a> text</div>
+<div>t14 <span>wrapped <a id="t14" href="#x">link in span</a></span></div>
+<div><a id="t15" href="#x">link</a> t15 x</div>
+<p>t16 <a id="t16" href="#x"><img alt="icon" src="x.png" width="10" height="10"></a> text</p>
+<p>t17 <a id="t17" href="#x"> </a> text</p>
+<p>t18 <a id="t18" href="#x" style="font-weight:bold">bold link</a> text</p>
+<p class="u">t19 <a id="t19" href="#x">underlined link</a> text</p>
+<p>t20 <a id="t20">no href</a> text</p>
+<div>t21 <button>button</button> <a id="t21" href="#x">link next to button</a></div>
+<div>t22 .<a id="t22" href="#x">link next to a dot</a></div>
+<div>t23 12 <a id="t23" href="#x">link next to number</a></div>
+<div>t24 a <a id="t24" href="#x">link next to one letter</a></div>
+<table><tr><td>t25 <a id="t25" href="#x">link in td</a></td></tr></table>
+<h2>t26 heading <a id="t26" href="#x">link in heading</a></h2>
+<p>t27 <span style="display:block">block span</span><a id="t27" href="#x">link</a></p>
+<p>t28 <em>em</em> <a id="t28" href="#x">link</a> <strong>strong</strong></p>
+<div><label>t29 label</label> <a id="t29" href="#x">link</a></div>
+<div>t30 <a id="t30a" href="#x">first</a> and <a id="t30b" href="#x">second</a></div>
+<footer>Copyright 2026 <a id="t31" href="#x">Example College</a></footer>
+<div aria-hidden="true">t32 hidden <a id="t32" href="#x">link</a></div>
+<div style="display:flex;gap:8px"><span>t33</span><a id="t33" href="#x">link in flex row</a></div>
+<div><span>t34 span only</span> <a id="t34" href="#x">link</a></div>
+</main></body></html>

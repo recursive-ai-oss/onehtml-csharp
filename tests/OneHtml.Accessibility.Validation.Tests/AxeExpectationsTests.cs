@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text.Json;
+using RecursiveAI.OneHtml.Accessibility.Rendered;
+using RecursiveAI.OneHtml.Css;
 using Xunit;
 
 namespace RecursiveAI.OneHtml.Accessibility.Validation.Tests;
@@ -35,6 +39,31 @@ public sealed class AxeExpectationsTests
         return false;
     }
 
+    private static (Document Doc, RenderedFacts? Facts) Load(string page)
+    {
+        string dir = Path.Combine(Root, "captures", Path.GetFileNameWithoutExtension(page));
+        if (!Directory.Exists(dir))
+        {
+            return (Document.Parse(File.ReadAllBytes(Path.Combine(Root, page))), null);
+        }
+
+        static byte[] Read(string d, string name)
+        {
+            using FileStream f = File.OpenRead(Path.Combine(d, name + ".json.gz"));
+            using var z = new GZipStream(f, CompressionMode.Decompress);
+            using var ms = new MemoryStream();
+            z.CopyTo(ms);
+            return ms.ToArray();
+        }
+
+        using JsonDocument dom = JsonDocument.Parse(Read(dir, "dom"));
+        string doctype = dom.RootElement.TryGetProperty("doctype", out JsonElement dt) && dt.ValueKind == JsonValueKind.String ? dt.GetString()! : string.Empty;
+        Document doc = Document.Parse(doctype + dom.RootElement.GetProperty("outerHTML").GetString());
+        DomSnapshotMapResult map = DomSnapshotAdapter.Map(DomSnapshot.Parse(Read(dir, "snapshot")), doc);
+        Assert.True(map.Succeeded, map.Refusal?.ToString());
+        return (doc, map.Facts);
+    }
+
     private static int Severity(string g) => g switch { "violation" => 3, "incomplete" => 2, "pass" => 1, _ => 0 };
 
     [Fact]
@@ -46,8 +75,9 @@ public sealed class AxeExpectationsTests
         foreach (IGrouping<(string Page, string Rule), string[]> g in File.ReadAllLines(Path.Combine(Root, "expectations.tsv"))
                      .Where(l => l.Length > 0 && l[0] != '#').Select(l => l.Split('\t')).GroupBy(c => (c[0], c[1])))
         {
-            Document doc = Document.Parse(File.ReadAllBytes(Path.Combine(Root, g.Key.Page)));
-            CheckReport report = checker.Check(doc, new CheckOptions { RuleIds = [g.Key.Rule] });
+            // A page with a Chrome capture beside it (captures/<name>/) is checked with its rendered facts, as the rules that need layout require.
+            (Document doc, RenderedFacts? facts) = Load(g.Key.Page);
+            CheckReport report = checker.Check(AccessibilityTree.Build(doc, DocumentStyles.Create(doc)), new CheckOptions { RuleIds = [g.Key.Rule], Facts = facts });
             foreach (string[] row in g)
             {
                 rows++;

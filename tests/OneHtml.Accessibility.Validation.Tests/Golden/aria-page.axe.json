@@ -3142,10 +3142,10 @@
           }
         },
         {
-          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
+          "html": "<button aria-hidden=\"true\">",
           "impact": "serious",
           "target": [
-            "input"
+            "button"
           ],
           "any": [
             {
@@ -3171,10 +3171,10 @@
           }
         },
         {
-          "html": "<img src=\"a.png\" alt=\"\" tabindex=\"0\">",
+          "html": "<input type=\"checkbox\" aria-checked=\"true\">",
           "impact": "serious",
           "target": [
-            "img"
+            "input"
           ],
           "any": [
             {

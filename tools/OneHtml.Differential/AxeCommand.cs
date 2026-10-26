@@ -43,6 +43,18 @@ internal static class AxeCommand
 
         Directory.CreateDirectory(partsDir);
         List<AxCommand.CaptureRef> captures = AxCommand.FindCaptures(o.Corpus);
+        if (Environment.GetEnvironmentVariable("ONEHTML_AXE_ONLY") is { Length: > 0 } only)
+        {
+            // Investigation aid: comma-separated sha prefixes.
+            string[] prefixes = only.Split(',');
+            captures.RemoveAll(c => !prefixes.Any(p => c.Sha.StartsWith(p, StringComparison.Ordinal)));
+        }
+
+        if (o.Skip > 0)
+        {
+            captures.RemoveRange(0, Math.Min(o.Skip, captures.Count));
+        }
+
         if (captures.Count > o.Limit)
         {
             captures.RemoveRange(o.Limit, captures.Count - o.Limit);
@@ -134,6 +146,7 @@ internal static class AxeCommand
         using JsonDocument domDoc = JsonDocument.Parse(domJson);
         string outer = domDoc.RootElement.GetProperty("outerHTML").GetString() ?? string.Empty;
         string doctype = domDoc.RootElement.TryGetProperty("doctype", out JsonElement dt) && dt.ValueKind == JsonValueKind.String ? dt.GetString()! : string.Empty;
+        var treeClock = Stopwatch.StartNew();
         Document doc = Document.Parse(doctype + outer, cancellationToken: ct);
 
         var context = StyleContext.Default.WithMedia(MediaFeatures.Default with { Width = width, Height = height, DevicePixelRatio = dpr });
@@ -153,7 +166,10 @@ internal static class AxeCommand
                 theirs[n.Rule] = list = [];
             }
 
-            list.Add(new TheirNode(e.IsNull ? -1 : e.Index, n.Class, where, n.Html, how, n.Message));
+            // axe passes a contrast check whose measured ratio is null (it could not read the colours, for instance behind a gradient);
+            // a pass without a ratio is an undecided check, so it counts as incomplete.
+            AxeClass cls = n.Class == AxeClass.Pass && n.Rule.StartsWith("color-contrast", StringComparison.Ordinal) && n.Message.Contains("contrast of null", StringComparison.Ordinal) ? AxeClass.Incomplete : n.Class;
+            list.Add(new TheirNode(e.IsNull ? -1 : e.Index, cls, where, n.Html, how, n.Message));
         }
 
         // Our rule id -> the axe id it corresponds to (the same id unless a rule names another axe source).
@@ -164,6 +180,7 @@ internal static class AxeCommand
             axeIdOf[r.Descriptor.Id] = src?.Id ?? r.Descriptor.Id;
         }
 
+        part["treeMs"] = treeClock.ElapsedMilliseconds;
         var modes = new JsonObject();
         if (factsMode is "off" or "both")
         {
@@ -206,7 +223,22 @@ internal static class AxeCommand
         string page,
         CancellationToken ct)
     {
+        var clock = Stopwatch.StartNew();
         CheckReport report = s_checker.Check(tree, new CheckOptions { Facts = facts }, ct);
+        long checkMs = clock.ElapsedMilliseconds;
+        if (Environment.GetEnvironmentVariable("ONEHTML_AXE_PROFILE") is { Length: > 0 })
+        {
+            // Investigation aid: the time each rule takes alone on this page (the tree and the cascade are already built).
+            var times = new List<(long Ms, string Id)>();
+            foreach (IAccessibilityRule r in s_checker.Rules)
+            {
+                clock.Restart();
+                s_checker.Check(tree, new CheckOptions { Facts = facts, RuleIds = [r.Descriptor.Id] }, ct);
+                times.Add((clock.ElapsedMilliseconds, r.Descriptor.Id));
+            }
+
+            Console.Error.WriteLine($"PROFILE {page} facts={(facts is null ? "off" : "on")} all={checkMs}ms: " + string.Join(", ", times.OrderByDescending(t => t.Ms).Take(8).Select(t => $"{t.Id}={t.Ms}")));
+        }
         var ours = new Dictionary<string, Dictionary<int, OurNode>>(StringComparer.Ordinal);
         foreach (IAccessibilityRule r in report.RulesRun)
         {
@@ -234,7 +266,7 @@ internal static class AxeCommand
                 Outcome.NeedsReview => (AxeClass.Incomplete, "review"),
                 _ => (AxeClass.Incomplete, "render"),
             };
-            AxeCompare.Add(ours[axeIdOf[r.RuleId]], t.Index, new OurNode(cls, detail, r.Message));
+            AxeCompare.Add(ours[axeIdOf[r.RuleId]], t.Index, new OurNode(cls, detail, Environment.GetEnvironmentVariable("ONEHTML_AXE_EXPLAIN") is { Length: > 0 } ? r.Message + " {" + string.Join("; ", r.Findings.Select(f => f.Value)) + "}" : r.Message));
         }
 
         // Where axe reports an AA contrast violation it reports the AAA rule as a pass; our AAA failure there is the same finding.
@@ -251,7 +283,7 @@ internal static class AxeCommand
                 var lines = new List<string>();
                 foreach (KeyValuePair<int, OurNode> kv in (IEnumerable<KeyValuePair<int, OurNode>>?)o ?? [])
                 {
-                    lines.Add($"{kv.Key,7} ours {kv.Value.Detail,-6} {AxCommand.DomPath(doc.GetNode(kv.Key))}  {kv.Value.Message}");
+                    lines.Add($"{kv.Key,7} ours {kv.Value.Detail,-6} {AxCommand.DomPath(doc.GetNode(kv.Key))}  {kv.Value.Message}{Explain(tree, facts, doc.GetNode(kv.Key))}");
                 }
 
                 foreach (TheirNode n in theirs.GetValueOrDefault(id) ?? [])
@@ -265,7 +297,33 @@ internal static class AxeCommand
             }
         }
 
-        return new JsonObject { ["status"] = "ok", ["implemented"] = new JsonArray([.. ours.Keys.Order(StringComparer.Ordinal).Select(s => (JsonNode?)JsonValue.Create(s))]), ["rules"] = rules };
+        return new JsonObject { ["status"] = "ok", ["checkMs"] = checkMs, ["implemented"] = new JsonArray([.. ours.Keys.Order(StringComparer.Ordinal).Select(s => (JsonNode?)JsonValue.Create(s))]), ["rules"] = rules };
+    }
+
+    /// <summary>Dump aid: the colour-related computed values of an element and the rule each came from, with the same for its parent.</summary>
+    private static string Explain(AccessibilityTree tree, RenderedFacts? facts, Node n)
+    {
+        if (!n.IsElement || Environment.GetEnvironmentVariable("ONEHTML_AXE_EXPLAIN") is not { Length: > 0 })
+        {
+            return string.Empty;
+        }
+
+        var sb = new System.Text.StringBuilder("  [");
+        Node cur = n;
+        for (int depth = 0; depth < (int.TryParse(Environment.GetEnvironmentVariable("ONEHTML_AXE_DEPTH"), out int dp) ? dp : 1) && cur.IsElement; depth++, cur = cur.Parent)
+        {
+            ComputedStyle cs = tree.Styles.GetStyle(cur);
+            sb.Append(cur.LocalName).Append(facts is not null && facts.TryGet(cur, out NodeFacts nf) && nf.HasLayout ? " blended=" + nf.Layout.BlendedBackgroundColor + " box=" + nf.Layout.BorderBox : string.Empty).Append(':');
+            foreach (string p in Environment.GetEnvironmentVariable("ONEHTML_AXE_EXPLAIN")!.Split(','))
+            {
+                DeclarationSource? src = cs.GetSource(p);
+                sb.Append(' ').Append(p).Append('=').Append(cs.GetPropertyValue(p)).Append(" <").Append(src?.SelectorText ?? "-").Append(src is { IsImportant: true } ? " !" : string.Empty).Append('@').Append(src?.SheetUrl ?? "-").Append('>');
+            }
+
+            sb.Append(" | ");
+        }
+
+        return sb.Append(']').ToString();
     }
 
     private static string Describe(Node n)

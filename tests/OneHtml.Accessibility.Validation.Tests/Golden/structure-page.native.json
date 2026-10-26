@@ -8144,86 +8144,13 @@
     },
     {
       "rule": "link-in-text-block",
-      "outcome": "passed",
-      "message": "The link is underlined or struck through and the surrounding text is not.",
-      "target": {
-        "tag": "a",
-        "locator": "#content > a:nth-of-type(1)",
-        "source": {
-          "start": 837,
-          "end": 863
-        }
-      },
+      "outcome": "inapplicable",
+      "message": "The rule found nothing to check.",
+      "target": null,
       "findings": [],
       "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
-      },
-      "cssOnly": false,
-      "factsUsed": [],
-      "factsMissing": [],
-      "suggested": []
-    },
-    {
-      "rule": "link-in-text-block",
-      "outcome": "passed",
-      "message": "The link is underlined or struck through and the surrounding text is not.",
-      "target": {
-        "tag": "a",
-        "locator": "#content > a:nth-of-type(2)",
-        "source": {
-          "start": 872,
-          "end": 898
-        }
-      },
-      "findings": [],
-      "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
-      },
-      "cssOnly": false,
-      "factsUsed": [],
-      "factsMissing": [],
-      "suggested": []
-    },
-    {
-      "rule": "link-in-text-block",
-      "outcome": "passed",
-      "message": "The link is underlined or struck through and the surrounding text is not.",
-      "target": {
-        "tag": "a",
-        "locator": "#content > a:nth-of-type(3)",
-        "source": {
-          "start": 956,
-          "end": 983
-        }
-      },
-      "findings": [],
-      "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
-      },
-      "cssOnly": false,
-      "factsUsed": [],
-      "factsMissing": [],
-      "suggested": []
-    },
-    {
-      "rule": "link-in-text-block",
-      "outcome": "passed",
-      "message": "The link is underlined or struck through and the surrounding text is not.",
-      "target": {
-        "tag": "a",
-        "locator": "#content > a:nth-of-type(4)",
-        "source": {
-          "start": 1157,
-          "end": 1172
-        }
-      },
-      "findings": [],
-      "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
+        "blocksTask": false,
+        "reason": null
       },
       "cssOnly": false,
       "factsUsed": [],
@@ -9274,31 +9201,6 @@
       "outcome": "needs-render",
       "message": "The size of a pointer target is known only after layout.",
       "target": {
-        "tag": "div",
-        "locator": "#content > div:nth-of-type(4)",
-        "source": {
-          "start": 911,
-          "end": 929
-        }
-      },
-      "findings": [],
-      "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
-      },
-      "cssOnly": false,
-      "factsUsed": [],
-      "factsMissing": [
-        "border box of the target",
-        "border boxes of the targets near it"
-      ],
-      "suggested": []
-    },
-    {
-      "rule": "target-size",
-      "outcome": "needs-render",
-      "message": "The size of a pointer target is known only after layout.",
-      "target": {
         "tag": "a",
         "locator": "#content > a:nth-of-type(3)",
         "source": {
@@ -9379,31 +9281,6 @@
         "source": {
           "start": 1031,
           "end": 1048
-        }
-      },
-      "findings": [],
-      "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
-      },
-      "cssOnly": false,
-      "factsUsed": [],
-      "factsMissing": [
-        "border box of the target",
-        "border boxes of the targets near it"
-      ],
-      "suggested": []
-    },
-    {
-      "rule": "target-size",
-      "outcome": "needs-render",
-      "message": "The size of a pointer target is known only after layout.",
-      "target": {
-        "tag": "iframe",
-        "locator": "iframe",
-        "source": {
-          "start": 1070,
-          "end": 1124
         }
       },
       "findings": [],

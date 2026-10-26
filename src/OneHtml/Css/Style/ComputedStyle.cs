@@ -363,6 +363,32 @@ public sealed partial class ComputedStyle
         return GetValue(property)?.Source;
     }
 
+    /// <summary>
+    /// True when a declaration of the property won the cascade for this element, whatever its value: <c>inherit</c>, <c>unset</c> and the
+    /// other CSS-wide keywords count, which is what separates an element that sets <c>color: inherit</c> from one that merely inherits.
+    /// False when the value is only inherited or initial, and for an unknown name or a custom property.
+    /// </summary>
+    /// <param name="property">A property name, any ASCII case.</param>
+    public bool IsDeclared(string property)
+    {
+        ArgumentNullException.ThrowIfNull(property);
+        int id = PropertyIds.Get(property);
+        if (id < 0)
+        {
+            return false;
+        }
+
+        foreach (int k in _keyIds)
+        {
+            if (k == id)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>The computed value of a custom property (after <c>var()</c> substitution), or false when it is unset or guaranteed-invalid.</summary>
     /// <param name="name">The property name with its <c>--</c>; case-sensitive.</param>
     /// <param name="value">The value as CSS text.</param>

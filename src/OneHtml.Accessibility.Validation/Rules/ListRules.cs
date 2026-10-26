@@ -125,6 +125,13 @@ internal sealed class ListItemRule : StructureRule
                 continue;
             }
 
+            // Inside aria-hidden content (a closed modal's panel) no assistive technology reads the item, so its place in a list is not
+            // perceivable; axe-core reports nothing for such items either.
+            if (!context.IsExposed(li))
+            {
+                continue;
+            }
+
             Node parent = li.ParentElement;
             if (!parent.IsNull && IsListContainer(parent))
             {

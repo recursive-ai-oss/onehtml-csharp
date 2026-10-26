@@ -37,7 +37,9 @@ Gathered in this order, each with an origin and a position in the cascade order:
 2. **User sheets** from `StyleSourceOptions.UserSheets` (empty by default).
 3. **Presentational hints** (their own tier between user and author, HTML §15.3.x): `bgcolor`, `text`, `font`
    `color/face/size`, `align` on `div`, `p` and `h1`–`h6`, `width`/`height` on `img`, `video`, `canvas`, `iframe`, `embed`,
-   `object`, `table`, `td`, `th`, and `nowrap`, with the legacy colour parser. **Left out:** `link`/`vlink`/`alink`,
+   `object`, `table`, `td`, `th`, `nowrap`, and the `body` element's `link` attribute, which colours every `a[href]` and `area[href]` of the
+   document (HTML Rendering, "Page"), with the legacy colour parser. **Left out:** `vlink`/`alink` (`:visited` never matches; `:active` is a
+   context state),
    `border`, `cellpadding`, `cellspacing`, `valign`, list `type`, `hr` attributes, `frame`/`rules`.
 4. **Author sheets** in document order: `<style>` elements and `<link rel=stylesheet>` (bytes from
    `StyleSourceOptions.Resolver`, keyed by absolute URL: the document URL from `BaseUrl`, changed by the first `<base href>`).

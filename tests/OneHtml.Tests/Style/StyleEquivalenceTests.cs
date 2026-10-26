@@ -544,6 +544,41 @@ public class StyleEquivalenceTests
         AssertEqual(b.WithContext(t), DocumentStyles.Create(doc, t), "target");
     }
 
+    // Rules that read focus without :has(): the overlay tries only the elements a focus change can reach (the focused element, the ancestors
+    // :focus-within names, and what the rest of each selector reaches from them), and must still equal a full recompute.
+    [Fact]
+    public void Focus_overlays_with_bounded_selectors_equal_full_recompute()
+    {
+        const string page = """
+            <style>
+            a:focus { color: red } .box:focus-within { background-color: #eee } .box:focus-within .item { color: blue }
+            input:focus + span { color: green } input:focus ~ em { color: orange } button:focus > b { color: purple }
+            .box:focus-within + p { background-color: yellow } .box:focus-within ~ p b { color: red }
+            .wrap:focus-within .box a { border-top-color: red } div > a:focus-visible { outline: 2px solid blue }
+            :is(button, input):focus { background-color: pink } a:not(:focus) { text-decoration-color: gray }
+            .x { .y:focus-within { color: teal } }
+            </style>
+            <div class=wrap><div class=box id=bx><a id=a1 href=/a class=item>A</a><input id=i1><span>s</span><em>e</em>
+            <button id=b1><b>bold</b></button><div class=y id=y1><a id=a2 href=/b>B</a></div></div>
+            <p id=p1>after <b>b</b></p><p id=p2>again <b>b2</b></p></div>
+            <div class=x><div class=y><input id=i2></div></div><a id=a3 href=/c>C</a>
+            """;
+        Document doc = Document.Parse(page);
+        DocumentStyles baseStyles = DocumentStyles.Create(doc);
+        baseStyles.ComputeAll();
+        string[] ids = ["a1", "i1", "b1", "a2", "i2", "a3"];
+        foreach (string from in ids.Prepend(null!))
+        {
+            foreach (string to in ids)
+            {
+                StyleContext a = from is null ? StyleContext.Default : StyleContext.Default.WithFocus(doc.GetElementById(from));
+                StyleContext b = StyleContext.Default.WithFocus(doc.GetElementById(to));
+                DocumentStyles start = baseStyles.WithContext(a);
+                AssertEqual(start.WithContext(b), DocumentStyles.Create(doc, b), "focus " + (from ?? "none") + " -> " + to);
+            }
+        }
+    }
+
     [Fact]
     public void Overlays_on_vendored_pages_equal_full_recompute()
     {

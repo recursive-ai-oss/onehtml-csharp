@@ -26,6 +26,24 @@ public sealed class VisualRuleTests
 
     // ---- color-contrast ----
 
+    [Theory]
+    // Text over an image that is not in its ancestor chain: the cascade alone would take the page background for it.
+    [InlineData("<div style='position:relative'><img src='a.png' style='position:absolute;top:0;left:0;width:300px;height:100px'><p style='color:#eee'>text</p></div>")]
+    [InlineData("<img src='a.png' style='position:fixed;top:0;left:0;width:300px;height:100px'><p style='color:#eee'>text</p>")]
+    [InlineData("<div><p style='color:#eee'>text</p><div style='position:absolute;inset:0;background:url(a.png)'></div></div>")]
+    public void Text_over_an_image_the_cascade_cannot_see_is_never_judged_against_the_page_colour(string html)
+    {
+        Assert.Equal("needsrender", Verdicts(html, "color-contrast"));
+    }
+
+    [Fact]
+    public void An_image_that_cannot_reach_the_text_leaves_the_judgement_to_the_cascade()
+    {
+        // The image is in another positioned block: its containing block does not hold the text.
+        Assert.Equal("failed", Verdicts("<div style='position:relative'><img src='a.png' style='position:absolute;top:0'></div><p style='color:#eee'>text</p>", "color-contrast"));
+        Assert.Equal("failed", Verdicts("<p style='color:#eee'>text</p><img src='a.png'>", "color-contrast"));
+    }
+
     [Fact]
     public void Ratio_is_not_rounded_up_to_meet_the_threshold()
     {
@@ -274,6 +292,67 @@ public sealed class VisualRuleTests
         Assert.Equal("passed", Verdicts("<p style='color:#000;background:#fff'>Read <a href=x style='text-decoration:none;color:#757575'>the report</a> today.</p>", "link-in-text-block"));
         // A link on its own, in a navigation list, is not in a block of text.
         Assert.Equal(string.Empty, Verdicts("<ul><li><a href=x style='text-decoration:none;color:#333'>Home</a></li></ul>", "link-in-text-block"));
+    }
+
+    [Fact]
+    public void Push_buttons_made_with_input_are_judged_on_their_value_and_native_face()
+    {
+        // The label of <input type=submit> is its value; the button face is the browser's light grey even when the author adds a border.
+        Assert.Equal("failed", Verdicts("<input type=submit value=Go style='color:#aaa;background:#fff'>", "color-contrast"));
+        Assert.Equal("passed", Verdicts("<input type=submit value=Go>", "color-contrast"));
+        Assert.Equal("failed", Verdicts("<button style='color:#fff;border:2px solid red'>Go</button>", "color-contrast"));
+        Assert.Equal("passed", Verdicts("<button style='border:2px solid red'>Go</button>", "color-contrast"));
+        // A disabled control is incidental.
+        Assert.Equal(string.Empty, Verdicts("<input type=submit value=Go disabled style='color:#aaa;background:#fff'>", "color-contrast"));
+    }
+
+    [Fact]
+    public void A_link_with_a_background_image_of_its_own_is_set_apart()
+    {
+        const string text = "<p style='color:#333;background:#fff'>Read <a href=x style='text-decoration:none;color:#333;{0}'>the report</a> today.</p>";
+        Assert.Equal("failed", Verdicts(string.Format(System.Globalization.CultureInfo.InvariantCulture, text, ""), "link-in-text-block"));
+        Assert.Equal("passed", Verdicts(string.Format(System.Globalization.CultureInfo.InvariantCulture, text, "background-image:linear-gradient(#333,#333)"), "link-in-text-block"));
+    }
+
+    [Fact]
+    public void List_items_inside_aria_hidden_content_are_not_judged()
+    {
+        Assert.Equal("failed", Verdicts("<div><li>a</li></div>", "listitem"));
+        Assert.Equal(string.Empty, Verdicts("<div aria-hidden=true><li>a</li></div>", "listitem"));
+    }
+
+    [Fact]
+    public void Target_size_ignores_covered_targets_counts_hidden_neighbours_and_places_overflow_after_the_spacing_test()
+    {
+        const string html = "<main><a id=a href=a>a</a><a id=b href=b>b</a><a id=c href=# aria-hidden=true>c</a><a id=d href=#>d</a><a id=e href=# >e</a></main>";
+        Document doc = Document.Parse(html);
+        var boxes = new Dictionary<string, (double X, double Y, double W, double H)>
+        {
+            ["a"] = (0, 0, 16, 16), ["b"] = (20, 0, 16, 16), ["c"] = (400, 0, 16, 16), ["d"] = (410, 0, 16, 16), ["e"] = (700, 0, 16, 16),
+        };
+        FakeNode root = FakeSnapshot.FromDocument(doc, n =>
+        {
+            if (n.Kind == NodeKind.Element)
+            {
+                string id = n.GetAttribute("id") ?? string.Empty;
+                (double x, double y, double w, double h) = boxes.GetValueOrDefault(id, (0, 0, 800, 800));
+                return new FakeLayout { X = x, Y = y, W = w, H = h, Styles = ["inline", "rgb(0, 0, 0)", "visible"] };
+            }
+
+            return null;
+        });
+        DomSnapshotMapResult map = DomSnapshotAdapter.Map(DomSnapshot.Parse(FakeSnapshot.ToJson(root), FakeSnapshot.StyleNames), doc);
+        Assert.True(map.Succeeded, map.Refusal?.ToString());
+        CheckReport r = Run(html, "target-size", map.Facts, doc);
+        Outcome? Of(string id) => r.Results.SingleOrDefault(x => !x.Target.IsNull && x.Target.GetAttribute("id") == id)?.Outcome;
+        // a and b are 4 pixels apart: too close.
+        Assert.Equal(Outcome.Failed, Of("a"));
+        Assert.Equal(Outcome.Failed, Of("b"));
+        // d has a hidden-from-assistive-technology neighbour two pixels away that still takes up room; the hidden control itself gets no verdict.
+        Assert.Null(Of("c"));
+        Assert.Equal(Outcome.Failed, Of("d"));
+        // Two links to "#" are two controls, not one target.
+        Assert.Equal(Outcome.Passed, Of("e"));
     }
 
     // ---- avoid-inline-spacing ----

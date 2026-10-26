@@ -10,6 +10,9 @@ namespace RecursiveAI.OneHtml.Css;
 /// <summary>A complex selector of a rule, as stored in the rule index.</summary>
 internal readonly record struct RuleSel(StyleRule Rule, int Sel, Specificity Spec);
 
+/// <summary>A compound of a selector that reads keyboard focus, and whether what follows it in the selector reaches below or beside the element it matches.</summary>
+internal readonly record struct FocusAnchor(ComplexSelector Selector, Compound Compound, bool ReachesBelow, bool ReachesBeside, bool Within);
+
 /// <summary>Rules bucketed by the id, class or type of their rightmost compound (the usual right-to-left cascade index).</summary>
 internal sealed class RuleIndex
 {
@@ -121,6 +124,13 @@ internal sealed class RuleDatabase
     public readonly LayerTree Layers = new();
     public RuleIndex Index = null!;
     public RuleIndex DynamicIndex = null!;
+
+    /// <summary>
+    /// The compounds of dynamic selectors that read keyboard focus (<c>:focus</c>, <c>:focus-visible</c>, <c>:focus-within</c>), with how far
+    /// a change at one of them reaches along the selector's combinators. Null when one of those selectors uses <c>:has()</c>, whose reach
+    /// is not bounded this way.
+    /// </summary>
+    public List<FocusAnchor>? FocusAnchors;
 
     /// <summary>True when a rule styling <c>::before</c>, <c>::after</c> or <c>::marker</c> reads an interaction state (<c>:hover</c>, <c>:focus</c>, …).</summary>
     public bool PseudoElementDynamic;
@@ -1047,6 +1057,8 @@ internal sealed class RuleGatherer
     {
         var all = new RuleIndex(_db.Quirks);
         var dynamic = new RuleIndex(_db.Quirks);
+        List<FocusAnchor>? focusAnchors = [];
+        bool focusUnbounded = false;
         var sigs = new string[_db.Rules.Count];
         foreach (StyleRule r in _db.Rules)
         {
@@ -1078,6 +1090,44 @@ internal sealed class RuleGatherer
                 if (r.Dynamic)
                 {
                     dynamic.Add(rs, key);
+                    foreach (ComplexSelector cs in new[] { list.Items[i] })
+                    {
+                        if ((cs.Deps & (SelectorDependencies.Focus | SelectorDependencies.FocusWithin)) == 0)
+                        {
+                            continue;
+                        }
+
+                        for (int j = 0; j < cs.Compounds.Length && !focusUnbounded; j++)
+                        {
+                            bool reads = false, within = false;
+                            foreach (Simple part in cs.Compounds[j].Parts)
+                            {
+                                if ((part.Deps & (SelectorDependencies.Focus | SelectorDependencies.FocusWithin)) != 0)
+                                {
+                                    reads = true;
+                                    within |= (part.Deps & SelectorDependencies.FocusWithin) != 0;
+                                    // Focus inside a :has() is read from far away from the focused element: no bound.
+                                    if ((part.Deps & SelectorDependencies.Has) != 0)
+                                    {
+                                        focusAnchors = null;
+                                        focusUnbounded = true;
+                                    }
+                                }
+                            }
+
+                            if (reads && !focusUnbounded)
+                            {
+                                bool below = false, beside = false;
+                                for (int k = j; k < cs.Combs.Length; k++)
+                                {
+                                    below |= cs.Combs[k] is Combinator.Descendant or Combinator.Child;
+                                    beside |= cs.Combs[k] is Combinator.NextSibling or Combinator.SubsequentSibling;
+                                }
+
+                                focusAnchors!.Add(new FocusAnchor(cs, cs.Compounds[j], below, beside, within));
+                            }
+                        }
+                    }
                 }
             }
 
@@ -1086,6 +1136,7 @@ internal sealed class RuleGatherer
 
         _db.Index = all;
         _db.DynamicIndex = dynamic;
+        _db.FocusAnchors = focusUnbounded ? null : focusAnchors;
         _db.Signatures = sigs;
         _db.LayerSignature = _db.Layers.Signature();
     }

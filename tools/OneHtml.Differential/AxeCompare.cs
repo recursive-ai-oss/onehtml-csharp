@@ -313,7 +313,15 @@ internal static class AxeCompare
                     continue;
                 }
 
-                Bump(t, Key(our.Detail, their.Class), page, their.Where, their.Html, our.Message, their.Message);
+                // WCAG 2.5.8 exempts a control whose size the browser sets; axe has no such exception (docs/axe-differential.md). The class is
+                // named apart so that the documented divergence is counted separately from open disagreements.
+                string key = Key(our.Detail, their.Class);
+                if (rule == "target-size" && key == "pass|violation" && our.Message.Contains("size the browser sets", StringComparison.Ordinal))
+                {
+                    key = "pass|violation (user agent control)";
+                }
+
+                Bump(t, key, page, their.Where, their.Html, our.Message, their.Message);
             }
             else
             {

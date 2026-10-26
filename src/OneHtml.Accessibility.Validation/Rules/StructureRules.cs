@@ -132,7 +132,7 @@ internal static class StructureDiagnosticRules
                 continue;
             }
 
-            if (child.IsIgnored)
+            if (child.IsIgnored || IsTransparent(child))
             {
                 stack.Push((child, 0));
             }
@@ -245,10 +245,33 @@ internal static class StructureDiagnosticRules
         return "The role " + role.Name + " requires a parent with the role " + string.Join(" or ", role.RequiredContext) + ".";
     }
 
+    // A generic container with nothing that makes it a semantic node (no role, no aria-* attribute, no tabindex or title) carries
+    // no role of its own: the context and owned roles are found through it, as through the ignored nodes. The tree keeps such a
+    // div when the browser would leave it out, and the check must not depend on which ones are kept. A div with a global ARIA
+    // attribute is part of the tree and does count (ACT ff89c9 failed example 3).
+    private static bool IsTransparent(AxNode n)
+    {
+        if (n.Kind != AxNodeKind.Element || n.RoleOrigin == RoleOrigin.Explicit || n.AriaRole is not (null or { Name: "generic" }))
+        {
+            return false;
+        }
+
+        foreach (Attr a in n.DomNode.Attributes)
+        {
+            if (a.QualifiedName.StartsWith("aria-", StringComparison.OrdinalIgnoreCase) || a.QualifiedName.Equals("role", StringComparison.OrdinalIgnoreCase)
+                || a.QualifiedName.Equals("tabindex", StringComparison.OrdinalIgnoreCase) || a.QualifiedName.Equals("title", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static AxNode? Parent(AxNode n)
     {
         AxNode? p = n.Parent;
-        while (p is not null && p.IsIgnored && p.Kind == AxNodeKind.Element)
+        while (p is not null && (p.IsIgnored || IsTransparent(p)) && p.Kind == AxNodeKind.Element)
         {
             p = p.Parent;
         }

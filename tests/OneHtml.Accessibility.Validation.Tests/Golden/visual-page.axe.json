@@ -2774,35 +2774,6 @@
             ],
             "suggestedEdits": 0
           }
-        },
-        {
-          "html": "<audio src=\"talk.mp3\" autoplay controls>",
-          "impact": "serious",
-          "target": [
-            "audio"
-          ],
-          "any": [
-            {
-              "id": "target-size",
-              "data": [],
-              "relatedNodes": [],
-              "impact": "serious",
-              "message": "The size of a pointer target is known only after layout."
-            }
-          ],
-          "all": [],
-          "none": [],
-          "failureSummary": "The size of a pointer target is known only after layout.",
-          "onehtml": {
-            "outcome": "needs-render",
-            "blocksTask": true,
-            "cssOnly": false,
-            "factsMissing": [
-              "border box of the target",
-              "border boxes of the targets near it"
-            ],
-            "suggestedEdits": 0
-          }
         }
       ]
     },

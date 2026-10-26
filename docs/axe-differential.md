@@ -36,7 +36,7 @@ Worker run, as for `ax` (the corpus and its captures are on the worker):
 bash tools/OneHtml.Differential/run-worker.sh axe ~/onehtml/capture-out/<version> ~/onehtml/out/axe --corpus ~/onehtml/corpus/<version> --jobs 8
 ```
 
-A sample of 279 pages with 4,471 stylesheets takes about 25 s at three jobs, so a full corpus run is a short job.
+A 1,000-page sample takes about 3 minutes of checking at two jobs, both modes.
 
 ## What is compared
 
@@ -148,75 +148,143 @@ outcomes of the element-id'd cases are in `testdata/axe/expectations.tsv` and ar
 
 ## Results
 
-Sample: 279 corpus pages (a seeded random sample of corpus 2026-10a, one viewport, stylesheets served from the corpus), captured
-with `--jobs 1`, compared with `--timeout 300 --corpus <the sample's store>` (the default 30 s timeout is too short for the largest
-pages with all rules and facts). Checker as in this repository after main of 2026-10-26 (contrast, presentation, media, ACT-gap
-rules, the tree reading facts). The table covers 103 rules. Ratios are over nodes, as defined above.
+Sample: the first 1,000 captures of corpus 2026-10a in sha256 order (13,857 pages exist; the full-corpus run is below under "Not done"),
+one viewport, stylesheets served from the corpus, compared with `--jobs 2 --timeout 120 --corpus <the corpus>`. Checker and tree as in this repository
+at the commit that holds this file; Chrome for Testing 156.0.8078.47, axe-core 4.14.0, SDK 10.0.402, run on a 7950X3D worker (16 cores, 32 threads,
+load 2 to 17 from other work while it ran). Ratios are over nodes, as defined above. Pages that carry a corpus stylesheet served with a
+non-CSS content type do not get that stylesheet: Chrome ignored it in the capture (the crawl had stored an HTML error page under a `.css` URL).
 
 | | Without facts | With facts |
 |---|---:|---:|
-| Pages compared | 279 | 278 (1 snapshot refused) |
-| Agreeing nodes (agree + contained + collapsed) | 192,003 | 209,526 |
-| Mismatching nodes | 9,072 | 11,096 |
-| Agreement | 95.49 % | 94.97 % |
-| Agreement without `hidden-content` and `region` | 95.59 % | 95.05 % |
-| Needs-render nodes (not compared) | 33,731 | 4,521 |
-| Unresolved axe nodes | 257 | 248 |
+| Pages compared | 1,000 | 996 (4 snapshots refused) |
+| Agreeing nodes (agree + contained + collapsed) | 830,558 | 964,964 |
+| Mismatching nodes | 25,334 | 34,831 |
+| Agreement | 97.04 % | 96.52 % |
 
-The earlier sample (before the contrast, target-size and presentation rules existed) agreed on 90.85 % because `hidden-content` and `region`
-were then counted by node; the rules fixed since, and the comparisons now made per page (`region`) or by group, put them in line. The new
-mismatch mass is mostly the contrast rules (below) and `link-in-text-block`. Excluding the contrast, target-size, `link-in-text-block` and
-`hidden-content` rules, the rest agree on about 99 % of nodes. Facts matter for the rules that need them (`scrollable-region-focusable`,
-`label-content-name-mismatch`, `target-size`, and the contrast rules, below).
+Before this work the same pages agreed on 95.48 % (without facts) and 95.17 % (with: 962,485 agreeing, 48,816 mismatching nodes). With facts there
+are more mismatches than without because the rules that need layout (`target-size`, `link-in-text-block`, contrast) produce verdicts only there; the
+rate is over compared nodes, and needs-render nodes are not compared. With facts 5,656 `color-contrast` nodes are needs-render and not compared; without facts nearly all contrast and target-size nodes are.
 
-The first 40 rules by volume (without facts, as of the final run; `summary.md` of a run has all of them):
+### Per rule
 
-| Rule | Pages axe / ours | Nodes axe / ours | Agree (incl. contained, collapsed) | Mismatch | Agree % |
-|---|---|---|---:|---:|---:|
-| hidden-content | 279 / 205 | 219068 / 4252 | 4178 | 406 | 91.1 |
-| region | 276 / 270 | 130091 / 722 | 174 | 3 | 98.3 |
-| color-contrast | 272 / 269 | 38237 / 41955 | 33920 | 3249 | 91.3 |
-| color-contrast-enhanced | 272 / 269 | 38237 / 41955 | 31132 | 2595 | 92.3 |
-| target-size | 263 / 264 | 22324 / 28325 | 506 | 74 | 87.2 |
-| link-name | 262 / 262 | 24733 / 24196 | 24118 | 24 | 99.9 |
-| duplicate-id | 273 / 273 | 16829 / 17113 | 17092 | 23 | 99.9 |
-| listitem | 243 / 243 | 16518 / 16574 | 16277 | 2 | 100.0 |
-| identical-links-same-purpose | 262 / 243 | 16941 / 9752 | 5178 | 91 | 98.3 |
-| nested-interactive | 257 / 264 | 6609 / 10088 | 6573 | 0 | 100.0 |
-| aria-valid-attr | 198 / 211 | 3203 / 6681 | 3203 | 0 | 100.0 |
-| aria-valid-attr-value | 198 / 211 | 3203 / 6665 | 3152 | 57 | 98.2 |
-| image-alt | 245 / 249 | 4351 / 4594 | 4350 | 3 | 99.9 |
-| list | 245 / 245 | 3710 / 3704 | 3650 | 1 | 100.0 |
-| aria-allowed-attr | 198 / 198 | 3203 / 3176 | 3158 | 3 | 99.9 |
-| aria-prohibited-attr | 198 / 198 | 3203 / 3176 | 3039 | 124 | 96.1 |
-| empty-heading | 259 / 259 | 3200 / 3171 | 3169 | 1 | 100.0 |
-| heading-order | 259 / 259 | 3200 / 3171 | 3170 | 0 | 100.0 |
-| image-redundant-alt | 245 / 213 | 4351 / 1822 | 1765 | 14 | 99.2 |
-| link-in-text-block | 167 / 213 | 812 / 4021 | 661 | 1794 | 26.9 |
-| aria-allowed-role | 192 / 173 | 3031 / 1607 | 1601 | 28 | 98.3 |
-| aria-hidden-focus | 164 / 164 | 1834 / 2004 | 1797 | 44 | 97.6 |
-| avoid-inline-spacing | 168 / 26 | 3352 / 231 | 218 | 0 | 100.0 |
-| presentation-role-conflict | 130 / 169 | 1344 / 2221 | 1341 | 3 | 99.8 |
-| aria-roles | 174 / 174 | 1635 / 1634 | 1617 | 5 | 99.7 |
-| aria-deprecated-role | 174 / 174 | 1635 / 1627 | 1615 | 0 | 100.0 |
-| aria-conditional-attr | 198 / 1 | 3203 / 1 | 1 | 0 | 100.0 |
-| duplicate-id-aria | 172 / 172 | 1559 / 1600 | 1575 | 25 | 98.4 |
-| landmark-unique | 242 / 242 | 1339 / 1698 | 1682 | 16 | 99.1 |
-| aria-required-attr | 174 / 146 | 1655 / 1381 | 1369 | 0 | 100.0 |
-| p-as-heading | 145 / 145 | 1130 / 1132 | 883 | 18 | 98.0 |
-| button-name | 189 / 189 | 962 / 919 | 911 | 0 | 100.0 |
-| duplicate-id-active | 192 / 206 | 773 / 1026 | 800 | 7 | 99.1 |
-| label-title-only | 156 / 143 | 913 / 816 | 815 | 1 | 99.9 |
-| label | 151 / 151 | 822 / 822 | 819 | 3 | 99.6 |
-| form-field-multiple-labels | 156 / 88 | 913 / 574 | 574 | 3 | 99.5 |
-| label-content-name-mismatch | 93 / 111 | 652 / 729 | 587 | 38 | 93.9 |
-| dlitem | 25 / 26 | 428 / 448 | 428 | 0 | 100.0 |
-| skip-link | 67 / 169 | 83 / 562 | 83 | 108 | 43.5 |
-| tabindex | 87 / 7 | 574 / 32 | 32 | 0 | 100.0 |
+All rules with nodes on the sample, largest number of mismatches with facts first. Agree is (agree + contained + collapsed) over that plus the
+mismatches; pass-only differences and needs-render nodes are outside it. The largest classes are `ours|axe` as defined above, with facts.
 
-Rules axe ran that this checker does not report: `aria-roledescription`, `frame-tested` (axe's own frame check, not applicable).
-Rules of ours with no axe counterpart: `element-lang-matches-content`, `html-lang-matches-content`, `image-name-descriptive`, `link-in-context-descriptive` (ACT rules,
-needs-review).
+| Rule | Nodes axe / ours (with facts) | Agree without facts | Agree with facts | Mismatch without → with | Largest classes with facts |
+|---|---|---|---|---|---|
+| color-contrast | 177896 / 178062 | 93.1 % | 92.4 % | 9811 → 12932 | pass\|incomplete 9849, none\|incomplete 1871, fail\|incomplete 850 |
+| color-contrast-enhanced | 177896 / 178062 | 93.3 % | 92.5 % | 9567 → 12672 | pass\|incomplete 9328, fail\|incomplete 1362, none\|incomplete 1197 |
+| target-size | 103294 / 116466 | 91.1 % | 96.2 % | 138 → 3541 | pass\|violation (user agent control) 1739, pass\|violation 738, review\|none 376 |
+| hidden-content | 932209 / 13705 | 93.5 % | 93.6 % | 947 → 933 | none\|incomplete 773, review\|pass 156, unresolved\|selector-error 4 |
+| css-orientation-lock | 996 / 0 | 0.0 % | 0.0 % | 646 → 644 | none\|incomplete 644 |
+| duplicate-id-aria | 7895 / 8388 | 95.2 % | 95.2 % | 407 → 405 | fail\|incomplete 405 |
+| skip-link | 275 / 1622 | 43.7 % | 44.0 % | 354 → 348 | fail\|none 346, fail\|pass 1, fail\|incomplete 1 |
+| identical-links-same-purpose | 76974 / 49339 | 98.9 % | 98.9 % | 334 → 330 | review\|pass 128, none\|incomplete 122, review\|none 63 |
+| aria-hidden-focus | 13619 / 14730 | 97.7 % | 97.6 % | 328 → 328 | fail\|incomplete 178, fail\|none 150 |
+| aria-prohibited-attr | 16332 / 16257 | 98.0 % | 98.0 % | 326 → 319 | fail\|incomplete 224, fail\|pass 72, pass\|violation 11 |
+| label-content-name-mismatch | 3106 / 3206 | 92.2 % | 91.1 % | 237 → 278 | none\|incomplete 89, fail\|none 60, pass\|violation 58 |
+| aria-valid-attr-value | 16332 / 39523 | 98.3 % | 98.4 % | 275 → 265 | pass\|incomplete 168, review\|none 51, fail\|none 27 |
+| link-in-text-block | 2766 / 3027 | 89.9 % | 90.6 % | 271 → 250 | fail\|incomplete 79, fail\|pass 66, fail\|none 60 |
+| aria-required-parent | 963 / 850 | 84.0 % | 83.9 % | 137 → 137 | pass\|violation 137 |
+| duplicate-id | 62620 / 64350 | 99.7 % | 99.8 % | 166 → 137 | fail\|none 71, none\|violation 66 |
+| aria-allowed-role | 13912 / 6478 | 98.0 % | 98.0 % | 134 → 132 | none\|incomplete 67, fail\|pass 28, pass\|violation 24 |
+| focus-order-semantics | 560 / 743 | 81.4 % | 81.4 % | 127 → 126 | fail\|none 118, fail\|pass 6, pass\|violation 1 |
+| p-as-heading | 4149 / 4726 | 96.1 % | 96.1 % | 119 → 119 | pass\|violation 38, review\|violation 28, review\|pass 16 |
+| link-name | 115339 / 113760 | 99.9 % | 99.9 % | 106 → 105 | pass\|violation 64, none\|violation 34, fail\|pass 7 |
+| landmark-complementary-is-top-level | 690 / 574 | 85.1 % | 85.1 % | 100 → 100 | none\|violation 99, fail\|pass 1 |
+| presentation-role-conflict | 3750 / 7004 | 98.3 % | 98.3 % | 64 → 64 | fail\|none 62, unresolved\|selector-error 1, pass\|violation 1 |
+| aria-allowed-attr | 16332 / 16257 | 99.7 % | 99.7 % | 47 → 47 | fail\|pass 40, pass\|violation 7 |
+| form-field-multiple-labels | 5235 / 4057 | 98.9 % | 98.9 % | 47 → 47 | none\|incomplete 44, review\|pass 3 |
+| bypass | 969 / 996 | 95.4 % | 95.4 % | 46 → 46 | fail\|none 24, fail\|incomplete 15, fail\|pass 7 |
+| landmark-one-main | 996 / 996 | 95.7 % | 95.7 % | 43 → 43 | fail\|pass 43 |
+| landmark-unique | 4665 / 5850 | 99.3 % | 99.3 % | 42 → 42 | fail\|pass 18, fail\|none 18, none\|violation 6 |
+| aria-command-name | 593 / 1750 | 93.8 % | 93.7 % | 40 → 40 | fail\|none 38, pass\|violation 2 |
+| aria-required-children | 315 / 278 | 86.0 % | 86.6 % | 39 → 37 | pass\|violation 27, fail\|incomplete 8, fail\|pass 2 |
+| td-has-header | 71 / 1340 | 41.4 % | 42.1 % | 34 → 33 | none\|violation 28, fail\|none 5 |
+| region | 579724 / 2893 | 95.2 % | 95.2 % | 30 → 30 | fail\|none 16, none\|violation 12, unresolved\|selector-error 2 |
+| label | 4996 / 4996 | 99.5 % | 99.5 % | 25 → 25 | fail\|pass 21, pass\|violation 3, pass\|incomplete 1 |
+| scope-attr-valid | 96 / 210 | 80.7 % | 80.7 % | 23 → 23 | fail\|none 23 |
+| aria-dialog-name | 118 / 86 | 81.1 % | 81.1 % | 20 → 20 | none\|violation 20 |
+| th-has-data-cells | 162 / 439 | 0.0 % | 0.0 % | 20 → 20 | fail\|none 15, none\|incomplete 5 |
+| duplicate-id-active | 4506 / 6843 | 98.6 % | 99.6 % | 77 → 19 | fail\|none 18, none\|violation 1 |
+| page-has-heading-one | 996 / 996 | 98.1 % | 98.1 % | 19 → 19 | fail\|pass 19 |
+| aria-required-attr | 6564 / 5477 | 99.6 % | 99.7 % | 23 → 17 | fail\|pass 15, pass\|violation 2 |
+| empty-table-header | 446 / 439 | 96.1 % | 96.1 % | 17 → 17 | review\|violation 17 |
+| image-alt | 14389 / 14384 | 99.9 % | 99.9 % | 17 → 16 | fail\|pass 12, unresolved\|selector-error 2, pass\|violation 2 |
+| table-fake-caption | 162 / 105 | 85.5 % | 85.5 % | 16 → 16 | pass\|violation 11, none\|violation 5 |
+| button-name | 5450 / 5279 | 99.7 % | 99.7 % | 15 → 15 | pass\|violation 13, fail\|none 2 |
+| input-button-name | 342 / 344 | 96.2 % | 96.2 % | 13 → 13 | pass\|violation 13 |
+| label-title-only | 5235 / 4745 | 99.7 % | 99.7 % | 12 → 12 | fail\|pass 7, pass\|violation 5 |
+| nested-interactive | 29891 / 42945 | 100.0 % | 100.0 % | 12 → 12 | none\|violation 6, fail\|none 4, unresolved\|selector-error 1 |
+| landmark-no-duplicate-banner | 792 / 843 | 98.8 % | 98.8 % | 10 → 10 | fail\|pass 5, fail\|none 5 |
+| list | 16760 / 17138 | 100.0 % | 100.0 % | 7 → 7 | fail\|pass 6, fail\|none 1 |
+| select-name | 239 / 239 | 97.2 % | 97.1 % | 7 → 7 | fail\|pass 7 |
+| landmark-no-duplicate-contentinfo | 796 / 830 | 99.4 % | 99.4 % | 5 → 5 | none\|violation 5 |
+| frame-title-unique | 70 / 12 | 66.7 % | 66.7 % | 4 → 4 | pass\|incomplete 4 |
+| video-caption | 26 / 28 | 68.6 % | 85.7 % | 11 → 4 | review\|pass 2, review\|none 2 |
+| aria-valid-attr | 16332 / 39602 | 100.0 % | 100.0 % | 3 → 3 | fail\|none 3 |
+| definition-list | 326 / 326 | 99.1 % | 99.1 % | 3 → 3 | fail\|pass 3 |
+| image-redundant-alt | 14389 / 7219 | 100.0 % | 100.0 % | 3 → 3 | unresolved\|selector-error 2, none\|violation 1 |
+| aria-input-field-name | 11 / 41 | 89.5 % | 84.6 % | 2 → 2 | fail\|none 2 |
+| audio-caption | 3 / 1 | 66.7 % | 33.3 % | 1 → 2 | none\|incomplete 2 |
+| heading-order | 12489 / 12451 | 100.0 % | 100.0 % | 2 → 2 | pass\|violation 1, fail\|none 1 |
+| landmark-no-duplicate-main | 641 / 657 | 99.7 % | 99.7 % | 2 → 2 | fail\|pass 1, fail\|none 1 |
+| empty-heading | 12489 / 12451 | 100.0 % | 100.0 % | 1 → 1 | pass\|violation 1 |
+| meta-refresh-no-exceptions | 1 / 1 | 0.0 % | 0.0 % | 1 → 1 | fail\|pass 1 |
+| object-alt | 1 / 2 | 50.0 % | 50.0 % | 1 → 1 | fail\|none 1 |
+| accesskeys | 73 / 82 | 100.0 % | 100.0 % | 0 → 0 | - |
+| area-alt | 26 / 26 | 100.0 % | 100.0 % | 0 → 0 | - |
+| aria-conditional-attr | 16332 / 2 | 100.0 % | 100.0 % | 0 → 0 | - |
+| aria-deprecated-role | 6564 / 6515 | 100.0 % | 100.0 % | 0 → 0 | - |
+| aria-hidden-body | 996 / 996 | 100.0 % | 100.0 % | 0 → 0 | - |
+| aria-progressbar-name | 12 / 12 | 100.0 % | 100.0 % | 0 → 0 | - |
+| aria-roles | 6564 / 6532 | 100.0 % | 100.0 % | 0 → 0 | - |
+| aria-tab-name | 38 / 213 | 100.0 % | 100.0 % | 0 → 0 | - |
+| aria-toggle-field-name | 26 / 45 | 100.0 % | 100.0 % | 0 → 0 | - |
+| aria-tooltip-name | 10 / 10 | 100.0 % | 100.0 % | 0 → 0 | - |
+| autocomplete-valid | 399 / 151 | 100.0 % | 100.0 % | 0 → 0 | - |
+| avoid-inline-spacing | 10350 / 698 | 100.0 % | 100.0 % | 0 → 0 | - |
+| dlitem | 1138 / 1138 | 100.0 % | 100.0 % | 0 → 0 | - |
+| document-title | 996 / 996 | 100.0 % | 100.0 % | 0 → 0 | - |
+| frame-title | 137 / 137 | 100.0 % | 100.0 % | 0 → 0 | - |
+| html-has-lang | 996 / 996 | 100.0 % | 100.0 % | 0 → 0 | - |
+| html-lang-valid | 938 / 937 | 100.0 % | 100.0 % | 0 → 0 | - |
+| html-xml-lang-mismatch | 24 / 24 | 100.0 % | 100.0 % | 0 → 0 | - |
+| input-image-alt | 11 / 11 | 100.0 % | 100.0 % | 0 → 0 | - |
+| landmark-banner-is-top-level | 842 / 843 | 100.0 % | 100.0 % | 0 → 0 | - |
+| landmark-contentinfo-is-top-level | 830 / 830 | 100.0 % | 100.0 % | 0 → 0 | - |
+| landmark-main-is-top-level | 656 / 657 | 100.0 % | 100.0 % | 0 → 0 | - |
+| listitem | 75186 / 74771 | 100.0 % | 100.0 % | 0 → 0 | - |
+| marquee | 5 / 5 | 100.0 % | 100.0 % | 0 → 0 | - |
+| meta-refresh | 1 / 1 | 100.0 % | 100.0 % | 0 → 0 | - |
+| meta-viewport | 988 / 159 | 100.0 % | 100.0 % | 0 → 0 | - |
+| meta-viewport-large | 988 / 159 | 100.0 % | 100.0 % | 0 → 0 | - |
+| role-img-alt | 158 / 158 | 100.0 % | 100.0 % | 0 → 0 | - |
+| scrollable-region-focusable | 80 / 45 | 100.0 % | 100.0 % | 0 → 0 | - |
+| summary-name | 132 / 132 | 100.0 % | 100.0 % | 0 → 0 | - |
+| svg-img-alt | 360 / 360 | 100.0 % | 100.0 % | 0 → 0 | - |
+| tabindex | 2743 / 93 | 100.0 % | 100.0 % | 0 → 0 | - |
+| table-duplicate-name | 491 / 1 | 100.0 % | 100.0 % | 0 → 0 | - |
+| valid-lang | 501 / 327 | 100.0 % | 100.0 % | 0 → 0 | - |
+
+Before this work, with facts (mismatching nodes): `target-size` 7,751 (92.2 % agree), `link-in-text-block` 10,663 (18.4 %), `listitem` 581,
+`color-contrast` 13,812 (91.9 %), `color-contrast-enhanced` 10,431 (93.6 %); the last grew to 12,672 because symbol-only text is now counted
+(the kept `pass|incomplete` class below), not because anything got worse. `aria-required-parent` and `empty-heading` had grown after the tree
+changes (29 to 166 and 1 to 68); they are back to 137 (one page, kept) and 1.
+
+### Checker time
+
+Per page, the whole rule set (`checkMs` of each page), 1,000 pages; "before" is the checker at the start of this work with the same harness.
+
+| | Median | p95 | Max | Sum |
+|---|---:|---:|---:|---:|
+| Without facts, before | 38 ms | 1,768 ms | 24,489 ms | 415.6 s |
+| Without facts, after | 5 ms | 275 ms | 8,825 ms | 57.4 s |
+| With facts, before | 38 ms | 1,754 ms | 24,166 ms | 412.1 s |
+| With facts, after | 9 ms | 259 ms | 7,973 ms | 58.0 s |
+
+The saving is the focus overlays: `focus-visible-indicator` restyles only what a focus reaches instead of the whole page per focusable. The slowest
+page (06e2ed1a8276, 8 s) was not analysed further. Numbers are from one run each and the worker was shared.
 
 ### Pages written for the differential
 
@@ -235,87 +303,81 @@ The golden page `tests/OneHtml.Accessibility.Validation.Tests/Golden/aria-page.h
 
 ## Differences
 
-Each mismatch class of the sample and of the written pages is fixed, kept on purpose, or open. Dispositions are also in the rule pages
-(`docs/rules/aria.md`, `structure.md`, `tables.md`, `names.md`, "Measured against axe-core 4.14.0").
+Each mismatch class of the 1,000-page sample and of the written pages is fixed, kept on purpose, or open. Dispositions are also in the rule pages
+(`docs/rules/*.md`, "Measured against axe-core 4.14.0").
 
-**Fixed because of the differential:** dangling ID references (`aria-valid-attr-value`, needs-review or fail by attribute);
-`aria-braille-equivalent` (needs-review, text content counts); native radio in `aria-conditional-attr`; the data-table gate of
-`td-has-header` and `table-fake-caption`; complementary inside `main`; `meta-viewport-large` range; `region` content definition and
-unnamed `role="region"`; `hidden-content` (own computed display or visibility, embedded objects, `&nbsp;`; 8,492 review|pass → 74, 887
-none|incomplete → 312); `image-redundant-alt` (equality of the container's other text, not containment: fail|pass 124 → 0);
-`p-as-heading` (two signs, observed thresholds: fail|pass 67 → 0); `identical-links-same-purpose` (relative links resolve against
-the page address: review|none 811 → 13, review|pass 251 → 42); the text colour of form controls in the contrast rules (fail|pass 313 → 275).
+**Fixed because of the differential** (earlier work, then this round):
+
+- Earlier: dangling ID references (`aria-valid-attr-value`); `aria-braille-equivalent`; native radio in `aria-conditional-attr`; the data-table gate of
+  `td-has-header` and `table-fake-caption`; complementary inside `main`; `meta-viewport-large` range; `region` content definition;
+  `hidden-content` (own computed display or visibility, embedded objects, `&nbsp;`); `image-redundant-alt` (equality of the container's other text);
+  `p-as-heading` observed thresholds; `identical-links-same-purpose` (relative links resolve against the page address); the text colour of form controls.
+- `link-in-text-block`: a block of text is the nearest block whose text outside links is longer than the text of its links; a link alone in
+  its block is not applicable; a background image on the link is a cue. 10,663 mismatching nodes to 250.
+- `target-size`: the target is the element's own border box; focusable widgets and `summary` are targets; the order of tests follows axe's (size,
+  in-sentence, user-agent control, fully covered, spacing, then content overflow); `aria-hidden` controls are neighbours without verdict;
+  completely covered targets (later in tree order, or later painted) are not targets. 7,751 to 3,541.
+- `listitem`: an `li` hidden from assistive technology is not examined (581 `fail|none` to 0).
+- `color-contrast`: push-button `input` labels are judged; native button and field fills apply unless the author sets a background; text over an
+  image or positioned box that is not its ancestor is never judged against the page colour (needs-render, or background samples with facts); the
+  `body link` attribute colours the document's links in the cascade.
+- Tree: a heading (or any role) inside a button is named from its contents again (`empty-heading` 68 to 1; the name computer had stopped seeing
+  the role); a plain container between a context role and its child is looked through by `aria-required-parent` and `aria-required-children`
+  (`aria-required-parent` fail|pass 29 to 0). Chrome AX differential on the first 2,095 captures with facts, before and after: ignored 0.173 %
+  and 0.173 %, role 0.089 % and 0.089 %, name 0.498 % and 0.484 %, description 0.132 % and 0.132 %, exposedParent 0.245 % and 0.245 %.
+- The harness did not supply a stylesheet whose recorded content type is not `text/css` (Chrome ignores such a body; the crawl had stored an
+  HTML error page under a `.css` URL, and its rules produced a `fail|pass` class that looked like a cascade bug). This affects `ax`, `axe` and `styles`.
 
 **Kept on purpose** (the reason is the spec or ACT, so it is not a bug on our side; the larger classes first):
 
-- `aria-prohibited-attr` fail|incomplete (103), fail|pass (11), pass|incomplete (8): the role data prohibits naming where axe warns or passes.
-- `skip-link` fail|none (108): a fragment link to a missing target fails; axe is inapplicable.
-- `aria-hidden-focus` fail|incomplete (35), fail|none (7): axe is incomplete while a modal dialog is open.
-- `duplicate-id-aria` fail|incomplete (25): axe reports incomplete without saying why, for ids a label or `aria-labelledby` points at; we fail (the reference is ambiguous).
-- `bypass` fail|none (13), fail|incomplete (3): axe needs a link and calls it incomplete.
-- `aria-allowed-role`, `aria-roles`, `aria-required-attr`, `aria-required-children`, `aria-required-parent`, `focus-order-semantics`,
-  `meta-refresh*`, `definition-list`, `empty-table-header`, `td-headers-attr`, `th-has-data-cells`, `image-alt` (focusable empty alt),
-  `link-name` (names from `title`): see the tables in the rule pages.
-- `label-content-name-mismatch` render|none (85), render|pass (31), render|violation (3): without facts we ask for the layout; with facts these
-  classes are gone. What remains with facts: `none|incomplete` (25, axe's single-character rule), `fail|none` (7), `none|violation` (5), `pass|violation` (6).
+- `color-contrast` and `-enhanced` pass|incomplete (9,849 and 9,328): text of symbols only (icon fonts). axe is incomplete ("only non-text characters"); ACT
+  afw4f7 does not apply to text without letters or digits.
+- `color-contrast` none|incomplete (1,871), fail|incomplete (850): empty or hidden text, and elements axe thinks are overlapped, where our facts know the stacking.
+- `color-contrast` pass|violation (34): axe checks text made of punctuation only; ACT exempts it.
+- `target-size` pass|violation "user agent control" (1,739): WCAG 2.5.8 exempts a control whose size the browser sets; axe measures it.
+- `target-size` review|none (376), fail|incomplete (15): negative `tabindex` and content overflow, which need a person.
+- `link-in-text-block` fail|pass (66): a link whose colour equals the text colour is a failure of technique F73; axe passes it. fail|incomplete (79):
+  axe stops at "element overlap".
+- `landmark-one-main` fail|pass (43): axe passes a page with no `main` when a rendered `dialog` exists; a dialog is not the page's main content (the
+  rule keeps the spec reading, and says so in `docs/rules/structure.md`).
+- `p-as-heading` (119 nodes, 96.1 %): the thresholds are ours and the rule is a best practice with no ACT rule to settle them; the rule keeps them
+  and says so in `docs/rules/structure.md`.
+- `aria-required-parent` pass|violation (137), `aria-required-children` pass|violation (27): an `li` between `ul[role=menu]` and its `menuitem`; Chrome's
+  own tree has `menu > menuitem` (page 122a2205c3f5 supplies 112 and 21 of them).
+- `aria-prohibited-attr` fail|incomplete (224), fail|pass (72); `skip-link` fail|none (346); `aria-hidden-focus` fail|incomplete (178) and fail|none (150);
+  `duplicate-id-aria` fail|incomplete (405); `bypass`: as in the earlier sample (role data prohibits naming where axe warns; a fragment link to a
+  missing target fails; axe is incomplete while a modal is open or needs a link).
+- `css-orientation-lock` none|incomplete (644): axe is incomplete on every page with an orientation media query it cannot evaluate.
 
 **Open** (not explained; each has examples in `classes.json`):
 
-- `landmark-one-main` fail|pass (17): axe passes a page with no main when a rendered `dialog` (not `alertdialog`) exists (probes
-  `no-main`, `misc-probes`; 11 of the 17 sample pages have one). We keep failing: a dialog is not the page's main content. 6 pages have no
-  explanation.
-- `region` (compared per page, 98.3 %): the two remaining disagreements are pages where axe has no violation and we do; the granularity of
-  axe's wrappers is not reproduced and not scored.
-- `hidden-content` none|incomplete (312) and review|pass (74): hidden elements axe flags that hold only elements without text or media
-  (the rule is an advisory; whether a `button > span` or an empty-looking container is "content" to axe was not pinned down), and hidden
-  elements with a tracking pixel we flag.
-- `identical-links-same-purpose` review|pass (42), none|incomplete (24), review|none (13), pass|incomplete (10): which member of a group axe
-  names, percent-encoding of non-ASCII targets, and `tel:` targets.
-- `image-redundant-alt` fail|none (14): images inside `noscript`, which axe does not see as elements.
-- `p-as-heading` pass|violation (6), pass|incomplete (4), fail|incomplete/none (3).
-- `aria-allowed-role` none|violation / none|incomplete (22), `aria-dialog-name` none|violation (7), `landmark-unique`, `duplicate-id` fail|none (21).
+- `target-size` pass|violation (738), fail|pass (287), none|violation (169), fail|none (69). Mostly axe's *partially obscured* measurement (it uses the
+  part of the box that other elements leave open) and neighbours it counts differently; a subtraction over later-painted boxes made 123 more nodes
+  wrong and was dropped. See `docs/rules/presentation.md`.
+- `link-in-text-block` fail|none (60 nodes on 32 pages): links with large boxes (images, cards) that axe does not select.
+- `color-contrast` fail|pass (20, enhanced 168 in the earlier numbers) and fail|none (294).
+- `hidden-content` none|incomplete (773) and review|pass (156): hidden elements axe flags that hold only elements without text or media.
+- `identical-links-same-purpose` review|pass (128), none|incomplete (122), review|none (63).
+- `label-content-name-mismatch` (278), `aria-valid-attr-value` pass|incomplete (168), `aria-allowed-role` none|incomplete (67), `focus-order-semantics`
+  fail|none (118), `landmark-complementary-is-top-level` none|violation (99), `presentation-role-conflict` fail|none (62), `duplicate-id` (137),
+  `aria-command-name` fail|none (38), `td-has-header` none|violation (28).
 
 
 ## Contrast, spacing and target size
 
-Run with the contrast, text spacing, orientation, target size and media rules, which were added separately from the rules this page otherwise covers (the
-comparison used a checkout with those rules and this command; it reproduces with `axe` wherever both are present). Pages: the ACT `78fd32` failed examples and inapplicable example 2,
-the four image-background pages of ACT `afw4f7` (`b84e9e`, `11ec27`) and `09o5cg` (`d30f6d`, `051137`), and `testdata/rendered/pages/target-size.html`
-with its capture. Images are blocked in captures, so the four image pages render without their image.
+The fixture pages (ACT `78fd32`, the four image-background pages of ACT `afw4f7` and `09o5cg`, and `testdata/rendered/pages/target-size.html` with its
+capture) agree as before: `avoid-inline-spacing` agrees on all seven cases with facts; the image pages are needs-render on our side and incomplete on
+axe's (both decline to guess); `target-size` on the fixture agrees on all 14 targets axe reports with facts. The class analysis on the sample is in the
+rule pages: `docs/rules/contrast.md` (contrast, link-in-text-block) and `docs/rules/presentation.md` (target-size).
 
-- **avoid-inline-spacing, ACT 78fd32.** All six failed examples are violations in axe (`important-line-height`). Without facts we report
-  needs-render for the six and for the inapplicable example; **with facts all seven agree** (six fail, one pass). The text boxes turn the
-  cases that were not applicable into real verdicts.
-- **color-contrast and color-contrast-enhanced on the four image pages.** axe: incomplete for contrast ("background color could not be determined
-  due to a background image"). Ours: needs-render for both rules, with or without facts, because the image is absent from the snapshot and no
-  background sample exists; both sides decline to guess. The sample path (`background samples`) cannot be exercised by these pages: the captured
-  Chrome has no image to sample.
-- **target-size** on the fixture page (17 targets: a crowded and a spaced link row, an inline link pair, a large link, a plain checkbox and a
-  16 px author-sized checkbox and buttons): without facts all are needs-render (axe: 6 violations, 8 passes); **with facts all 14 targets axe reports
-  agree**, and the three inline links in the sentence pass here with no axe result (axe does not report inline links).
-- On the solid-background text of these pages all 11 `color-contrast` nodes of the ACT pages and all 16 of the fixture page agree.
+Measured axe behaviour, learned from probe pages and the sample (all black-box output):
 
-### The contrast, target-size and link rules on the sample (with facts)
-
-Classes of the 279-page sample, in nodes, and what they are:
-
-- `color-contrast` pass|incomplete (2,046), and the same for the enhanced rule (1,133): text made of symbols only (icon-font glyphs). axe says
-  "only non-text characters" and leaves it incomplete; we pass it, since ACT afw4f7 does not apply to text without letters or digits. Kept.
-- `color-contrast` none|incomplete (580): axe is incomplete for inputs without a value, hidden elements, 1:1 colour pairs and elements it
-  thinks are overlapped; we report nothing for them. Kept (empty fields and hidden text have nothing to read).
-- `color-contrast` fail|incomplete (374): axe cannot determine the background because another element overlaps; with facts we know the
-  stacking and read a solid colour, and fail. Kept (this is what the facts are for).
-- `color-contrast` fail|pass (275; enhanced 726) and none|violation (17): **open.** The one cause found was the text colour of form controls
-  (fixed above). The rest are links and spans whose colour our cascade takes from a low-specificity `a` rule where Chrome has black
-  (page `1cfe36814e3e`, `#menu-item-986 > a`): a cascade difference to find in the style engine, not a contrast-rule fault.
-- `link-in-text-block` fail|none (1,652), fail|incomplete (82), fail|pass (25): **open.** We fail links in navigation blocks that axe does
-  not consider text blocks at all; the definition of "block that holds other visible text" is broader than axe's. The rule's 27 % agreement
-  is this one class.
-- `target-size` fail|pass (751), pass|violation (436), fail|incomplete (492): **open.** Not analysed beyond the sample: axe's exceptions
-  (inline targets, spacing circles, targets in the same block) and ours differ in ways the written fixture does not exercise.
-- `css-orientation-lock` none|incomplete (181): axe is incomplete on every page with a `@media (orientation)` rule it cannot evaluate; we
-  report nothing when no locking transform is present. Kept.
-- `skip-link` fail|none: see above.
+- **target-size**: the target is the element's own border box; tests run in the order size, in-sentence, user-agent control, fully covered, spacing,
+  content overflow (incomplete only after both size and spacing fail); `summary` is a target; `aria-hidden` controls count as neighbours and get no verdict;
+  links with the same `href` are one target except for `#` and `javascript:`; only `overflow: hidden|clip` clips, never on `html`/`body`.
+- **link-in-text-block**: identical link and text colours pass; `<script>` text counts as text; a background image on the link counts as a cue.
+- **listitem**: items hidden from assistive technology are not examined.
+- **color-contrast**: `input` push-button labels are judged from their value; the native fill of buttons and fields applies unless the author sets a background.
 
 ## Chrome accessibility-tree pages
 
@@ -335,9 +397,8 @@ and the rest of `testdata/axe/pages`; 19 pages, 960 matched nodes). New classes,
 
 ## Not done
 
-- A full-corpus run (a gate window).
 - Frames and shadow roots: nested targets are counted, not compared.
-- The class analysis of `target-size`, `link-in-text-block` and the remaining `color-contrast` fail|pass nodes (above).
-- The full-corpus command (needs a window; claims the worker lock; `--timeout 300` because the largest pages exceed 30 s with all rules):
+- Partial obscuring in `target-size`, and the open classes above.
+- The full-corpus run (13,857 pages; needs a gate window and claims the worker lock; `--timeout 300` because the largest pages exceed 30 s with all rules):
   `bash tools/OneHtml.Differential/run-worker.sh axe ~/onehtml/capture-out/2026-10a ~/onehtml/out/axe --corpus ~/onehtml/corpus/2026-10a --jobs 8 --timeout 300`.
   It is resumable (run it again, or use `--max-seconds`); add `--facts on` or `off` to run one mode.

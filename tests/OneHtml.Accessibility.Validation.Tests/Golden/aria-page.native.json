@@ -7593,11 +7593,11 @@
       "outcome": "needs-render",
       "message": "The size of a pointer target is known only after layout.",
       "target": {
-        "tag": "input",
-        "locator": "input",
+        "tag": "button",
+        "locator": "button",
         "source": {
-          "start": 395,
-          "end": 438
+          "start": 324,
+          "end": 351
         }
       },
       "findings": [],
@@ -7618,11 +7618,11 @@
       "outcome": "needs-render",
       "message": "The size of a pointer target is known only after layout.",
       "target": {
-        "tag": "img",
-        "locator": "img",
+        "tag": "input",
+        "locator": "input",
         "source": {
-          "start": 439,
-          "end": 476
+          "start": 395,
+          "end": 438
         }
       },
       "findings": [],

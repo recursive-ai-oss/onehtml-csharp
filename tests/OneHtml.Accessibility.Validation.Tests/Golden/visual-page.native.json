@@ -7088,31 +7088,6 @@
       "suggested": []
     },
     {
-      "rule": "target-size",
-      "outcome": "needs-render",
-      "message": "The size of a pointer target is known only after layout.",
-      "target": {
-        "tag": "audio",
-        "locator": "audio",
-        "source": {
-          "start": 966,
-          "end": 1006
-        }
-      },
-      "findings": [],
-      "taskImpact": {
-        "blocksTask": true,
-        "reason": "interactive"
-      },
-      "cssOnly": false,
-      "factsUsed": [],
-      "factsMissing": [
-        "border box of the target",
-        "border boxes of the targets near it"
-      ],
-      "suggested": []
-    },
-    {
       "rule": "td-has-header",
       "outcome": "inapplicable",
       "message": "The rule found nothing to check.",

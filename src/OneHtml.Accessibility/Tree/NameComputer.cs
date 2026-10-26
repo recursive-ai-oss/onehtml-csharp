@@ -235,7 +235,18 @@ internal sealed class NameComputer
 
     private string Limit(string s) => s.Length <= _options.MaxNameLength ? s : s[.._options.MaxNameLength];
 
-    private AriaRole? RoleOf(Node n) => n.IsElement ? _roles[n].Role : null;
+    // The role the tree gives the element: the descendants of a button, tab or image keep their own role, as Chromium exposes them
+    // (profile entry children-presentational), so a heading inside a button is still named from its contents.
+    private AriaRole? RoleOf(Node n)
+    {
+        if (!n.IsElement)
+        {
+            return null;
+        }
+
+        NodeRole nr = _roles[n];
+        return nr.Origin == RoleOrigin.ChildrenPresentational ? nr.ExplicitRole ?? nr.ImplicitRole : nr.Role;
+    }
 
     private List<Node> ResolveRefs(Node el, string attribute)
     {

@@ -33,7 +33,9 @@ to a pseudo-class, `:where` is zero, pseudo-elements count in C.
 - Right to left against a compiled list. Each list reports its rightmost-compound keys (id, class, tag) and its
   dependencies (`SelectorDependencies`: ancestor, sibling, `:has`, state) for the cascade to bucket and invalidate.
 - No work is quadratic in the document: a failure memo starts after 64 backtracking steps, `:has()` marks are computed
-  in bulk, `of S` positions are cached per snapshot. Deep trees (thousands of levels) use no recursion.
+  in bulk, `of S` positions are cached per snapshot, and `:is()`/`:where()`/`:not()` answers are kept per (selector,
+  element) once evaluations nest, in the cascade at once and in `Matches`, `QuerySelector(All)` and `Closest` after a
+  few nested evaluations (up to 2M entries), so nested forms cost their size, not depth to the nesting. Deep trees (thousands of levels) use no recursion.
 - Names: HTML elements in HTML documents match type selectors and attribute names ASCII-case-insensitively; the HTML
   list of case-insensitive attribute values (`type`, `lang`, …) is honoured. Class and id compare
   case-insensitively in quirks mode.

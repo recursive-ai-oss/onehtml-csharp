@@ -143,13 +143,30 @@ target changes, and focus changes together with them, test every element against
 
 An element is recomputed when it is listed, new, moved, or next to an added or removed node (siblings and parents, when a
 sibling, position or `:empty` selector exists, and the descendants of those siblings when such a selector reads a position
-or sibling and then reaches below, as `li:last-child a` does; a page with any `:has()` rule recomputes in full after a
-change of shape), when a selector that reads a changed attribute, class or id matches it
+or sibling and then reaches below, as `li:last-child a` does), when a selector that reads a changed attribute, class or id matches it
 differently in the old and the new document (found by matching only those rules, which covers descendant, sibling,
 `:has()` and `:nth-*` reach), when a changed rule matches it, or when its parent's style object changed and the values
-differ. Everything else keeps its style object. A document that uses `:has()` selectors recomputes fully when the node
-indices differ (`FullRecompute`); so does a change of quirks mode or of the layer structure, and a tree of another shape
-without `OldToNew`.
+differ. Everything else keeps its style object. A change of quirks mode or of the layer structure, and a tree of another
+shape without `OldToNew`, recompute fully (`FullRecompute`).
+
+### `:has()` after a change of shape
+
+A `:has()` result for an element X reads only what X's relative selectors reach (Selectors 4 section 4.5), so after nodes
+were added or removed the engine compares old and new matches (as for attribute changes, matching only the rules with
+`:has()`) for the elements the change can reach, instead of recomputing the page. The reach depends on where the
+`:has()` sits in a rule:
+
+- **Bounded:** every `:has()` of the rule is in a subject compound, alone or inside `:is()`, `:where()` or `:not()` items
+  that are subjects themselves (`.a:has(.b)`, `li:not(:has(> a))`, `:is(.a:has(.b), .c)`). X is then an ancestor of
+  what changed, and, when a relative selector starts with `+` or `~`, also an earlier element sibling of the change or of
+  one of its ancestors. Only those elements are compared. This holds because `:has()` cannot nest, so no other `:has()`
+  result feeds X's.
+- **Unbounded:** a `:has()` before a combinator (`.a:has(.b) + .c`, `.a:has(.b) .c`), or inside `:nth-child(… of S)`.
+  Elements beside or below X depend on X's result, so these rules are compared for every element of the page. This
+  costs one match of those rules per element and no style recomputation beyond the elements whose matches differ.
+
+Seeds are the elements the shape change touched (new nodes, the parents of removed ones, neighbours and, for rules that
+reach below, the descendants of neighbours). A change of attributes is found by the attribute reach above.
 
 ### From an edit result
 

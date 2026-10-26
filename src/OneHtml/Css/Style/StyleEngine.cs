@@ -158,6 +158,11 @@ internal sealed class StyleEngine
             UsesHas |= (deps & SelectorDependencies.Has) != 0;
             UsesStructure |= (deps & (SelectorDependencies.Structural | SelectorDependencies.SiblingCombinator | SelectorDependencies.Empty | SelectorDependencies.Has)) != 0;
             UsesBulkCaches |= (deps & (SelectorDependencies.Has | SelectorDependencies.Structural)) != 0;
+            if ((deps & SelectorDependencies.Has) != 0)
+            {
+                ClassifyHasRule(r);
+            }
+
             if (!UsesStructureBelow)
             {
                 foreach (ComplexSelector cs in r.Selectors.Items)
@@ -170,6 +175,94 @@ internal sealed class StyleEngine
                 }
             }
         }
+    }
+
+    // ---- reach of :has() (Selectors 4 section 4.5) ----
+    //
+    // A rule whose every :has() sits in the subject compound (alone, or inside :is()/:where()/:not() items that are subjects
+    // themselves) is "bounded": its result for an element X changes only if something X's relative selectors can reach
+    // changed, and X then is an ancestor of the change or, when a relative selector starts with + or ~, an earlier sibling of
+    // the change or of one of its ancestors. A :has() anywhere else (before a combinator, inside :nth-child(of S)) makes other
+    // elements depend on X's result, so such a rule is "unbounded" and is compared for every element. A :has() cannot nest in
+    // a :has(), so the subject's own result cannot depend on another :has() result outside the walk above.
+
+    /// <summary>Rules with a :has() in a subject compound only (see the notes above).</summary>
+    public List<StyleRule> HasBoundedRules { get; } = [];
+
+    /// <summary>Rules with a :has() anywhere else.</summary>
+    public List<StyleRule> HasUnboundedRules { get; } = [];
+
+    /// <summary>True when a bounded rule has a relative selector that starts with a sibling combinator, so earlier siblings of a change's ancestors can be affected.</summary>
+    public bool HasSideways { get; private set; }
+
+    private void ClassifyHasRule(StyleRule r)
+    {
+        bool bounded = true;
+        bool sideways = false;
+        foreach (ComplexSelector cs in r.Selectors!.Items)
+        {
+            if ((cs.Deps & SelectorDependencies.Has) != 0 && !SubjectOnlyHas(cs, ref sideways))
+            {
+                bounded = false;
+            }
+        }
+
+        if (bounded)
+        {
+            HasBoundedRules.Add(r);
+            HasSideways |= sideways;
+        }
+        else
+        {
+            HasUnboundedRules.Add(r);
+        }
+    }
+
+    private static bool SubjectOnlyHas(ComplexSelector cs, ref bool sideways)
+    {
+        for (int j = 0; j < cs.Compounds.Length - 1; j++)
+        {
+            foreach (Simple part in cs.Compounds[j].Parts)
+            {
+                if ((part.Deps & SelectorDependencies.Has) != 0)
+                {
+                    return false;
+                }
+            }
+        }
+
+        foreach (Simple part in cs.Compounds[^1].Parts)
+        {
+            if ((part.Deps & SelectorDependencies.Has) == 0)
+            {
+                continue;
+            }
+
+            if (part.Kind != SimpleKind.Logical || part.Sub is null)
+            {
+                return false;
+            }
+
+            if (part.Logical == LogicalKind.Has)
+            {
+                foreach (ComplexSelector item in part.Sub.Items)
+                {
+                    sideways |= item.Leading is Combinator.NextSibling or Combinator.SubsequentSibling;
+                }
+            }
+            else
+            {
+                foreach (ComplexSelector item in part.Sub.Items)
+                {
+                    if (!SubjectOnlyHas(item, ref sideways))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     private const SelectorDependencies PositionDeps = SelectorDependencies.Structural | SelectorDependencies.SiblingCombinator | SelectorDependencies.Empty;

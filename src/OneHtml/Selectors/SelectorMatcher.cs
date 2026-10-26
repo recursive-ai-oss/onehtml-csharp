@@ -29,6 +29,11 @@ internal ref struct MatchCtx
     public Dictionary<Simple, NthOfCache>? NthCaches;
     public Dictionary<(Simple Simple, int Element), bool>? LogicalMemo;
 
+    /// <summary>How many :is()/:where()/:not() evaluations enclose the current one, and how many nested evaluations ran: the one-off query paths start a memo only once nesting shows up.</summary>
+    public int LogicalDepth;
+
+    public int LogicalNested;
+
     /// <summary>Match the originating element of a selector that ends in a pseudo-element: the trailing pseudo-element itself is ignored (Selectors 4 section 3.6).</summary>
     public bool IgnoreTrailingPseudo;
 }
@@ -866,15 +871,28 @@ internal static class SelectorMatcher
     // bound that keeps the table small next to the document.
     private const int LogicalMemoLimit = 1 << 21;
 
+    // A one-off query (Matches, QuerySelector(All), Closest) has no memo to begin with, so a flat :is(a, b) pays nothing. Once
+    // evaluations nest (an :is() asked from inside another one's argument, where the same ancestor is asked again from every
+    // element below), the ctx starts the same per-(selector, element) memo after a few such calls, so the cost is
+    // (nested selectors x elements) rather than depth to the nesting.
+    private const int NestedBeforeMemo = 32;
+
     private static bool MatchIsOrNot(ref MatchCtx c, Simple s, int el)
     {
         Dictionary<(Simple Simple, int Element), bool>? memo = c.LogicalMemo;
+        if (memo is null && c.LogicalDepth > 0 && ++c.LogicalNested > NestedBeforeMemo)
+        {
+            c.LogicalMemo = memo = [];
+        }
+
         if (memo is not null && memo.TryGetValue((s, el), out bool known))
         {
             return known;
         }
 
+        c.LogicalDepth++;
         bool r = MatchList(ref c, s.Sub!, el);
+        c.LogicalDepth--;
         if (s.Logical == LogicalKind.Not)
         {
             r = !r;

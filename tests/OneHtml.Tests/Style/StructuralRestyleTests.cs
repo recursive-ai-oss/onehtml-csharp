@@ -70,11 +70,10 @@ public class StructuralRestyleTests
     }
 
     [Fact]
-    public void HasRuleAfterAPositionalRuleStillForcesRecompute()
+    public void HasRuleAfterAPositionalRuleRestylesTheAncestor()
     {
-        // The flag for :has() was only read up to the first positional rule, so an inserted element that a :has() rule
-        // below it counts was restyled incrementally and the ancestor kept its old match.
+        // An inserted element that a :has() rule counts changes the ancestor's match even when a positional rule comes first.
         const string html = "<style>li:first-child{color:blue} .w:not(:has(.k)){color:red}</style><div class=w id=w><p id=z>x</p></div>";
-        AssertSameAsFresh(html, d => [Edit.InsertAfter(ById(d, "z"), "<p class=k>y</p>")], false);
+        AssertSameAsFresh(html, d => [Edit.InsertAfter(ById(d, "z"), "<p class=k>y</p>")], true);
     }
 }

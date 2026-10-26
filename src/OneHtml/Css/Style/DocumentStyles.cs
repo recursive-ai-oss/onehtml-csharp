@@ -538,12 +538,6 @@ public sealed class DocumentStyles
         DocumentStyles fallback = this;
         if (oldToNew is not null)
         {
-            if (engine.UsesHas)
-            {
-                // :has() reaches from any descendant to any ancestor and the ancestor's earlier siblings; recompute.
-                return new RestyleResult(Create(newDocument, newContext, options, cancellationToken), [], true);
-            }
-
             newToOld = new int[newDocument.NodeCount];
             Array.Fill(newToOld, -1);
             for (int o = 0; o < oldToNew.Length; o++)
@@ -563,6 +557,10 @@ public sealed class DocumentStyles
         {
             AddShapeChanges(newDocument, oldToNew!, newToOld, engine.UsesStructure, engine.UsesStructureBelow || _engine.UsesStructureBelow, affected);
         }
+
+        // :has() rules reach from a changed node to its ancestors and beside them (AddHasReach); the seeds are what the shape
+        // change touched, before any attribute reach is added.
+        List<int>? hasSeeds = newToOld is not null && (_engine.HasBoundedRules.Count > 0 || _engine.HasUnboundedRules.Count > 0) ? [.. affected] : null;
 
         // Pseudo-element rules are not part of an element's own style, so the reach below skips them. The elements they
         // can restyle are found the same way, in a second pass over the pseudo-element selectors only, and reported apart.
@@ -587,11 +585,21 @@ public sealed class DocumentStyles
                 }
             }
 
+            if (hasSeeds is not null)
+            {
+                AddHasReach(view, hasSeeds, newToOld, pseudoAffected, pseudo: true, cancellationToken);
+            }
+
             AddSelectorReach(view, change, newToOld, pseudoAffected, cancellationToken, pseudo: true);
             if (newDb is not null)
             {
                 AddRuleReach(view, newDb, newToOld, pseudoAffected, cancellationToken, pseudo: true);
             }
+        }
+
+        if (hasSeeds is not null)
+        {
+            AddHasReach(view, hasSeeds, newToOld, affected, pseudo: false, cancellationToken);
         }
 
         AddSelectorReach(view, change, newToOld, affected, cancellationToken);
@@ -832,6 +840,83 @@ public sealed class DocumentStyles
         }
 
         List<StyleRule> rules = _engine.Db.RulesReading(attrs, classes, ids, attrs.Count > 0 || classes.Count > 0 || ids.Count > 0);
+        AddMatchDifferences(view, rules, null, newToOld, affected, pseudo, ct);
+    }
+
+    /// <summary>
+    /// Elements whose :has() rules match differently after a change of the tree shape (Selectors 4 section 4.5). A rule with
+    /// its :has() in the subject compound can change only for ancestors of what changed (and, for a relative selector that
+    /// starts with + or ~, for earlier siblings of those ancestors and of the change), so only those are compared. Other :has()
+    /// rules are compared for every element, since an element beside or below the one whose :has() changed can depend on it.
+    /// </summary>
+    private void AddHasReach(DocumentStyles view, List<int> seeds, int[]? newToOld, HashSet<int> affected, bool pseudo, CancellationToken ct)
+    {
+        StyleEngine old = _engine;
+        if (old.HasBoundedRules.Count > 0)
+        {
+            AddMatchDifferences(view, old.HasBoundedRules, AncestorsAndEarlierSiblings(view._doc.Arena, seeds, old.HasSideways, ct), newToOld, affected, pseudo, ct);
+        }
+
+        if (old.HasUnboundedRules.Count > 0)
+        {
+            AddMatchDifferences(view, old.HasUnboundedRules, null, newToOld, affected, pseudo, ct);
+        }
+    }
+
+    // The elements a walk upward from each seed reaches: its ancestors, and when asked the earlier element siblings of the
+    // seed and of each ancestor. A node whose walk was done is not walked again, so each element is visited once.
+    private static List<int> AncestorsAndEarlierSiblings(Arena a, List<int> seeds, bool sideways, CancellationToken ct)
+    {
+        var result = new List<int>();
+        var done = new HashSet<int>();
+        int n = 0;
+        foreach (int seed in seeds)
+        {
+            for (int cur = seed; cur >= 0 && done.Add(cur); cur = a.Parent[cur])
+            {
+                if ((++n & 255) == 0)
+                {
+                    ct.ThrowIfCancellationRequested();
+                }
+
+                if (cur != seed)
+                {
+                    result.Add(cur);
+                }
+
+                if (!sideways)
+                {
+                    continue;
+                }
+
+                for (int s = a.Prev[cur]; s >= 0; s = a.Prev[s])
+                {
+                    if (a.Kind[s] == (byte)NodeKind.Element)
+                    {
+                        result.Add(s);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static IEnumerable<Node> ElementsOf(Document doc, List<int> indexes)
+    {
+        foreach (int i in indexes)
+        {
+            if (doc.Arena.Kind[i] == (byte)NodeKind.Element)
+            {
+                yield return doc.GetNode(i);
+            }
+        }
+    }
+
+    // Adds the candidate elements (all elements when null) that match some selector of the rules differently in the old and the
+    // new document. Elements without an old counterpart are new and are in the affected set already.
+    private void AddMatchDifferences(DocumentStyles view, List<StyleRule> rules, List<int>? candidates, int[]? newToOld, HashSet<int> affected, bool pseudo, CancellationToken ct)
+    {
         if (rules.Count == 0)
         {
             return;
@@ -859,11 +944,17 @@ public sealed class DocumentStyles
         var oldM = new List<RuleSel>();
         var newM = new List<RuleSel>();
         int count = 0;
-        foreach (Node e in view._doc.Root.DescendantElements)
+        IEnumerable<Node> elements = candidates is null ? view._doc.Root.DescendantElements : ElementsOf(view._doc, candidates);
+        foreach (Node e in elements)
         {
             if ((++count & 255) == 0)
             {
                 ct.ThrowIfCancellationRequested();
+            }
+
+            if (affected.Contains(e.Index))
+            {
+                continue;
             }
 
             int oi = OldIndex(newToOld, e.Index);

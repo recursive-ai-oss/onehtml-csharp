@@ -40,6 +40,12 @@ internal static class SelectorParser
 
         /// <summary>Items a forgiving list kept only as text because they did not parse.</summary>
         public int Dropped;
+
+        /// <summary>
+        /// Set on the state of a validity probe (see <c>IsStableRaw</c>): only whether the item parses matters, so forgiving
+        /// lists inside it skip building their own raw text, which keeps the probe linear in the item.
+        /// </summary>
+        public bool Probe;
     }
 
     public static SelectorList ParseText(string text, SelectorParseOptions? options, Mode mode)
@@ -171,8 +177,8 @@ internal static class SelectorParser
                     // Selectors 4 §3.8: the item is dropped from matching, but kept as written so the list serializes unchanged.
                     st.Dropped++;
                     // Serialized (not copied) so that an unclosed bracket in the item is closed and the text parses back the same.
-                    string raw = st.Tree is null ? string.Empty : CssSerializer.Serialize(new ComponentValueList(st.Tree, v[a].Token.Index, v[b - 1].Next));
-                    if (IsStableRaw(raw))
+                    string raw = st.Probe || st.Tree is null ? string.Empty : CssSerializer.Serialize(new ComponentValueList(st.Tree, v[a].Token.Index, v[b - 1].Next));
+                    if (!st.Probe && IsStableRaw(st, raw, depth, insideHas, allowPseudoElement))
                     {
                         items.Add(new ComplexSelector { Invalid = true, Raw = raw, Id = st.NextId++ });
                     }
@@ -194,7 +200,7 @@ internal static class SelectorParser
     /// argument and serializes to the same text. Items for which it does not hold (a bad string, say) are dropped from the
     /// serialization rather than written in a form that would parse differently.
     /// </summary>
-    private static bool IsStableRaw(string raw)
+    private static bool IsStableRaw(State st, string raw, int depth, bool insideHas, bool allowPseudoElement)
     {
         if (raw.Length == 0)
         {
@@ -212,9 +218,47 @@ internal static class SelectorParser
                 only = cv;
             }
 
-            // The first value is the colon token's function: ":" then "is(...)".
-            return n == 2 && only.Kind == ComponentValueKind.Function && only.IsClosed
-                && CssSerializer.Serialize(only.Children.Trimmed()) == raw;
+            if (n != 2 || only.Kind != ComponentValueKind.Function || !only.IsClosed)
+            {
+                return false;
+            }
+
+            // A bad-string token ends at a newline; once the newline is written as a space the text is a good string (or runs
+            // into the next quote), so it never reads back as the same tokens.
+            for (int i = 0; i < t.TokenCount; i++)
+            {
+                if (t.GetToken(i).Kind == CssTokenKind.BadString)
+                {
+                    return false;
+                }
+            }
+
+            // The text must still be one list item: a comma at the top level would split it on the next parse.
+            foreach (ComponentValue child in only.Children)
+            {
+                if (IsComma(child))
+                {
+                    return false;
+                }
+            }
+
+            if (CssSerializer.Serialize(only.Children.Trimmed()) != raw)
+            {
+                return false;
+            }
+
+            // Writing the item can repair it (an unclosed bracket gets its close, an unterminated string its quote), and a
+            // repaired item may be a valid selector, which would then match on the next parse. Keep it only if it is still invalid.
+            var probe = new State { Limits = st.Limits, Namespaces = st.Namespaces, Tree = t, Probe = true };
+            ComponentValue[] arr = ToArray(only.Children);
+            try
+            {
+                return ParseComplex(probe, arr, 0, arr.Length, false, depth, insideHas, allowPseudoElement) is null;
+            }
+            catch (SelectorLimitExceededException)
+            {
+                return false;
+            }
         }
         catch (CssLimitExceededException)
         {

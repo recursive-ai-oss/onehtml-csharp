@@ -61,6 +61,15 @@ internal sealed class CascadeScratch
     public int RuleEpoch;
     public StyleEngine? Owner;
 
+    /// <summary>
+    /// The candidates of the current element grouped by cascade slot (and by custom property name), built the first time a
+    /// rollback needs them. Without it every rolled-back property re-reads every declaration of every source, which for
+    /// <c>all: revert-layer</c> repeated in many rules is properties times declarations.
+    /// </summary>
+    public Dictionary<int, List<Cand>>? SlotBuckets;
+    public Dictionary<string, List<Cand>>? CustomBuckets;
+    public int BucketMode = -1;
+
     public bool Has(int id) => Stamp[id] == Epoch;
 }
 
@@ -401,6 +410,7 @@ internal sealed class StyleEngine
         s.Touched.Clear();
         s.Custom.Clear();
         s.Sources.Clear();
+        s.BucketMode = -1;
 
         // Sources of declarations: presentational hints, matching rules, then the style attribute.
         if (PresentationalHints.For(el) is { } hints && InlineRule(hints, DeclarationKind.PresentationalHint) is { } hr)
@@ -488,6 +498,7 @@ internal sealed class StyleEngine
         s.Touched.Clear();
         s.Custom.Clear();
         s.Sources.Clear();
+        s.BucketMode = -1;
         if (++s.RuleEpoch == int.MaxValue)
         {
             Array.Clear(s.RuleStamp);
@@ -693,6 +704,12 @@ internal sealed class StyleEngine
         _ = idForSlot;
         var ex = new Exclusions();
         Cand cur = first;
+
+        // The candidates in cascade order, strongest first. Every rollback only adds exclusions, so a candidate skipped as
+        // excluded stays excluded: one walk down the list finds each next winner instead of re-reading the whole list.
+        List<Cand>? bucket = Bucket(s, custom, slot, mode);
+        bucket?.Sort(static (x, y) => Cand.Compare(y, x));
+        int pos = 0;
         for (int guard = 0; guard < 64; guard++)
         {
             switch (cur.V!.Keyword)
@@ -721,30 +738,14 @@ internal sealed class StyleEngine
 
             bool found = false;
             Cand best = default;
-            foreach ((StyleRule rule, long spec) in s.Sources)
+            while (bucket is not null && pos < bucket.Count)
             {
-                foreach (ParsedDeclaration d in rule.Parsed)
+                Cand c = bucket[pos++];
+                if (!ex.Excludes(c))
                 {
-                    foreach (StyleValue v in d.Values)
-                    {
-                        bool same = custom is not null ? v.CustomName == custom : v.CustomName is null && SlotOf(v.PropertyId, mode) == slot;
-                        if (!same)
-                        {
-                            continue;
-                        }
-
-                        Cand c = MakeCand(rule, spec, d, v);
-                        if (ex.Excludes(c))
-                        {
-                            continue;
-                        }
-
-                        if (!found || Cand.Compare(c, best) > 0)
-                        {
-                            best = c;
-                            found = true;
-                        }
-                    }
+                    best = c;
+                    found = true;
+                    break;
                 }
             }
 
@@ -757,6 +758,54 @@ internal sealed class StyleEngine
         }
 
         return null;
+    }
+
+    private List<Cand>? Bucket(CascadeScratch s, string? custom, int slot, int mode)
+    {
+        if (s.BucketMode != mode || s.SlotBuckets is null)
+        {
+            s.SlotBuckets ??= [];
+            s.CustomBuckets ??= new Dictionary<string, List<Cand>>(StringComparer.Ordinal);
+            s.SlotBuckets.Clear();
+            s.CustomBuckets.Clear();
+            s.BucketMode = mode;
+            foreach ((StyleRule rule, long spec) in s.Sources)
+            {
+                foreach (ParsedDeclaration d in rule.Parsed)
+                {
+                    foreach (StyleValue v in d.Values)
+                    {
+                        Cand c = MakeCand(rule, spec, d, v);
+                        if (v.CustomName is { } name)
+                        {
+                            if (!s.CustomBuckets.TryGetValue(name, out List<Cand>? cl))
+                            {
+                                s.CustomBuckets[name] = cl = [];
+                            }
+
+                            cl.Add(c);
+                        }
+                        else
+                        {
+                            int key = SlotOf(v.PropertyId, mode);
+                            if (!s.SlotBuckets.TryGetValue(key, out List<Cand>? sl))
+                            {
+                                s.SlotBuckets[key] = sl = [];
+                            }
+
+                            sl.Add(c);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (custom is not null)
+        {
+            return s.CustomBuckets!.GetValueOrDefault(custom);
+        }
+
+        return s.SlotBuckets.GetValueOrDefault(slot);
     }
 
     // ---- building the style ----

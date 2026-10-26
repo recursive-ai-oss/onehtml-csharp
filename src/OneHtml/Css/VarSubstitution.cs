@@ -94,10 +94,45 @@ public static class CssWideKeywords
     };
 }
 
+/// <summary>Own values first; a name that is specified here but not valid is absent; any other name reads the parent's.</summary>
+internal sealed class ScopedLookup(Dictionary<string, string> own, IReadOnlyDictionary<string, ComponentValueList> specified, IReadOnlyDictionary<string, string> inherited) : IReadOnlyDictionary<string, string>
+{
+    public string this[string key] => TryGetValue(key, out string? v) ? v : throw new KeyNotFoundException(key);
+
+    public IEnumerable<string> Keys => own.Keys;
+
+    public IEnumerable<string> Values => own.Values;
+
+    public int Count => own.Count;
+
+    public bool ContainsKey(string key) => TryGetValue(key, out _);
+
+    public bool TryGetValue(string key, out string value)
+    {
+        if (own.TryGetValue(key, out string? v))
+        {
+            value = v;
+            return true;
+        }
+
+        if (specified.ContainsKey(key))
+        {
+            value = string.Empty;
+            return false;
+        }
+
+        return inherited.TryGetValue(key, out value!);
+    }
+
+    public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => own.GetEnumerator();
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+}
+
 /// <summary>Bounds for <c>var()</c> substitution, checked before the work they guard.</summary>
 public sealed class VarLimits
 {
-    /// <summary>The defaults: 1,048,576 characters per substituted value, 2,097,152 token visits per value, 16,777,216 characters per <see cref="VarSubstitution.ResolveCustomProperties"/> call.</summary>
+    /// <summary>The defaults: 1,048,576 characters per substituted value, 2,097,152 token visits per value, 16,777,216 characters per <see cref="VarSubstitution.ResolveCustomProperties(IReadOnlyDictionary{string, ComponentValueList}, VarLimits?)"/> call.</summary>
     public static VarLimits Default { get; } = new();
 
     /// <summary>The longest text one substituted value may have. CSS Variables 1 §3 lets implementations bound the expansion; exceeding it makes the value invalid at computed-value time.</summary>
@@ -106,7 +141,7 @@ public sealed class VarLimits
     /// <summary>The most tokens one substitution may visit, counting every token of every expanded fallback. This bounds work even when the expansion is empty.</summary>
     public int MaxSteps { get; init; } = 1 << 21;
 
-    /// <summary>The most characters all custom properties of one <see cref="VarSubstitution.ResolveCustomProperties"/> call may produce together.</summary>
+    /// <summary>The most characters all custom properties of one <see cref="VarSubstitution.ResolveCustomProperties(IReadOnlyDictionary{string, ComponentValueList}, VarLimits?)"/> call may produce together.</summary>
     public int MaxTotalLength { get; init; } = 1 << 24;
 }
 
@@ -245,6 +280,15 @@ public static class VarSubstitution
             }
         }
 
+        // The fallback is a <declaration-value>: no top-level "!" or ";" (CSS Syntax 3 §5.4.7).
+        for (int j = i < args.To ? args.Next(i) : i; j < args.To; j = args.Next(j))
+        {
+            if (args.Kind(j) == CssTokenKind.Semicolon || args.IsDelim(j, '!'))
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -256,7 +300,20 @@ public static class VarSubstitution
     /// <param name="specified">Specified values by name (including the leading <c>--</c>; names are case-sensitive).</param>
     /// <param name="limits">Bounds; <see cref="VarLimits.Default"/> when null.</param>
     /// <returns>The valid computed values as text, by name.</returns>
-    public static Dictionary<string, string> ResolveCustomProperties(IReadOnlyDictionary<string, ComponentValueList> specified, VarLimits? limits = null)
+    public static Dictionary<string, string> ResolveCustomProperties(IReadOnlyDictionary<string, ComponentValueList> specified, VarLimits? limits = null) =>
+        ResolveCustomProperties(specified, null, limits);
+
+    /// <summary>
+    /// As <see cref="ResolveCustomProperties(IReadOnlyDictionary{string, ComponentValueList}, VarLimits?)"/>, for an element
+    /// whose parent already has computed custom properties: a <c>var()</c> naming a property that is not in
+    /// <paramref name="specified"/> reads <paramref name="inherited"/> (custom properties inherit, CSS Variables 1 §2).
+    /// The result holds only the properties of <paramref name="specified"/>; one that is cyclic or invalid is absent and
+    /// does not fall back to the inherited value.
+    /// </summary>
+    /// <param name="specified">Specified values by name (including the leading <c>--</c>; names are case-sensitive).</param>
+    /// <param name="inherited">The parent's computed custom properties, or null.</param>
+    /// <param name="limits">Bounds; <see cref="VarLimits.Default"/> when null.</param>
+    public static Dictionary<string, string> ResolveCustomProperties(IReadOnlyDictionary<string, ComponentValueList> specified, IReadOnlyDictionary<string, string>? inherited, VarLimits? limits = null)
     {
         ArgumentNullException.ThrowIfNull(specified);
         limits ??= VarLimits.Default;
@@ -288,6 +345,7 @@ public static class VarSubstitution
 
         // Resolve in dependency order (post-order of an iterative DFS), skipping cyclic properties.
         var resolved = new Dictionary<string, string>(StringComparer.Ordinal);
+        IReadOnlyDictionary<string, string> lookup = inherited is null ? resolved : new ScopedLookup(resolved, specified, inherited);
         int[] state = new int[n]; // 0 new, 1 on stack, 2 done
         var stack = new Stack<(int Node, int Next)>();
         int total = 0;
@@ -322,7 +380,7 @@ public static class VarSubstitution
                     continue;
                 }
 
-                SubstitutionResult res = Substitute(specified[names[node]], resolved, limits);
+                SubstitutionResult res = Substitute(specified[names[node]], lookup, limits);
                 if (res.IsValid)
                 {
                     total += res.Text.Length;
@@ -336,7 +394,7 @@ public static class VarSubstitution
 
     /// <summary>
     /// Substitutes every <c>var()</c> in <paramref name="value"/> using already-computed custom property values (see
-    /// <see cref="ResolveCustomProperties"/>). A <c>var()</c> whose property is missing uses its fallback, or makes
+    /// <see cref="ResolveCustomProperties(IReadOnlyDictionary{string, ComponentValueList}, VarLimits?)"/>). A <c>var()</c> whose property is missing uses its fallback, or makes
     /// the result <see cref="SubstitutionStatus.InvalidAtComputedValueTime"/>.
     /// </summary>
     /// <param name="value">A declaration's value (any property, or a custom property).</param>

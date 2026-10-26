@@ -19,6 +19,7 @@
     <Compile Include="../../fuzz/OneHtml.Fuzz/SelectorTarget.cs" Link="Selectors/SelectorTarget.cs" />
     <Compile Include="../../fuzz/OneHtml.Fuzz/EditTarget.cs" Link="Editing/EditTarget.cs" />
     <Compile Include="../../fuzz/OneHtml.Fuzz/EditOracle.cs" Link="Editing/EditOracle.cs" />
+    <Compile Include="../../fuzz/OneHtml.Fuzz/StyleTarget.cs" Link="Style/StyleTarget.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />

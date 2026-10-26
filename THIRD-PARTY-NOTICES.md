@@ -7,7 +7,10 @@ compiled into the libraries as generated tables or used only by the tests.
 
 Used in: `src/OneHtml/Encodings/Generated/` (encoding labels and indexes, generated from `encodings.json` and
 `indexes.json`), `src/OneHtml/Parsing/Generated/` (named character references, generated from `entities.json`), and
-`testdata/whatwg/` (copies of `encodings.json` and `indexes.json`, used by the decoder tests).
+`testdata/whatwg/` (copies of `encodings.json` and `indexes.json`, used by the decoder tests), and
+`src/OneHtml/Css/Generated/UserAgentStylesheet.g.cs` (the default style sheet, generated from the CSS blocks of the HTML
+Standard's Rendering section, which `tools/generate-ua-stylesheet.py` reads; the file records the retrieval date and the
+SHA-256 of the page).
 
 Sources: <https://encoding.spec.whatwg.org/> and <https://html.spec.whatwg.org/>.
 
@@ -100,6 +103,10 @@ unmodified and are not part of the published packages. Used in:
 - `testdata/css/wpt/css/css-syntax/`: CSS Syntax tests (the `charset/` directory is not included).
 - `testdata/wpt/aria/`: the role pages of `html-aam/` (13 files) and `wai-aria/role/` (24 files), unmodified, with an
   expectations file we wrote. `testdata/wpt/aria/MANIFEST.md` lists each file with its SHA-256.
+- `testdata/css/wpt-style/`: cascade tests, unmodified: `css/css-cascade/`, `css/css-variables/`, `css/css-nesting/`, the
+  specificity files of `css/selectors/`, the computed-value files of `css/css-fonts/parsing/`, `css-display/parsing/`,
+  `css-position/parsing/`, `css-overflow/parsing/`, `css-ui/parsing/`, and the shared `css/support/*.css`.
+  `testdata/css/wpt-style/SHA256SUMS` lists each file.
 
 ```
 The 3-Clause BSD License

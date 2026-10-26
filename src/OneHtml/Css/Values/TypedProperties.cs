@@ -228,10 +228,11 @@ public sealed class FontWeightValue
 /// <summary>A <c>font-style</c>: <c>normal</c>, <c>italic</c>, or <c>oblique</c> with an optional angle.</summary>
 /// <param name="Keyword">normal, italic or oblique.</param>
 /// <param name="ObliqueAngleDegrees">The angle for oblique (14 when not written).</param>
-public readonly record struct FontStyleValue(string Keyword, double ObliqueAngleDegrees)
+/// <param name="AngleWritten">True when the angle was written, even if it is the default 14deg.</param>
+public readonly record struct FontStyleValue(string Keyword, double ObliqueAngleDegrees, bool AngleWritten = false)
 {
-    /// <summary>The value as CSS text (<c>oblique 14deg</c> serializes as <c>oblique</c>).</summary>
-    public string ToCss() => Keyword == "oblique" && Math.Abs(ObliqueAngleDegrees - 14) > 1e-9 ? $"oblique {CssUnits.FormatNumber(ObliqueAngleDegrees)}deg" : Keyword;
+    /// <summary>The value as CSS text: <c>oblique</c> alone stays <c>oblique</c>, a written angle is kept, and <c>oblique 0deg</c> is <c>normal</c> (CSS Fonts 4 §2.3 computed value).</summary>
+    public string ToCss() => Keyword != "oblique" ? Keyword : !AngleWritten ? "oblique" : ObliqueAngleDegrees == 0 ? "normal" : $"oblique {CssUnits.FormatNumber(ObliqueAngleDegrees)}deg";
 }
 
 /// <summary>A <c>font-family</c> list.</summary>
@@ -267,10 +268,39 @@ public sealed class FontFamilyValue
                 sb.Append(", ");
             }
 
-            sb.Append(IsGeneric[i] ? Names[i] : Quote(Names[i]));
+            sb.Append(IsGeneric[i] || IsIdentifierRun(Names[i]) ? Names[i] : Quote(Names[i]));
         }
 
         return sb.ToString();
+    }
+
+    // A family name written as a run of identifiers serializes without quotes (CSSOM "serialize a family name"), as long as no
+    // word could be mistaken for something else.
+    private static bool IsIdentifierRun(string name)
+    {
+        if (name.Length == 0)
+        {
+            return false;
+        }
+
+        foreach (string word in name.Split(' '))
+        {
+            if (word.Length == 0 || char.IsAsciiDigit(word[0]) || word[0] == '-' && (word.Length == 1 || char.IsAsciiDigit(word[1])))
+            {
+                return false;
+            }
+
+            foreach (char c in word)
+            {
+                if (!(char.IsAsciiLetterOrDigit(c) || c is '-' or '_' || c > 0x7F))
+                {
+                    return false;
+                }
+            }
+        }
+
+        string lower = name.AsciiLower();
+        return !ValueKinds.In(Generic, lower) && lower is not ("inherit" or "initial" or "unset" or "revert" or "revert-layer" or "default");
     }
 
     private static string Quote(string s) => "\"" + s.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal) + "\"";
@@ -627,7 +657,7 @@ public static class TypedProperties
             return false;
         }
 
-        result = new FontStyleValue("oblique", deg);
+        result = new FontStyleValue("oblique", deg, true);
         return true;
     }
 

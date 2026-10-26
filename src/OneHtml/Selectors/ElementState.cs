@@ -454,6 +454,23 @@ internal static class ElementState
         return IsEditable(n);
     }
 
+    /// <summary>A text-entry control (<c>textarea</c>, or an <c>input</c> that takes typed text) or an editing host: the elements that match <c>:focus-visible</c> after pointer focus.</summary>
+    public static bool IsTextEntryOrEditingHost(Node n)
+    {
+        if (!n.IsElement || n.Namespace != ElementNamespace.Html)
+        {
+            return false;
+        }
+
+        InputType t = GetInputType(n);
+        if (t != InputType.NotInput)
+        {
+            return ReadonlyApplies(t);
+        }
+
+        return IsHtml(n, "textarea") || IsEditable(n);
+    }
+
     private static bool IsEditable(Node n)
     {
         for (Node p = n; !p.IsNull; p = Parent(p))

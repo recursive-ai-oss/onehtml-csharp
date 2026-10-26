@@ -61,6 +61,30 @@ internal static class SelectorMatcher
         return MatchList(ref c, list, element.Index);
     }
 
+    /// <summary>
+    /// Tests candidate complex selectors (rule, index) against one element and appends the ones that match. One match
+    /// context serves all candidates, so the per-element setup is paid once. The cascade needs the individual selector
+    /// that matched for its specificity.
+    /// </summary>
+    internal static void FilterMatching(Node element, List<Css.RuleSel> candidates, SelectorMatchOptions? options, List<Css.RuleSel> matched)
+    {
+        MatchCtx c = Create(element, options, options?.BulkCache is not null);
+        if (options?.BulkCache is { } cache)
+        {
+            c.HasMarks = cache.HasMarks;
+            c.NthCaches = cache.Nth;
+        }
+
+        int el = element.Index;
+        foreach (Css.RuleSel rs in candidates)
+        {
+            if (MatchComplex(ref c, rs.Rule.Selectors!.Items[rs.Sel], el))
+            {
+                matched.Add(rs);
+            }
+        }
+    }
+
     public static Node QueryFirst(Node context, SelectorList list, SelectorMatchOptions? options)
     {
         Document doc = context.Document!;
@@ -670,9 +694,17 @@ internal static class SelectorMatcher
                 return ElementState.IsLink(n);
 
             case PseudoKind.Hover:
-                return c.State is not null && InChain(ref c, c.State.Hover, el, false);
+            {
+                InteractionState? st = c.State;
+                return st is not null && (InChain(ref c, st.Hover, el, false) || InChain(ref c, st.HoverControl, el, false));
+            }
+
             case PseudoKind.Active:
-                return c.State is not null && InChain(ref c, c.State.Active, el, false);
+            {
+                InteractionState? st = c.State;
+                return st is not null && (InChain(ref c, st.Active, el, false) || InChain(ref c, st.ActiveControl, el, false));
+            }
+
             case PseudoKind.Focus:
                 return c.State is not null && InChain(ref c, c.State.Focus, el, true);
             case PseudoKind.FocusVisible:

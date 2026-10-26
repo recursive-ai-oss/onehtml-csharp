@@ -245,8 +245,14 @@ public sealed class InteractionState
     /// <summary>The hovered element; it and its ancestors match <c>:hover</c>.</summary>
     public Node Hover { get; init; }
 
+    /// <summary>The control a hovered <c>label</c> stands for (HTML 4.16.3: a label's labeled control matches <c>:hover</c> with it); it and its ancestors match <c>:hover</c> too.</summary>
+    public Node HoverControl { get; init; }
+
     /// <summary>The element being activated; it and its ancestors match <c>:active</c>.</summary>
     public Node Active { get; init; }
+
+    /// <summary>The control an activated <c>label</c> stands for; it and its ancestors match <c>:active</c> too.</summary>
+    public Node ActiveControl { get; init; }
 
     /// <summary>The element the URL fragment names (<c>:target</c>); it and its ancestors match <c>:target-within</c>.</summary>
     public Node Target { get; init; }
@@ -264,5 +270,16 @@ public sealed class SelectorMatchOptions
     /// <summary>The interaction state, or null for none.</summary>
     public InteractionState? State { get; init; }
 
+    /// <summary>Marks and counts shared between matches against one document and state (the cascade matches every element, so <c>:has()</c> and <c>:nth-*(of S)</c> are computed in bulk).</summary>
+    internal SelectorBulkCache? BulkCache { get; init; }
+
     internal static SelectorMatchOptions ForScope(Node scope) => new() { Scope = scope };
+}
+
+/// <summary>Persistent bulk state for repeated matching. Not thread-safe: callers lock around its use.</summary>
+internal sealed class SelectorBulkCache
+{
+    public Dictionary<ComplexSelector, ulong[]> HasMarks { get; } = [];
+
+    public Dictionary<Simple, NthOfCache> Nth { get; } = [];
 }

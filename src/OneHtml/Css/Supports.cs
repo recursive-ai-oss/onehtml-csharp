@@ -221,7 +221,8 @@ public static class DeclarationSupport
         ArgumentNullException.ThrowIfNull(property);
         if (property.StartsWith("--", StringComparison.Ordinal))
         {
-            return property.Length > 2;
+            TokenRange cv = TokenRange.Of(value).Trim();
+            return property.Length > 2 && (cv.IsEmpty || SyntacticallyAcceptable(cv, allowBlocks: true)) && VarSubstitution.IsValidSyntax(value);
         }
 
         if (!PropertyTable.TryGet(property, out PropertyInfo? info))
@@ -235,14 +236,20 @@ public static class DeclarationSupport
             return false;
         }
 
-        if (CssWideKeywords.Detect(value) != CssWideKeyword.None || VarSubstitution.ContainsVar(value))
+        bool hasVar = VarSubstitution.ContainsVar(value);
+        if (!SyntacticallyAcceptable(r, allowBlocks: hasVar))
+        {
+            return false;
+        }
+
+        if (CssWideKeywords.Detect(value) != CssWideKeyword.None)
         {
             return true;
         }
 
-        if (!SyntacticallyAcceptable(r))
+        if (hasVar)
         {
-            return false;
+            return VarSubstitution.IsValidSyntax(value);
         }
 
         if (TypedProperties.IsTyped(info.Name) || info.Name is "content" or "clip-path" or "background-image" or "speak-as")
@@ -268,7 +275,7 @@ public static class DeclarationSupport
         return true;
     }
 
-    internal static bool SyntacticallyAcceptable(TokenRange r)
+    internal static bool SyntacticallyAcceptable(TokenRange r, bool allowBlocks = false)
     {
         int i = r.From;
         while (i < r.To)
@@ -278,10 +285,11 @@ public static class DeclarationSupport
                 case CssTokenKind.BadString:
                 case CssTokenKind.BadUrl:
                 case CssTokenKind.Semicolon:
-                case CssTokenKind.LeftBrace:
                 case CssTokenKind.RightBrace:
                 case CssTokenKind.RightParen:
                 case CssTokenKind.RightBracket:
+                    return false;
+                case CssTokenKind.LeftBrace when !allowBlocks:
                     return false;
                 case CssTokenKind.Delim when r.IsDelim(i, '!'):
                     return false;

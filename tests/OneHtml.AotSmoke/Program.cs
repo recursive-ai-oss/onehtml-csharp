@@ -137,4 +137,17 @@ bool rolesOk = roleMap[rdoc.Root.QuerySelector("ul")].ComputedRole == "none"
     && RecursiveAI.OneHtml.Accessibility.Aria.HtmlAam.Elements.Count > 100;
 Console.WriteLine($"roles: {rolesOk}");
 
-return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk ? 0 : 1;
+
+// Cascade: UA sheet, author rules, layers, inheritance, a focus overlay and a restyle.
+RecursiveAI.OneHtml.Document sdoc = RecursiveAI.OneHtml.Document.Parse("<style>@layer a,b; @layer b{p{color:red}} @layer a{p{color:blue}} .k{--w:2px; margin-left:var(--w)} a:focus{color:green} p.q{color:orange}</style><div class=k><p id=p>x<a id=l href=/x>y</a></p></div>");
+DocumentStyles styles = DocumentStyles.Create(sdoc);
+RecursiveAI.OneHtml.Node sp = sdoc.GetElementById("p");
+RecursiveAI.OneHtml.Node sl = sdoc.GetElementById("l");
+DocumentStyles focused = styles.WithContext(StyleContext.Default.WithFocus(sl));
+RecursiveAI.OneHtml.Document sdoc2 = RecursiveAI.OneHtml.Document.Parse("<style>@layer a,b; @layer b{p{color:red}} @layer a{p{color:blue}} .k{--w:2px; margin-left:var(--w)} a:focus{color:green} p.q{color:orange}</style><div class=k><p id=p class=q>x<a id=l href=/x>y</a></p></div>");
+RestyleResult restyled = styles.Restyle(sdoc2, new StyleChange { Elements = [new ElementChange(sdoc2.GetElementById("p").Index, ["class"])] });
+bool styleOk = styles.GetStyle(sp).GetPropertyValue("color") == "red" && styles.GetStyle(sl).GetComputedValue("color") == "rgb(0, 0, 238)" && styles.GetStyle(sp).GetPropertyValue("margin-left") == "0"
+    && styles.GetStyle(sdoc.Root.QuerySelector(".k")).GetPropertyValue("margin-left") == "2px" && focused.GetStyle(sl).GetComputedValue("color") == "rgb(0, 128, 0)"
+    && styles.GetStyle(sp).Display.ToCss() == "block" && restyled.Styles.GetStyle(sdoc2.GetElementById("p")).GetComputedValue("color") == "rgb(255, 165, 0)" && !restyled.FullRecompute;
+Console.WriteLine($"style={styleOk} sheets={styles.Sheets.Count} rules={styles.RuleCount} restyled={restyled.RestyledElements.Count}");
+return htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk ? 0 : 1;

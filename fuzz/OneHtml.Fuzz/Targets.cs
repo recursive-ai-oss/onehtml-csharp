@@ -14,6 +14,7 @@ internal static class Targets
         ["edit"] = EditTarget.Run,
         ["noop"] = static _ => { },
         ["selectors"] = SelectorTarget.Run,
+        ["style"] = StyleTarget.Run,
         ["tokenize"] = Tokenize,
         ["treebuilder"] = TreeBuilder,
         ["values"] = ValueTarget.Run,

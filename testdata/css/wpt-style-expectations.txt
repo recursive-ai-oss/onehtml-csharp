@@ -1,0 +1,14 @@
+# Known failures of the web-platform-tests cascade replay (tests/OneHtml.Tests/Style/WptStyleTests.cs).
+# Fields, separated by tabs: file regex, test-title regex, reason.
+important-prop	.*	reftest: the red border belongs to a keyframes animation; animations are not evaluated
+revert-rule-cycle\.tentative	.*	tentative: the cycle between revert-rule and revert-layer is not detected; the rollback keeps looking at lower layers
+unset-val-002	.*	reftest: the red box is covered by a later sibling; the runner paints nothing and only knows descendants and absolutely positioned boxes
+vars-font-shorthand-001	.*	reftest: the red box is covered by glyphs of the Ahem font; no text painting
+nesting-basic	.*	reftest: needs ::before styles; pseudo-elements are not styled
+missing-closing-nested-fallback	.*	box-shadow is not a typed property, so its computed value is the cascaded text instead of the reordered serialization
+revert-layer-in-fallback	.*	var() whose fallback is revert-layer is not a rollback at computed-value time; the substituted keyword is treated as unset
+var-ident-function	.*	ident() (CSS Values 5) is not implemented
+scope-	.*	@scope is not evaluated; its rules are skipped
+font-style-computed	calc	calc() angles are not typed for font-style (no clamping to 90deg, no container units)
+font-weight-computed	cqw	container query units need a container; layout is out of scope
+outline-offset-computed	inset	outline-offset: inset is not in the property syntax this library validates

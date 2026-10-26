@@ -79,4 +79,4 @@ N/A reasons: 20 expectations are built by script (`createElementNS`, `setAttribu
 a script mutation of element state, user interaction, or reference rendering; 1 parsing case needs a browser feature.
 Known failures: 43 assertions in three `*.tentative.html` files for proposals that are not in Selectors 4
 (class-prefix `.foo-*` selectors and `:has-slotted`). The specificity files in `css/selectors` (`is/not/has`) compare
-cascade winners and are not run until the cascade exists.
+cascade winners; they run with the cascade (see `cascade.md`).

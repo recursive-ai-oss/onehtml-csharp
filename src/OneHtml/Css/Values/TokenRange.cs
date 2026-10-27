@@ -46,6 +46,21 @@ public readonly struct TokenRange
         return new TokenRange(tree!, from, to);
     }
 
+    /// <summary>
+    /// The tokens of this range as a <see cref="ComponentValueList"/> over the same tree, with nothing copied; the inverse of <see cref="Of"/>.
+    /// A default range gives a default (empty) list, and bounds outside the tree are clamped to it.
+    /// </summary>
+    public ComponentValueList ToList()
+    {
+        if (Tree is null)
+        {
+            return default;
+        }
+
+        int from = Math.Clamp(From, 0, Tree.Tokens.Length);
+        return new ComponentValueList(Tree, from, Math.Clamp(To, from, Tree.Tokens.Length));
+    }
+
     /// <summary>Parses <paramref name="text"/> as a list of component values (CSS Syntax 3 section 5.4.9) and returns the range covering all of it, for a value given as text.</summary>
     /// <param name="text">Decoded value text, without the property name or <c>!important</c>.</param>
     /// <param name="options">Limits; <see cref="CssParseOptions.Default"/> when null.</param>

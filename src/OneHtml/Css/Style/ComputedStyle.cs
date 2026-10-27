@@ -339,7 +339,59 @@ public sealed partial class ComputedStyle
             return TryGetCustomProperty(property, out string v) ? v : string.Empty;
         }
 
+        if (SerializeShorthand(property) is { } shorthand)
+        {
+            return shorthand;
+        }
+
         return GetValue(property)?.Text ?? string.Empty;
+    }
+
+    /// <summary>
+    /// The value of <c>white-space</c> or <c>text-wrap</c> serialized from the longhands that carry it (CSS Text 4 sections 3.1 and 5.1: a
+    /// shorthand's value is the shortest string its longhands' values form, as <c>getComputedStyle</c> shows it); null for any other property.
+    /// </summary>
+    internal string? SerializeShorthand(string property)
+    {
+        if (string.Equals(property, "white-space", StringComparison.OrdinalIgnoreCase))
+        {
+            string collapse = GetPropertyValue("white-space-collapse").Trim();
+            bool nowrap = string.Equals(GetPropertyValue("text-wrap-mode").Trim(), "nowrap", StringComparison.OrdinalIgnoreCase);
+            bool isCollapse = string.Equals(collapse, "collapse", StringComparison.OrdinalIgnoreCase);
+            bool preserve = string.Equals(collapse, "preserve", StringComparison.OrdinalIgnoreCase);
+            bool breaks = string.Equals(collapse, "preserve-breaks", StringComparison.OrdinalIgnoreCase);
+            if (isCollapse)
+            {
+                return nowrap ? "nowrap" : "normal";
+            }
+
+            if (preserve)
+            {
+                return nowrap ? "pre" : "pre-wrap";
+            }
+
+            if (breaks && !nowrap)
+            {
+                return "pre-line";
+            }
+
+            return nowrap ? collapse + " nowrap" : collapse;
+        }
+
+        if (string.Equals(property, "text-wrap", StringComparison.OrdinalIgnoreCase))
+        {
+            string style = GetPropertyValue("text-wrap-style").Trim();
+            bool nowrap = string.Equals(GetPropertyValue("text-wrap-mode").Trim(), "nowrap", StringComparison.OrdinalIgnoreCase);
+            bool auto = string.Equals(style, "auto", StringComparison.OrdinalIgnoreCase);
+            if (nowrap)
+            {
+                return auto ? "nowrap" : "nowrap " + style;
+            }
+
+            return auto ? "wrap" : style;
+        }
+
+        return null;
     }
 
     /// <summary>Where a property's value was declared (see <see cref="StyleValue.Source"/>); null for an initial value or unknown property.</summary>

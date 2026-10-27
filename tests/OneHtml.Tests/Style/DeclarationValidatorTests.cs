@@ -129,6 +129,20 @@ public class DeclarationValidatorTests
     }
 
     [Fact]
+    public void Border_pair_and_white_space_shorthands_are_asked_per_longhand()
+    {
+        var log = new List<string>();
+        const string h = "<style>p{border-block:2px solid blue; white-space:pre; text-wrap:balance}</style><p id=a>";
+        Get(h, "a", "color", Opts(Grammar, log));
+        Assert.Contains("border-block-start-width=2px", log);
+        Assert.Contains("border-block-end-style=solid", log);
+        Assert.Contains("white-space-collapse=preserve", log);
+        Assert.Contains("text-wrap-mode=nowrap", log);
+        Assert.Contains("text-wrap-style=balance", log);
+        Assert.DoesNotContain(log, e => e.StartsWith("border-block=", System.StringComparison.Ordinal) || e.StartsWith("white-space=", System.StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Typed_properties_and_the_user_agent_sheet_are_not_asked()
     {
         var log = new List<string>();

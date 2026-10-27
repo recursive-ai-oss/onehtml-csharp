@@ -4,6 +4,20 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Added
+
+- `LengthContext.RootExRatio`, `RootCapRatio`, `RootChRatio` and `RootIcRatio`: the root element's font metrics for `rex`, `rcap`, `rch` and `ric` (CSS Values 4 section 6.1.1). 0 means unset and the element's ratio stands in, so existing callers see no change.
+- `border-block` and `border-inline` expand to their start and end longhands, in every writing mode and direction, with `var()`, CSS-wide keywords and `!important`. Before, they set nothing.
+- `white-space` and `text-wrap` expand to `white-space-collapse`, `text-wrap-mode` and `text-wrap-style`, and `GetPropertyValue`/`GetComputedValue` serialize the shorthands from them, as Chrome does.
+
+### Changed
+
+- `white-space` and `text-wrap` inherit (through their longhands), as CSS Text 4 defines and Chrome does. A child of `white-space: pre` reads `pre` instead of `normal`; `white-space: nowrap` now sets `text-wrap-mode: nowrap`, and `white-space: pre` sets `white-space-collapse: preserve`. Across a 336-page corpus sample, 12,234 of 272,922 elements read differently for these properties. The accessibility tree and the checker's results are unchanged on the same pages.
+
+### Fixed
+
+- `rex`, `rcap`, `rch` and `ric` resolved against the element's font metrics instead of the root's when a caller supplied different ones; see `LengthContext.RootExRatio`.
+
 ## [1.1.1] - 2026-10-27
 
 ### Added

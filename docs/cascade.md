@@ -309,3 +309,21 @@ The largest N/A groups are tests that need script (`@scope` and `CSSOM` manipula
 pages whose script changes the document before asserting. The known failures are `@scope`, `ident()`, `var()` with a
 `revert-layer` fallback, the tentative revert-rule cycle, `calc()` angles and container units, and reference tests that
 depend on pseudo-elements, glyph painting or sibling stacking.
+
+## `white-space` and `text-wrap`
+
+Both are shorthands of inherited longhands (CSS Text 4 sections 3.1 and 5.1): `white-space` sets `white-space-collapse` and
+`text-wrap-mode`, `text-wrap` sets `text-wrap-mode` and `text-wrap-style`. The shorthand is never stored; its longhands
+inherit, so a child of `white-space: pre` reads `pre`. The accepted values are Chrome 156's: `white-space-collapse` is
+`collapse`, `preserve`, `preserve-breaks` or `break-spaces` here (`discard`, `preserve-spaces` and `white-space-trim` make the
+shorthand invalid), and `text-wrap-style` is `auto`, `balance`, `stable` or `pretty`. An omitted part resets to its initial
+value. `GetPropertyValue` and `GetComputedValue` serialize the shorthand from the longhands as the shortest form:
+`normal`, `nowrap`, `pre`, `pre-wrap`, `pre-line`, `break-spaces`, otherwise `<collapse> nowrap` or the collapse keyword
+alone; `text-wrap` reads `wrap`, `nowrap`, `<style>` or `nowrap <style>`.
+
+## `border-block` and `border-inline`
+
+One `<line-width> || <line-style> || <color>` sets the start and the end side, like `border-block-start` and
+`border-block-end` written with the same value; the flow-relative longhands map to physical sides by writing mode and
+direction (CSS Logical Properties 1 section 4). They accept `var()`, CSS-wide keywords and `!important`, and a
+`DeclarationValidator` sees the longhands.

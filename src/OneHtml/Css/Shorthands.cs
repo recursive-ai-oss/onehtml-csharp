@@ -67,8 +67,8 @@ public sealed class ShorthandExpansion
 /// <summary>
 /// Shorthand expansion (CSS Cascade 5 §3.1 and the shorthands' own grammars). Real grammars exist for the
 /// box-model shorthands (<c>margin</c>, <c>padding</c>, <c>inset</c>, <c>border-*</c>, <c>overflow</c>, <c>gap</c>), <c>outline</c>,
-/// <c>text-decoration</c>, <c>list-style</c>, <c>font</c>, <c>background</c> (and <c>background-position</c>), <c>transition</c> and
-/// <c>animation</c>. Every other shorthand reports <see cref="ShorthandStatus.NotExpanded"/>.
+/// <c>border-block</c> and <c>border-inline</c>, <c>text-decoration</c>, <c>list-style</c>, <c>white-space</c>, <c>text-wrap</c>, <c>font</c>,
+/// <c>background</c> (and <c>background-position</c>), <c>transition</c> and <c>animation</c>. Every other shorthand reports <see cref="ShorthandStatus.NotExpanded"/>.
 /// </summary>
 public static partial class Shorthands
 {
@@ -138,6 +138,9 @@ public static partial class Shorthands
             Kind.BackgroundPosition => BackgroundPosition(r, slots),
             Kind.Transition => Transition(r, slots),
             Kind.Animation => Animation(r, slots),
+            Kind.BorderPair => BorderPair(r, info, slots),
+            Kind.WhiteSpace => WhiteSpace(r, slots),
+            Kind.TextWrap => TextWrap(r, slots),
             _ => false,
         };
         if (!ok)
@@ -183,6 +186,9 @@ public static partial class Shorthands
         BackgroundPosition,
         Transition,
         Animation,
+        BorderPair,
+        WhiteSpace,
+        TextWrap,
     }
 
     private struct Slot
@@ -205,6 +211,9 @@ public static partial class Shorthands
             case "animation": return Kind.Animation;
             case "text-decoration": return Kind.TextDecoration;
             case "list-style": return Kind.ListStyle;
+            case "border-block" or "border-inline": return Kind.BorderPair;
+            case "white-space": return Kind.WhiteSpace;
+            case "text-wrap": return Kind.TextWrap;
         }
 
         string[] l = info.Longhands;
@@ -458,6 +467,79 @@ public static partial class Shorthands
         }
 
         return slots.Count > 0;
+    }
+
+    // --- border-block, border-inline (CSS Logical Properties 1 section 4.4) -----------------------------------------------------
+
+    // One <line-width> || <line-style> || <color> sets the start and the end side alike. Each side is the nested border-*-start /
+    // border-*-end shorthand, which AddLeaf expands down to its flow-relative longhands; the cascade maps those to physical
+    // sides under the element's writing mode.
+    private static bool BorderPair(TokenRange r, PropertyInfo info, Dictionary<string, Slot> slots)
+    {
+        var parts = new (string Name, Func<TokenRange, int, int> Match)[]
+        {
+            ("width", ValueKinds.LineWidth),
+            ("style", ValueKinds.LineStyle),
+            ("color", ValueKinds.Color),
+        };
+        var seen = new Dictionary<string, Slot>(StringComparer.Ordinal);
+        if (!Unordered(r, parts, seen))
+        {
+            return false;
+        }
+
+        foreach (string side in info.Longhands)
+        {
+            slots[side] = new Slot { From = r.From, To = r.To };
+        }
+
+        return true;
+    }
+
+    // --- white-space and text-wrap (CSS Text 4 sections 3.1 and 5.1) -------------------------------------------------------------
+
+    // Chrome accepts only these white-space-collapse keywords in the shorthand (discard and preserve-spaces make the declaration
+    // invalid there), and no white-space-trim, so the grammar here is the same.
+    private static readonly FrozenSet<string> WhiteSpaceCollapseWords = ValueKinds.Set("collapse", "preserve", "preserve-breaks", "break-spaces");
+    private static readonly FrozenSet<string> TextWrapModeWords = ValueKinds.Set("wrap", "nowrap");
+    private static readonly FrozenSet<string> TextWrapStyleWords = ValueKinds.Set("auto", "balance", "stable", "pretty");
+
+    private static bool WhiteSpace(TokenRange r, Dictionary<string, Slot> slots)
+    {
+        int i = r.SkipWs(r.From);
+        if (Components(r).Count == 1)
+        {
+            // The single-keyword forms are shorthands for a pair of longhands.
+            (string, string)? pair = null;
+            if (r.IsIdent(i, "normal")) { pair = ("collapse", "wrap"); }
+            else if (r.IsIdent(i, "pre")) { pair = ("preserve", "nowrap"); }
+            else if (r.IsIdent(i, "pre-wrap")) { pair = ("preserve", "wrap"); }
+            else if (r.IsIdent(i, "pre-line")) { pair = ("preserve-breaks", "wrap"); }
+
+            if (pair is { } p)
+            {
+                slots["white-space-collapse"] = new Slot { Text = p.Item1 };
+                slots["text-wrap-mode"] = new Slot { Text = p.Item2 };
+                return true;
+            }
+        }
+
+        var parts = new (string Name, Func<TokenRange, int, int> Match)[]
+        {
+            ("white-space-collapse", (rr, k) => ValueKinds.Keyword(rr, k, WhiteSpaceCollapseWords)),
+            ("text-wrap-mode", (rr, k) => ValueKinds.Keyword(rr, k, TextWrapModeWords)),
+        };
+        return Unordered(r, parts, slots);
+    }
+
+    private static bool TextWrap(TokenRange r, Dictionary<string, Slot> slots)
+    {
+        var parts = new (string Name, Func<TokenRange, int, int> Match)[]
+        {
+            ("text-wrap-mode", (rr, k) => ValueKinds.Keyword(rr, k, TextWrapModeWords)),
+            ("text-wrap-style", (rr, k) => ValueKinds.Keyword(rr, k, TextWrapStyleWords)),
+        };
+        return Unordered(r, parts, slots);
     }
 
     // --- text-decoration -----------------------------------------------------------------------------------------------

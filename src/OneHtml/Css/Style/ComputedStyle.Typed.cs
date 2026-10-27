@@ -363,6 +363,11 @@ public sealed partial class ComputedStyle
 
         id = LogicalMap.Physical(id, Mode) is var p and >= 0 ? p : id;
         string name = PropertyIds.Info[id].Name;
+        if (SerializeShorthand(name) is { } serialized)
+        {
+            return serialized;
+        }
+
         switch (name)
         {
             case "color":

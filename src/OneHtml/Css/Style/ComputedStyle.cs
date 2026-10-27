@@ -219,7 +219,7 @@ public sealed partial class ComputedStyle
     }
 
     /// <summary>Whether this style was built from the same parent and the same winning declarations (so it can be shared).</summary>
-    internal bool KeyMatches(ComputedStyle? parent, int[] ids, StyleValue[] vals, string[] cNames, StyleValue[] cVals)
+    internal bool KeyMatches(ComputedStyle? parent, ReadOnlySpan<int> ids, ReadOnlySpan<StyleValue> vals, ReadOnlySpan<string> cNames, ReadOnlySpan<StyleValue> cVals)
     {
         if (!ReferenceEquals(Parent, parent) || _keyIds.Length != ids.Length || _keyCNames.Length != cNames.Length)
         {
@@ -329,7 +329,15 @@ public sealed partial class ComputedStyle
         return id < 0 ? null : Get(id);
     }
 
-    /// <summary>The value of a property as CSS text, or the empty string for an unknown property. See <see cref="GetValue"/>.</summary>
+    /// <summary>
+    /// The value of a property by id (<see cref="PropertyTable.IdOf"/>), as <see cref="GetValue(string)"/> reads it. Allocation-free: the
+    /// returned object is the shared one the style table holds.
+    /// </summary>
+    /// <param name="propertyId">An id from <see cref="PropertyTable.IdOf"/>.</param>
+    /// <returns>The value, or null for an id that is not a property.</returns>
+    public StyleValue? GetValue(int propertyId) => (uint)propertyId < (uint)PropertyIds.Count ? Get(propertyId) : null;
+
+    /// <summary>The value of a property as CSS text, or the empty string for an unknown property. See <see cref="GetValue(string)"/>.</summary>
     /// <param name="property">A property name.</param>
     public string GetPropertyValue(string property)
     {

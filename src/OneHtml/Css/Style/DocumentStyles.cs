@@ -76,6 +76,8 @@ public sealed class DocumentStyles
 
     internal StyleSourceOptions SourceOptions => _options;
 
+    internal StyleEngine Engine => _engine;
+
     /// <summary>The context the styles were computed under.</summary>
     public StyleContext Context => _context;
 

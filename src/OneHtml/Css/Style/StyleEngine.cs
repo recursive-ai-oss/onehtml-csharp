@@ -61,6 +61,13 @@ internal sealed class CascadeScratch
     public int RuleEpoch;
     public StyleEngine? Owner;
 
+    /// <summary>Reused buffers for the key of the style being finished, so finding an existing shared style allocates nothing.</summary>
+    public readonly int[] KeyIds = new int[PropertyIds.Count];
+
+    public readonly StyleValue[] KeyVals = new StyleValue[PropertyIds.Count];
+    public string[] KeyCNames = new string[8];
+    public StyleValue[] KeyCVals = new StyleValue[8];
+
     /// <summary>
     /// The candidates of the current element grouped by cascade slot (and by custom property name), built the first time a
     /// rollback needs them. Without it every rolled-back property re-reads every declaration of every source, which for
@@ -143,6 +150,19 @@ internal sealed class StyleEngine
     private readonly CssParseOptions _parse;
     private readonly DeclarationValidator? _validator;
     private int _styleCounter;
+
+    // The presentational-hint rule and the style-attribute rule of each element. A document never changes, so each is found once
+    // per element; the engine is shared between a document and the edited documents restyled from it, hence one table per document.
+    private readonly System.Runtime.CompilerServices.ConditionalWeakTable<Document, InlineRules> _inline = new();
+
+    private sealed class InlineRules(int count)
+    {
+        public readonly StyleRule?[] Hints = new StyleRule?[count];
+        public readonly StyleRule?[] Styles = new StyleRule?[count];
+
+        /// <summary>Bit 1: the hints of the element are done; bit 2: its style attribute is.</summary>
+        public readonly int[] State = new int[count];
+    }
 
     public StyleEngine(Document doc, StyleContext context, RuleDatabase db, StyleSourceOptions options)
     {
@@ -538,6 +558,51 @@ internal sealed class StyleEngine
         return rule;
     }
 
+    private InlineRules InlineFor(Document doc)
+    {
+        if (_inline.TryGetValue(doc, out InlineRules? t))
+        {
+            return t;
+        }
+
+        lock (_inline)
+        {
+            if (!_inline.TryGetValue(doc, out t))
+            {
+                t = new InlineRules(doc.NodeCount);
+                _inline.Add(doc, t);
+            }
+        }
+
+        return t;
+    }
+
+    private StyleRule? HintRule(Node el)
+    {
+        InlineRules t = InlineFor(el.Document!);
+        int i = el.Index;
+        if ((Volatile.Read(ref t.State[i]) & 1) == 0)
+        {
+            t.Hints[i] = PresentationalHints.For(el) is { } hints ? InlineRule(hints, DeclarationKind.PresentationalHint) : null;
+            Interlocked.Or(ref t.State[i], 1);
+        }
+
+        return t.Hints[i];
+    }
+
+    private StyleRule? StyleAttributeRule(Node el)
+    {
+        InlineRules t = InlineFor(el.Document!);
+        int i = el.Index;
+        if ((Volatile.Read(ref t.State[i]) & 2) == 0)
+        {
+            t.Styles[i] = el.GetAttribute("style") is { Length: > 0 } text ? InlineRule(text, DeclarationKind.InlineStyle) : null;
+            Interlocked.Or(ref t.State[i], 2);
+        }
+
+        return t.Styles[i];
+    }
+
     // ---- the cascade for one element ----
 
     /// <summary>Computes (or finds the shared) style of an element, given its parent element's style.</summary>
@@ -556,14 +621,14 @@ internal sealed class StyleEngine
         s.BucketMode = -1;
 
         // Sources of declarations: presentational hints, matching rules, then the style attribute.
-        if (PresentationalHints.For(el) is { } hints && InlineRule(hints, DeclarationKind.PresentationalHint) is { } hr)
+        if (HintRule(el) is { } hr)
         {
             s.Sources.Add((hr, 0));
         }
 
         MatchRules(el, options, s);
 
-        if (el.GetAttribute("style") is { Length: > 0 } styleText && InlineRule(styleText, DeclarationKind.InlineStyle) is { } ir)
+        if (StyleAttributeRule(el) is { } ir)
         {
             s.Sources.Add((ir, 0));
         }
@@ -778,7 +843,23 @@ internal sealed class StyleEngine
         }
 
         // Drop the logical ids that were merged away.
-        s.Touched.RemoveAll(id => s.Stamp[id] != s.Epoch);
+        DropUnstamped(s);
+    }
+
+    // Removes the touched ids whose slot was cleared, keeping the order of the rest.
+    private static void DropUnstamped(CascadeScratch s)
+    {
+        int w = 0;
+        for (int r = 0; r < s.Touched.Count; r++)
+        {
+            int id = s.Touched[r];
+            if (s.Stamp[id] == s.Epoch)
+            {
+                s.Touched[w++] = id;
+            }
+        }
+
+        s.Touched.RemoveRange(w, s.Touched.Count - w);
     }
 
     private void ResolveRollbacks(CascadeScratch s, int mode)
@@ -801,7 +882,7 @@ internal sealed class StyleEngine
             }
         }
 
-        s.Touched.RemoveAll(id => s.Stamp[id] != s.Epoch);
+        DropUnstamped(s);
 
         List<string>? drop = null;
         List<KeyValuePair<string, Cand>>? replace = null;
@@ -956,26 +1037,31 @@ internal sealed class StyleEngine
     private ComputedStyle Finish(Node el, CascadeScratch s, ComputedStyle? parent, int mode)
     {
         _ = el;
-        // The key: everything the resolved style is a function of (the parent style and the winning declarations).
+        // The key: everything the resolved style is a function of (the parent style and the winning declarations). It is built
+        // in the scratch buffers; arrays are made only when no shared style has this key.
         int n = s.Touched.Count;
-        var ids = new int[n];
-        var vals = new StyleValue[n];
+        int[] ids = s.KeyIds;
+        StyleValue[] vals = s.KeyVals;
         for (int i = 0; i < n; i++)
         {
             ids[i] = s.Touched[i];
             vals[i] = s.Best[ids[i]].V!;
         }
 
-        string[] cNames = [];
-        StyleValue[] cVals = [];
-        if (s.Custom.Count > 0)
+        int cn = s.Custom.Count;
+        if (cn > 0)
         {
-            cNames = [.. s.Custom.Keys];
-            Array.Sort(cNames, StringComparer.Ordinal);
-            cVals = new StyleValue[cNames.Length];
-            for (int i = 0; i < cNames.Length; i++)
+            if (s.KeyCNames.Length < cn)
             {
-                cVals[i] = s.Custom[cNames[i]].V!;
+                s.KeyCNames = new string[cn * 2];
+                s.KeyCVals = new StyleValue[cn * 2];
+            }
+
+            s.Custom.Keys.CopyTo(s.KeyCNames, 0);
+            SortNames(s.KeyCNames, cn);
+            for (int i = 0; i < cn; i++)
+            {
+                s.KeyCVals[i] = s.Custom[s.KeyCNames[i]].V!;
             }
         }
 
@@ -985,9 +1071,9 @@ internal sealed class StyleEngine
             hash = HashCode.Combine(hash, ids[i], RuntimeHelpers.GetHashCode(vals[i]));
         }
 
-        for (int i = 0; i < cNames.Length; i++)
+        for (int i = 0; i < cn; i++)
         {
-            hash = HashCode.Combine(hash, cNames[i].GetHashCode(StringComparison.Ordinal), RuntimeHelpers.GetHashCode(cVals[i]));
+            hash = HashCode.Combine(hash, s.KeyCNames[i].GetHashCode(StringComparison.Ordinal), RuntimeHelpers.GetHashCode(s.KeyCVals[i]));
         }
 
         lock (_cache)
@@ -996,7 +1082,7 @@ internal sealed class StyleEngine
             {
                 for (ComputedStyle? c = chain; c is not null; c = c.CacheNext)
                 {
-                    if (c.KeyMatches(parent, ids, vals, cNames, cVals))
+                    if (c.KeyMatches(parent, ids.AsSpan(0, n), vals.AsSpan(0, n), s.KeyCNames.AsSpan(0, cn), s.KeyCVals.AsSpan(0, cn)))
                     {
                         return c;
                     }
@@ -1004,14 +1090,18 @@ internal sealed class StyleEngine
             }
         }
 
-        ComputedStyle built = Build(parent, ids, vals, cNames, cVals, mode);
+        int[] keyIds = ids.AsSpan(0, n).ToArray();
+        StyleValue[] keyVals = vals.AsSpan(0, n).ToArray();
+        string[] cNames = cn == 0 ? [] : s.KeyCNames.AsSpan(0, cn).ToArray();
+        StyleValue[] cVals = cn == 0 ? [] : s.KeyCVals.AsSpan(0, cn).ToArray();
+        ComputedStyle built = Build(parent, keyIds, keyVals, cNames, cVals, mode);
         lock (_cache)
         {
             if (_cache.TryGetValue(hash, out ComputedStyle? chain))
             {
                 for (ComputedStyle? c = chain; c is not null; c = c.CacheNext)
                 {
-                    if (c.KeyMatches(parent, ids, vals, cNames, cVals))
+                    if (c.KeyMatches(parent, keyIds, keyVals, cNames, cVals))
                     {
                         return c;
                     }
@@ -1024,6 +1114,26 @@ internal sealed class StyleEngine
         }
 
         return built;
+    }
+
+    // Ordinal sort of the first n names without the delegate that Array.Sort with a comparer allocates (a shell sort: no recursion, no buffer).
+    private static void SortNames(string[] names, int n)
+    {
+        for (int gap = n / 2; gap > 0; gap /= 2)
+        {
+            for (int i = gap; i < n; i++)
+            {
+                string t = names[i];
+                int j = i;
+                while (j >= gap && string.CompareOrdinal(names[j - gap], t) > 0)
+                {
+                    names[j] = names[j - gap];
+                    j -= gap;
+                }
+
+                names[j] = t;
+            }
+        }
     }
 
     private ComputedStyle Build(ComputedStyle? parent, int[] ids, StyleValue[] vals, string[] cNames, StyleValue[] cVals, int mode)

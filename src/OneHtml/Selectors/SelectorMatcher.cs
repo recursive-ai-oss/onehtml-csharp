@@ -45,6 +45,10 @@ internal ref struct MatchCtx
     public bool UseMemo;
     public HashSet<(int Selector, int Compound, int Element)>? Failed;
     public Dictionary<ComplexSelector, ulong[]>? HasMarks;
+    public HashSet<ComplexSelector>? StaleHasMarks;
+
+    /// <summary>Tables the caller keeps between matches so that backtracking and nested <c>:is()</c> evaluation allocate nothing; null makes each match allocate its own.</summary>
+    public MatchScratch? Scratch;
     public Dictionary<Simple, NthOfCache>? NthCaches;
     public Dictionary<(Simple Simple, int Element), bool>? LogicalMemo;
 
@@ -57,6 +61,43 @@ internal ref struct MatchCtx
     public bool IgnoreTrailingPseudo;
 }
 
+/// <summary>The failure memo and the <c>:is()</c>/<c>:not()</c> memo of matches made one after another by a single owner, reused instead of allocated per match.</summary>
+internal sealed class MatchScratch
+{
+    public HashSet<(int Selector, int Compound, int Element)> Failed { get; } = [];
+
+    public Dictionary<(Simple Simple, int Element), bool> Logical { get; } = [];
+
+    /// <summary>The frontier lists and visited set of the general <c>:has()</c> walk, and whether a walk is using them.</summary>
+    public List<int> FrontierA { get; } = [];
+
+    public List<int> FrontierB { get; } = [];
+
+    public HashSet<int> Seen { get; } = [];
+
+    public bool HasBusy { get; set; }
+
+    public HashSet<(int Selector, int Compound, int Element)> TakeFailed()
+    {
+        if (Failed.Count > 0)
+        {
+            Failed.Clear();
+        }
+
+        return Failed;
+    }
+
+    public Dictionary<(Simple Simple, int Element), bool> TakeLogical()
+    {
+        if (Logical.Count > 0)
+        {
+            Logical.Clear();
+        }
+
+        return Logical;
+    }
+}
+
 internal sealed class NthOfCache
 {
     public NthOfCache(int count)
@@ -64,6 +105,14 @@ internal sealed class NthOfCache
         FromStart = new int[count];
         FromEnd = new int[count];
         Done = new bool[count];
+    }
+
+    /// <summary>Forgets every numbering, as if new.</summary>
+    public void Reset()
+    {
+        Array.Clear(FromStart);
+        Array.Clear(FromEnd);
+        Array.Clear(Done);
     }
 
     public int[] FromStart { get; }
@@ -100,6 +149,7 @@ internal static class SelectorMatcher
         if (options?.BulkCache is { } cache)
         {
             c.HasMarks = cache.HasMarks;
+            c.StaleHasMarks = cache.StaleHasMarks;
             c.NthCaches = cache.Nth;
             c.LogicalMemo = cache.Logical;
         }
@@ -244,6 +294,7 @@ internal static class SelectorMatcher
             A = a,
             Scope = scope,
             State = options?.State,
+            Scratch = options?.Scratch,
             Quirks = doc.Mode == QuirksMode.Quirks,
             Bulk = bulk,
             Origin = context.Index,
@@ -358,7 +409,7 @@ internal static class SelectorMatcher
         if (++c.Steps > MemoThreshold)
         {
             c.UseMemo = true;
-            c.Failed ??= [];
+            c.Failed ??= c.Scratch?.TakeFailed() ?? [];
         }
 
         bool r = MatchFrom(ref c, s, i, el);
@@ -502,7 +553,7 @@ internal static class SelectorMatcher
 
             case SimpleKind.Lang:
             {
-                if (!ElementState.TryGetLanguage(new Node(c.Doc, el), out string lang))
+                if (!ElementState.TryGetLanguage(new Node(c.Doc, el), out ReadOnlySpan<char> lang))
                 {
                     return false;
                 }
@@ -901,7 +952,7 @@ internal static class SelectorMatcher
         Dictionary<(Simple Simple, int Element), bool>? memo = c.LogicalMemo;
         if (memo is null && c.LogicalDepth > 0 && ++c.LogicalNested > NestedBeforeMemo)
         {
-            c.LogicalMemo = memo = [];
+            c.LogicalMemo = memo = c.Scratch?.TakeLogical() ?? [];
         }
 
         if (memo is not null && memo.TryGetValue((s, el), out bool known))
@@ -1044,8 +1095,13 @@ internal static class SelectorMatcher
                 Dictionary<ComplexSelector, ulong[]> all = c.HasMarks ??= [];
                 if (!all.TryGetValue(rel, out ulong[]? marks))
                 {
-                    marks = BuildHasMarks(ref c, rel, k);
+                    marks = BuildHasMarks(ref c, rel, k, null);
                     all[rel] = marks;
+                }
+                else if (c.StaleHasMarks is { Count: > 0 } stale && stale.Remove(rel))
+                {
+                    // Cleared after an interaction-state change: fill the same array again.
+                    BuildHasMarks(ref c, rel, k, marks);
                 }
 
                 return (marks[anchor >> 6] & (1UL << (anchor & 63))) != 0;
@@ -1093,13 +1149,25 @@ internal static class SelectorMatcher
         }
 
         // General case: walk forward from the anchor one compound at a time, keeping the set of elements reached.
-        var frontier = new List<int> { anchor };
+        // The lists and the set come from the owner's scratch when it has one (a :has() cannot nest in a :has(), but a busy flag keeps
+        // a re-entrant call safe), so the walk allocates nothing after the first use.
+        MatchScratch? sc = c.Scratch is { HasBusy: false } owner ? owner : null;
+        List<int> frontier = sc?.FrontierA ?? [];
+        List<int> next = sc?.FrontierB ?? [];
+        HashSet<int> seen = sc?.Seen ?? [];
+        if (sc is not null)
+        {
+            sc.HasBusy = true;
+        }
+
+        frontier.Clear();
+        frontier.Add(anchor);
         for (int step = 0; step < rel.Compounds.Length; step++)
         {
             Combinator comb = step == 0 ? rel.Leading : rel.Combs[step - 1];
             Compound k = rel.Compounds[step];
-            var next = new List<int>();
-            var seen = new HashSet<int>();
+            next.Clear();
+            seen.Clear();
             foreach (int f in frontier)
             {
                 switch (comb)
@@ -1169,10 +1237,20 @@ internal static class SelectorMatcher
 
             if (next.Count == 0)
             {
+                if (sc is not null)
+                {
+                    sc.HasBusy = false;
+                }
+
                 return false;
             }
 
-            frontier = next;
+            (frontier, next) = (next, frontier);
+        }
+
+        if (sc is not null)
+        {
+            sc.HasBusy = false;
         }
 
         return true;
@@ -1193,10 +1271,10 @@ internal static class SelectorMatcher
         return -1;
     }
 
-    private static ulong[] BuildHasMarks(ref MatchCtx c, ComplexSelector rel, Compound k)
+    private static ulong[] BuildHasMarks(ref MatchCtx c, ComplexSelector rel, Compound k, ulong[]? reuse)
     {
         Arena a = c.A;
-        var marks = new ulong[(a.Count >> 6) + 1];
+        ulong[] marks = reuse ?? new ulong[(a.Count >> 6) + 1];
         for (int x = Node.NextPreorder(a, c.TreeRoot, c.TreeRoot); x >= 0; x = Node.NextPreorder(a, x, c.TreeRoot))
         {
             if (a.Kind[x] != (byte)NodeKind.Element || !MatchCompound(ref c, k, x))

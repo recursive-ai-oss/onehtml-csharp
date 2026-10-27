@@ -150,6 +150,11 @@ RestyleResult restyled = styles.Restyle(sdoc2, new StyleChange { Elements = [new
 bool styleOk = styles.GetStyle(sp).GetPropertyValue("color") == "red" && styles.GetStyle(sl).GetComputedValue("color") == "rgb(0, 0, 238)" && styles.GetStyle(sp).GetPropertyValue("margin-left") == "0"
     && styles.GetStyle(sdoc.Root.QuerySelector(".k")).GetPropertyValue("margin-left") == "2px" && focused.GetStyle(sl).GetComputedValue("color") == "rgb(0, 128, 0)"
     && styles.GetStyle(sp).Display.ToCss() == "block" && restyled.Styles.GetStyle(sdoc2.GetElementById("p")).GetComputedValue("color") == "rgb(255, 165, 0)" && !restyled.FullRecompute;
+LiveDocumentStyles liveStyles = LiveDocumentStyles.Create(styles);
+liveStyles.ApplyState(ElementStateChange.Focus(sl).WithHover(sp));
+bool liveOk = liveStyles.GetValue(sl.Index, PropertyTable.IdOf("color"))!.Text == "green" && liveStyles.ChangedElementCount > 0 && liveStyles.ChangedElementIndices[0] == sl.Index
+    && liveStyles.ToSnapshot().GetStyle(sl).GetComputedValue("color") == "rgb(0, 128, 0)" && styles.GetStyle(sl).GetComputedValue("color") == "rgb(0, 0, 238)";
+Console.WriteLine($"live={liveOk}");
 Console.WriteLine($"style={styleOk} sheets={styles.Sheets.Count} rules={styles.RuleCount} restyled={restyled.RestyledElements.Count}");
 
 // An edit followed by a restyle through the one call: a class change on the document and a linked sheet edit.
@@ -265,4 +270,4 @@ RecursiveAI.OneHtml.Accessibility.Validation.CheckReport recheckFresh = recheckC
 bool recheckOk = recheck1.Recheck is { Incremental: true, RulesRerunPartly: > 0 } && recheck1.Results.Count == recheckFresh.Results.Count
     && recheck1.Results.Zip(recheckFresh.Results).All(p => p.First.RuleId == p.Second.RuleId && p.First.Outcome == p.Second.Outcome && p.First.Target == p.Second.Target && p.First.Message == p.Second.Message && p.First.Locator == p.Second.Locator);
 Console.WriteLine($"recheck={recheckOk} full={recheck1.Recheck?.RulesRerunInFull} partly={recheck1.Recheck?.RulesRerunPartly} carried={recheck1.Recheck?.RulesCarried}");
-return validationOk && htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && replayOk && restyleEditOk && treeOk && factsOk && updateOk && recheckOk ? 0 : 1;
+return validationOk && htmlOk && cssOk && lossless && elements > 15 && valueApiOk && queryOk && catalogueOk && editOk && rolesOk && styleOk && liveOk && replayOk && restyleEditOk && treeOk && factsOk && updateOk && recheckOk ? 0 : 1;

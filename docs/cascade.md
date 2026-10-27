@@ -159,6 +159,58 @@ beside it: all descendants after a descendant combinator, but only as many level
 no descendant combinator follows (`li:focus-within > a` reaches the li's children, not its subtree). Hover, active and
 target changes, and focus changes together with them, test every element against the index of dynamic rules. Overlays share the engine's style table. `ChangedElements` lists the indices an overlay or restyle replaced.
 
+## Live interaction state
+
+`WithContext` is the right tool for a few what-if contexts. A renderer that moves the pointer every frame wants no allocation and
+no per-change object, so `LiveDocumentStyles.Create(DocumentStyles)` makes a second kind of object that owns its buffers and moves
+in place:
+
+```csharp
+var live = LiveDocumentStyles.Create(styles);          // computes every element once; `styles` is untouched
+live.ApplyState(ElementStateChange.Hover(node));       // hover, active, focus (+ source) and target, any combination
+foreach (int i in live.ChangedElementIndices)          // ascending element indices whose style object changed
+    use(live.GetStyle(i));                             // by index, no view object
+```
+
+- **What it covers.** Hover, active, focus with its `FocusSource`, and `:target` (it is one more chain of the same kind, so it costs
+  nothing extra). `ElementStateChange` is a struct; the parts it names move, the others keep their value, the null node clears.
+  The result equals `DocumentStyles.Create(document, equivalentContext)` for every property of every element, `:has()`, sibling and
+  descendant combinators, `:focus-within`, the hovered ancestor chain, the control of a hovered label, and inherited changes included.
+  Media features and the viewport are fixed when the live object is made: they choose which rules exist, so a new
+  `DocumentStyles.WithContext(media)` and a new `Create` are the way to change them.
+- **Snapshots are untouched.** The live object copies the resolved styles it starts from and never writes to the `DocumentStyles` it
+  was made from, nor to any view of it; those keep their immutable guarantees. `ToSnapshot()` gives an immutable `DocumentStyles` for
+  the current state (it allocates). `GetContext()` gives the equivalent `StyleContext`.
+- **Changed elements.** `ChangedElementIndices` is a span over an internal buffer, valid until the next `ApplyState`;
+  `ChangedElementsInto(Span<int>)` copies it into a caller buffer, ascending, and returns how many it wrote: a buffer that is too
+  small receives the lowest indices, and the result is smaller than `ChangedElementCount`. The list is of style objects replaced.
+  Generated boxes (`::before`, `::after`, `::marker`) are read with `GetPseudoStyle` and are not listed unless the element's own style
+  changed; `HasInteractivePseudoElementRules` says when that matters.
+- **Reads.** `GetStyle(int)`, `GetStyle(Node)` and `GetValue(elementIndex, propertyId)` (ids from `PropertyTable.IdOf`) return the
+  shared objects of the style table. Typed values (`ComputedStyle.Color` and so on) are built on first read of a style and cached on
+  it.
+- **Threads.** One writer: `ApplyState` must not run beside another call on the same object. Between calls any number of threads
+  may read. `ComputedStyle` objects handed out stay valid and unchanged after later moves.
+- **Steady state allocates 0 bytes.** After a warm-up in which each element and state combination was reached once, `ApplyState`,
+  `ChangedElementsInto`, `ChangedElementIndices`, `GetStyle` and `GetValue` allocate nothing. Excluded: the first meeting of a style
+  with a state (the style is built and joins the shared table), the first read of a typed value, the first match of a `:has()` that
+  reads a state pseudo-class after each change (its page-wide marks are rebuilt into the same array, which costs one pass over the
+  page, no allocation), cascades that use `revert`, `revert-layer` or `revert-rule`, and `ToSnapshot`, `GetContext` and
+  `GetPseudoStyle`.
+- **How the change is found.** A state pseudo-class matches an element and, for `:hover`, `:active`, `:focus-within` and
+  `:target-within`, its ancestors (Selectors 4 §9). So a compound that reads state changes its match only on the elements the state
+  moved from or to and on their ancestors, and from there a selector reaches only along its own combinators. The anchors described
+  above are built for every state, not only focus, and the same walk finds the affected elements: the old and new element of each
+  part that moved and their ancestors (stopping at an ancestor already visited), each tested against only the anchors its id, class or
+  type allows, then what each changed anchor reaches. A state pseudo-class inside `:is()`, `:where()`, `:not()` or `:nth-*(of)` with a
+  combinator inside the argument (`a:not(.x:hover b)`) cannot be anchored this way, and a rule set that has one tests every element
+  against the dynamic rules on each change, as `WithContext` does. Affected elements are recomputed parents first, and a child is
+  recomputed when its parent's style object changed.
+- **What makes recomputing allocation-free.** An element's key (the parent style and the winning declarations) is built in reusable
+  buffers and looked up in the style table; arrays are made only for a style that is new. The id, class and type of an element are
+  read as slices of the document text for the rule index, an element's `style` attribute and presentational hints are turned into
+  rules once per document, and the selector matcher's bulk caches drop only what reads a state pseudo-class.
+
 ## Restyle after a change
 
 `Restyle(newDocument, StyleChange)` returns `RestyleResult(Styles, RestyledElements, FullRecompute)`.

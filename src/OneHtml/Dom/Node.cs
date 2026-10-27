@@ -152,28 +152,54 @@ namespace RecursiveAI.OneHtml
         public string? GetAttribute(string name)
         {
             ArgumentNullException.ThrowIfNull(name);
+            int i = FindAttributeIndex(name);
+            return i < 0 ? null : new Attr(Document!, i).Value.ToString();
+        }
+
+        /// <summary>True when <see cref="GetAttribute(string)"/> would find an attribute. Allocation-free.</summary>
+        /// <param name="name">The attribute name.</param>
+        public bool HasAttribute(string name)
+        {
+            ArgumentNullException.ThrowIfNull(name);
+            return FindAttributeIndex(name) >= 0;
+        }
+
+        // The arena index of the first attribute with this name (no namespace), or -1; the name rules of GetAttribute.
+        private int FindAttributeIndex(string name)
+        {
             if (A.Kind[Index] != (byte)NodeKind.Element)
             {
-                return null;
+                return -1;
             }
 
             bool ignoreCase = A.Ns[Index] == (byte)ElementNamespace.Html;
-            AttributeList list = Attributes;
-            for (int i = 0; i < list.Count; i++)
+            int start = A.AttrStart[Index];
+            int end = start + A.AttrCount[Index];
+            for (int i = start; i < end; i++)
             {
-                Attr a = list[i];
+                var a = new Attr(Document!, i);
                 if (a.Namespace == AttributeNamespace.None && NameEquals(a.LocalName, name, ignoreCase))
                 {
-                    return a.Value.ToString();
+                    return i;
                 }
             }
 
-            return null;
+            return -1;
         }
 
-        /// <summary>True when <see cref="GetAttribute(string)"/> would find an attribute.</summary>
-        /// <param name="name">The attribute name.</param>
-        public bool HasAttribute(string name) => GetAttribute(name) is not null;
+        /// <summary>The value of the attribute as a slice of the document text, or false when there is none. Allocation-free.</summary>
+        internal bool TryGetAttributeValue(string name, out ReadOnlySpan<char> value)
+        {
+            int i = FindAttributeIndex(name);
+            if (i < 0)
+            {
+                value = default;
+                return false;
+            }
+
+            value = new Attr(Document!, i).Value;
+            return true;
+        }
 
         /// <inheritdoc />
         public bool Equals(Node other) => ReferenceEquals(Document, other.Document) && Index == other.Index;

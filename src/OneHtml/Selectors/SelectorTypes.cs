@@ -236,26 +236,49 @@ public sealed class SelectorLimitExceededException : SelectorSyntaxException
 /// </summary>
 public sealed class InteractionState
 {
+    private Node _focus;
+    private bool _focusVisible;
+    private Node _hover;
+    private Node _hoverControl;
+    private Node _active;
+    private Node _activeControl;
+    private Node _target;
+
     /// <summary>The focused element (<c>:focus</c>), or the null node.</summary>
-    public Node Focus { get; init; }
+    public Node Focus { get => _focus; init => _focus = value; }
 
     /// <summary>Whether focus came from the keyboard or the page's own script, which makes <c>:focus-visible</c> match the focused element.</summary>
-    public bool FocusVisible { get; init; }
+    public bool FocusVisible { get => _focusVisible; init => _focusVisible = value; }
 
     /// <summary>The hovered element; it and its ancestors match <c>:hover</c>.</summary>
-    public Node Hover { get; init; }
+    public Node Hover { get => _hover; init => _hover = value; }
 
     /// <summary>The control a hovered <c>label</c> stands for (HTML 4.16.3: a label's labeled control matches <c>:hover</c> with it); it and its ancestors match <c>:hover</c> too.</summary>
-    public Node HoverControl { get; init; }
+    public Node HoverControl { get => _hoverControl; init => _hoverControl = value; }
 
     /// <summary>The element being activated; it and its ancestors match <c>:active</c>.</summary>
-    public Node Active { get; init; }
+    public Node Active { get => _active; init => _active = value; }
 
     /// <summary>The control an activated <c>label</c> stands for; it and its ancestors match <c>:active</c> too.</summary>
-    public Node ActiveControl { get; init; }
+    public Node ActiveControl { get => _activeControl; init => _activeControl = value; }
 
     /// <summary>The element the URL fragment names (<c>:target</c>); it and its ancestors match <c>:target-within</c>.</summary>
-    public Node Target { get; init; }
+    public Node Target { get => _target; init => _target = value; }
+
+    /// <summary>Overwrites every field. Only the live style state, which owns its instance and is single-writer, calls this.</summary>
+    internal void Set(Node focus, bool focusVisible, Node hover, Node hoverControl, Node active, Node activeControl, Node target)
+    {
+        _focus = focus;
+        _focusVisible = focusVisible;
+        _hover = hover;
+        _hoverControl = hoverControl;
+        _active = active;
+        _activeControl = activeControl;
+        _target = target;
+    }
+
+    internal void CopyFrom(InteractionState other) =>
+        Set(other._focus, other._focusVisible, other._hover, other._hoverControl, other._active, other._activeControl, other._target);
 }
 
 /// <summary>Per-call options for matching and querying.</summary>
@@ -273,6 +296,9 @@ public sealed class SelectorMatchOptions
     /// <summary>Marks and counts shared between matches against one document and state (the cascade matches every element, so <c>:has()</c> and <c>:nth-*(of S)</c> are computed in bulk).</summary>
     internal SelectorBulkCache? BulkCache { get; init; }
 
+    /// <summary>Tables reused by successive matches of one single-threaded owner (the live style state), so a match allocates nothing for its memos.</summary>
+    internal MatchScratch? Scratch { get; init; }
+
     internal static SelectorMatchOptions ForScope(Node scope) => new() { Scope = scope };
 }
 
@@ -284,4 +310,40 @@ internal sealed class SelectorBulkCache
     public Dictionary<Simple, NthOfCache> Nth { get; } = [];
 
     public Dictionary<(Simple Simple, int Element), bool> Logical { get; } = [];
+
+    /// <summary>Selectors whose cached <c>:has()</c> marks were cleared by <see cref="InvalidateInteraction"/> and are rebuilt, into the same array, the next time they are asked.</summary>
+    public HashSet<ComplexSelector> StaleHasMarks { get; } = [];
+
+    private const SelectorDependencies StateDeps =
+        SelectorDependencies.Hover | SelectorDependencies.Active | SelectorDependencies.Focus | SelectorDependencies.FocusWithin | SelectorDependencies.Target;
+
+    /// <summary>
+    /// Drops what the cache learned under the old interaction state: the marks of <c>:has()</c> arguments and the <c>:nth-*(of S)</c> tables
+    /// that read a state pseudo-class, and every <c>:is()</c>/<c>:not()</c> answer. Nothing is allocated; the mark arrays are cleared and
+    /// reused. Everything that reads only the document stays.
+    /// </summary>
+    public void InvalidateInteraction()
+    {
+        foreach (KeyValuePair<ComplexSelector, ulong[]> kv in HasMarks)
+        {
+            if ((kv.Key.Deps & StateDeps) != 0)
+            {
+                Array.Clear(kv.Value);
+                StaleHasMarks.Add(kv.Key);
+            }
+        }
+
+        foreach (KeyValuePair<Simple, NthOfCache> kv in Nth)
+        {
+            if ((kv.Key.Deps & StateDeps) != 0)
+            {
+                kv.Value.Reset();
+            }
+        }
+
+        if (Logical.Count > 0)
+        {
+            Logical.Clear();
+        }
+    }
 }

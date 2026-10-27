@@ -62,55 +62,80 @@ internal sealed class RuleIndex
         return l;
     }
 
-    /// <summary>Adds the candidate selectors for an element: those whose key it could satisfy. The caller still matches each.</summary>
+    /// <summary>Adds the candidate selectors for an element: those whose key it could satisfy. The caller still matches each. Allocation-free.</summary>
     public void Collect(Node element, List<RuleSel> into)
     {
-        if (_byId.Count > 0)
+        if (_byId.Count > 0 && element.TryGetAttributeValue("id", out ReadOnlySpan<char> id) && id.Length > 0 && TryBucket(_byId, id, out List<RuleSel>? l))
         {
-            string? id = element.GetAttribute("id");
-            if (!string.IsNullOrEmpty(id) && _byId.TryGetValue(_quirks ? Lower(id) : id, out List<RuleSel>? l))
-            {
-                into.AddRange(l);
-            }
+            into.AddRange(l);
         }
 
-        if (_byClass.Count > 0)
+        if (_byClass.Count > 0 && element.TryGetAttributeValue("class", out ReadOnlySpan<char> cls))
         {
-            string? cls = element.GetAttribute("class");
-            if (!string.IsNullOrEmpty(cls))
+            int i = 0;
+            while (i < cls.Length)
             {
-                int i = 0;
-                while (i < cls.Length)
+                while (i < cls.Length && IsSpace(cls[i]))
                 {
-                    while (i < cls.Length && IsSpace(cls[i]))
-                    {
-                        i++;
-                    }
+                    i++;
+                }
 
-                    int s = i;
-                    while (i < cls.Length && !IsSpace(cls[i]))
-                    {
-                        i++;
-                    }
+                int s = i;
+                while (i < cls.Length && !IsSpace(cls[i]))
+                {
+                    i++;
+                }
 
-                    if (i > s)
-                    {
-                        string token = cls.Substring(s, i - s);
-                        if (_byClass.TryGetValue(_quirks ? Lower(token) : token, out List<RuleSel>? l2))
-                        {
-                            into.AddRange(l2);
-                        }
-                    }
+                if (i > s && TryBucket(_byClass, cls.Slice(s, i - s), out List<RuleSel>? l2))
+                {
+                    into.AddRange(l2);
                 }
             }
         }
 
-        if (_byTag.Count > 0 && _byTag.TryGetValue(element.LocalName.AsciiLower(), out List<RuleSel>? l3))
+        if (_byTag.Count > 0 && TryBucket(_byTag, element.LocalName, out List<RuleSel>? l3, true))
         {
             into.AddRange(l3);
         }
 
         into.AddRange(_generic);
+    }
+
+    // The bucket for a name; quirks mode (and tag names always) compare ASCII case-insensitively, by folding into a stack buffer.
+    private bool TryBucket(Dictionary<string, List<RuleSel>> map, ReadOnlySpan<char> key, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out List<RuleSel>? list, bool fold = false)
+    {
+        var lookup = map.GetAlternateLookup<ReadOnlySpan<char>>();
+        if (!(_quirks || fold) || !HasUpper(key))
+        {
+            return lookup.TryGetValue(key, out list);
+        }
+
+        if (key.Length <= 128)
+        {
+            Span<char> buf = stackalloc char[key.Length];
+            for (int i = 0; i < key.Length; i++)
+            {
+                char c = key[i];
+                buf[i] = c is >= 'A' and <= 'Z' ? (char)(c + 0x20) : c;
+            }
+
+            return lookup.TryGetValue(buf, out list);
+        }
+
+        return map.TryGetValue(key.ToString().AsciiLower(), out list);
+    }
+
+    private static bool HasUpper(ReadOnlySpan<char> s)
+    {
+        foreach (char c in s)
+        {
+            if (c is >= 'A' and <= 'Z')
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool IsSpace(char c) => c is ' ' or '\t' or '\n' or '\r' or '\f';
@@ -130,7 +155,7 @@ internal sealed class RuleDatabase
     public RuleIndex DynamicIndex = null!;
 
     /// <summary>
-    /// The compounds of dynamic selectors that read keyboard focus (<c>:focus</c>, <c>:focus-visible</c>, <c>:focus-within</c>), with how far
+    /// The compounds of dynamic selectors that read an interaction state (<c>:hover</c>, <c>:active</c>, <c>:focus</c>, <c>:focus-visible</c>, <c>:focus-within</c>, <c>:target</c>), with how far
     /// a change at one of them reaches along the selector's combinators. A compound that reads focus inside <c>:has()</c> is marked: it can change
     /// only at the focused element's ancestors, and at the earlier siblings of those when the <c>:has()</c> argument uses a sibling combinator.
     /// </summary>
@@ -144,6 +169,9 @@ internal sealed class RuleDatabase
 
     /// <summary>True when some focus anchor reads focus inside a <c>:has()</c> that uses a sibling combinator.</summary>
     public bool HasSidewaysFocus;
+
+    /// <summary>True when a dynamic selector reads an interaction state inside a logical argument that has a combinator, which the anchors cannot reach; a state change then tests every element.</summary>
+    public bool StateNestedReach;
 
     /// <summary>True when a rule styling <c>::before</c>, <c>::after</c> or <c>::marker</c> reads an interaction state (<c>:hover</c>, <c>:focus</c>, …).</summary>
     public bool PseudoElementDynamic;
@@ -1105,20 +1133,25 @@ internal sealed class RuleGatherer
                     dynamic.Add(rs, key);
                     foreach (ComplexSelector cs in new[] { list.Items[i] })
                     {
-                        if ((cs.Deps & (SelectorDependencies.Focus | SelectorDependencies.FocusWithin)) == 0)
+                        if ((cs.Deps & StateDeps) == 0)
                         {
                             continue;
                         }
+
+                        _db.StateNestedReach |= NestedStateReach(cs);
 
                         for (int j = 0; j < cs.Compounds.Length; j++)
                         {
                             bool reads = false, within = false, viaHas = false, sideways = false;
                             foreach (Simple part in cs.Compounds[j].Parts)
                             {
-                                if ((part.Deps & (SelectorDependencies.Focus | SelectorDependencies.FocusWithin)) != 0)
+                                if ((part.Deps & StateDeps) != 0)
                                 {
                                     reads = true;
-                                    within |= (part.Deps & SelectorDependencies.FocusWithin) != 0;
+
+                                    // :focus-within, :hover, :active and :target-within match an element and all its ancestors, so the
+                                    // compound can change at the ancestors of the element the state moved to or from.
+                                    within |= (part.Deps & (SelectorDependencies.FocusWithin | SelectorDependencies.Hover | SelectorDependencies.Active | SelectorDependencies.Target)) != 0;
                                     // Focus inside a :has() is read from the ancestors (and, for a sibling combinator inside the
                                     // :has(), from the earlier siblings of the ancestors) of the focused element.
                                     if ((part.Deps & SelectorDependencies.Has) != 0)
@@ -1164,6 +1197,42 @@ internal sealed class RuleGatherer
         _db.HasSidewaysFocus = focusAnchors.Exists(a => a.HasSideways);
         _db.Signatures = sigs;
         _db.LayerSignature = _db.Layers.Signature();
+    }
+
+    private const SelectorDependencies StateDeps =
+        SelectorDependencies.Hover | SelectorDependencies.Active | SelectorDependencies.Focus | SelectorDependencies.FocusWithin | SelectorDependencies.Target;
+
+    // True when a state pseudo-class sits inside the argument of :is(), :where(), :not() or :nth-*(of) in a selector with a combinator
+    // ("a:not(.x:hover b)"). The element that matches is then not on the chain the state moved along, so the anchors cannot find it and
+    // a state change has to test every element. Arguments of :has() are covered by the anchors (they are read from the ancestors).
+    private static bool NestedStateReach(ComplexSelector cs)
+    {
+        foreach (Compound c in cs.Compounds)
+        {
+            foreach (Simple part in c.Parts)
+            {
+                if (part.Sub is null)
+                {
+                    continue;
+                }
+
+                bool isHas = part.Kind == SimpleKind.Logical && part.Logical == LogicalKind.Has;
+                foreach (ComplexSelector item in part.Sub.Items)
+                {
+                    if ((item.Deps & StateDeps) == 0)
+                    {
+                        continue;
+                    }
+
+                    if ((!isHas && item.Compounds.Length > 1) || NestedStateReach(item))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     // The bucket key of a compound, chosen as the parser chooses the key of a selector's rightmost compound: id, else class, else type.

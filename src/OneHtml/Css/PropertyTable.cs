@@ -169,6 +169,14 @@ public static class PropertyTable
     /// <param name="info">The row, when found.</param>
     public static bool TryGet(ReadOnlySpan<char> name, out PropertyInfo info) => SpanLookup.TryGetValue(name, out info!);
 
+    /// <summary>
+    /// The numeric id of a property for <see cref="ComputedStyle.GetValue(int)"/>: stable for a run of the program, not across versions.
+    /// Aliases (<c>-webkit-…</c>) give the id of their standard property. Allocation-free.
+    /// </summary>
+    /// <param name="name">A property name, any ASCII case. Custom properties (<c>--x</c>) have no id.</param>
+    /// <returns>The id, or -1 for an unknown name.</returns>
+    public static int IdOf(ReadOnlySpan<char> name) => PropertyIds.Get(name);
+
     /// <summary>Looks a property up by name; null when unknown.</summary>
     /// <param name="name">A property name.</param>
     public static PropertyInfo? Find(string name) => TryGet(name, out PropertyInfo? p) ? p : null;

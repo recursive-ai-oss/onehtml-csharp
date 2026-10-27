@@ -36,8 +36,7 @@ internal static class LabelControl
         }
 
         var labelNode = new Node(doc, label);
-        string? forId = labelNode.GetAttribute("for");
-        if (forId is not null)
+        if (labelNode.TryGetAttributeValue("for", out ReadOnlySpan<char> forId))
         {
             int target = doc.Index.FirstWithId(forId);
             return target >= 0 && IsLabelable(new Node(doc, target)) ? new Node(doc, target) : default;
@@ -66,7 +65,7 @@ internal static class LabelControl
         return n.LocalName switch
         {
             "button" or "meter" or "output" or "progress" or "select" or "textarea" => true,
-            "input" => !string.Equals(n.GetAttribute("type"), "hidden", StringComparison.OrdinalIgnoreCase),
+            "input" => !(n.TryGetAttributeValue("type", out ReadOnlySpan<char> type) && type.Equals("hidden", StringComparison.OrdinalIgnoreCase)),
             _ => false,
         };
     }

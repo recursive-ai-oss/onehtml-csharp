@@ -4,6 +4,15 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Added
+
+- `LiveDocumentStyles`, `ElementStateChange`: interaction state that moves in place for a renderer that changes hover, active, focus (with its source) or `:target` many times a second. `LiveDocumentStyles.Create(DocumentStyles)` owns its buffers and leaves the snapshot and its views untouched; `ApplyState` restyles only what the change reaches and allocates nothing in steady state; `ChangedElementIndices` and `ChangedElementsInto(Span<int>)` list the elements whose style changed; `GetStyle(int)` and `GetValue(elementIndex, propertyId)` read by element index. The result equals `DocumentStyles.Create` for the equivalent `StyleContext`. See `docs/cascade.md`.
+- `PropertyTable.IdOf` and `ComputedStyle.GetValue(int)`: read a property by id without a name lookup.
+
+### Changed
+
+- `Node.HasAttribute(string)` no longer allocates the attribute's value.
+
 ## [1.2.0] - 2026-10-27
 
 ### Added

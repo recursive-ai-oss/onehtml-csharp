@@ -28,6 +28,17 @@ internal sealed class DocumentIndex
         return Ids.Head.TryGetValue(id, out int i) ? i : -1;
     }
 
+    /// <summary>Like <see cref="FirstWithId(string)"/> for an id held as a slice of the document text; allocation-free.</summary>
+    public int FirstWithId(System.ReadOnlySpan<char> id)
+    {
+        if (id.Length == 0)
+        {
+            return -1;
+        }
+
+        return Ids.Head.GetAlternateLookup<System.ReadOnlySpan<char>>().TryGetValue(id, out int i) ? i : -1;
+    }
+
     /// <summary>The next element in tree order with the same id as <paramref name="element"/>, or -1.</summary>
     public int NextWithSameId(int element) => Ids.DuplicateNext.TryGetValue(element, out int n) ? n : -1;
 

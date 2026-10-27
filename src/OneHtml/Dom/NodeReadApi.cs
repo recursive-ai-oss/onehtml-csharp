@@ -872,7 +872,7 @@ public readonly ref struct ClassList
     /// <summary>Gets the enumerator.</summary>
     public Enumerator GetEnumerator() => new(_value);
 
-    internal static bool IsAsciiEqual(ReadOnlySpan<char> a, string b)
+    internal static bool IsAsciiEqual(ReadOnlySpan<char> a, ReadOnlySpan<char> b)
     {
         if (a.Length != b.Length)
         {

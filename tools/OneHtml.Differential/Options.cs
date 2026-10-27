@@ -26,6 +26,9 @@ internal sealed class Options
 
     public int PerPage { get; private set; } = 5;
 
+    /// <summary>With <c>live</c>, keep every n-th item in sha256 order (1 = all), for a spread sample of a large corpus.</summary>
+    public int Stride { get; private set; } = 1;
+
     /// <summary>Items skipped (in sha256 order) before <see cref="Limit"/> counts; with <c>--limit</c> it resumes a long gate run.</summary>
     public int Skip { get; private set; }
 
@@ -110,6 +113,7 @@ internal sealed class Options
                 case "--max-reduce": o.MaxReduce = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--max-seconds": o.MaxSeconds = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
                 case "--seed": o.Seed = int.Parse(args[++i], CultureInfo.InvariantCulture); break;
+                case "--stride": o.Stride = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--skip": o.Skip = Math.Max(0, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--sample": o.Sample = Math.Max(0, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
                 case "--per-page": o.PerPage = Math.Max(1, int.Parse(args[++i], CultureInfo.InvariantCulture)); break;
@@ -125,7 +129,7 @@ internal sealed class Options
           --timeout <seconds per item> (default 30) --top <n> (default 20) --max-reduce <classes to minimize> (default 100, angle only)
           --only pages|stylesheets (roundtrip only)
           --seed <n> (default 1) --per-page <targets per page> (default 5), replay only
-          --skip <n> (items skipped first, to resume), --sample <n> (locators: elements per page checked by a whole-document query, default 2000)
+          --skip <n> (items skipped first, to resume), --stride <n> (live: every n-th page), --sample <n> (locators: elements per page checked by a whole-document query, default 2000)
           locators, styles, editfuzz: --per-page is the contexts and edit steps (styles) or transactions (editfuzz) per page; --corpus supplies stylesheets for styles (default: the corpus itself)
           axe: the positional argument is the capture directory; --corpus, --facts as for ax; --max-seconds <n> stops starting captures after n seconds (resume by running again),
             --fresh redoes every capture

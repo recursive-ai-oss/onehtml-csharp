@@ -1201,29 +1201,31 @@ internal static class ElementState
 
     // ---- :lang() ----
 
-    /// <summary>HTML 3.2.6 "language": the nearest lang/xml:lang, else the document's content-language pragma.</summary>
-    public static bool TryGetLanguage(Node el, out string language)
+    /// <summary>HTML 3.2.6 "language": the nearest lang/xml:lang, else the document's content-language pragma. A slice of the document text; allocation-free.</summary>
+    public static bool TryGetLanguage(Node el, out ReadOnlySpan<char> language)
     {
         for (Node n = el; !n.IsNull; n = Parent(n))
         {
             AttributeList list = n.Attributes;
-            string? xml = null;
+            bool haveXml = false;
+            ReadOnlySpan<char> xml = default;
             for (int i = 0; i < list.Count; i++)
             {
                 Attr at = list[i];
                 if (at.Namespace == AttributeNamespace.None && at.LocalName == "lang")
                 {
-                    language = at.Value.ToString();
+                    language = at.Value;
                     return true;
                 }
 
                 if (at.Namespace == AttributeNamespace.Xml && at.LocalName == "lang")
                 {
-                    xml = at.Value.ToString();
+                    xml = at.Value;
+                    haveXml = true;
                 }
             }
 
-            if (xml is not null)
+            if (haveXml)
             {
                 language = xml;
                 return true;
@@ -1235,8 +1237,8 @@ internal static class ElementState
         return pragma is not null;
     }
 
-    /// <summary>RFC 4647 §3.3.2 extended filtering, ASCII case-insensitive.</summary>
-    public static bool LangMatches(string range, string tag)
+    /// <summary>RFC 4647 §3.3.2 extended filtering, ASCII case-insensitive. Works on slices of both strings and allocates nothing.</summary>
+    public static bool LangMatches(ReadOnlySpan<char> range, ReadOnlySpan<char> tag)
     {
         if (range.Length == 0)
         {
@@ -1248,47 +1250,75 @@ internal static class ElementState
             return false;
         }
 
-        string[] r = range.Split('-');
-        string[] t = tag.Split('-');
-        if (r[0] != "*" && !SubtagEquals(r[0], t[0]))
+        int rp = 0;
+        int tp = 0;
+        NextSubtag(range, ref rp, out ReadOnlySpan<char> r0);
+        NextSubtag(tag, ref tp, out ReadOnlySpan<char> t0);
+        if (!r0.SequenceEqual("*") && !SubtagEquals(r0, t0))
         {
             return false;
         }
 
-        int ri = 1;
-        int ti = 1;
-        while (ri < r.Length)
+        bool haveTag = NextSubtag(tag, ref tp, out ReadOnlySpan<char> ts);
+        while (NextSubtag(range, ref rp, out ReadOnlySpan<char> rs))
         {
-            if (r[ri] == "*")
+            if (rs.SequenceEqual("*"))
             {
-                ri++;
                 continue;
             }
 
-            if (ti >= t.Length)
+            // Skip the tag's subtags until one equals this range subtag; a singleton subtag ends the search.
+            while (true)
             {
-                return false;
-            }
+                if (!haveTag)
+                {
+                    return false;
+                }
 
-            if (SubtagEquals(r[ri], t[ti]))
-            {
-                ri++;
-                ti++;
-            }
-            else if (t[ti].Length == 1)
-            {
-                return false;
-            }
-            else
-            {
-                ti++;
+                if (SubtagEquals(rs, ts))
+                {
+                    haveTag = NextSubtag(tag, ref tp, out ts);
+                    break;
+                }
+
+                if (ts.Length == 1)
+                {
+                    return false;
+                }
+
+                haveTag = NextSubtag(tag, ref tp, out ts);
             }
         }
 
         return true;
     }
 
-    private static bool SubtagEquals(string a, string b) => a.Length == b.Length && ClassList.IsAsciiEqual(a.AsSpan(), b);
+    // The next '-' separated subtag, as string.Split would give them (empty ones included); false once they are used up.
+    private static bool NextSubtag(ReadOnlySpan<char> s, ref int pos, out ReadOnlySpan<char> subtag)
+    {
+        if (pos > s.Length)
+        {
+            subtag = default;
+            return false;
+        }
+
+        ReadOnlySpan<char> rest = s[pos..];
+        int dash = rest.IndexOf('-');
+        if (dash < 0)
+        {
+            subtag = rest;
+            pos = s.Length + 1;
+        }
+        else
+        {
+            subtag = rest[..dash];
+            pos += dash + 1;
+        }
+
+        return true;
+    }
+
+    private static bool SubtagEquals(ReadOnlySpan<char> a, ReadOnlySpan<char> b) => a.Length == b.Length && ClassList.IsAsciiEqual(a, b);
 
     // ---- :dir() ----
 

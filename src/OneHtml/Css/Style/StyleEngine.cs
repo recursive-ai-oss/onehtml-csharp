@@ -78,6 +78,25 @@ internal sealed class CascadeScratch
     public Dictionary<string, List<Cand>>? CustomBuckets;
     public int BucketMode = -1;
 
+    // Lists and exclusions kept between rollbacks, so a rolled-back cascade allocates nothing once they have grown.
+    public readonly List<List<Cand>> ListPool = [];
+    public int ListsInUse;
+    public readonly Exclusions Ex = new();
+    public readonly List<string> DropKeys = [];
+    public readonly List<KeyValuePair<string, Cand>> ReplaceKeys = [];
+
+    public List<Cand> TakeList()
+    {
+        if (ListsInUse == ListPool.Count)
+        {
+            ListPool.Add([]);
+        }
+
+        List<Cand> l = ListPool[ListsInUse++];
+        l.Clear();
+        return l;
+    }
+
     public bool Has(int id) => Stamp[id] == Epoch;
 }
 
@@ -89,6 +108,15 @@ internal sealed class Exclusions
     public readonly List<(int Class, int NormalRank)> LayerCuts = [];
     public LayerTree? Tree;
     public readonly List<StyleRule> Rules = [];
+
+    public void Reset()
+    {
+        OriginClasses = 0;
+        Layers.Clear();
+        LayerCuts.Clear();
+        Tree = null;
+        Rules.Clear();
+    }
 
     public int NormalRank(in Cand c)
     {
@@ -709,18 +737,20 @@ internal sealed class StyleEngine
     /// of the rules whose selector ends in that pseudo-element and whose rest matches the element, inheriting from the
     /// element's own style (CSS Pseudo-Elements 4 section 3). Returns null when no rule applies.
     /// </summary>
-    public ComputedStyle? ComputePseudo(Node el, string pseudo, ComputedStyle elementStyle, SelectorMatchOptions? options)
+    public ComputedStyle? ComputePseudo(Node el, string pseudo, ComputedStyle elementStyle, SelectorMatchOptions? options, bool highlight = false, ComputedStyle? highlightParent = null)
     {
         if (!Db.PseudoIndex.TryGetValue(pseudo, out RuleIndex? index))
         {
             return null;
         }
 
+        // A highlight style also exists when only an ancestor's does (highlight inheritance), with no rule of its own.
+        bool inherits = highlight && highlightParent is not null;
         CascadeScratch s = GetScratch();
         s.Candidates.Clear();
         s.Matched.Clear();
         index.Collect(el, s.Candidates);
-        if (s.Candidates.Count == 0)
+        if (s.Candidates.Count == 0 && !inherits)
         {
             return null;
         }
@@ -738,7 +768,7 @@ internal sealed class StyleEngine
             SelectorMatcher.FilterMatchingPseudo(el, s.Candidates, options, s.Matched);
         }
 
-        if (s.Matched.Count == 0)
+        if (s.Matched.Count == 0 && !inherits)
         {
             return null;
         }
@@ -785,7 +815,23 @@ internal sealed class StyleEngine
             {
                 foreach (StyleValue v in d.Values)
                 {
-                    Offer(s, MakeCand(rule, spec, d, v));
+                    if (!highlight || HighlightProperties.Applies(v))
+                    {
+                        Offer(s, MakeCand(rule, spec, d, v));
+                    }
+                }
+            }
+        }
+
+        if (inherits)
+        {
+            // Highlight inheritance (CSS Pseudo-Elements 4 section 3.2): what no rule sets comes from the parent's highlight style, even for
+            // properties that do not inherit (background-color, text-decoration-line), at the lowest priority.
+            foreach (int id in HighlightProperties.Ids)
+            {
+                if (s.Stamp[id] != s.Epoch && highlightParent!.Get(id) is { IsInitial: false } inheritedValue)
+                {
+                    Offer(s, new Cand { V = inheritedValue });
                 }
             }
         }
@@ -795,6 +841,36 @@ internal sealed class StyleEngine
         ResolveRollbacks(s, mode);
         s.Touched.Sort();
         return Finish(el, s, elementStyle, mode);
+    }
+
+    /// <summary>
+    /// The style of an element's <c>::selection</c> (CSS Pseudo-Elements 4 section 3): the highlight properties from the matching rules,
+    /// else from the parent element's highlight style, else from the element's own style. Null when neither the element nor an ancestor has
+    /// a matching rule. Parents are computed first with an explicit loop, so depth never recurses; every step is cached in <paramref name="cache"/>.
+    /// </summary>
+    public ComputedStyle? ComputeHighlight(Node el, Func<int, ComputedStyle> styleOf, ConcurrentDictionary<long, ComputedStyle?> cache, SelectorMatchOptions? options)
+    {
+        Arena a = el.Document!.Arena;
+        var chain = new List<int>();
+        for (int i = el.Index; i >= 0 && a.Kind[i] == (byte)NodeKind.Element; i = a.Parent[i])
+        {
+            chain.Add(i);
+        }
+
+        ComputedStyle? parent = null;
+        for (int k = chain.Count - 1; k >= 0; k--)
+        {
+            int idx = chain[k];
+            long key = PseudoNames.Key(idx, PseudoElementKind.Selection);
+            if (!cache.TryGetValue(key, out ComputedStyle? own))
+            {
+                own = cache.GetOrAdd(key, ComputePseudo(new Node(el.Document, idx), "selection", styleOf(idx), options, true, parent));
+            }
+
+            parent = own;
+        }
+
+        return parent;
     }
 
     private static void Offer(CascadeScratch s, in Cand c)
@@ -930,8 +1006,10 @@ internal sealed class StyleEngine
 
         DropUnstamped(s);
 
-        List<string>? drop = null;
-        List<KeyValuePair<string, Cand>>? replace = null;
+        List<string> drop = s.DropKeys;
+        List<KeyValuePair<string, Cand>> replace = s.ReplaceKeys;
+        drop.Clear();
+        replace.Clear();
         foreach (KeyValuePair<string, Cand> kv in s.Custom)
         {
             if (IsRollback(kv.Value.V!.Keyword))
@@ -939,29 +1017,23 @@ internal sealed class StyleEngine
                 Cand? r = Rescan(s, -1, -1, kv.Key, mode, kv.Value);
                 if (r is { } rc)
                 {
-                    (replace ??= []).Add(new KeyValuePair<string, Cand>(kv.Key, rc));
+                    replace.Add(new KeyValuePair<string, Cand>(kv.Key, rc));
                 }
                 else
                 {
-                    (drop ??= []).Add(kv.Key);
+                    drop.Add(kv.Key);
                 }
             }
         }
 
-        if (drop is not null)
+        foreach (string k in drop)
         {
-            foreach (string k in drop)
-            {
-                s.Custom.Remove(k);
-            }
+            s.Custom.Remove(k);
         }
 
-        if (replace is not null)
+        foreach (KeyValuePair<string, Cand> kv in replace)
         {
-            foreach (KeyValuePair<string, Cand> kv in replace)
-            {
-                s.Custom[kv.Key] = kv.Value;
-            }
+            s.Custom[kv.Key] = kv.Value;
         }
     }
 
@@ -972,7 +1044,8 @@ internal sealed class StyleEngine
     private Cand? Rescan(CascadeScratch s, int slot, int idForSlot, string? custom, int mode, Cand first)
     {
         _ = idForSlot;
-        var ex = new Exclusions();
+        Exclusions ex = s.Ex;
+        ex.Reset();
         Cand cur = first;
 
         // The candidates in cascade order, strongest first. Every rollback only adds exclusions, so a candidate skipped as
@@ -1038,6 +1111,7 @@ internal sealed class StyleEngine
             s.CustomBuckets ??= new Dictionary<string, List<Cand>>(StringComparer.Ordinal);
             s.SlotBuckets.Clear();
             s.CustomBuckets.Clear();
+            s.ListsInUse = 0;
             s.BucketMode = mode;
             foreach ((StyleRule rule, long spec) in s.Sources)
             {
@@ -1050,7 +1124,7 @@ internal sealed class StyleEngine
                         {
                             if (!s.CustomBuckets.TryGetValue(name, out List<Cand>? cl))
                             {
-                                s.CustomBuckets[name] = cl = [];
+                                s.CustomBuckets[name] = cl = s.TakeList();
                             }
 
                             cl.Add(c);
@@ -1060,7 +1134,7 @@ internal sealed class StyleEngine
                             int key = SlotOf(v.PropertyId, mode);
                             if (!s.SlotBuckets.TryGetValue(key, out List<Cand>? sl))
                             {
-                                s.SlotBuckets[key] = sl = [];
+                                s.SlotBuckets[key] = sl = s.TakeList();
                             }
 
                             sl.Add(c);

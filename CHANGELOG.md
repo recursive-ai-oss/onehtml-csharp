@@ -4,6 +4,20 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Added
+
+- `FormStateOverrides`, `FormStateChange`, `FormStateKind`, `StyleContext.FormState` / `WithFormState`, `InteractionState.FormState` and `LiveDocumentStyles.ApplyFormState`: checkedness, disabledness and the `indeterminate` state that a user or script changed, for any number of elements, on both the snapshot path (`DocumentStyles.Create` / `WithContext`) and the live path. `:checked` (and an option's selectedness), `:disabled`, `:enabled`, `:indeterminate`, `:read-only` and `:read-write` read them, with what follows from them (a disabled `fieldset` or `optgroup`, a named radio group). The live path restyles in place with no allocation in steady state and fills `ChangedElementIndices` as for interaction state. Without overrides every value is as before. See `docs/cascade.md`.
+- `SelectorDependencies.ScriptFormState`: set on selectors that read form state a script can change.
+- `PseudoElementKind.Selection` and `PseudoElementKind.Placeholder`: `GetPseudoStyle` on `DocumentStyles` and `LiveDocumentStyles` now serves `::selection` (highlight properties only, with highlight inheritance from the parent element) and `::placeholder` (text controls with a `placeholder`, with Chrome's user-agent defaults; `::-webkit-input-placeholder` is the same). `RestyleResult.PseudoElementsMayDiffer` covers both. See `docs/cascade.md`.
+
+### Changed
+
+- Rules with `:checked`, `:disabled`, `:enabled`, `:indeterminate`, `:read-only` or `:read-write` are matched again for each element's cascade instead of being cached once per document, so they can follow form state. Their values are unchanged.
+
+### Fixed
+
+- A cascade that rolls declarations back (`revert`, `revert-layer`, `revert-rule`) reuses its working lists instead of allocating them for every element, so live restyles on such pages stay allocation-free.
+
 ## [1.3.0] - 2026-10-27
 
 ### Added

@@ -135,6 +135,9 @@ public enum SelectorDependencies
     /// <summary><c>:scope</c>: the result depends on the scoping element.</summary>
     Scope = 2048,
 
+    /// <summary>A pseudo-class that reads form state a user or script can change (<c>:checked</c>, <c>:disabled</c>, <c>:enabled</c>, <c>:indeterminate</c>, <c>:read-only</c>, <c>:read-write</c>), so its result can change with <see cref="FormStateOverrides"/>.</summary>
+    ScriptFormState = 8192,
+
     /// <summary>A selector that can never match an element in this library (pseudo-elements, <c>:visited</c>, <c>:autofill</c>, …).</summary>
     NeverMatches = 4096,
 }
@@ -243,6 +246,13 @@ public sealed class InteractionState
     private Node _active;
     private Node _activeControl;
     private Node _target;
+    private FormStateOverrides? _form;
+
+    /// <summary>
+    /// Form state that differs from the document's attributes (<c>:checked</c>, <c>:disabled</c>, <c>:enabled</c>, <c>:indeterminate</c>, <c>:read-only</c>,
+    /// <c>:read-write</c>); null or empty for none. Its elements must belong to the document queried.
+    /// </summary>
+    public FormStateOverrides? FormState { get => _form; init => _form = value; }
 
     /// <summary>The focused element (<c>:focus</c>), or the null node.</summary>
     public Node Focus { get => _focus; init => _focus = value; }
@@ -265,7 +275,10 @@ public sealed class InteractionState
     /// <summary>The element the URL fragment names (<c>:target</c>); it and its ancestors match <c>:target-within</c>.</summary>
     public Node Target { get => _target; init => _target = value; }
 
-    /// <summary>Overwrites every field. Only the live style state, which owns its instance and is single-writer, calls this.</summary>
+    /// <summary>Points at the live form state this instance reads. Only the live style state calls this.</summary>
+    internal void SetForm(FormStateOverrides? form) => _form = form;
+
+    /// <summary>Overwrites every field but the form state. Only the live style state, which owns its instance and is single-writer, calls this.</summary>
     internal void Set(Node focus, bool focusVisible, Node hover, Node hoverControl, Node active, Node activeControl, Node target)
     {
         _focus = focus;
@@ -315,7 +328,7 @@ internal sealed class SelectorBulkCache
     public HashSet<ComplexSelector> StaleHasMarks { get; } = [];
 
     private const SelectorDependencies StateDeps =
-        SelectorDependencies.Hover | SelectorDependencies.Active | SelectorDependencies.Focus | SelectorDependencies.FocusWithin | SelectorDependencies.Target;
+        SelectorDependencies.Hover | SelectorDependencies.Active | SelectorDependencies.Focus | SelectorDependencies.FocusWithin | SelectorDependencies.Target | SelectorDependencies.ScriptFormState;
 
     /// <summary>
     /// Drops what the cache learned under the old interaction state: the marks of <c>:has()</c> arguments and the <c>:nth-*(of S)</c> tables

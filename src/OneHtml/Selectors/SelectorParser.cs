@@ -1127,6 +1127,8 @@ internal static class SelectorParser
             PseudoKind.FocusWithin => SelectorDependencies.FocusWithin,
             PseudoKind.Target or PseudoKind.TargetWithin => SelectorDependencies.Target,
             PseudoKind.Never => SelectorDependencies.NeverMatches,
+            PseudoKind.Checked or PseudoKind.Disabled or PseudoKind.Enabled or PseudoKind.Indeterminate or PseudoKind.ReadOnly or PseudoKind.ReadWrite
+                => SelectorDependencies.FormState | SelectorDependencies.ScriptFormState,
             _ => SelectorDependencies.FormState,
         };
         return s;

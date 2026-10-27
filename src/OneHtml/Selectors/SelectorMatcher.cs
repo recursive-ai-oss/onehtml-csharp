@@ -861,25 +861,25 @@ internal static class SelectorMatcher
                 return c.State is not null && InChain(ref c, c.State.Target, el, false);
 
             case PseudoKind.Checked:
-                return ElementState.IsChecked(n);
+                return ElementState.IsChecked(n, c.State?.FormState);
             case PseudoKind.Disabled:
-                return ElementState.CanBeDisabled(n) && ElementState.IsDisabled(n);
+                return ElementState.CanBeDisabled(n) && ElementState.IsDisabled(n, c.State?.FormState);
             case PseudoKind.Enabled:
-                return ElementState.CanBeDisabled(n) && !ElementState.IsDisabled(n);
+                return ElementState.CanBeDisabled(n) && !ElementState.IsDisabled(n, c.State?.FormState);
             case PseudoKind.Required:
                 return ElementState.RequiredOrOptionalApplies(n) && ElementState.Has(n, "required");
             case PseudoKind.Optional:
                 return ElementState.RequiredOrOptionalApplies(n) && !ElementState.Has(n, "required");
             case PseudoKind.ReadOnly:
-                return a.Ns[el] == (byte)ElementNamespace.Html && !ElementState.IsReadWrite(n);
+                return a.Ns[el] == (byte)ElementNamespace.Html && !ElementState.IsReadWrite(n, c.State?.FormState);
             case PseudoKind.ReadWrite:
-                return ElementState.IsReadWrite(n);
+                return ElementState.IsReadWrite(n, c.State?.FormState);
             case PseudoKind.PlaceholderShown:
                 return ElementState.IsPlaceholderShown(n);
             case PseudoKind.Default:
                 return ElementState.IsDefault(n);
             case PseudoKind.Indeterminate:
-                return ElementState.IsIndeterminate(n);
+                return ElementState.IsIndeterminate(n, c.State?.FormState);
             case PseudoKind.Valid:
                 return ElementState.IsValidMatch(n, true);
             case PseudoKind.Invalid:

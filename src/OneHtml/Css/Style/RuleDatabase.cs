@@ -712,7 +712,7 @@ internal sealed class RuleGatherer
     }
 
     private static bool IsDynamic(SelectorList list) =>
-        (list.Dependencies & (SelectorDependencies.Hover | SelectorDependencies.Active | SelectorDependencies.Focus | SelectorDependencies.FocusWithin | SelectorDependencies.Target)) != 0;
+        (list.Dependencies & StateDeps) != 0;
 
     private void StyleRuleNode(Stack<Frame> frames, Frame f, CssNode n)
     {
@@ -1112,11 +1112,11 @@ internal sealed class RuleGatherer
             {
                 if (list.HasPseudoElement(i))
                 {
-                    // Only a plain ::before, ::after or ::marker as the last simple selector generates a style here.
+                    // Only a plain ::before, ::after, ::marker, ::selection or ::placeholder (or Chrome's name for it) as the last simple selector gets a style here.
                     Simple[] parts = list.Items[i].Compounds[^1].Parts;
-                    if (parts.Length > 0 && parts[^1].Kind == SimpleKind.PseudoElement && parts[^1].Name is "before" or "after" or "marker")
+                    if (parts.Length > 0 && parts[^1].Kind == SimpleKind.PseudoElement && parts[^1].Name is "before" or "after" or "marker" or "selection" or "placeholder" or "-webkit-input-placeholder")
                     {
-                        string pn = parts[^1].Name!;
+                        string pn = parts[^1].Name == "-webkit-input-placeholder" ? "placeholder" : parts[^1].Name!;
                         if (!_db.PseudoIndex.TryGetValue(pn, out RuleIndex? pi))
                         {
                             _db.PseudoIndex[pn] = pi = new RuleIndex(_db.Quirks);
@@ -1208,8 +1208,9 @@ internal sealed class RuleGatherer
         _db.LayerSignature = _db.Layers.Signature();
     }
 
+    // The state a rule can read that is not in the document's attributes: interaction state, and form state scripts and users change.
     private const SelectorDependencies StateDeps =
-        SelectorDependencies.Hover | SelectorDependencies.Active | SelectorDependencies.Focus | SelectorDependencies.FocusWithin | SelectorDependencies.Target;
+        SelectorDependencies.Hover | SelectorDependencies.Active | SelectorDependencies.Focus | SelectorDependencies.FocusWithin | SelectorDependencies.Target | SelectorDependencies.ScriptFormState;
 
     // True when a state pseudo-class sits inside the argument of :is(), :where(), :not() or :nth-*(of) in a selector with a combinator
     // ("a:not(.x:hover b)"). The element that matches is then not on the chain the state moved along, so the anchors cannot find it and

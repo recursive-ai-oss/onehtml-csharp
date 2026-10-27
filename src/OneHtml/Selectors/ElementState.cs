@@ -266,12 +266,14 @@ internal static class ElementState
 
     private static bool IsFormControl(Node n) => IsHtml(n, "button") || IsHtml(n, "input") || IsHtml(n, "select") || IsHtml(n, "textarea");
 
-    public static bool IsDisabledByFieldset(Node n)
+    public static bool IsDisabledByFieldset(Node n) => IsDisabledByFieldset(n, null);
+
+    public static bool IsDisabledByFieldset(Node n, FormStateOverrides? ov)
     {
         Node child = n;
         for (Node p = Parent(n); !p.IsNull; child = p, p = Parent(p))
         {
-            if (IsHtml(p, "fieldset") && Has(p, "disabled"))
+            if (IsHtml(p, "fieldset") && DisabledAttribute(p, ov))
             {
                 // Descendants of the fieldset's first legend child are not disabled by it.
                 Node firstLegend = default;
@@ -298,32 +300,42 @@ internal static class ElementState
     public static bool CanBeDisabled(Node n) =>
         IsFormControl(n) || IsHtml(n, "fieldset") || IsHtml(n, "optgroup") || IsHtml(n, "option");
 
-    public static bool IsDisabled(Node n)
+    public static bool IsDisabled(Node n) => IsDisabled(n, null);
+
+    /// <summary>The <c>disabled</c> attribute's presence, or the override that replaces it (a script setting <c>disabled</c> sets the attribute).</summary>
+    private static bool DisabledAttribute(Node n, FormStateOverrides? ov) =>
+        ov is not null && FormStateOverrides.DisabledOf(ov.Get(n.Index)) is { } v ? v : Has(n, "disabled");
+
+    /// <summary>The checkedness of a checkbox or radio: the override, or the <c>checked</c> attribute (the default checkedness).</summary>
+    private static bool CheckednessOf(Node n, FormStateOverrides? ov) =>
+        ov is not null && FormStateOverrides.CheckedOf(ov.Get(n.Index)) is { } v ? v : Has(n, "checked");
+
+    public static bool IsDisabled(Node n, FormStateOverrides? ov)
     {
         if (IsFormControl(n))
         {
-            return Has(n, "disabled") || IsDisabledByFieldset(n);
+            return DisabledAttribute(n, ov) || IsDisabledByFieldset(n, ov);
         }
 
         if (IsHtml(n, "fieldset"))
         {
-            return Has(n, "disabled") || IsDisabledByFieldset(n);
+            return DisabledAttribute(n, ov) || IsDisabledByFieldset(n, ov);
         }
 
         if (IsHtml(n, "optgroup"))
         {
-            return Has(n, "disabled");
+            return DisabledAttribute(n, ov);
         }
 
         if (IsHtml(n, "option"))
         {
-            if (Has(n, "disabled"))
+            if (DisabledAttribute(n, ov))
             {
                 return true;
             }
 
             Node p = Parent(n);
-            return IsHtml(p, "optgroup") && Has(p, "disabled");
+            return IsHtml(p, "optgroup") && DisabledAttribute(p, ov);
         }
 
         return false;
@@ -331,15 +343,23 @@ internal static class ElementState
 
     // ---- :checked, selectedness ----
 
-    public static bool IsChecked(Node n)
+    public static bool IsChecked(Node n) => IsChecked(n, null);
+
+    public static bool IsChecked(Node n, FormStateOverrides? ov)
     {
         InputType t = GetInputType(n);
         if (t is InputType.Checkbox or InputType.Radio)
         {
-            return Has(n, "checked");
+            return CheckednessOf(n, ov);
         }
 
-        return IsHtml(n, "option") && IsSelectedOption(n);
+        if (!IsHtml(n, "option"))
+        {
+            return false;
+        }
+
+        // An override is the option's selectedness itself; the rest of the select is not touched (see FormStateOverrides).
+        return ov is not null && FormStateOverrides.CheckedOf(ov.Get(n.Index)) is { } v ? v : IsSelectedOption(n);
     }
 
     private static Node SelectOf(Node option)
@@ -371,24 +391,44 @@ internal static class ElementState
         // Single-select: the last option with the attribute wins; with none, a one-row select selects the first enabled option.
         Node lastSelected = default;
         Node firstEnabled = default;
-        ForEachOption(select, o =>
+        foreach (Node c in select.Children)
         {
-            if (Has(o, "selected"))
+            if (IsHtml(c, "option"))
             {
-                lastSelected = o;
+                Note(c, false, ref lastSelected, ref firstEnabled);
             }
+            else if (IsHtml(c, "optgroup"))
+            {
+                bool groupDisabled = Has(c, "disabled");
+                foreach (Node o in c.Children)
+                {
+                    if (IsHtml(o, "option"))
+                    {
+                        Note(o, groupDisabled, ref lastSelected, ref firstEnabled);
+                    }
+                }
+            }
+        }
 
-            if (firstEnabled.IsNull && !Has(o, "disabled") && !(IsHtml(Parent(o), "optgroup") && Has(Parent(o), "disabled")))
-            {
-                firstEnabled = o;
-            }
-        });
         if (!lastSelected.IsNull)
         {
             return lastSelected == option;
         }
 
         return DisplaySize(select) == 1 && firstEnabled == option;
+    }
+
+    private static void Note(Node option, bool inDisabledGroup, ref Node lastSelected, ref Node firstEnabled)
+    {
+        if (Has(option, "selected"))
+        {
+            lastSelected = option;
+        }
+
+        if (firstEnabled.IsNull && !Has(option, "disabled") && !inDisabledGroup)
+        {
+            firstEnabled = option;
+        }
     }
 
     private static int DisplaySize(Node select)
@@ -433,7 +473,9 @@ internal static class ElementState
 
     // ---- :read-write / :read-only ----
 
-    public static bool IsReadWrite(Node n)
+    public static bool IsReadWrite(Node n) => IsReadWrite(n, null);
+
+    public static bool IsReadWrite(Node n, FormStateOverrides? ov)
     {
         if (!n.IsElement || n.Namespace != ElementNamespace.Html)
         {
@@ -443,12 +485,12 @@ internal static class ElementState
         InputType t = GetInputType(n);
         if (t != InputType.NotInput)
         {
-            return ReadonlyApplies(t) && !Has(n, "readonly") && !IsDisabled(n);
+            return ReadonlyApplies(t) && !Has(n, "readonly") && !IsDisabled(n, ov);
         }
 
         if (IsHtml(n, "textarea"))
         {
-            return !Has(n, "readonly") && !IsDisabled(n);
+            return !Has(n, "readonly") && !IsDisabled(n, ov);
         }
 
         return IsEditable(n);
@@ -497,6 +539,13 @@ internal static class ElementState
     }
 
     // ---- :placeholder-shown ----
+
+    /// <summary>Whether the element can have a <c>::placeholder</c>: a text-like <c>input</c> or a <c>textarea</c> with a non-empty <c>placeholder</c> attribute.</summary>
+    public static bool HasPlaceholderBox(Node n)
+    {
+        InputType t = GetInputType(n);
+        return ((t != InputType.NotInput && PlaceholderApplies(t)) || IsHtml(n, "textarea")) && AttrSpan(n, "placeholder").Length > 0;
+    }
 
     public static bool IsPlaceholderShown(Node n)
     {
@@ -568,23 +617,38 @@ internal static class ElementState
 
     // ---- :indeterminate ----
 
-    public static bool IsIndeterminate(Node n)
+    public static bool IsIndeterminate(Node n) => IsIndeterminate(n, null);
+
+    public static bool IsIndeterminate(Node n, FormStateOverrides? ov)
     {
         if (IsHtml(n, "progress"))
         {
             return !Has(n, "value");
         }
 
-        if (GetInputType(n) != InputType.Radio)
+        InputType type = GetInputType(n);
+        if (type == InputType.Checkbox)
+        {
+            return ov is not null && FormStateOverrides.IndeterminateOf(ov.Get(n.Index)) is true;
+        }
+
+        if (type != InputType.Radio)
         {
             return false;
         }
 
-        string name = AttrString(n, "name");
-        if (name.Length == 0)
+        if (AttrSpan(n, "name").Length == 0)
         {
-            return !Has(n, "checked");
+            return !CheckednessOf(n, ov);
         }
+
+        // A named group is indeterminate when no member is checked: the members whose attribute says checked, adjusted by the overrides.
+        if (ov is not null && n.Document!.Index.Forms is { } forms && forms.RadioGroupOf.TryGetValue(n.Index, out int group))
+        {
+            return forms.RadioGroupBaseChecked[group] + ov.GroupDelta(group) <= 0;
+        }
+
+        string name = AttrString(n, "name");
 
         var key = (FormOwner(n), Node.RootIndex(n.Document!.Arena, n.Index), name);
         return !n.Document.Index.Forms.RadioGroupChecked.TryGetValue(key, out bool any) || !any;

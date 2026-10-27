@@ -8,8 +8,17 @@ namespace RecursiveAI.OneHtml.Css;
 /// <summary>The user-agent sheets, parsed once: the CSS of the HTML Standard's Rendering section (see <c>docs/cascade.md</c>).</summary>
 internal static class UserAgentSheets
 {
-    private static readonly Lazy<Stylesheet> StandardSheet = new(() => Stylesheet.Parse(UserAgentStylesheetData.Standard, "about:user-agent", null, default), LazyThreadSafetyMode.ExecutionAndPublication);
+    private static readonly Lazy<Stylesheet> StandardSheet = new(() => Stylesheet.Parse(UserAgentStylesheetData.Standard + PseudoElementDefaults, "about:user-agent", null, default), LazyThreadSafetyMode.ExecutionAndPublication);
     private static readonly Lazy<Stylesheet> QuirksSheet = new(() => Stylesheet.Parse(UserAgentStylesheetData.Quirks, "about:user-agent-quirks", null, default), LazyThreadSafetyMode.ExecutionAndPublication);
+
+    // What Chrome's computed style of ::placeholder shows (black-box): grey text, no pointer events, a block box, the line height an input sets
+    // (a textarea takes the author's), and no box while a value hides the placeholder; the author cannot change the !important ones. The HTML Standard has no rule for it.
+    private const string PseudoElementDefaults = """
+
+        input[placeholder]::placeholder, textarea[placeholder]::placeholder { color: #757575; display: block !important; pointer-events: none !important; }
+        input[placeholder]::placeholder { line-height: normal !important; }
+        input[placeholder]:not(:placeholder-shown)::placeholder, textarea[placeholder]:not(:placeholder-shown)::placeholder { display: none !important; }
+        """;
 
     public static Stylesheet Standard => StandardSheet.Value;
 

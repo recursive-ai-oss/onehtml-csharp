@@ -61,6 +61,10 @@ to a pseudo-class, `:where` is zero, pseudo-elements count in C.
 ECMAScript-mode regex with a 50 ms timeout; a pattern that does not compile, is over 4,096 characters or times out is ignored, as an invalid pattern is), number/range/date-time `min`/`max`, and
 number `step`. There is no dirty flag and no custom validity, so script-set state is invisible.
 
+The one exception is checkedness, disabledness and the `indeterminate` property: `InteractionState.FormState` (a `FormStateOverrides`)
+replaces what the attributes say for `:checked`, `:disabled`, `:enabled`, `:indeterminate`, `:read-only` and `:read-write`. See
+`cascade.md`, "Form state from script". Their selectors report `SelectorDependencies.ScriptFormState`.
+
 ## Query members
 
 `QuerySelector`, `QuerySelectorAll`, `Matches`, `Closest`, `GetElementsByTagName`, `GetElementsByClassName` are on `Node`.

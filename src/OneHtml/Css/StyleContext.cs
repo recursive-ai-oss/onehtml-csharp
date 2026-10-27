@@ -168,6 +168,18 @@ public sealed record StyleContext
     /// <summary>The element the URL fragment names (<c>:target</c>; <c>:target-within</c> on its ancestors).</summary>
     public Node Target { get; init; }
 
+    private FormStateOverrides _formState = FormStateOverrides.Empty;
+
+    /// <summary>
+    /// Form state that differs from the document's attributes: checkboxes and radio buttons the user toggled, controls a script disabled,
+    /// tri-state checkboxes. Any number of elements. <see cref="FormStateOverrides.Empty"/> by default (a null value reads as empty); its elements
+    /// must belong to the document the context is used with. See <see cref="FormStateOverrides"/> for what follows from it. The accessibility tree reads attributes and ignores it.
+    /// </summary>
+    public FormStateOverrides FormState { get => _formState; init => _formState = value ?? FormStateOverrides.Empty; }
+
+    /// <summary>True when any element has a form-state override.</summary>
+    public bool HasFormState => !_formState.IsEmpty;
+
     /// <summary>True when any of focus, hover, active or target is set.</summary>
     public bool HasInteractionState => !Focus.IsNull || !Hover.IsNull || !Active.IsNull || !Target.IsNull;
 
@@ -183,11 +195,15 @@ public sealed record StyleContext
     /// <param name="source">How it got focus.</param>
     public StyleContext WithFocus(Node element, FocusSource source = FocusSource.Keyboard) => this with { Focus = element, FocusSource = source };
 
+    /// <summary>The same context with other form-state overrides.</summary>
+    /// <param name="formState">The overrides; they replace the current ones.</param>
+    public StyleContext WithFormState(FormStateOverrides formState) => this with { FormState = formState };
+
     /// <summary>The same context with this element hovered (the null node clears it).</summary>
     /// <param name="element">The hovered element.</param>
     public StyleContext WithHover(Node element) => this with { Hover = element };
 
-    /// <summary>The same context without any interaction state.</summary>
+    /// <summary>The same context without any focus, hover, active or target state (form-state overrides stay).</summary>
     public StyleContext WithoutInteraction() => this with { Focus = default, Hover = default, Active = default, Target = default, FocusSource = FocusSource.Keyboard };
 
     /// <summary>
@@ -197,7 +213,7 @@ public sealed record StyleContext
     /// </summary>
     internal InteractionState? ToInteractionState()
     {
-        if (!HasInteractionState)
+        if (!HasInteractionState && !HasFormState)
         {
             return null;
         }
@@ -211,6 +227,7 @@ public sealed record StyleContext
             Active = Active,
             ActiveControl = LabelControl.Of(Active),
             Target = Target,
+            FormState = HasFormState ? _formState : null,
         };
     }
 }

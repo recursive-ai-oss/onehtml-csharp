@@ -125,6 +125,11 @@ public sealed class LiveDocumentStyles
     private readonly RuleSel[]?[] _staticMatches;
     private readonly InteractionState _state = new();
     private readonly InteractionState _prevState = new();
+    private readonly FormStateOverrides _formCur;
+    private readonly FormStateOverrides _formPrev;
+    private readonly List<int> _formTouchedIndex = [];
+    private readonly List<FormStateKind> _formTouchedKind = [];
+    private readonly List<int> _formRoots = [];
     private readonly SelectorMatchOptions _cur;
     private readonly SelectorMatchOptions _prev;
     private readonly SelectorBulkCache? _bulk;
@@ -168,6 +173,12 @@ public sealed class LiveDocumentStyles
         _focusSource = c.Focus.IsNull ? FocusSource.Keyboard : c.FocusSource;
         SetState(_state, _focus, _focusSource, _hover, _active, _target);
         _prevState.CopyFrom(_state);
+        _formCur = FormStateOverrides.CreateLive(_doc);
+        _formPrev = FormStateOverrides.CreateLive(_doc);
+        _formCur.CopyFrom(c.FormState);
+        _formPrev.CopyFrom(c.FormState);
+        _state.SetForm(_formCur);
+        _prevState.SetForm(_formPrev);
         _bulk = _engine.UsesBulkCaches ? new SelectorBulkCache() : null;
         var scratch = new MatchScratch();
         _cur = new SelectorMatchOptions { Scope = _doc.DocumentElement, State = _state, BulkCache = _bulk, Scratch = scratch };
@@ -230,7 +241,7 @@ public sealed class LiveDocumentStyles
 
     /// <summary>The current context: the starting media features with the current interaction state. Builds a new object, so it is not for the per-change path.</summary>
     public StyleContext GetContext() =>
-        _snapshot.Context with { Focus = _focus, FocusSource = _focusSource, Hover = _hover, Active = _active, Target = _target };
+        _snapshot.Context with { Focus = _focus, FocusSource = _focusSource, Hover = _hover, Active = _active, Target = _target, FormState = _formCur.ToImmutable() };
 
     /// <summary>
     /// An immutable <see cref="DocumentStyles"/> equal to the current state, made as <see cref="DocumentStyles.WithContext"/> makes one
@@ -309,19 +320,21 @@ public sealed class LiveDocumentStyles
     public ComputedStyle? GetPseudoStyle(Node element, PseudoElementKind kind)
     {
         ComputedStyle style = GetStyle(element);
-        string name = kind switch { PseudoElementKind.Before => "before", PseudoElementKind.After => "after", PseudoElementKind.Marker => "marker", _ => throw new ArgumentOutOfRangeException(nameof(kind)) };
-        if (!_engine.Db.PseudoIndex.ContainsKey(name))
+        string name = PseudoNames.Of(kind);
+        if (!_engine.Db.PseudoIndex.ContainsKey(name) || (kind == PseudoElementKind.Placeholder && !ElementState.HasPlaceholderBox(element)))
         {
             return null;
         }
 
-        long key = ((long)element.Index << 2) | (long)kind;
+        long key = PseudoNames.Key(element.Index, kind);
         if (_pseudo.TryGetValue(key, out ComputedStyle? cached))
         {
             return cached;
         }
 
-        return _pseudo.GetOrAdd(key, _engine.ComputePseudo(element, name, style, _cur));
+        return _pseudo.GetOrAdd(key, kind == PseudoElementKind.Selection
+            ? _engine.ComputeHighlight(element, i => _styles[i]!, _pseudo, _cur)
+            : _engine.ComputePseudo(element, name, style, _cur));
     }
 
     /// <summary>
@@ -389,6 +402,97 @@ public sealed class LiveDocumentStyles
         }
 
         Restyle();
+    }
+
+    /// <summary>
+    /// Changes form state (checkedness, disabledness, indeterminate state) of any number of elements at once and restyles what the change
+    /// reaches: the elements whose rules with <c>:checked</c>, <c>:disabled</c>, <c>:enabled</c>, <c>:indeterminate</c>, <c>:read-only</c> or
+    /// <c>:read-write</c> match differently (through combinators, <c>:has()</c> and <c>:not()</c> too), the controls a disabled <c>fieldset</c> or
+    /// <c>optgroup</c> and the rest of a radio group depend on, and the descendants whose inherited values change. The result equals
+    /// <see cref="DocumentStyles.WithContext"/> with the equivalent <see cref="StyleContext.FormState"/>. Read what changed from
+    /// <see cref="ChangedElementIndices"/>. Allocation-free in steady state (see the type remarks). Overrides are literal, as
+    /// <see cref="FormStateOverrides"/> says; hover, focus, active and target are untouched.
+    /// </summary>
+    /// <param name="changes">The changes, applied in order; a later change to the same element and state wins. Empty does nothing.</param>
+    /// <exception cref="ArgumentException">A change names a node that is not an element of the document. Nothing is applied.</exception>
+    public void ApplyFormState(ReadOnlySpan<FormStateChange> changes)
+    {
+        _changedCount = 0;
+        foreach (FormStateChange c in changes)
+        {
+            if (c.Element.IsNull || !ReferenceEquals(c.Element.Document, _doc) || !c.Element.IsElement)
+            {
+                throw new ArgumentException("A change names a node that is not an element of the document.", nameof(changes));
+            }
+        }
+
+        _formTouchedIndex.Clear();
+        _formTouchedKind.Clear();
+        _formRoots.Clear();
+        foreach (FormStateChange c in changes)
+        {
+            if (_formCur.Set(c.Element.Index, c.Kind, c.Value))
+            {
+                _formTouchedIndex.Add(c.Element.Index);
+                _formTouchedKind.Add(c.Kind);
+            }
+        }
+
+        if (_formTouchedIndex.Count == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            _bulk?.InvalidateInteraction();
+            RuleDatabase db = _engine.Db;
+            if (db.PseudoElementDynamic)
+            {
+                _pseudo.Clear();
+            }
+
+            if (db.DynamicIndex.Count == 0)
+            {
+                return;
+            }
+
+            BeginEpoch();
+            _affectedCount = 0;
+            if (db.FocusAnchors is null)
+            {
+                ScanAll(db.DynamicIndex);
+            }
+            else
+            {
+                for (int i = 0; i < _formTouchedIndex.Count; i++)
+                {
+                    var x = new Node(_doc, _formTouchedIndex[i]);
+                    _formRoots.Add(x.Index);
+                    FormDependents.Add(x, _formTouchedKind[i], _formRoots);
+                }
+
+                for (int i = 0; i < _formRoots.Count; i++)
+                {
+                    Root(new Node(_doc, _formRoots[i]));
+                }
+
+                if (db.StateNestedReach)
+                {
+                    ScanAll(db.NestedReachIndex);
+                }
+            }
+
+            Restyle();
+        }
+        finally
+        {
+            // The state the next change is compared against is the one just applied.
+            for (int i = 0; i < _formTouchedIndex.Count; i++)
+            {
+                _formPrev.Set(_formTouchedIndex[i], _formTouchedKind[i], _formCur.ValueOf(_formTouchedIndex[i], _formTouchedKind[i]));
+            }
+        }
     }
 
     private void Check(Node n)

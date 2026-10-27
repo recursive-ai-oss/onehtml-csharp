@@ -219,6 +219,49 @@ foreach (int i in live.ChangedElementIndices)          // ascending element indi
   read as slices of the document text for the rule index, an element's `style` attribute and presentational hints are turned into
   rules once per document, and the selector matcher's bulk caches drop only what reads a state pseudo-class.
 
+## Form state from script
+
+A checkbox the user ticked, a control a script disabled and a tri-state checkbox are not in the document's attributes. A
+`FormStateOverrides` states them, for any number of elements, and a renderer gives it to either path:
+
+```csharp
+var form = FormStateOverrides.Empty.WithChecked(box, true).WithDisabled(fieldset, true).WithIndeterminate(tri, true);
+var styles = DocumentStyles.Create(doc, StyleContext.Default.WithFormState(form));      // or styles.WithContext(ctx)
+live.ApplyFormState([FormStateChange.Checked(box, true), FormStateChange.Disabled(other, null)]);   // null: read the attributes again
+```
+
+- **Meaning.** `Checked` replaces the checkedness of a checkbox or radio button (`input.checked = ...`) and the selectedness of an `option`
+  (`option.selected = ...`); `Disabled` replaces the presence of the `disabled` attribute on a control, `fieldset`, `optgroup` or `option`;
+  `Indeterminate` is the `indeterminate` property of a checkbox. An override on another kind of element has no effect. Overrides are
+  literal: checking a radio button does not uncheck its group mates and selecting an option does not deselect the others, so a caller
+  that mirrors a browser states each element that changed. Without overrides nothing changes: every value is what it was.
+- **What follows** (HTML 4.16.3): `:enabled` is the complement of `:disabled`; a disabled `fieldset` disables the controls in it except
+  those in its first `legend`, and a disabled `optgroup` its options; `:read-only` and `:read-write` follow disabledness; a radio button
+  in a named group is `:indeterminate` when no member of the group is checked (counting the overrides), and one without a name when it is
+  not checked itself. **What does not follow:** `:default` (it is defined by content attributes), `:required`, `:optional`,
+  `:placeholder-shown` and the constraint-validation pseudo-classes `:valid`, `:invalid`, `:in-range`, `:out-of-range`, which keep reading
+  attributes. Chrome 156 also treats the options and optgroups of a disabled `select` as `:disabled`; the HTML Standard's definition,
+  which the library follows, does not.
+- **Snapshot path.** `StyleContext.FormState` holds the overrides (immutable, content-equal, tied to one document). `WithContext` with a
+  different `FormState` tests every element against the index of rules that read form state (the controls a fieldset disables and the
+  rest of a radio group are not on the changed element's own chain, so there is no anchored shortcut), then recomputes what differs.
+  `Restyle` carries the overrides to the new document through the node mapping and drops those whose node is no longer an element.
+- **Live path.** `LiveDocumentStyles.ApplyFormState(ReadOnlySpan<FormStateChange>)` applies the changes in order, then restyles from the
+  changed elements and from their dependents (the controls under a fieldset or optgroup whose disabledness changed, the members of a
+  radio group whose checkedness changed): the same anchors as the interaction state, so `:checked + label`, `li:has(:checked)`,
+  `:not(:checked) ~ x` and nested forms are reached, and the same changed list, `ChangedElementIndices`, is filled. It allocates
+  nothing in steady state (the exclusions of the interaction path apply). Hover, focus, active and target keep their values; both kinds of
+  change can be applied in any order. The result equals `DocumentStyles.Create` for the equivalent context, which `GetContext()` and
+  `ToSnapshot()` return, form state included.
+- **Rules with `:checked`, `:disabled`, `:enabled`, `:indeterminate`, `:read-only` or `:read-write` are now dynamic rules** (their selectors
+  report `SelectorDependencies.ScriptFormState`): they are matched again for each element's cascade instead of once per document. The
+  values they give are the same without overrides.
+- **The accessibility tree ignores form-state overrides.** It reads checkedness, disabledness and selectedness from attributes in many
+  places (implicit properties, names that read a select's value, constraint validity, the dependency index of incremental recompute),
+  and an override is not part of an `Apply` change set, so honouring it would need a second invalidation path. Build the tree from a
+  document whose attributes say what the page shows (an edit makes that) when the tree must follow script state.
+- **Selector API.** `InteractionState.FormState` carries the overrides into `Matches` and the queries.
+
 ## Restyle after a change
 
 `Restyle(newDocument, StyleChange)` returns `RestyleResult(Styles, RestyledElements, FullRecompute)`.
@@ -330,8 +373,8 @@ No loop follows input depth: gathering uses an explicit stack, ancestor chains a
 
 ## Pseudo-element styles
 
-`GetPseudoStyle(element, PseudoElementKind)` returns the computed style of the `::before`, `::after` or `::marker` of an
-element, or `null` when no rule styles it (then no box is generated for `::before` and `::after`). A selector is indexed
+`GetPseudoStyle(element, PseudoElementKind)` returns the computed style of the `::before`, `::after`, `::marker`, `::selection` or
+`::placeholder` of an element, or `null` when no rule styles it (then no box is generated for `::before` and `::after`). A selector is indexed
 only when the pseudo-element is the last simple selector of its last compound; it matches when everything before the
 pseudo-element matches the originating element (Selectors 4 section 3.6), with the originating element's specificity plus
 one type selector for the pseudo-element. The cascade is the element cascade restricted to those rules: no `style`
@@ -339,9 +382,35 @@ attribute and no presentational hints reach a pseudo-element, and the style inhe
 The box exists for `::before` and `::after` only when `content` is neither `normal` nor `none`; the typed `Content`
 accessor gives strings, `attr()`, `counter()`/`counters()`, quotes and the alternative text after `/`. Counter values and
 attribute lookups are the caller's to resolve (the accessibility tree does both). User-agent rules apply, for example
-`q::before { content: open-quote }`. Not done: `::first-line`, `::first-letter`, `::placeholder`, `::selection`, `::backdrop`
-and the other pseudo-elements, pseudo-classes after a pseudo-element (the selector is not indexed), and generation of
+`q::before { content: open-quote }`. Not done: `::first-line`, `::first-letter`, `::backdrop` and the other pseudo-elements, pseudo-classes after a pseudo-element (the selector is not indexed), and generation of
 `::marker` content.
+
+### `::selection`
+
+A highlight pseudo-element (CSS Pseudo-Elements 4 section 3). Only the properties that apply to highlights are taken from its rules:
+`color`, `background-color`, `text-decoration-line`, `-style`, `-color` and `-thickness`, `text-underline-offset`, `text-shadow`, `fill`,
+`stroke`, `stroke-width` and custom properties (`HighlightProperties`; the list is what Chrome 156 applied when each property was set in
+turn, so `caret-color`, the `-webkit-text-*` paints, `text-emphasis` and every layout, font and box property are dropped).
+
+- **Highlight inheritance.** What no rule sets comes from the parent element's `::selection` style, for non-inherited properties too
+  (`p::selection { background-color: yellow }` colours the background of a `span` in the `p`). The style exists for an element when a rule
+  matches it or any ancestor, and is `null` otherwise (Chrome answers for any element with the originating style; the library has nothing
+  to say). With no highlight style above, the colours are the originating element's.
+- **The other properties** (font, line-height, spacing, margins, ...) are the originating element's, as Chrome shows for the font group.
+  Deviation: Chrome resets the other inherited properties that are not highlight properties (`text-transform`, `white-space`, `cursor`,
+  `visibility`, ...) to their initial values on a highlight style; the library leaves them inherited from the element.
+- Parents are computed first with an explicit loop and each step is cached, so depth does not recurse. `RestyleResult.PseudoElementsMayDiffer`
+  adds every element below one that may differ when the sheets have a `::selection` rule.
+
+### `::placeholder`
+
+Exists (not null) for an `input` of type text, search, url, tel, email, password or number, and for a `textarea`, that has a non-empty
+`placeholder` attribute; `::-webkit-input-placeholder` is the same pseudo-element. It is a regular pseudo-element: it inherits from the
+control and every property of its rules applies, except `display`, `pointer-events` and (on an `input`) `line-height`, which the user-agent
+style fixes with `!important`. Chrome 156 shows the same: grey `color` (`#757575`), `pointer-events: none`, `display: block` while the
+placeholder is shown and `display: none` while a value hides it (`:placeholder-shown` is false). The HTML Standard gives no such rules, and
+the spec's list of properties for `::placeholder` (those of `::first-line`) is narrower than what Chrome applies; the library follows Chrome
+here. Chrome's `direction`, `overflow` and `text-overflow` are not modelled.
 
 ## Conformance (web-platform-tests, pinned commit in the notices file)
 

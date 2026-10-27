@@ -141,6 +141,7 @@ internal sealed class StyleEngine
     private readonly Dictionary<int, ComputedStyle> _cache = [];
     private readonly ConcurrentDictionary<string, StyleRule?> _inlineRules = new(StringComparer.Ordinal);
     private readonly CssParseOptions _parse;
+    private readonly DeclarationValidator? _validator;
     private int _styleCounter;
 
     public StyleEngine(Document doc, StyleContext context, RuleDatabase db, StyleSourceOptions options)
@@ -149,6 +150,7 @@ internal sealed class StyleEngine
         Context = context;
         Db = db;
         _parse = options.ParseOptions ?? CssParseOptions.Default;
+        _validator = options.DeclarationValidator;
         BaseLength = context.CreateLengthContext();
         ColorOptions = new ColorParseOptions { DarkScheme = context.Media.ColorScheme == PrefersColorScheme.Dark };
         UsesBulkCaches = false;
@@ -519,6 +521,7 @@ internal sealed class StyleEngine
                     Layer = LayerTree.RootOf(StyleOrigin.Author),
                     Layers = null,
                     Order = kind == DeclarationKind.InlineStyle ? int.MaxValue >> 8 : 0,
+                    Validator = _validator,
                 };
             }
         }

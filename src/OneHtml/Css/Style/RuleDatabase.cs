@@ -675,6 +675,7 @@ internal sealed class RuleGatherer
             Order = _order++,
             Layers = _db.Layers,
             Dynamic = IsDynamic(list),
+            Validator = _opts.DeclarationValidator,
         };
         _db.Rules.Add(rule);
     }

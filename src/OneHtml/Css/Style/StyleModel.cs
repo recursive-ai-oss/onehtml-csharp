@@ -264,6 +264,7 @@ internal sealed class StyleRule
     public int Order;
     public LayerTree? Layers;
     public bool Dynamic;
+    public DeclarationValidator? Validator;
 
     /// <summary>The declarations, validated and expanded to longhands; built on first use.</summary>
     public ParsedDeclaration[] Parsed
@@ -378,6 +379,9 @@ internal sealed class ParsedDeclaration
             return null;
         }
 
+        // The caller's grammar sees only what the author or user wrote; the UA sheet and presentational hints are ours.
+        DeclarationValidator? validator = rule.Kind != DeclarationKind.PresentationalHint && rule.Origin != StyleOrigin.UserAgent ? rule.Validator : null;
+
         CssWideKeyword keyword = hasVar ? CssWideKeyword.None : CssWideKeywords.Detect(value);
         if (info.IsShorthand)
         {
@@ -408,6 +412,11 @@ internal sealed class ParsedDeclaration
                     var list = new List<StyleValue>(ex.Longhands.Count);
                     foreach (ExpandedLonghand l in ex.Longhands)
                     {
+                        if (validator is not null && !hasVar && !Accepts(validator, rule.Origin, l.Name, l.Keyword, l.Value))
+                        {
+                            return null;
+                        }
+
                         int lid = PropertyIds.Get(l.Name);
                         if (lid >= 0)
                         {
@@ -429,6 +438,11 @@ internal sealed class ParsedDeclaration
                     }
 
                     d.ShorthandName = null;
+                    if (validator is not null && !Accepts(validator, rule.Origin, info.Name, keyword, value))
+                    {
+                        return null;
+                    }
+
                     d.Values = [new StyleValue(id, null, value, keyword, d, false, null)];
                     return d;
             }
@@ -445,8 +459,25 @@ internal sealed class ParsedDeclaration
             return null;
         }
 
+        if (validator is not null && !Accepts(validator, rule.Origin, info.Name, keyword, value))
+        {
+            return null;
+        }
+
         d.Values = [new StyleValue(id, null, value, keyword, d, false, null)];
         return d;
+    }
+
+    /// <summary>Asks the caller's validator about an untyped property's value; keywords, typed properties and values with <c>var()</c> are never asked.</summary>
+    private static bool Accepts(DeclarationValidator validator, StyleOrigin origin, string name, CssWideKeyword keyword, ComponentValueList value)
+    {
+        if (keyword != CssWideKeyword.None || TypedProperties.IsTyped(name) || VarSubstitution.ContainsVar(value))
+        {
+            return true;
+        }
+
+        TokenRange range = TokenRange.Of(value).Trim();
+        return range.IsEmpty || validator(name, range, origin);
     }
 
     /// <summary>Whether a longhand's value is acceptable at parse time; an invalid declaration is dropped before the cascade (CSS Cascade 5 §4.3 "invalid at parse time").</summary>

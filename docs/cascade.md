@@ -91,6 +91,36 @@ parse time for well-formed `var()` syntax; the fallback of a `var()` may not con
 **Provenance.** Each winning value keeps the declaration that supplied it (`DeclarationSource`). For rules from an inline
 `style` attribute or a presentational hint, `Owner` is the null node, because rules are shared by text between elements.
 
+## Declaration validators
+
+The library checks a declaration's value at parse time only as far as it knows the property's grammar (the typed
+properties, the shorthands it expands, and a syntax check for the rest; `css-values.md`). A caller that knows more, such as
+a layout engine with its own grammar for `width`, supplies `StyleSourceOptions.DeclarationValidator`:
+`bool Validate(string property, TokenRange value, StyleOrigin origin)`. A declaration it rejects is dropped when the rule's
+declarations are collected, exactly like one that did not parse (Syntax 3 §5.4.6, Cascade 5 §4.3): it does not win, it does
+not count as `!important`, and the earlier declaration of the property, or the inherited or initial value, applies. This is
+how `width: 100%; width: -webkit-fill-available` falls back to `100%` for an engine without the second value.
+
+- **Consulted:** author and user declarations, from style rules (nested ones included), `<style>` and linked sheets, and
+  `style=""`. The same options reach overlays (`WithContext`) and restyle (`Restyle`, edit results), so they equal a fresh
+  `DocumentStyles.Create` with the same validator, provided the callback is deterministic.
+- **Not consulted:** custom properties; values that are CSS-wide keywords; `all`; the user-agent sheet and presentational
+  hints (the library's own); the 33 typed properties, which keep their own parsers (the hook is additive and sees only
+  properties the library does not type); values containing `var()` (or any substitution), which are not known until
+  computed-value time and stay invalid at computed-value time, as without a validator. The callback is also not consulted
+  for the substituted value at computed-value time.
+- **Shorthands.** The callback sees the declared name only for a shorthand the library does not expand (`NotExpanded`, for
+  example `box-shadow`). For a shorthand it expands (`margin`, `border`, `background`, ...) it sees each untyped
+  *longhand* with its expanded value, never the shorthand itself, so one grammar per longhand serves both spellings. One
+  rejected longhand drops the whole shorthand declaration (a shorthand with an invalid part is invalid). The library's own
+  shorthand grammar runs first, so the callback never sees values the library already rejected.
+- **Input.** `TokenRange` is the same public token cursor the library's value parsers use: indexes into the owning
+  `CssTree`, with `Kind`, `Next`, `Inner`, `IsIdent`, `Number`, `TryUnit` and so on. The range has no leading or trailing
+  whitespace and is never empty. `TokenRange.Parse(text)` makes one from text.
+- **Contract.** The callback must be deterministic, quick and thread-safe: declarations are validated once per rule on
+  first use, and two threads may race to do so. An exception it throws surfaces from the style query that triggered it.
+  With no validator the cascade is unchanged.
+
 ## The style table
 
 Styles are immutable and shared. The key of a style is the parent style object plus the identities of the winning

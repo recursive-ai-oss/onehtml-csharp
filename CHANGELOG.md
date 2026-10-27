@@ -4,6 +4,11 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Added
+
+- `StyleSourceOptions.DeclarationValidator`: a caller-supplied grammar check consulted when author and user declarations enter the cascade, for properties the library does not type. A rejected declaration is dropped like one that failed to parse, so an earlier declaration stands (`width: 100%; width: -webkit-fill-available`). Without a validator nothing changes. See `docs/cascade.md`.
+- `TokenRange` is public: the token cursor the library's value parsers use, now usable for a validator or any property grammar, with `TokenRange.Parse(text)` to make one from text.
+
 ## [1.0.0] - 2026-10-26
 
 First release. All three packages share one version.

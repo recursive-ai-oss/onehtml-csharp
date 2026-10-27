@@ -17,6 +17,17 @@ public enum StyleOrigin : byte
     Author = 2,
 }
 
+/// <summary>
+/// Decides whether a declaration's value is valid for a property whose grammar the library does not check itself
+/// (CSS Syntax 3 section 5.4.6 / CSS Cascade 5 section 4.3: a declaration the user agent cannot parse is dropped before the
+/// cascade, so an earlier declaration of the same property stands). Set through <see cref="StyleSourceOptions.DeclarationValidator"/>.
+/// </summary>
+/// <param name="property">The lowercase property name. For a shorthand the library expands, each longhand is passed with its own value; see <see cref="StyleSourceOptions.DeclarationValidator"/>.</param>
+/// <param name="value">The value's tokens, without <c>!important</c>. Never empty, never a CSS-wide keyword, never containing <c>var()</c>. The range is only valid during the call.</param>
+/// <param name="origin">The origin of the declaration: <see cref="StyleOrigin.Author"/> (sheets, <c>style=""</c>) or <see cref="StyleOrigin.User"/>.</param>
+/// <returns>True to keep the declaration; false to drop it.</returns>
+public delegate bool DeclarationValidator(string property, TokenRange value, StyleOrigin origin);
+
 /// <summary>The bytes or text of a style sheet the caller fetched.</summary>
 public sealed class StylesheetResource
 {
@@ -82,6 +93,27 @@ public sealed class StyleSourceOptions
     /// <summary>The most cascade layers per origin. Default 65,536.</summary>
     public int MaxLayers { get; init; } = 1 << 16;
 
+    /// <summary>
+    /// A caller-supplied grammar check, consulted when a declaration is collected into the cascade; null (the default) accepts
+    /// everything the library itself accepts, and changes nothing. A declaration it rejects is dropped as if it had not parsed:
+    /// it neither wins nor counts as <c>!important</c>, so an earlier declaration, or the inherited or initial value, applies.
+    /// <para>
+    /// What it sees: declarations of author and user sheets and of <c>style=""</c>, for properties the library does not type
+    /// (see <see cref="TypedProperties.IsTyped"/>) after the library's own syntax check has passed. It is not asked about
+    /// custom properties, CSS-wide keywords, <c>all</c>, values containing <c>var()</c> (they stay invalid at computed-value time
+    /// when substitution fails), the user-agent sheet, or presentational hints. A shorthand the library expands
+    /// (<c>margin</c>, <c>border</c>, <c>background</c>, ...) is validated by its longhands: the callback gets each untyped
+    /// longhand with its expanded value, and one rejection drops the whole shorthand declaration, as an invalid part makes the
+    /// whole shorthand invalid. A shorthand the library does not expand is passed as written.
+    /// </para>
+    /// <para>
+    /// It must be deterministic, quick and safe to call from several threads: a rule's declarations are validated once, on first
+    /// use, but two threads may race to do it. A restyle, an overlay and a fresh <see cref="DocumentStyles"/> built with the same
+    /// validator give the same results. Exceptions it throws propagate to the caller of the style query.
+    /// </para>
+    /// </summary>
+    public DeclarationValidator? DeclarationValidator { get; init; }
+
     internal StyleSourceOptions WithResolver(StylesheetResolver? resolver) => new()
     {
         BaseUrl = BaseUrl,
@@ -93,6 +125,7 @@ public sealed class StyleSourceOptions
         MaxSheets = MaxSheets,
         MaxRules = MaxRules,
         MaxLayers = MaxLayers,
+        DeclarationValidator = DeclarationValidator,
     };
 }
 

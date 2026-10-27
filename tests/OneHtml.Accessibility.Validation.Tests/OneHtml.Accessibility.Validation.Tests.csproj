@@ -11,6 +11,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../OneHtml.Accessibility.Tests/FakeSnapshot.cs" Link="FakeSnapshot.cs" />
+    <Compile Include="../OneHtml.Accessibility.Tests/FactsCopy.cs" Link="FactsCopy.cs" />
+    <Compile Include="../OneHtml.Accessibility.Tests/TestPaths.cs" Link="TestPaths.cs" />
     <Compile Include="../OneHtml.Accessibility.Tests/RandomEdits.cs" Link="RandomEdits.cs" />
     <Compile Include="../OneHtml.Accessibility.Tests/RealisticPages.cs" Link="RealisticPages.cs" />
     <Compile Include="../../tools/OneHtml.Differential/AxeModel.cs" Link="Differential/AxeModel.cs" />

@@ -9,6 +9,7 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 - `LengthContext.RootExRatio`, `RootCapRatio`, `RootChRatio` and `RootIcRatio`: the root element's font metrics for `rex`, `rcap`, `rch` and `ric` (CSS Values 4 section 6.1.1). 0 means unset and the element's ratio stands in, so existing callers see no change.
 - `border-block` and `border-inline` expand to their start and end longhands, in every writing mode and direction, with `var()`, CSS-wide keywords and `!important`. Before, they set nothing.
 - `white-space` and `text-wrap` expand to `white-space-collapse`, `text-wrap-mode` and `text-wrap-style`, and `GetPropertyValue`/`GetComputedValue` serialize the shorthands from them, as Chrome does.
+- `RenderedFactsBuilder` (with `BoxInput`, `GeneratedBoxInput`, `RenderedFactsLimits` and `RenderedFactsLimitException`) in `RecursiveAI.OneHtml.Accessibility.Rendered`: builds `RenderedFacts` directly from per-node layout data keyed by a `Document`'s nodes, with the adapter's validation, per-count limits and no input-size cap. For a caller that already has boxes, paint order, text boxes and samples in memory and would otherwise serialize a `DOMSnapshot` only to parse it back. The `DOMSnapshot` path is unchanged. See `docs/rendered-facts.md`.
 
 ### Changed
 

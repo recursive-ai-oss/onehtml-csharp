@@ -101,6 +101,29 @@ Also refused: a snapshot document index that does not exist (`DocumentIndexOutOf
 
 Declarative shadow DOM written as `<template shadowrootmode>` in the source is consumed by Chrome, so a document parsed from the original bytes keeps the `template` element and is refused; parse the serialized DOM instead.
 
+## Building facts directly (`RenderedFactsBuilder`)
+
+A caller that already holds layout results in memory (a renderer, or a capture it parsed itself) can skip the snapshot JSON:
+
+```csharp
+var b = new RenderedFactsBuilder(document);          // optional RenderedFactsLimits
+b.SetViewport(1280, 800);
+b.SetContext(styleContext);
+b.SetComputedStyleNames(["display", "color"]);       // once, before the first box
+b.AddBox(node, new BoxInput { BorderBox = new LayoutRect(0, 0, 100, 20), PaintOrder = 3, LayoutText = "Hi" });
+b.SetInputValue(input, "text");
+RenderedFacts facts = b.Build();
+```
+
+The result is the same `RenderedFacts` type, queried and used exactly like the adapter's: `AccessibilityOptions.Facts`, `CheckOptions.Facts`, `WithBackgroundSamples`. Nothing about the adapter changes; `FormatVersion` stays 1.
+
+- **What can be set.** `AddBox(node, BoxInput)` (border, offset, client and scroll rectangles, paint order, stacking context, layout text, text boxes, blended background, text opacity, computed styles); `AddGeneratedContent(host, GeneratedBoxInput)` for `::before`, `::marker` and the like (several per host, reported in the order added); `SetBackendNodeId`, `SetSnapshotNodeIndex`, `SetInputValue`, `SetTextValue`, `SetChecked`, `SetOptionSelected`, `SetClickable`, `SetFrame`, `SetBackgroundSample`; `SetViewport`, `SetContext`, `SetPage`, `SetSource`. Anything not set reads as absent, as a capture without that table does.
+- **Validation, as in the adapter.** A node must belong to the builder's document (null handles and handles of another parse are `ArgumentException`s); one box per node; a box's style values are as many as the style names; rectangles, opacity and the viewport are finite (NaN components read as absent); paint order and text-box ranges are not negative. A refused call leaves the builder unchanged, except that the earlier boxes of one generated pseudo-element stay as boxes no node points to.
+- **Limits, no byte cap.** There is no JSON, so no input-size limit. `RenderedFactsLimits` bounds `MaxBoxes` (8 Mi, generated included), `MaxTextBoxes` (16 Mi), `MaxStrings` (16 Mi distinct strings), `MaxStringChars` (256 Mi UTF-16 units over distinct strings) and `MaxComputedStyleNames` (1024), each checked before the data is stored; exceeding one throws `RenderedFactsLimitException` (`LimitName`, `Limit`, `Actual`). Node-keyed data is bounded by the document's own node count. The same string is stored once.
+- **Derived, not supplied.** The structure fingerprint is computed from the document, the same value `DomSnapshotAdapter.StructureFingerprint` gives. `StackingContextNodeIndex` is derived from the boxes and the tree for every node, iteratively, so a deep document does not recurse. (The adapter leaves it -1 for the few nodes a snapshot does not contain, such as the doctype.)
+- **Reuse.** `Build()` can be called again after more data is added; each result is independent. The builder is not thread-safe; the facts are.
+- **Equivalence.** Facts rebuilt through the builder from the adapter's own values on the committed Chrome captures give identical per-node and per-box facts, identical accessibility trees (Chrome-shaped export) and identical checker results (native and axe-compatible JSON); `RenderedFactsBuilderTests` and `RenderedFactsBuilderCheckerTests` also run over a store of captures named by `ONEHTML_CAPTURE_DIR` (every `ONEHTML_CAPTURE_EVERY`th, default 20).
+
 ## Background samples
 
 Chrome's snapshot carries no pixels. A caller who has colour summaries of the pixels behind elements supplies them as JSON (`BackgroundSamples.Parse`), and `RenderedFacts.WithBackgroundSamples` returns new facts with them attached (`NodeFacts.Background`); the original facts are unchanged.

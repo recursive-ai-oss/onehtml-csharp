@@ -121,16 +121,30 @@ public class KeyframesApiTests
             sink += ds.GetAnimationKeyframes(style).Count + live.GetAnimationKeyframes(liveStyle).Count + ds.GetStyle(a).GetHashCode() * 0;
         }
 
+        // Several windows, each measured inside a fully optimized method: a window that straddles the runtime's tier-up or on-stack replacement of a
+        // loop (a one-off cost of several KB on the thread that runs it, seen when other tests keep the JIT busy) is not steady state. A read that
+        // allocated every time would allocate in every window, so the smallest one must still be 0.
+        long used = long.MaxValue;
+        for (int window = 0; window < 5 && used != 0; window++)
+        {
+            used = Math.Min(used, Window(ds, live, style, liveStyle, ref sink));
+        }
+
+        Assert.True(sink > 0);
+        Assert.Equal(0, used);
+        Assert.Same(ds.GetAnimationKeyframes(style), ds.GetAnimationKeyframes(style));
+    }
+
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveOptimization)]
+    private static long Window(DocumentStyles ds, LiveDocumentStyles live, ComputedStyle style, ComputedStyle liveStyle, ref int sink)
+    {
         long before = GC.GetAllocatedBytesForCurrentThread();
         for (int i = 0; i < 10_000; i++)
         {
             sink += ds.GetAnimationKeyframes(style).Count + live.GetAnimationKeyframes(liveStyle).Count;
         }
 
-        long used = GC.GetAllocatedBytesForCurrentThread() - before;
-        Assert.True(sink > 0);
-        Assert.Equal(0, used);
-        Assert.Same(ds.GetAnimationKeyframes(style), ds.GetAnimationKeyframes(style));
+        return GC.GetAllocatedBytesForCurrentThread() - before;
     }
 
     private static Node In(RestyleResult r) => r.Styles.Document.Root.DescendantElements.First(e => e.GetAttribute("id") == "x");

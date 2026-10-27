@@ -319,6 +319,7 @@ public class FormStateTests
         List<int> elements = [.. doc.Root.DescendantElements.Select(e => e.Index)];
         long sink = 0;
 
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveOptimization)]
         long Pass()
         {
             long before = GC.GetAllocatedBytesForCurrentThread();
@@ -359,6 +360,7 @@ public class FormStateTests
         int ul = doc.Root.QuerySelector("ul").Index;
         long sink = 0;
 
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveOptimization)]
         long Pass()
         {
             long before = GC.GetAllocatedBytesForCurrentThread();

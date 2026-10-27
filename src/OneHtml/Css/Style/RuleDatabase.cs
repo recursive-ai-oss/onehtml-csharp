@@ -173,6 +173,9 @@ internal sealed class RuleDatabase
     /// <summary>True when a dynamic selector reads an interaction state inside a logical argument that has a combinator, which the anchors cannot reach; a state change then tests every element.</summary>
     public bool StateNestedReach;
 
+    /// <summary>Just the selectors behind <see cref="StateNestedReach"/>, so a state change tests every element against those alone, not against every dynamic rule.</summary>
+    public RuleIndex NestedReachIndex = null!;
+
     /// <summary>True when a rule styling <c>::before</c>, <c>::after</c> or <c>::marker</c> reads an interaction state (<c>:hover</c>, <c>:focus</c>, …).</summary>
     public bool PseudoElementDynamic;
 
@@ -1099,6 +1102,7 @@ internal sealed class RuleGatherer
     {
         var all = new RuleIndex(_db.Quirks);
         var dynamic = new RuleIndex(_db.Quirks);
+        var nested = new RuleIndex(_db.Quirks);
         List<FocusAnchor>? focusAnchors = [];
         var sigs = new string[_db.Rules.Count];
         foreach (StyleRule r in _db.Rules)
@@ -1138,7 +1142,11 @@ internal sealed class RuleGatherer
                             continue;
                         }
 
-                        _db.StateNestedReach |= NestedStateReach(cs);
+                        if (NestedStateReach(cs))
+                        {
+                            _db.StateNestedReach = true;
+                            nested.Add(rs, key);
+                        }
 
                         for (int j = 0; j < cs.Compounds.Length; j++)
                         {
@@ -1186,6 +1194,7 @@ internal sealed class RuleGatherer
 
         _db.Index = all;
         _db.DynamicIndex = dynamic;
+        _db.NestedReachIndex = nested;
         _db.FocusAnchors = focusAnchors;
         var anchorIndex = new RuleIndex(_db.Quirks);
         for (int i = 0; i < focusAnchors.Count; i++)

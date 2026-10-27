@@ -30,6 +30,10 @@ internal static class LiveFixture
         .card:hover{--k:3px;font-size:18px}
         .card:hover .title{color:teal;margin:var(--k)}
         .card:not(:hover) .badge{display:none}
+        .card:hover{direction:rtl}
+        .title{margin-inline-start:7px;padding-block-end:2px}
+        .badge:not(.card:hover .badge){opacity:.4}
+        .card:hover .title:not(.card:hover + .card .title){text-indent:3px}
         li:is(:hover, :focus-within) > a{text-decoration:underline}
         label:hover + input{outline:1px solid red}
         form:has(input:focus) label{color:maroon}

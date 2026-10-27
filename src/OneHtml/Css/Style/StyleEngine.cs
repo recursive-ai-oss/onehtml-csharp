@@ -55,6 +55,7 @@ internal sealed class CascadeScratch
     public readonly Dictionary<string, Cand> Custom = new(StringComparer.Ordinal);
     public readonly List<RuleSel> Candidates = [];
     public readonly List<RuleSel> Matched = [];
+    public readonly List<RuleSel> DynamicMatched = [];
     public readonly List<(StyleRule Rule, long Spec)> Sources = [];
     public int[] RuleStamp = [];
     public int[] RuleSlot = [];
@@ -370,27 +371,23 @@ internal sealed class StyleEngine
     // ---- matching ----
 
     /// <summary>Appends the rules whose selectors match the element (each once, with its highest matching specificity) to <paramref name="s"/>.</summary>
-    private void MatchRules(Node el, SelectorMatchOptions? options, CascadeScratch s)
+    private void MatchRules(Node el, SelectorMatchOptions? options, CascadeScratch s, RuleSel[]?[]? staticMatches)
     {
         s.Candidates.Clear();
         s.Matched.Clear();
-        Db.Index.Collect(el, s.Candidates);
-        if (s.Candidates.Count == 0)
+        if (staticMatches is not null)
         {
-            return;
-        }
-
-        SelectorBulkCache? bulk = options?.BulkCache;
-        if (bulk is not null)
-        {
-            lock (bulk)
-            {
-                SelectorMatcher.FilterMatching(el, s.Candidates, options, s.Matched);
-            }
+            MatchRulesSplit(el, options, s, staticMatches);
         }
         else
         {
-            SelectorMatcher.FilterMatching(el, s.Candidates, options, s.Matched);
+            Db.Index.Collect(el, s.Candidates);
+            if (s.Candidates.Count == 0)
+            {
+                return;
+            }
+
+            FilterLocked(el, options, s);
         }
 
         if (++s.RuleEpoch == int.MaxValue)
@@ -418,6 +415,55 @@ internal sealed class StyleEngine
                 s.Sources.Add((m.Rule, spec));
             }
         }
+    }
+
+    private static void FilterLocked(Node el, SelectorMatchOptions? options, CascadeScratch s)
+    {
+        if (options?.BulkCache is { } bulk)
+        {
+            lock (bulk)
+            {
+                SelectorMatcher.FilterMatching(el, s.Candidates, options, s.Matched);
+            }
+        }
+        else
+        {
+            SelectorMatcher.FilterMatching(el, s.Candidates, options, s.Matched);
+        }
+    }
+
+    // The rules that do not read an interaction state match an element the same way under every state of the document, so their
+    // matches are found once per element and kept; only the rules that do read state are matched again. This is what makes
+    // re-cascading an element after a state change cheap on pages with thousands of rules.
+    private void MatchRulesSplit(Node el, SelectorMatchOptions? options, CascadeScratch s, RuleSel[]?[] staticMatches)
+    {
+        RuleSel[]? kept = staticMatches[el.Index];
+        if (kept is null)
+        {
+            Db.Index.Collect(el, s.Candidates);
+            int w = 0;
+            for (int r = 0; r < s.Candidates.Count; r++)
+            {
+                if (!s.Candidates[r].Rule.Dynamic)
+                {
+                    s.Candidates[w++] = s.Candidates[r];
+                }
+            }
+
+            s.Candidates.RemoveRange(w, s.Candidates.Count - w);
+            if (w > 0)
+            {
+                FilterLocked(el, options, s);
+            }
+
+            kept = s.Matched.Count == 0 ? [] : s.Matched.ToArray();
+            staticMatches[el.Index] = kept;
+            s.Matched.Clear();
+        }
+
+        s.Matched.AddRange(kept);
+        MatchSet(el, Db.DynamicIndex, options, s.Candidates, s.DynamicMatched);
+        s.Matched.AddRange(s.DynamicMatched);
     }
 
     /// <summary>The selectors of a rule set that match an element, as (rule id, selector index) pairs; used by overlay and restyle to see which rules a state change reaches.</summary>
@@ -606,7 +652,7 @@ internal sealed class StyleEngine
     // ---- the cascade for one element ----
 
     /// <summary>Computes (or finds the shared) style of an element, given its parent element's style.</summary>
-    public ComputedStyle Compute(Node el, ComputedStyle? parent, SelectorMatchOptions? options)
+    public ComputedStyle Compute(Node el, ComputedStyle? parent, SelectorMatchOptions? options, RuleSel[]?[]? staticMatches = null)
     {
         CascadeScratch s = GetScratch();
         if (++s.Epoch == int.MaxValue)
@@ -626,7 +672,7 @@ internal sealed class StyleEngine
             s.Sources.Add((hr, 0));
         }
 
-        MatchRules(el, options, s);
+        MatchRules(el, options, s, staticMatches);
 
         if (StyleAttributeRule(el) is { } ir)
         {
@@ -1065,16 +1111,7 @@ internal sealed class StyleEngine
             }
         }
 
-        int hash = parent?.Id ?? 0;
-        for (int i = 0; i < n; i++)
-        {
-            hash = HashCode.Combine(hash, ids[i], RuntimeHelpers.GetHashCode(vals[i]));
-        }
-
-        for (int i = 0; i < cn; i++)
-        {
-            hash = HashCode.Combine(hash, s.KeyCNames[i].GetHashCode(StringComparison.Ordinal), RuntimeHelpers.GetHashCode(s.KeyCVals[i]));
-        }
+        int hash = KeyHash(parent, ids.AsSpan(0, n), vals.AsSpan(0, n), s.KeyCNames.AsSpan(0, cn), s.KeyCVals.AsSpan(0, cn));
 
         lock (_cache)
         {
@@ -1102,6 +1139,73 @@ internal sealed class StyleEngine
                 for (ComputedStyle? c = chain; c is not null; c = c.CacheNext)
                 {
                     if (c.KeyMatches(parent, keyIds, keyVals, cNames, cVals))
+                    {
+                        return c;
+                    }
+                }
+
+                built.CacheNext = chain;
+            }
+
+            _cache[hash] = built;
+        }
+
+        return built;
+    }
+
+    private static int KeyHash(ComputedStyle? parent, ReadOnlySpan<int> ids, ReadOnlySpan<StyleValue> vals, ReadOnlySpan<string> cNames, ReadOnlySpan<StyleValue> cVals)
+    {
+        int hash = parent?.Id ?? 0;
+        for (int i = 0; i < ids.Length; i++)
+        {
+            hash = HashCode.Combine(hash, ids[i], RuntimeHelpers.GetHashCode(vals[i]));
+        }
+
+        for (int i = 0; i < cNames.Length; i++)
+        {
+            hash = HashCode.Combine(hash, cNames[i].GetHashCode(StringComparison.Ordinal), RuntimeHelpers.GetHashCode(cVals[i]));
+        }
+
+        return hash;
+    }
+
+    /// <summary>
+    /// The style an element has under a new parent style when the declarations that win for it are the same ones: the rules matching it
+    /// and its style attribute did not change, only what it inherits did. Skips matching and ranking, which dominate <see cref="Compute"/>, and
+    /// finds the shared style by the old style's key. Returns null when the new parent could change how logical properties map
+    /// (its writing mode or direction differs from the old parent's), so the caller must run <see cref="Compute"/>.
+    /// </summary>
+    public ComputedStyle? Reparent(ComputedStyle old, ComputedStyle parent)
+    {
+        if (old.Parent is not { } before || before.Mode != parent.Mode)
+        {
+            return null;
+        }
+
+        old.GetKey(out int[] ids, out StyleValue[] vals, out string[] cNames, out StyleValue[] cVals);
+        int hash = KeyHash(parent, ids, vals, cNames, cVals);
+        lock (_cache)
+        {
+            if (_cache.TryGetValue(hash, out ComputedStyle? chain))
+            {
+                for (ComputedStyle? c = chain; c is not null; c = c.CacheNext)
+                {
+                    if (c.KeyMatches(parent, ids, vals, cNames, cVals))
+                    {
+                        return c;
+                    }
+                }
+            }
+        }
+
+        ComputedStyle built = Build(parent, ids, vals, cNames, cVals, old.Mode);
+        lock (_cache)
+        {
+            if (_cache.TryGetValue(hash, out ComputedStyle? chain))
+            {
+                for (ComputedStyle? c = chain; c is not null; c = c.CacheNext)
+                {
+                    if (c.KeyMatches(parent, ids, vals, cNames, cVals))
                     {
                         return c;
                     }

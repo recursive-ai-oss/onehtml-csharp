@@ -122,6 +122,7 @@ public sealed class LiveDocumentStyles
     private readonly StyleEngine _engine;
     private readonly ComputedStyle?[] _styles;
     private readonly int[] _depth;
+    private readonly RuleSel[]?[] _staticMatches;
     private readonly InteractionState _state = new();
     private readonly InteractionState _prevState = new();
     private readonly SelectorMatchOptions _cur;
@@ -175,6 +176,7 @@ public sealed class LiveDocumentStyles
         int n = _doc.NodeCount;
         _styles = new ComputedStyle?[n];
         _depth = new int[n];
+        _staticMatches = new RuleSel[]?[n];
         _fullStamp = new int[n];
         _withinStamp = new int[n];
         _affectedStamp = new int[n];
@@ -373,13 +375,17 @@ public sealed class LiveDocumentStyles
 
         BeginEpoch();
         _affectedCount = 0;
-        if (db.StateNestedReach || db.FocusAnchors is null)
+        if (db.FocusAnchors is null)
         {
-            ScanAll();
+            ScanAll(db.DynamicIndex);
         }
         else
         {
             Anchored();
+            if (db.StateNestedReach)
+            {
+                ScanAll(db.NestedReachIndex);
+            }
         }
 
         Restyle();
@@ -616,15 +622,24 @@ public sealed class LiveDocumentStyles
         }
     }
 
-    // The slow case: a state pseudo-class inside a logical argument with a combinator. Every element's dynamic rules are matched under
-    // both states.
-    private void ScanAll()
+    // The slow case: a state pseudo-class inside a logical argument with a combinator ('a:not(.x:hover b)'): the element that matches is
+    // not on the chain the state moved along, so the anchors cannot find it. Every element is matched against just those selectors
+    // (the rest are found by the anchors) under both states.
+    private void ScanAll(RuleIndex dynamic)
     {
-        RuleIndex dynamic = _engine.Db.DynamicIndex;
         foreach (Node e in _doc.Root.DescendantElements)
         {
-            StyleEngine.MatchSet(e, dynamic, _prev, _candidates, _oldMatches);
-            StyleEngine.MatchSet(e, dynamic, _cur, _candidates, _newMatches);
+            _candidates.Clear();
+            dynamic.Collect(e, _candidates);
+            if (_candidates.Count == 0)
+            {
+                continue;
+            }
+
+            _oldMatches.Clear();
+            _newMatches.Clear();
+            SelectorMatcher.FilterMatching(e, _candidates, _prev, _oldMatches);
+            SelectorMatcher.FilterMatching(e, _candidates, _cur, _newMatches);
             if (!SameMatches(_oldMatches, _newMatches))
             {
                 AddAffected(e.Index);
@@ -671,7 +686,14 @@ public sealed class LiveDocumentStyles
         {
             int p = _a.Parent[idx];
             ComputedStyle? parent = p >= 0 && _a.Kind[p] == (byte)NodeKind.Element ? _styles[p] : null;
-            ComputedStyle fresh = _engine.Compute(new Node(_doc, idx), parent, _cur);
+            // An element no rule match moved for only inherits something new: its winning declarations are the ones it has, so the
+            // cascade is not run again, the shared style for them under the new parent is looked up.
+            ComputedStyle? fresh = _affectedStamp[idx] != _epoch && parent is not null && _styles[idx] is { } before ? _engine.Reparent(before, parent) : null;
+            if (fresh is null)
+            {
+                fresh = _engine.Compute(new Node(_doc, idx), parent, _cur, _staticMatches);
+            }
+
             if (ReferenceEquals(fresh, _styles[idx]))
             {
                 continue;

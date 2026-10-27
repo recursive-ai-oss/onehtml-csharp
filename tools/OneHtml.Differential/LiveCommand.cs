@@ -27,6 +27,11 @@ internal static class LiveCommand
             items = [.. items.OrderBy(i => i.Sha256, StringComparer.Ordinal).Where((_, n) => n % o.Stride == 0)];
         }
 
+        if (o.Pages is { Length: > 0 } only)
+        {
+            items = [.. items.Where(i => only.Any(p => i.Sha256.StartsWith(p, StringComparison.Ordinal)))];
+        }
+
         Console.WriteLine($"live: {store.Count} stylesheets available, {items.Count} pages");
         return GateRunner.Run(o, "live", items, (item, bytes, report, ct) => CheckPage(o, store, item, bytes, report, ct));
     }

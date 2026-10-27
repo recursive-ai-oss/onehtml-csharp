@@ -218,6 +218,14 @@ public sealed partial class ComputedStyle
         _keyCVals = cVals;
     }
 
+    internal void GetKey(out int[] ids, out StyleValue[] vals, out string[] cNames, out StyleValue[] cVals)
+    {
+        ids = _keyIds;
+        vals = _keyVals;
+        cNames = _keyCNames;
+        cVals = _keyCVals;
+    }
+
     /// <summary>Whether this style was built from the same parent and the same winning declarations (so it can be shared).</summary>
     internal bool KeyMatches(ComputedStyle? parent, ReadOnlySpan<int> ids, ReadOnlySpan<StyleValue> vals, ReadOnlySpan<string> cNames, ReadOnlySpan<StyleValue> cVals)
     {

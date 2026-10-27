@@ -195,17 +195,25 @@ foreach (int i in live.ChangedElementIndices)          // ascending element indi
   `ChangedElementsInto`, `ChangedElementIndices`, `GetStyle` and `GetValue` allocate nothing. Excluded: the first meeting of a style
   with a state (the style is built and joins the shared table), the first read of a typed value, the first match of a `:has()` that
   reads a state pseudo-class after each change (its page-wide marks are rebuilt into the same array, which costs one pass over the
-  page, no allocation), cascades that use `revert`, `revert-layer` or `revert-rule`, and `ToSnapshot`, `GetContext` and
-  `GetPseudoStyle`.
+  page, no allocation), the first full cascade of each element (its matches among the rules that read no state are found once and
+  kept), the first change on each thread (about 8 KB of per-thread cascade scratch, made once), cascades that use `revert`,
+  `revert-layer` or `revert-rule`, and `ToSnapshot`, `GetContext` and `GetPseudoStyle`.
 - **How the change is found.** A state pseudo-class matches an element and, for `:hover`, `:active`, `:focus-within` and
   `:target-within`, its ancestors (Selectors 4 §9). So a compound that reads state changes its match only on the elements the state
   moved from or to and on their ancestors, and from there a selector reaches only along its own combinators. The anchors described
   above are built for every state, not only focus, and the same walk finds the affected elements: the old and new element of each
   part that moved and their ancestors (stopping at an ancestor already visited), each tested against only the anchors its id, class or
   type allows, then what each changed anchor reaches. A state pseudo-class inside `:is()`, `:where()`, `:not()` or `:nth-*(of)` with a
-  combinator inside the argument (`a:not(.x:hover b)`) cannot be anchored this way, and a rule set that has one tests every element
-  against the dynamic rules on each change, as `WithContext` does. Affected elements are recomputed parents first, and a child is
-  recomputed when its parent's style object changed.
+  combinator inside the argument (`a:not(.x:hover b)`) cannot be anchored this way: the matching element is not on the chain the
+  state moved along. The selectors that have one are kept in a small index of their own, and each change matches every element
+  against just those, under the old and new state, one pass over the page. The other dynamic rules still go through the anchors.
+- **What is recomputed.** Affected elements are recomputed parents first, and a child is recomputed when its parent's style object
+  changed. An element whose own rule matches did not move only inherits something new: its winning declarations are the ones it has,
+  so the cascade is not run again and the shared style for those declarations under the new parent is looked up (skipped when the
+  new parent's writing mode or direction differs, which can change how logical properties map). An element whose matches did move
+  runs the cascade, reusing its matches among the rules that read no state (they cannot change with state) and matching only the
+  rules that do. This keeps a change cheap on pages with thousands of rules, where matching every candidate rule of an element
+  dominates.
 - **What makes recomputing allocation-free.** An element's key (the parent style and the winning declarations) is built in reusable
   buffers and looked up in the style table; arrays are made only for a style that is new. The id, class and type of an element are
   read as slices of the document text for the rule index, an element's `style` attribute and presentational hints are turned into

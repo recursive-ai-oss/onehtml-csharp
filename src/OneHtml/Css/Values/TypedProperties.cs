@@ -22,6 +22,13 @@ public enum PositionValue : byte
 
     /// <summary><c>sticky</c> (also written <c>-webkit-sticky</c>).</summary>
     Sticky,
+
+    /// <summary>
+    /// <c>running(&lt;custom-ident&gt;)</c> (CSS Generated Content for Paged Media 3 §1): the element is taken out of the normal flow and is not
+    /// displayed in place; the name is <see cref="ComputedStyle.RunningName"/>. It is none of the five classic positioning schemes, so code that
+    /// only knows those should treat it as <see cref="Static"/> (an element in flow that no offset moves).
+    /// </summary>
+    Running,
 }
 
 /// <summary>An <c>overflow-x</c>/<c>overflow-y</c> keyword (CSS Overflow 3 §3.1).</summary>
@@ -399,12 +406,36 @@ public static class TypedProperties
     /// <param name="color">The color.</param>
     public static bool TryParseColor(ComponentValueList value, out CssColor color) => CssColor.TryParse(value, out color);
 
-    /// <summary>Parses <c>position</c>.</summary>
+    /// <summary>Parses <c>position</c>: the five keywords, or <c>running(&lt;custom-ident&gt;)</c> (the name is then <see cref="ComputedStyle.RunningName"/>).</summary>
     /// <param name="value">The value.</param>
-    /// <param name="result">The keyword.</param>
-    public static bool TryParsePosition(ComponentValueList value, out PositionValue result)
+    /// <param name="result">The keyword, or <see cref="PositionValue.Running"/>.</param>
+    public static bool TryParsePosition(ComponentValueList value, out PositionValue result) => TryParsePosition(value, out result, out _);
+
+    internal static bool TryParsePosition(ComponentValueList value, out PositionValue result, out string? runningName)
     {
         result = default;
+        runningName = null;
+        TokenRange r = TokenRange.Of(value).Trim();
+        if (!r.IsEmpty && r.Kind(r.From) == CssTokenKind.Function && r.Next(r.From) == r.To)
+        {
+            // GCPM 3 §1: running(<custom-ident>). A custom identifier is any identifier but a CSS-wide keyword or `default`; it is case-sensitive.
+            if (!r.IsFunction(r.From, "running"))
+            {
+                return false;
+            }
+
+            TokenRange inner = r.Inner(r.From);
+            int i = inner.SkipWs(inner.From);
+            if (i >= inner.To || !AnimationGrammar.IsCustomIdent(inner, i) || inner.SkipWs(i + 1) < inner.To)
+            {
+                return false;
+            }
+
+            result = PositionValue.Running;
+            runningName = inner.IdentString(i);
+            return true;
+        }
+
         if (!OneIdent(value, out _, out string w) || !ValueKinds.In(Positions, w))
         {
             return false;
@@ -413,6 +444,9 @@ public static class TypedProperties
         result = w switch { "static" => PositionValue.Static, "relative" => PositionValue.Relative, "absolute" => PositionValue.Absolute, "fixed" => PositionValue.Fixed, _ => PositionValue.Sticky };
         return true;
     }
+
+    internal static string PositionToCss(PositionValue p, string? runningName) =>
+        p == PositionValue.Running ? "running(" + runningName + ")" : p == PositionValue.Sticky ? "sticky" : p.ToString().AsciiLower();
 
     /// <summary>Parses an offset (<c>top</c>, <c>right</c>, <c>bottom</c>, <c>left</c>, <c>inset-*</c>): <c>auto</c> or a length-percentage.</summary>
     /// <param name="value">The value.</param>
@@ -1051,8 +1085,8 @@ public static class TypedProperties
             case "opacity" when TryParseOpacity(value, out double o):
                 css = CssUnits.FormatNumber(o);
                 return true;
-            case "position" when TryParsePosition(value, out PositionValue pos):
-                css = pos == PositionValue.Sticky ? "sticky" : pos.ToString().AsciiLower();
+            case "position" when TryParsePosition(value, out PositionValue pos, out string? runName):
+                css = PositionToCss(pos, runName);
                 return true;
             case "top" or "right" or "bottom" or "left" or "inset-block-start" or "inset-block-end" or "inset-inline-start" or "inset-inline-end" when TryParseOffset(value, out LengthPercentageOrAuto off):
                 css = off.ToCss();

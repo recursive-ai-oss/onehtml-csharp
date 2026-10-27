@@ -660,7 +660,7 @@ internal sealed class TargetSizeRule : AriaRule
                 return false;
             }
 
-            bool positioned = !s.GetPropertyValue("position").Equals("static", StringComparison.OrdinalIgnoreCase) || !s.GetPropertyValue("transform").Equals("none", StringComparison.OrdinalIgnoreCase);
+            bool positioned = s.Position is not (PositionValue.Static or PositionValue.Running) || !s.GetPropertyValue("transform").Equals("none", StringComparison.OrdinalIgnoreCase);
             if (outOfFlow && !positioned)
             {
                 if (atUntil)
@@ -849,7 +849,7 @@ internal sealed class TargetSizeRule : AriaRule
             for (Node e = element; !e.IsNull; e = e.ParentElement)
             {
                 ComputedStyle s = _context.Styles.GetStyle(e);
-                if (!s.GetPropertyValue("position").Equals("static", StringComparison.OrdinalIgnoreCase) || !s.GetPropertyValue("float").Equals("none", StringComparison.OrdinalIgnoreCase)
+                if (s.Position is not (PositionValue.Static or PositionValue.Running) || !s.GetPropertyValue("float").Equals("none", StringComparison.OrdinalIgnoreCase)
                     || !s.GetPropertyValue("transform").Equals("none", StringComparison.OrdinalIgnoreCase))
                 {
                     return true;

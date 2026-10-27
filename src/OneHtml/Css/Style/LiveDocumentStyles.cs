@@ -221,6 +221,55 @@ public sealed class LiveDocumentStyles
     /// <summary>The document.</summary>
     public Document Document => _doc;
 
+    /// <summary>
+    /// The <c>@keyframes</c> rule that wins for <paramref name="name"/> (case-sensitive; a string and an identifier name the same rule), or null. See <see cref="KeyframesRule"/>
+    /// for what wins. Rules inside a <c>@media</c> or <c>@supports</c> that does not apply under the context do not exist.
+    /// </summary>
+    /// <param name="name">The animation name.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
+    public KeyframesRule? GetKeyframesRule(string name)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        return _engine.Db.KeyframeWinners.TryGetValue(name, out KeyframesRule? r) ? r : null;
+    }
+
+    /// <summary>The winning <c>@keyframes</c> rule of every name, by name ascending (ordinal).</summary>
+    public IReadOnlyList<KeyframesRule> KeyframesRules => _engine.Db.SortedKeyframes();
+
+    /// <summary>
+    /// The keyframes of the animation called <paramref name="name"/> on the element whose style is <paramref name="style"/>: the winning rule's blocks with
+    /// <c>var()</c> substituted from the style's custom properties, flow-relative properties mapped to physical ones, blocks with the same offset merged and
+    /// ordered as Chrome's <c>getKeyframes()</c> reports them, and the element's own values added at 0% and 100% for properties a keyframe leaves out. No
+    /// clock and no interpolation: the caller does that. Animation-tainted custom properties are not modelled: <c>var()</c> reads the element's computed custom
+    /// properties as they are, without the effect of animations on them. Cost: one pass over the rule per call; use <see cref="GetAnimationKeyframes"/> to read
+    /// an element's animations repeatedly.
+    /// </summary>
+    /// <param name="style">The element's computed style (or a pseudo-element's).</param>
+    /// <param name="name">The animation name.</param>
+    /// <param name="animationIndex">The animation's position in the element's <c>animation-name</c> list, which picks its items of the coordinated <c>animation-timing-function</c> and <c>animation-composition</c> lists (the lists repeat). Default 0.</param>
+    /// <returns>The keyframes, or null when no rule has the name.</returns>
+    /// <exception cref="ArgumentNullException">An argument is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="animationIndex"/> is negative.</exception>
+    public ResolvedKeyframes? ResolveKeyframes(ComputedStyle style, string name, int animationIndex = 0)
+    {
+        ArgumentNullException.ThrowIfNull(style);
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentOutOfRangeException.ThrowIfNegative(animationIndex);
+        return KeyframeResolver.Resolve(_engine.Db, style, name, animationIndex);
+    }
+
+    /// <summary>
+    /// The resolved keyframes (see <see cref="ResolveKeyframes"/>) of each animation in the style's <c>animation-name</c> list, in list order: null for <c>none</c> and for a
+    /// name with no <c>@keyframes</c> rule. Computed once per computed style and kept, so reading the same style again allocates nothing; elements that share a style object share the result.
+    /// </summary>
+    /// <param name="style">The element's computed style.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="style"/> is null.</exception>
+    public IReadOnlyList<ResolvedKeyframes?> GetAnimationKeyframes(ComputedStyle style)
+    {
+        ArgumentNullException.ThrowIfNull(style);
+        return _engine.Db.KeyframesOf(style);
+    }
+
     /// <summary>The hovered element (it and its ancestors match <c>:hover</c>), or the null node.</summary>
     public Node Hover => _hover;
 

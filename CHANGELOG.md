@@ -4,15 +4,21 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-27
+
 ### Added
 
 - `FormStateOverrides`, `FormStateChange`, `FormStateKind`, `StyleContext.FormState` / `WithFormState`, `InteractionState.FormState` and `LiveDocumentStyles.ApplyFormState`: checkedness, disabledness and the `indeterminate` state that a user or script changed, for any number of elements, on both the snapshot path (`DocumentStyles.Create` / `WithContext`) and the live path. `:checked` (and an option's selectedness), `:disabled`, `:enabled`, `:indeterminate`, `:read-only` and `:read-write` read them, with what follows from them (a disabled `fieldset` or `optgroup`, a named radio group). The live path restyles in place with no allocation in steady state and fills `ChangedElementIndices` as for interaction state. Without overrides every value is as before. See `docs/cascade.md`.
 - `SelectorDependencies.ScriptFormState`: set on selectors that read form state a script can change.
 - `PseudoElementKind.Selection` and `PseudoElementKind.Placeholder`: `GetPseudoStyle` on `DocumentStyles` and `LiveDocumentStyles` now serves `::selection` (highlight properties only, with highlight inheritance from the parent element) and `::placeholder` (text controls with a `placeholder`, with Chrome's user-agent defaults; `::-webkit-input-placeholder` is the same). `RestyleResult.PseudoElementsMayDiffer` covers both. See `docs/cascade.md`.
+- `@keyframes` rules in the cascade. `DocumentStyles` and `LiveDocumentStyles` gain `GetKeyframesRule(name)` and `KeyframesRules` (the winning `KeyframesRule` per name, with its blocks, origin and layer), `ResolveKeyframes(style, name, animationIndex)` and `GetAnimationKeyframes(style)` (the keyframes of an element's animations with `var()` substituted from its custom properties, flow-relative properties mapped to physical ones, same-offset blocks merged and ordered and the element's own values added at 0% and 100%, as Chrome's `getKeyframes()` reports them; computed once per style, allocation-free to read again). `RestyleResult.ChangedKeyframes` names the rules a sheet or `style` edit changed. The library runs no clock and interpolates nothing. New types: `KeyframesRule`, `KeyframeBlock`, `KeyframeDeclaration`, `ResolvedKeyframes`, `ResolvedKeyframe`, `KeyframeValue`. See `docs/cascade.md`.
+- `position: running(<custom-ident>)` (CSS GCPM 3) is kept as a typed value: `PositionValue.Running` and `ComputedStyle.RunningName`. The accessibility tree and the checker treat a running element as Chrome renders it, in flow.
 
 ### Changed
 
 - Rules with `:checked`, `:disabled`, `:enabled`, `:indeterminate`, `:read-only` or `:read-write` are matched again for each element's cascade instead of being cached once per document, so they can follow form state. Their values are unchanged.
+- `transition` and `animation` follow Chrome 156: a CSS-wide keyword as an item of a list invalidates the declaration (`transition: initial 1s`, `animation-name: x, inherit`); a negative time is the delay, not the duration (`animation: x -1s`); `default` is not a name; `auto` is the `animation` duration; `none` is valid in `transition` only for a single layer; `steps()`, `cubic-bezier()` and `linear()` arguments are checked. The list longhands of both are checked item by item, so a bad item drops the declaration and an earlier one stands.
+- A declaration `position: running(name)` that used to be dropped now wins the cascade (`PositionValue` gains a last member, `Running`).
 
 ### Fixed
 
@@ -75,6 +81,7 @@ First release. All three packages share one version.
 - `RecursiveAI.OneHtml.Accessibility`: the accessibility tree (WAI-ARIA 1.2, HTML-AAM, AccName 1.2, Core-AAM, SVG-AAM) with each role, name and hidden state traced to its source, Chromium's choices listed in `docs/accessibility-chromium-profile.md`, incremental recompute after edits, a reading view, navigation lists, tree and reading-view diffs, an export in Chrome's AX-tree shape, and `RenderedFacts` from a Chrome `DOMSnapshot` supplied by the caller.
 - `RecursiveAI.OneHtml.Accessibility.Validation`: one rule catalogue covering axe-core's WCAG and best-practice rules (the two with no counterpart are explained in `docs/axe-differential.md`) and every W3C-approved ACT rule, labelled by WCAG version, level and criterion; profiles for WCAG 2.0 AA, 2.1 AA, 2.2 AA and everything; contrast that never guesses a background; incremental re-check after an edit; suggested edits for the rules that have exactly one correct fix; native JSON, axe-compatible JSON and SARIF 2.1.0 output. Coverage per criterion is in `docs/coverage.md`.
 
+[1.4.0]: https://github.com/recursive-ai-oss/onehtml-csharp/releases/tag/v1.4.0
 [1.3.0]: https://github.com/recursive-ai-oss/onehtml-csharp/releases/tag/v1.3.0
 [1.2.0]: https://github.com/recursive-ai-oss/onehtml-csharp/releases/tag/v1.2.0
 [1.1.1]: https://github.com/recursive-ai-oss/onehtml-csharp/releases/tag/v1.1.1

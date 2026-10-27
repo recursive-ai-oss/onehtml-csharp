@@ -348,7 +348,8 @@ internal sealed class BackdropIndex
         return NotNone(s, "background-image") && !s.GetPropertyValue("background-clip").Contains("text", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool IsStatic(ComputedStyle s) => s.GetPropertyValue("position").Trim().Equals("static", StringComparison.OrdinalIgnoreCase);
+    // A running element (position: running(name), GCPM 3) is not positioned: Chrome ignores the declaration, so the page it renders has the element in flow.
+    private static bool IsStatic(ComputedStyle s) => s.Position is PositionValue.Static or PositionValue.Running;
 
     private static bool NotNone(ComputedStyle s, string property)
     {

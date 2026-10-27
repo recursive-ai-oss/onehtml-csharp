@@ -34,7 +34,7 @@ Conditional 3 as of 20 October 2026; this file records what those texts leave op
   `PropertyTable.All.Where(p => p.InitialKind != PropertyInitialKind.Value)` lists them.
 - **Typed properties.** 33 properties have a typed parser (`TypedProperties.IsTyped`): the accessibility set
   (`display`, `visibility`, `content`, `color` and the other color properties, `background-image`, `opacity`, `font-size`,
-  `font-weight`, `font-style`, `font-family`, `outline-*`, `clip`, `clip-path`, `position` and the offsets,
+  `font-weight`, `font-style`, `font-family`, `outline-*`, `clip`, `clip-path`, `position` (the five keywords and `running(<custom-ident>)`, see `cascade.md`) and the offsets,
   `overflow-*`, `speak`, `speak-as`, `pointer-events`). Every other property keeps its value as component values.
 - **Licences.** See `THIRD-PARTY-NOTICES.md`.
 

@@ -447,6 +447,11 @@ internal sealed class ParsedDeclaration
                     }
 
                     d.ShorthandName = null;
+                    if (keyword == CssWideKeyword.None && AnimationGrammar.Handles(PropertyTable.ResolveAlias(info).Name) && !IsValidLonghand(info.Name, value))
+                    {
+                        return null;
+                    }
+
                     if (validator is not null && !Accepts(validator, rule.Origin, info.Name, keyword, value))
                     {
                         return null;

@@ -11,7 +11,7 @@ public sealed partial class ComputedStyle
     private const int KDisplay = 0, KVisibility = 1, KOpacity = 2, KBackgroundColor = 3, KOutlineColor = 4, KFontStyle = 5, KFontFamily = 6,
         KPosition = 7, KTop = 8, KRight = 9, KBottom = 10, KLeft = 11, KOverflowX = 12, KOverflowY = 13, KPointerEvents = 14, KSpeak = 15,
         KContent = 16, KClip = 17, KOutlineStyle = 18, KOutlineWidth = 19, KOutlineOffset = 20, KClipPath = 21, KBackgroundImage = 22,
-        KSpeakAs = 23, KCount = 24;
+        KSpeakAs = 23, KRunningName = 24, KCount = 25;
 
     internal const int DeclColor = 1, DeclFontSize = 2, DeclFontWeight = 4;
 
@@ -77,8 +77,37 @@ public sealed partial class ComputedStyle
     /// <summary>The element's <c>opacity</c> in 0 to 1 (clamped); 1 by default.</summary>
     public double Opacity => Parse<double>(PropertyIds.Opacity, KOpacity, TypedProperties.TryParseOpacity, 1, "1");
 
-    /// <summary>The element's <c>position</c>.</summary>
+    /// <summary>
+    /// The element's <c>position</c>. <c>running(&lt;custom-ident&gt;)</c> (CSS GCPM 3 §1) is <see cref="PositionValue.Running"/>, with the name
+    /// in <see cref="RunningName"/>; <see cref="GetPropertyValue"/> gives its text, <c>running(name)</c>.
+    /// </summary>
     public PositionValue Position => Parse<PositionValue>(PropertyIds.Get("position"), KPosition, TypedProperties.TryParsePosition, default, "static");
+
+    /// <summary>The name of a running element: the identifier of <c>position: running(name)</c>, case-sensitive; null when <see cref="Position"/> is not <see cref="PositionValue.Running"/>.</summary>
+    public string? RunningName
+    {
+        get
+        {
+            if (Position != PositionValue.Running)
+            {
+                return null;
+            }
+
+            object?[] cache = Typed;
+            if (Volatile.Read(ref cache[KRunningName]) is not string name)
+            {
+                string? parsed = null;
+                if (!TypedProperties.TryParsePosition(Get(PropertyIds.Get("position")).Tokens, out _, out parsed))
+                {
+                    parsed = null;
+                }
+
+                cache[KRunningName] = name = parsed ?? string.Empty;
+            }
+
+            return name.Length == 0 ? null : name;
+        }
+    }
 
     /// <summary>The <c>top</c> offset as specified (percentages and <c>auto</c> are not resolved).</summary>
     public LengthPercentageOrAuto Top => Parse<LengthPercentageOrAuto>(PropertyIds.Get("top"), KTop, TypedProperties.TryParseOffset, default, "auto");
@@ -391,7 +420,7 @@ public sealed partial class ComputedStyle
             case "opacity":
                 return CssUnits.FormatNumber(Opacity);
             case "position":
-                return Position == PositionValue.Sticky ? "sticky" : Position.ToString().AsciiLower();
+                return TypedProperties.PositionToCss(Position, RunningName);
             case "top":
                 return OffsetText(Top);
             case "right":

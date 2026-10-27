@@ -265,12 +265,17 @@ public static class DeclarationSupport
             return TypedProperties.IsValid(info.Name, value);
         }
 
+        PropertyInfo target = PropertyTable.ResolveAlias(info);
+        if (AnimationGrammar.Handles(target.Name))
+        {
+            return AnimationGrammar.IsValid(target.Name, r);
+        }
+
         if (info.IsShorthand && Shorthands.HasGrammar(info.Name))
         {
             return Shorthands.Expand(info.Name, value).Status == ShorthandStatus.Expanded;
         }
 
-        PropertyInfo target = PropertyTable.ResolveAlias(info);
         if (target.Syntax is { } syntax)
         {
             SimpleSyntax.Result result = SimpleSyntax.Validate(syntax, r);

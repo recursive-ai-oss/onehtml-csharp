@@ -30,7 +30,15 @@ public enum PseudoElementKind : byte
 /// <param name="RestyledElements">The indices (<see cref="Node.Index"/>) of the elements whose style object was replaced, ascending. Empty after a full recompute, which replaces everything.</param>
 /// <param name="FullRecompute">True when the change could not be applied incrementally (the tree shape differs) and every style is computed afresh.</param>
 /// <param name="PseudoElementsMayDiffer">The indices of the elements whose <c>::before</c>, <c>::after</c> or <c>::marker</c> style may differ from the old document's, ascending: a superset of <paramref name="RestyledElements"/> that adds the elements whose pseudo-element rules match differently (an attribute, class or id change reaching a selector before the pseudo-element, a shape change, an added, removed or edited rule). Without any pseudo-element rule it is just the changed elements; after a full recompute it is empty.</param>
-public sealed record RestyleResult(DocumentStyles Styles, IReadOnlyList<int> RestyledElements, bool FullRecompute, IReadOnlyList<int>? PseudoElementsMayDiffer = null);
+public sealed record RestyleResult(DocumentStyles Styles, IReadOnlyList<int> RestyledElements, bool FullRecompute, IReadOnlyList<int>? PseudoElementsMayDiffer = null)
+{
+    /// <summary>
+    /// The <c>@keyframes</c> names whose winning rule differs from the old styles': added, removed, or with other text, ascending (ordinal). A rule that moved
+    /// without changing its text is not listed. Elements that use such a name keep their computed style, so they are not in <see cref="RestyledElements"/>: read
+    /// <see cref="DocumentStyles.GetAnimationKeyframes"/> again for them. Empty when no keyframes changed.
+    /// </summary>
+    public IReadOnlyList<string> ChangedKeyframes { get; init; } = [];
+}
 
 /// <summary>
 /// The computed styles of a document under a <see cref="StyleContext"/>: the cascade (CSS Cascade 5) run over the
@@ -79,6 +87,55 @@ public sealed class DocumentStyles
 
     /// <summary>The document.</summary>
     public Document Document => _doc;
+
+    /// <summary>
+    /// The <c>@keyframes</c> rule that wins for <paramref name="name"/> (case-sensitive; a string and an identifier name the same rule), or null. See <see cref="KeyframesRule"/>
+    /// for what wins. Rules inside a <c>@media</c> or <c>@supports</c> that does not apply under the <see cref="Context"/> do not exist.
+    /// </summary>
+    /// <param name="name">The animation name.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
+    public KeyframesRule? GetKeyframesRule(string name)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        return _engine.Db.KeyframeWinners.TryGetValue(name, out KeyframesRule? r) ? r : null;
+    }
+
+    /// <summary>The winning <c>@keyframes</c> rule of every name, by name ascending (ordinal).</summary>
+    public IReadOnlyList<KeyframesRule> KeyframesRules => _engine.Db.SortedKeyframes();
+
+    /// <summary>
+    /// The keyframes of the animation called <paramref name="name"/> on the element whose style is <paramref name="style"/>: the winning rule's blocks with
+    /// <c>var()</c> substituted from the style's custom properties, flow-relative properties mapped to physical ones, blocks with the same offset merged and
+    /// ordered as Chrome's <c>getKeyframes()</c> reports them, and the element's own values added at 0% and 100% for properties a keyframe leaves out. No
+    /// clock and no interpolation: the caller does that. Animation-tainted custom properties are not modelled: <c>var()</c> reads the element's computed custom
+    /// properties as they are, without the effect of animations on them. Cost: one pass over the rule per call; use <see cref="GetAnimationKeyframes"/> to read
+    /// an element's animations repeatedly.
+    /// </summary>
+    /// <param name="style">The element's computed style (or a pseudo-element's).</param>
+    /// <param name="name">The animation name.</param>
+    /// <param name="animationIndex">The animation's position in the element's <c>animation-name</c> list, which picks its items of the coordinated <c>animation-timing-function</c> and <c>animation-composition</c> lists (the lists repeat). Default 0.</param>
+    /// <returns>The keyframes, or null when no rule has the name.</returns>
+    /// <exception cref="ArgumentNullException">An argument is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="animationIndex"/> is negative.</exception>
+    public ResolvedKeyframes? ResolveKeyframes(ComputedStyle style, string name, int animationIndex = 0)
+    {
+        ArgumentNullException.ThrowIfNull(style);
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentOutOfRangeException.ThrowIfNegative(animationIndex);
+        return KeyframeResolver.Resolve(_engine.Db, style, name, animationIndex);
+    }
+
+    /// <summary>
+    /// The resolved keyframes (see <see cref="ResolveKeyframes"/>) of each animation in the style's <c>animation-name</c> list, in list order: null for <c>none</c> and for a
+    /// name with no <c>@keyframes</c> rule. Computed once per computed style and kept, so reading the same style again allocates nothing; elements that share a style object share the result.
+    /// </summary>
+    /// <param name="style">The element's computed style.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="style"/> is null.</exception>
+    public IReadOnlyList<ResolvedKeyframes?> GetAnimationKeyframes(ComputedStyle style)
+    {
+        ArgumentNullException.ThrowIfNull(style);
+        return _engine.Db.KeyframesOf(style);
+    }
 
     internal StyleSourceOptions SourceOptions => _options;
 
@@ -515,9 +572,44 @@ public sealed class DocumentStyles
     public RestyleResult Restyle(Document newDocument, StyleChange change, CancellationToken cancellationToken = default) =>
         RestyleWith(newDocument, change, _options, cancellationToken);
 
+    private static List<string> KeyframesDiff(DocumentStyles old, DocumentStyles now)
+    {
+        Dictionary<string, KeyframesRule> a = old._engine.Db.KeyframeWinners, b = now._engine.Db.KeyframeWinners;
+        if (ReferenceEquals(a, b) || (a.Count == 0 && b.Count == 0))
+        {
+            return [];
+        }
+
+        var names = new List<string>();
+        foreach (KeyValuePair<string, KeyframesRule> kv in a)
+        {
+            if (!b.TryGetValue(kv.Key, out KeyframesRule? other) || other.Signature != kv.Value.Signature)
+            {
+                names.Add(kv.Key);
+            }
+        }
+
+        foreach (string k in b.Keys)
+        {
+            if (!a.ContainsKey(k))
+            {
+                names.Add(k);
+            }
+        }
+
+        names.Sort(StringComparer.Ordinal);
+        return names;
+    }
+
     // The options of the new view: the same as this view's, except that an edit of a linked sheet swaps that sheet's text in
     // the resolver (see DocumentStylesEditing).
     internal RestyleResult RestyleWith(Document newDocument, StyleChange change, StyleSourceOptions options, CancellationToken cancellationToken)
+    {
+        RestyleResult result = RestyleCore(newDocument, change, options, cancellationToken);
+        return ReferenceEquals(result.Styles._engine.Db, _engine.Db) ? result : result with { ChangedKeyframes = KeyframesDiff(this, result.Styles) };
+    }
+
+    private RestyleResult RestyleCore(Document newDocument, StyleChange change, StyleSourceOptions options, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(newDocument);
         ArgumentNullException.ThrowIfNull(change);

@@ -1149,15 +1149,13 @@ public static partial class Shorthands
 
     // --- transition and animation --------------------------------------------------------------------------------------------------
 
-    private static readonly FrozenSet<string> Easings = ValueKinds.Set("ease", "linear", "ease-in", "ease-out", "ease-in-out", "step-start", "step-end");
-    private static readonly FrozenSet<string> EasingFunctions = ValueKinds.Set("cubic-bezier", "steps", "linear");
     private static readonly FrozenSet<string> Directions = ValueKinds.Set("normal", "reverse", "alternate", "alternate-reverse");
     private static readonly FrozenSet<string> FillModes = ValueKinds.Set("none", "forwards", "backwards", "both");
     private static readonly FrozenSet<string> PlayStates = ValueKinds.Set("running", "paused");
 
-    private static bool IsEasing(TokenRange r, int i) =>
-        r.Kind(i) == CssTokenKind.Ident ? ValueKinds.In(Easings, r.Name(i, out _)) : r.Kind(i) == CssTokenKind.Function && ValueKinds.In(EasingFunctions, r.Name(i, out _));
-
+    // CSS Transitions 1 §2.5 and CSS Animations 1 §3.9. The components of a layer come in any order, so each is assigned to the first slot that
+    // takes it. A <time> is the duration unless it is negative (a duration cannot be) or the duration is taken, then the delay; a third one is
+    // an error, as is a CSS-wide keyword anywhere in a layer (CSS Cascade 5 §7.3).
     private static bool Transition(TokenRange r, Dictionary<string, Slot> slots)
     {
         string[] names = ["transition-property", "transition-duration", "transition-timing-function", "transition-delay", "transition-behavior"];
@@ -1177,18 +1175,33 @@ public static partial class Shorthands
                 return false;
             }
 
-            int times = 0;
             int i = lr.From;
             while (i < lr.To)
             {
                 int next = lr.Next(i);
                 string t = lr.Tree.Text.Substring(lr.Tree.Tokens[i].Start, lr.Tree.Tokens[next - 1].End - lr.Tree.Tokens[i].Start);
-                if (ValueKinds.Time(lr, i) > 0 && times < 2)
+                if (AnimationGrammar.IsCssWide(lr, i))
                 {
-                    cells[times == 0 ? 1 : 3][li] = t;
-                    times++;
+                    return false;
                 }
-                else if (cells[2][li] is null && IsEasing(lr, i))
+
+                int timeEnd = AnimationGrammar.Time(lr, i, out bool negative);
+                if (timeEnd > 0)
+                {
+                    if (cells[1][li] is null && !negative)
+                    {
+                        cells[1][li] = t;
+                    }
+                    else if (cells[3][li] is null)
+                    {
+                        cells[3][li] = t;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if (cells[2][li] is null && AnimationGrammar.Easing(lr, i) > 0)
                 {
                     cells[2][li] = t;
                 }
@@ -1196,7 +1209,7 @@ public static partial class Shorthands
                 {
                     cells[4][li] = t;
                 }
-                else if (cells[0][li] is null && lr.Kind(i) == CssTokenKind.Ident)
+                else if (cells[0][li] is null && AnimationGrammar.IsCustomIdent(lr, i) && (layers.Count == 1 || !lr.IsIdent(i, "none")))
                 {
                     cells[0][li] = t;
                 }
@@ -1232,19 +1245,40 @@ public static partial class Shorthands
                 return false;
             }
 
-            int times = 0;
             int i = lr.From;
             while (i < lr.To)
             {
                 int next = lr.Next(i);
                 string t = lr.Tree.Text.Substring(lr.Tree.Tokens[i].Start, lr.Tree.Tokens[next - 1].End - lr.Tree.Tokens[i].Start);
                 bool isIdent = lr.Kind(i) == CssTokenKind.Ident;
-                if (ValueKinds.Time(lr, i) > 0 && times < 2)
+                if (AnimationGrammar.IsCssWide(lr, i))
                 {
-                    cells[times == 0 ? 0 : 2][li] = t;
-                    times++;
+                    return false;
                 }
-                else if (cells[1][li] is null && IsEasing(lr, i))
+
+                int timeEnd = AnimationGrammar.Time(lr, i, out bool negative);
+                if (timeEnd > 0)
+                {
+                    if (cells[0][li] is null && !negative)
+                    {
+                        cells[0][li] = t;
+                    }
+                    else if (cells[2][li] is null)
+                    {
+                        cells[2][li] = t;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+                else if (cells[0][li] is null && lr.IsIdent(i, "auto"))
+                {
+                    // `auto` is the duration keyword (CSS Animations 2 §3.1); the shorthand's own default is 0s.
+                    cells[0][li] = t;
+                }
+                else if (cells[1][li] is null && AnimationGrammar.Easing(lr, i) > 0)
                 {
                     cells[1][li] = t;
                 }
@@ -1264,7 +1298,7 @@ public static partial class Shorthands
                 {
                     cells[6][li] = t;
                 }
-                else if (cells[7][li] is null && (isIdent || lr.Kind(i) == CssTokenKind.QuotedString))
+                else if (cells[7][li] is null && (lr.IsIdent(i, "none") || AnimationGrammar.IsAnimationName(lr, i)))
                 {
                     cells[7][li] = t;
                 }

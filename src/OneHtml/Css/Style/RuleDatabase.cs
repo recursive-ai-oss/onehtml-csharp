@@ -2,6 +2,7 @@ using System;
 using RecursiveAI.OneHtml.Selectors;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -151,6 +152,69 @@ internal sealed class RuleDatabase
     public readonly List<StyleSheetInfo> Sheets = [];
     public readonly List<StyleDiagnostic> Diagnostics = [];
     public readonly LayerTree Layers = new();
+
+    /// <summary>Every <c>@keyframes</c> rule that applies, in document order.</summary>
+    public readonly List<KeyframeEntry> KeyframeEntries = [];
+
+    /// <summary>The winning rule for each name (see <see cref="KeyframesRule"/>).</summary>
+    public readonly Dictionary<string, KeyframesRule> KeyframeWinners = new(StringComparer.Ordinal);
+
+    /// <summary>Resolved keyframes by computed style, so reading them again for an element costs nothing.</summary>
+    public readonly System.Runtime.CompilerServices.ConditionalWeakTable<ComputedStyle, ResolvedKeyframes?[]> KeyframeCache = new();
+
+    private System.Runtime.CompilerServices.ConditionalWeakTable<ComputedStyle, ResolvedKeyframes?[]>.CreateValueCallback? _keyframeCreate;
+
+    private KeyframesRule[]? _sortedKeyframes;
+
+    public IReadOnlyList<KeyframesRule> SortedKeyframes()
+    {
+        KeyframesRule[]? s = Volatile.Read(ref _sortedKeyframes);
+        if (s is null)
+        {
+            s = [.. KeyframeWinners.Values.OrderBy(r => r.Name, StringComparer.Ordinal)];
+            _sortedKeyframes = s;
+        }
+
+        return s;
+    }
+
+    public ResolvedKeyframes?[] KeyframesOf(ComputedStyle style) =>
+        KeyframeCache.TryGetValue(style, out ResolvedKeyframes?[]? cached) ? cached : KeyframeCache.GetValue(style, _keyframeCreate ??= s => KeyframeResolver.ForStyle(this, s));
+
+    // The winner is the unprefixed rule over a prefixed one (as in Chrome), then the later origin, the later layer of the origin, the later rule.
+    public void BuildKeyframeWinners()
+    {
+        var best = new Dictionary<string, KeyframeEntry>(StringComparer.Ordinal);
+        foreach (KeyframeEntry e in KeyframeEntries)
+        {
+            if (!best.TryGetValue(e.Name, out KeyframeEntry? cur) || Beats(e, cur))
+            {
+                best[e.Name] = e;
+            }
+        }
+
+        foreach (KeyValuePair<string, KeyframeEntry> kv in best)
+        {
+            KeyframeWinners[kv.Key] = new KeyframesRule(this, kv.Value);
+        }
+    }
+
+    private bool Beats(KeyframeEntry a, KeyframeEntry b)
+    {
+        if (a.Prefixed != b.Prefixed)
+        {
+            return !a.Prefixed;
+        }
+
+        if (a.Origin != b.Origin)
+        {
+            return a.Origin > b.Origin;
+        }
+
+        int ra = Layers.RankOf(a.Layer), rb = Layers.RankOf(b.Layer);
+        return ra != rb ? ra > rb : a.Order > b.Order;
+    }
+
     public RuleIndex Index = null!;
     public RuleIndex DynamicIndex = null!;
 
@@ -370,6 +434,7 @@ internal sealed class RuleGatherer
         }
 
         _db.Layers.Rank();
+        _db.BuildKeyframeWinners();
         BuildIndexes();
         return _db;
     }
@@ -950,6 +1015,14 @@ internal sealed class RuleGatherer
                 }
 
                 break;
+            case AtRuleKind.Keyframes:
+                f.SawNonImport = true;
+                if (f.ParentText is null && n.HasBlock)
+                {
+                    AddKeyframes(f, n);
+                }
+
+                break;
             case AtRuleKind.Container:
                 f.SawNonImport = true;
                 Report(StyleDiagnosticKind.UnsupportedRule, "@container rules need layout and are skipped.");
@@ -963,6 +1036,49 @@ internal sealed class RuleGatherer
 
                 break;
         }
+    }
+
+    // CSS Animations 1 section 3: `@keyframes <keyframes-name> { ... }`, where the name is a custom identifier other than `none` (which also
+    // excludes the CSS-wide keywords and `default`) or a non-empty string.
+    private void AddKeyframes(Frame f, CssNode n)
+    {
+        TokenRange p = TokenRange.Of(n.Prelude).Trim();
+        if (p.IsEmpty || p.Next(p.From) != p.To || _db.KeyframeEntries.Count >= _opts.MaxRules)
+        {
+            return;
+        }
+
+        string name;
+        if (p.Kind(p.From) == CssTokenKind.QuotedString)
+        {
+            name = p.StringValue(p.From);
+            if (name.Length == 0)
+            {
+                return;
+            }
+        }
+        else if (p.Kind(p.From) == CssTokenKind.Ident && AnimationGrammar.IsCustomIdent(p, p.From) && !p.IsIdent(p.From, "none"))
+        {
+            name = p.IdentString(p.From);
+        }
+        else
+        {
+            return;
+        }
+
+        _db.KeyframeEntries.Add(new KeyframeEntry
+        {
+            Name = name,
+            Prefixed = n.Name.StartsWith('-'),
+            Origin = f.Sheet.Origin,
+            Layer = f.Layer,
+            Order = _db.KeyframeEntries.Count,
+            Node = n,
+            Owner = f.Sheet.Owner,
+            Url = f.Sheet.Url,
+            Sheet = f.Sheet.Sheet,
+            Validator = f.Sheet.Origin != StyleOrigin.UserAgent ? _opts.DeclarationValidator : null,
+        });
     }
 
     private void PushGroup(Stack<Frame> frames, Frame f, CssNode n, int layer)

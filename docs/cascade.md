@@ -354,7 +354,7 @@ No loop follows input depth: gathering uses an explicit stack, ancestor chains a
 - **Pseudo-elements.** Rules with `::before`, `::after`, `::marker` and the like are parsed and never match; no
   pseudo-element styles exist. (The accessibility tree will need `content` of `::before`/`::after`.)
 - `@scope` and `@container` rules are reported (`UnsupportedRule`) and skipped. `@property` registrations, `@starting-style`,
-  keyframes, animations and transitions are ignored. `ident()`, `if()` and container-query units are not implemented.
+  animations and transitions are ignored (no clock; `@keyframes` rules are collected, see below). `ident()`, `if()` and container-query units are not implemented.
 - `var(--x, revert-layer)`: a substituted rollback keyword behaves as `unset` instead of rolling back.
 - Typed values cover the accessibility set only. `GetComputedValue` for any other property returns the cascaded text, so
   `box-shadow` is not reordered or normalized; layout-dependent values (percentages of a containing block, `auto` sizes)
@@ -456,3 +456,73 @@ One `<line-width> || <line-style> || <color>` sets the start and the end side, l
 `border-block-end` written with the same value; the flow-relative longhands map to physical sides by writing mode and
 direction (CSS Logical Properties 1 section 4). They accept `var()`, CSS-wide keywords and `!important`, and a
 `DeclarationValidator` sees the longhands.
+
+## `position: running()`
+
+`position: running(<custom-ident>)` (CSS Generated Content for Paged Media 3 section 1) is a valid `position` value. The identifier is any
+identifier but a CSS-wide keyword or `default`; it is case-sensitive, spaces inside the parentheses are free, and `!important` is allowed. Anything
+else (`running()`, two identifiers, a string, a comma, bare `running`) is invalid and, as for any invalid declaration, leaves the earlier `position`.
+
+- `ComputedStyle.Position` is `PositionValue.Running` (a new last member; the five classic values keep their numbers) and
+  `ComputedStyle.RunningName` is the identifier (null for every other value). `GetPropertyValue("position")` returns the text as written
+  (`running(Header)`), `GetComputedValue("position")` the normalized `running(Header)`.
+- Code that knows only the classic keywords should treat `Running` like `static`: `Position is Absolute or Fixed` is false, `Display` is not
+  blockified, and a text comparison with `"static"`, `"relative"`, `"absolute"`, `"fixed"` or `"sticky"` fails for it.
+- GCPM takes a running element out of the normal flow and does not display it in place. That is a paged-media effect; no layout is done here.
+  Chrome 156 does not know the value (it drops the declaration, so the element stays in the page), and the accessibility tree and the
+  checker follow the page Chrome renders: a running element is in the accessibility tree with the role, name, hidden state and focus
+  order it has with `position: static`, and the checker treats it as not positioned (so it is not a stacking-context or out-of-flow
+  hazard for the contrast and obscured-focus rules). Chrome is the reference only where the specification agrees with it: the invalid
+  forms. The valid forms follow GCPM.
+
+## `transition` and `animation`
+
+The shorthands and their list longhands follow CSS Transitions 1 section 2, CSS Animations 1 section 3 and CSS Cascade 5 section 7.3 as
+Chrome 156 implements them (`tests/OneHtml.Tests/Style/ChromeAnimationShorthandTests.cs` holds 297 declarations Chrome was asked about).
+
+- **A CSS-wide keyword inside a list invalidates the declaration**, for the shorthand (`transition: initial 1s`, `animation: x initial`, `animation: x 1s, unset`)
+  and for every list longhand (`animation-name: x, inherit`). A lone keyword still resets.
+- **Times.** The first `<time>` that can be a duration (not negative) is the duration; a negative one, or the next one, is the delay; a third is an error. So
+  `animation: x -1s` is a delay of -1s, `transition: opacity -1s -2s` is invalid. A unitless `0` is not a time: `animation: x 0` is an iteration count of 0.
+  `animation` also takes `auto` as the duration (the shorthand's own default stays `0s`).
+- **Names.** `<keyframes-name>` and `transition-property` take a custom identifier: not a CSS-wide keyword, not `default`. `animation-name` also takes a non-empty
+  string; `none` is a name only when it cannot be a fill mode first, and in `transition` it is valid only when the shorthand has one layer (`transition: none, opacity 1s`
+  and `transition-property: none, opacity` are invalid). `animation-timeline` and the range longhands are reset by the shorthand; Chrome 156 does not accept a
+  timeline inside it, so neither do we (CSS Animations 2 does).
+- **Easing functions are checked:** `cubic-bezier()` takes four numbers with x in [0, 1]; `steps()` an integer of at least 1 (2 with `jump-none`) and one of the six
+  position keywords; `linear()` at least two points of a number and up to two percentages.
+- **List longhands are checked item by item** (`transition-property|duration|delay|timing-function|behavior`, `animation-name|duration|delay|timing-function|iteration-count|direction|fill-mode|play-state|timeline|composition`): a bad item drops the declaration at parse time,
+  so an earlier declaration stands. `animation-delay` is a shorthand of `animation-delay-start` and `-end` in the property table, but a list of times in every browser; it is
+  checked as the list. Not done: the computed serialization Chrome reports (`steps(4, jump-end)` is `steps(4)`, `100ms` is `0.1s`, `calc()` folded); values are the specified text.
+- Known difference: Chrome reports `animation-duration` as `0s` where the computed value is `auto` and the timeline is `auto`; here it is `auto`. The shorthand writes `0s`.
+
+## `@keyframes`
+
+The rules are collected with the style sources and kept with the document's styles; the library runs no clock and interpolates nothing.
+
+- **Which rule.** `DocumentStyles.GetKeyframesRule(name)` (and the same on `LiveDocumentStyles`) returns the winning `KeyframesRule` for a name, `KeyframesRules` all of them by
+  name. A name is a custom identifier (not `none`, a CSS-wide keyword or `default`, case-insensitively) or a non-empty string; a string and an identifier are one name; names are
+  case-sensitive. The rule has to be at the top level of a sheet or inside `@media`, `@supports` or `@layer` blocks that apply; one nested in a style rule does not exist.
+  Among rules of one name the winner is the **unprefixed** one over `@-webkit-keyframes` (Chrome: whatever the layers and the order), then the later **origin**, the later
+  **layer** of the origin (unlayered last, as CSS Cascade 5 section 6.4 says for at-rules), then the **last in document order**. An empty later rule still wins.
+- **The blocks** (`KeyframesRule.Blocks`): one per selector of `<keyframe-selector>#`; a block with an invalid selector (outside 0% to 100%, `0`, a keyword, `50 %`) is dropped whole;
+  `from` is 0 and `to` is 1. In a block these are ignored: `!important` declarations, invalid declarations (judged as everywhere else in the cascade, including `DeclarationValidator`), custom
+  properties (no `@property`), the `animation-*` and `transition-*` families, and `direction`, `unicode-bidi`, `writing-mode`, `text-orientation`, `will-change`, `contain`, `container*` and
+  `all` (what Chrome 156 leaves out). `animation-timing-function` and `animation-composition` are the block's own timing function and composition when valid, without `var()`.
+  A shorthand the library expands is split into longhands; one with `var()` stays whole (`UsesVar`) and one with no expansion grammar (`border-radius`, `mask`, `offset`) stays under its own name.
+- **Resolving for an element** (`ResolveKeyframes(style, name, animationIndex)`, `GetAnimationKeyframes(style)`): flow-relative longhands are mapped to physical ones under the element's
+  writing mode and direction and compete as one property (later declaration wins); `var()` is replaced from `style.CustomProperties` (a failed substitution, or a value invalid for the
+  property, is *invalid at computed-value time*: value `unset`, flag set); blocks with the same offset, the same timing function (the animation's own counts when the block has none) and the same
+  declared composition become one keyframe, later declarations winning, placed where the last of them stood (Chrome; Animations 2 section 3.2 groups by offset alone); keyframes are
+  ordered by offset, then as written; the element's own computed value of every animated property a first or last keyframe leaves out is added at 0% and 100%, to the keyframe there with the
+  animation's own timing function and no composition if one exists, else in a new `IsImplicit` keyframe with composition `replace`. Values are in property-name order. A timing function or
+  composition list inside a block contributes its first item to every animation (Chrome); the animation's own comes from the element's `animation-timing-function` and
+  `animation-composition` lists at the animation's index, repeating.
+- **Values** are the specified text with `var()` substituted. Not computed values: Chrome reports `rgb(255, 0, 0)` for `red`, `20px` for `1em` and `calc(10px * 2)`, and each omitted part of a shorthand as the
+  property's initial value where this library writes `initial`; CSS-wide keywords stay keywords. Implicit keyframes carry `GetComputedValue`. Animation-tainted custom properties are not modelled:
+  Chrome resolves `var(--x)` in a keyframe with the custom property as the animation itself sets it (a `--x` declared in the `from` keyframe), here it is the element's value without animations.
+- **Cost.** `GetAnimationKeyframes` computes once per computed style object and keeps the result in a table owned by the rule set, so reading an element again allocates nothing, on `DocumentStyles` and on
+  `LiveDocumentStyles` alike (elements that share a style share the result). `ResolveKeyframes` recomputes each time. Resolution is linear in blocks plus animated properties times keyframes.
+- **After an edit.** Sheet edits and edits to a `style` element's text rebuild the rule set on `Restyle`; `RestyleResult.ChangedKeyframes` lists the names whose winning rule differs (added, removed or different
+  text) in ordinal order. Elements that use a changed name keep their computed style, so they are not in `RestyledElements`: read `GetAnimationKeyframes` again for them on the new styles. Old `DocumentStyles` are unchanged.
+- Verified against Chrome 156 (`getKeyframes()` over 185 pages of synthetic cases in `tests/OneHtml.Tests/Style/KeyframesChromeTests.cs`): same animations, frame counts, offsets, timing functions, compositions and property names; values differ in the forms above.

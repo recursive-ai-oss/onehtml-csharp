@@ -352,7 +352,8 @@ internal sealed class ParsedDeclaration
         if (id == PropertyIds.All)
         {
             // CSS Cascade 5 §3.2: `all` accepts only a CSS-wide keyword and sets every property but direction, unicode-bidi
-            // and custom properties to it.
+            // and custom properties to it. A shorthand without an expansion grammar is stored under its own name too (see
+            // below), so it is set as well; one with a grammar is covered by its longhands.
             CssWideKeyword all = CssWideKeywords.Detect(value);
             if (all == CssWideKeyword.None)
             {
@@ -363,7 +364,7 @@ internal sealed class ParsedDeclaration
             for (int i = 0; i < PropertyIds.Count; i++)
             {
                 PropertyInfo p = PropertyIds.Info[i];
-                if (p.LegacyAliasOf is null && !p.IsShorthand && i != PropertyIds.Direction && i != PropertyIds.UnicodeBidi && i != PropertyIds.All)
+                if (p.LegacyAliasOf is null && (!p.IsShorthand || !Shorthands.HasGrammar(p.Name)) && i != PropertyIds.Direction && i != PropertyIds.UnicodeBidi && i != PropertyIds.All)
                 {
                     list.Add(new StyleValue(i, null, value, all, d, false, null));
                 }
@@ -422,6 +423,14 @@ internal sealed class ParsedDeclaration
                         {
                             list.Add(new StyleValue(lid, null, l.Value, l.Keyword, d, false, null));
                         }
+                    }
+
+                    if (keyword != CssWideKeyword.None && !Shorthands.HasGrammar(info.Name))
+                    {
+                        // A shorthand without an expansion grammar is also stored under its own name when written with a value
+                        // (see the NotExpanded case below), so a CSS-wide keyword must reach that slot as well as the longhands:
+                        // `vertical-align: inherit` is a shorthand in CSS Inline 3 and would otherwise read as its initial value.
+                        list.Add(new StyleValue(id, null, value, keyword, d, false, null));
                     }
 
                     d.Values = [.. list];

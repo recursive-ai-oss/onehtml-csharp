@@ -4,6 +4,16 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Added
+
+- `TokenRange.ToList()`: the same tokens as a `ComponentValueList`, with nothing copied.
+
+### Fixed
+
+- A shorthand whose value holds `var()` set nothing when it expanded to flow-relative longhands. `padding-inline: calc(var(--spacing) * 4)` (what Tailwind CSS 4 emits for `px-`, `py-` and `mx-`), `padding-block`, `margin-inline`, `margin-block`, `inset-inline`, `inset-block`, `scroll-padding-*`, `scroll-margin-*`, `border-inline-width`, `border-block-style`, `border-inline-start` and the other logical pairs now give the same values as Chrome, in every writing mode and direction. The substituted longhand was looked up by the physical property it maps to instead of the one the declaration set.
+- The same lookup dropped a longhand under an alias name: `font: var(--x)` whose value holds a width keyword (`font-stretch`, now `font-width`) lost it.
+- A CSS-wide keyword on a shorthand that has no expansion grammar was applied to its longhands only, so the shorthand itself read as its initial value: `vertical-align: inherit` (the user-agent rule for `tr`, `td` and `th`, so every table cell read `baseline` instead of its row's value), `text-align: initial`, `white-space: inherit`, `font-variant: initial`, `border-radius: inherit`, `place-items: inherit` and similar. `all` now sets those shorthands too.
+
 ## [1.1.0] - 2026-10-27
 
 ### Added

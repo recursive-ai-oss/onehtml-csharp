@@ -115,6 +115,20 @@ public class DeclarationValidatorTests
     }
 
     [Fact]
+    public void Logical_shorthands_with_var_are_not_asked_and_still_resolve()
+    {
+        var log = new List<string>();
+        const string h = "<style>p{--s:4px; padding-inline:var(--s) 2px; margin-block:var(--s); inset-inline:var(--s); scroll-padding-inline:var(--s)}</style><p id=a>";
+        DocumentStyles s = CascadeTests.Styles(h, null, Opts(Grammar, log));
+        ComputedStyle c = s.GetStyle(s.Document.GetElementById("a"));
+        Assert.Equal("4px", c.GetPropertyValue("padding-left"));
+        Assert.Equal("2px", c.GetPropertyValue("padding-right"));
+        Assert.Equal("4px", c.GetPropertyValue("margin-bottom"));
+        Assert.Equal("4px", c.GetPropertyValue("scroll-padding-left"));
+        Assert.DoesNotContain(log, e => e.Contains("var(", System.StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void Typed_properties_and_the_user_agent_sheet_are_not_asked()
     {
         var log = new List<string>();

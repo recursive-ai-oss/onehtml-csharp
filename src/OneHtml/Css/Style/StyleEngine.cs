@@ -1148,10 +1148,12 @@ internal sealed class StyleEngine
                 return null;
             }
 
-            string target = PropertyIds.Info[slot].Name;
+            // The cascade slot of a flow-relative longhand is the physical property it maps to under the element's writing mode
+            // (CSS Logical Properties 1 section 4), but the expansion names the longhand the declaration set. Match on the
+            // declared longhand, v.PropertyId, which is what this value was created for.
             foreach (ExpandedLonghand l in ex.Longhands)
             {
-                if (string.Equals(l.Name, target, StringComparison.OrdinalIgnoreCase))
+                if (PropertyIds.Get(l.Name) == v.PropertyId)
                 {
                     return l.Keyword switch
                     {

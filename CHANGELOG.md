@@ -4,6 +4,8 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-10-27
+
 ### Added
 
 - `TokenRange.ToList()`: the same tokens as a `ComponentValueList`, with nothing copied.
@@ -31,5 +33,6 @@ First release. All three packages share one version.
 - `RecursiveAI.OneHtml.Accessibility`: the accessibility tree (WAI-ARIA 1.2, HTML-AAM, AccName 1.2, Core-AAM, SVG-AAM) with each role, name and hidden state traced to its source, Chromium's choices listed in `docs/accessibility-chromium-profile.md`, incremental recompute after edits, a reading view, navigation lists, tree and reading-view diffs, an export in Chrome's AX-tree shape, and `RenderedFacts` from a Chrome `DOMSnapshot` supplied by the caller.
 - `RecursiveAI.OneHtml.Accessibility.Validation`: one rule catalogue covering axe-core's WCAG and best-practice rules (the two with no counterpart are explained in `docs/axe-differential.md`) and every W3C-approved ACT rule, labelled by WCAG version, level and criterion; profiles for WCAG 2.0 AA, 2.1 AA, 2.2 AA and everything; contrast that never guesses a background; incremental re-check after an edit; suggested edits for the rules that have exactly one correct fix; native JSON, axe-compatible JSON and SARIF 2.1.0 output. Coverage per criterion is in `docs/coverage.md`.
 
+[1.1.1]: https://github.com/recursive-ai-oss/onehtml-csharp/releases/tag/v1.1.1
 [1.1.0]: https://github.com/recursive-ai-oss/onehtml-csharp/releases/tag/v1.1.0
 [1.0.0]: https://github.com/recursive-ai-oss/onehtml-csharp/releases/tag/v1.0.0

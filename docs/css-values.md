@@ -61,7 +61,10 @@ Conditional 3 as of 20 October 2026; this file records what those texts leave op
   vmax` and the `s`, `l`, `d` variants), container (`cqw cqh cqi cqb cqmin cqmax`), angle, time, frequency, resolution
   and flex units. `LengthContext` supplies the inputs for relative units; the library never measures fonts. When font
   metrics are unknown, `ex`=0.5em, `ch`=0.5em, `cap`=0.7em and `ic`=1em (Values 4 §6.1.1 fallbacks; cap is this
-  library's choice). Absolute units use the CSS reference pixel.
+  library's choice). The root-relative units use the root element's own ratios, `RootExRatio`, `RootCapRatio`,
+  `RootChRatio` and `RootIcRatio` (Values 4 §6.1.1); a ratio left at 0 means unset, and the element's ratio of the same
+  metric stands in for it, so a caller that sets none sees `rex` = `rfs * ExRatio` as before. The cascade leaves them
+  unset. Absolute units use the CSS reference pixel.
 - Math functions: `calc min max clamp round mod rem sin cos tan asin acos atan atan2 pow sqrt hypot log exp abs sign`.
   Parsing uses an explicit stack, so nesting never recurses; the expression is capped at 65,536 nodes.
   - Type checking follows Values 4 §10.1: sums need the same type; a percentage in a calculation is invalid where the

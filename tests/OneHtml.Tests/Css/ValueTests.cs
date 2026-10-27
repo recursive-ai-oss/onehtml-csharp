@@ -59,6 +59,28 @@ public class ValueTests
     }
 
     [Fact]
+    public void Root_font_units_use_the_root_ratios_and_fall_back_to_the_element_ones()
+    {
+        LengthContext ctx = LengthContext.Default with { FontSize = 10, RootFontSize = 20, ExRatio = 0.4, CapRatio = 0.6, ChRatio = 0.3, IcRatio = 0.9 };
+        Assert.Equal(8, ctx.ToPx(1, CssUnit.RootXHeight));
+        Assert.Equal(12, ctx.ToPx(1, CssUnit.Rcap));
+        Assert.Equal(6, ctx.ToPx(1, CssUnit.Rch));
+        Assert.Equal(18, ctx.ToPx(1, CssUnit.Ric));
+        Assert.Equal(4, ctx.ToPx(1, CssUnit.XHeight));
+
+        LengthContext root = ctx with { RootExRatio = 0.55, RootCapRatio = 0.75, RootChRatio = 0.45, RootIcRatio = 1 };
+        Assert.Equal(11, root.ToPx(1, CssUnit.RootXHeight), 9);
+        Assert.Equal(15, root.ToPx(1, CssUnit.Rcap), 9);
+        Assert.Equal(9, root.ToPx(1, CssUnit.Rch), 9);
+        Assert.Equal(20, root.ToPx(1, CssUnit.Ric));
+        Assert.Equal(4, root.ToPx(1, CssUnit.XHeight)); // the element's own units keep the element's ratios
+        Assert.True(CssQuantity.TryParse(V("calc(1rex + 2rch)"), QuantityKinds.Length, out CssQuantity q));
+        Assert.Equal(11 + 18, q.Resolve(root), 9);
+        Assert.NotEqual(ctx, root);
+        Assert.Equal(LengthContext.Default, LengthContext.Default with { });
+    }
+
+    [Fact]
     public void Calc_deep_nesting_does_not_recurse()
     {
         string s = new string('(', 5000) + "1px" + new string(')', 5000);

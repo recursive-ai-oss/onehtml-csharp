@@ -36,6 +36,21 @@ public readonly record struct LengthContext
     /// <summary>Advance of "水" (U+6C34) as a fraction of the font size (<c>ic</c>). Default 1, the fallback §6.1.1 gives.</summary>
     public double IcRatio { get; init; }
 
+    /// <summary>
+    /// x-height of the <em>root element's</em> font as a fraction of the root font size (<c>rex</c>, CSS Values 4 §6.1.1). 0 means unset:
+    /// <see cref="ExRatio"/> is used, which is exact when the root and the element share a font. A layout engine that measures fonts sets it.
+    /// </summary>
+    public double RootExRatio { get; init; }
+
+    /// <summary>Cap height of the root element's font as a fraction of the root font size (<c>rcap</c>). 0 means unset: <see cref="CapRatio"/> is used.</summary>
+    public double RootCapRatio { get; init; }
+
+    /// <summary>Advance of "0" in the root element's font as a fraction of the root font size (<c>rch</c>). 0 means unset: <see cref="ChRatio"/> is used.</summary>
+    public double RootChRatio { get; init; }
+
+    /// <summary>Advance of "水" in the root element's font as a fraction of the root font size (<c>ric</c>). 0 means unset: <see cref="IcRatio"/> is used.</summary>
+    public double RootIcRatio { get; init; }
+
     /// <summary>Small viewport width in px. Default 0.</summary>
     public double ViewportWidth { get; init; }
 
@@ -103,13 +118,13 @@ public readonly record struct LengthContext
             CssUnit.Em => fs,
             CssUnit.Rem => rfs,
             CssUnit.XHeight => fs * ExRatio,
-            CssUnit.RootXHeight => rfs * ExRatio,
+            CssUnit.RootXHeight => rfs * (RootExRatio != 0 ? RootExRatio : ExRatio),
             CssUnit.Cap => fs * CapRatio,
-            CssUnit.Rcap => rfs * CapRatio,
+            CssUnit.Rcap => rfs * (RootCapRatio != 0 ? RootCapRatio : CapRatio),
             CssUnit.Ch => fs * ChRatio,
-            CssUnit.Rch => rfs * ChRatio,
+            CssUnit.Rch => rfs * (RootChRatio != 0 ? RootChRatio : ChRatio),
             CssUnit.Ic => fs * IcRatio,
-            CssUnit.Ric => rfs * IcRatio,
+            CssUnit.Ric => rfs * (RootIcRatio != 0 ? RootIcRatio : IcRatio),
             CssUnit.Lh => LineHeight != 0 ? LineHeight : fs * 1.2,
             CssUnit.Rlh => RootLineHeight != 0 ? RootLineHeight : rfs * 1.2,
             CssUnit.Vw or CssUnit.Svw => vw / 100,

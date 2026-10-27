@@ -185,6 +185,20 @@ public class LiveDocumentStylesTests
     }
 
     [Fact]
+    public void Generated_box_styles_follow_the_state()
+    {
+        Document doc = Document.Parse(LiveFixture.Page(false));
+        LiveDocumentStyles live = LiveDocumentStyles.Create(DocumentStyles.Create(doc));
+        Node card = doc.GetElementById("c2");
+        Assert.True(live.HasInteractivePseudoElementRules);
+        Assert.Null(live.GetPseudoStyle(card, PseudoElementKind.Before));
+        live.ApplyState(ElementStateChange.Hover(card));
+        Assert.Equal("\"hover\"", live.GetPseudoStyle(card, PseudoElementKind.Before)!.GetPropertyValue("content"));
+        live.ApplyState(ElementStateChange.Hover(default));
+        Assert.Null(live.GetPseudoStyle(card, PseudoElementKind.Before));
+    }
+
+    [Fact]
     public void A_small_buffer_receives_the_lowest_indices()
     {
         Document doc = Document.Parse(LiveFixture.Page(false));

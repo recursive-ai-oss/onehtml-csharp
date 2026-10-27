@@ -127,7 +127,7 @@ public sealed class LiveDocumentStyles
     private readonly SelectorMatchOptions _cur;
     private readonly SelectorMatchOptions _prev;
     private readonly SelectorBulkCache? _bulk;
-    private readonly Dictionary<long, ComputedStyle?> _pseudo = [];
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<long, ComputedStyle?> _pseudo = new();
 
     // Per-change scratch, reused so a change allocates nothing.
     private readonly int[] _fullStamp;
@@ -299,7 +299,7 @@ public sealed class LiveDocumentStyles
 
     /// <summary>
     /// The style of a generated box under the current state, as <see cref="DocumentStyles.GetPseudoStyle"/> reads it. Computed on first
-    /// use and kept until the next state change when a rule styling generated boxes reads interaction state.
+    /// use and kept until the next state change when a rule styling generated boxes reads interaction state. Safe to call from several threads between state changes.
     /// </summary>
     /// <param name="element">An element of <see cref="Document"/>.</param>
     /// <param name="kind">Which pseudo-element.</param>
@@ -319,9 +319,7 @@ public sealed class LiveDocumentStyles
             return cached;
         }
 
-        ComputedStyle? built = _engine.ComputePseudo(element, name, style, _cur);
-        _pseudo[key] = built;
-        return built;
+        return _pseudo.GetOrAdd(key, _engine.ComputePseudo(element, name, style, _cur));
     }
 
     /// <summary>

@@ -44,7 +44,7 @@ internal static class PseudoNames
         _ => false,
     };
 
-    public static long Key(int elementIndex, PseudoElementKind kind) => ((long)elementIndex << 3) | (long)kind;
+    public static long Key(int elementIndex, PseudoElementKind kind) => ((long)elementIndex << 4) | (long)kind;
 }
 
 /// <summary>

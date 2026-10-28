@@ -4,6 +4,10 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Fixed
+
+- `LiveDocumentStyles.GetPseudoStyle` no longer throws away every cached generated-box style on each state change. A box is kept while the style it inherits from (the element's, the track's for the slider thumb and fill, the highlight style above for `::selection`) and, when a rule for generated boxes reads interaction state, the state are unchanged, and is otherwise rebuilt on its next read from the shared style table. A state change followed by reads of the boxes now allocates nothing in steady state (before, about 800 bytes per pointer move over a range input with `input:hover::-webkit-slider-thumb` on the page). Computed values are unchanged.
+
 ## [1.5.0] - 2026-10-27
 
 ### Added

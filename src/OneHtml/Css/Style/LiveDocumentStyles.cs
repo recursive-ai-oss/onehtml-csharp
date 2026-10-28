@@ -133,7 +133,16 @@ public sealed class LiveDocumentStyles
     private readonly SelectorMatchOptions _cur;
     private readonly SelectorMatchOptions _prev;
     private readonly SelectorBulkCache? _bulk;
-    private readonly System.Collections.Concurrent.ConcurrentDictionary<long, ComputedStyle?> _pseudo = new();
+    // Generated-box styles, kept for as long as what they were computed from is unchanged (see GetPseudoStyle). Never cleared; an entry is
+    // overwritten in place, so a change and the reads after it allocate nothing once every box has been built.
+    private readonly Dictionary<long, PseudoSlot> _pseudo = [];
+    private readonly object _pseudoGate = new();
+    private int _stateVersion = 1;
+
+    [ThreadStatic]
+    private static List<int>? t_chain;
+
+    private readonly record struct PseudoSlot(ComputedStyle? Style, ComputedStyle? Origin, ComputedStyle? HighlightParent, int Version);
 
     // Per-change scratch, reused so a change allocates nothing.
     private readonly int[] _fullStamp;
@@ -360,8 +369,11 @@ public sealed class LiveDocumentStyles
     public StyleValue? GetValue(int elementIndex, int propertyId) => GetStyle(elementIndex).GetValue(propertyId);
 
     /// <summary>
-    /// The style of a generated box under the current state, as <see cref="DocumentStyles.GetPseudoStyle"/> reads it. Computed on first
-    /// use and kept until the next state change when a rule styling generated boxes reads interaction state. Safe to call from several threads between state changes.
+    /// The style of a generated box under the current state, as <see cref="DocumentStyles.GetPseudoStyle"/> reads it. A box is computed on
+    /// first use and kept while what it was computed from is unchanged: the style it inherits from (the element's, or for the slider thumb
+    /// and fill the track's), for <c>::selection</c> the highlight style above it, and, when a rule styling generated boxes reads
+    /// interaction state, the state itself. So a state change leaves the cached boxes of elements it does not reach as they are, and a
+    /// box it reaches is rebuilt on its next read, from the shared style table, without allocating. Safe to call from several threads between state changes.
     /// </summary>
     /// <param name="element">An element of <see cref="Document"/>.</param>
     /// <param name="kind">Which pseudo-element.</param>
@@ -375,22 +387,80 @@ public sealed class LiveDocumentStyles
             return null;
         }
 
+        if (kind == PseudoElementKind.Selection)
+        {
+            return HighlightOf(element);
+        }
+
+        // The thumb and the fill sit inside the track, so they inherit from the track's style rather than the input's.
+        ComputedStyle origin = kind is PseudoElementKind.SliderThumb or PseudoElementKind.SliderFill
+            ? GetPseudoStyle(element, PseudoElementKind.SliderTrack) ?? style
+            : style;
         long key = PseudoNames.Key(element.Index, kind);
-        if (_pseudo.TryGetValue(key, out ComputedStyle? cached))
+        if (TryCached(key, origin, null, out ComputedStyle? cached))
         {
             return cached;
         }
 
-        if (kind == PseudoElementKind.Selection)
+        ComputedStyle? built = _engine.ComputePseudo(element, name, origin, _cur);
+        Store(key, built, origin, null);
+        return built;
+    }
+
+    private bool TryCached(long key, ComputedStyle origin, ComputedStyle? highlightParent, out ComputedStyle? style)
+    {
+        lock (_pseudoGate)
         {
-            return _pseudo.GetOrAdd(key, _engine.ComputeHighlight(element, i => _styles[i]!, _pseudo, _cur));
+            if (_pseudo.TryGetValue(key, out PseudoSlot slot)
+                && ReferenceEquals(slot.Origin, origin)
+                && ReferenceEquals(slot.HighlightParent, highlightParent)
+                && (!_engine.Db.PseudoElementDynamic || slot.Version == _stateVersion))
+            {
+                style = slot.Style;
+                return true;
+            }
         }
 
-        // The thumb and the fill sit inside the track, so they inherit from the track's style rather than the input's.
-        ComputedStyle parent = kind is PseudoElementKind.SliderThumb or PseudoElementKind.SliderFill
-            ? GetPseudoStyle(element, PseudoElementKind.SliderTrack) ?? style
-            : style;
-        return _pseudo.GetOrAdd(key, _engine.ComputePseudo(element, name, parent, _cur));
+        style = null;
+        return false;
+    }
+
+    private void Store(long key, ComputedStyle? style, ComputedStyle origin, ComputedStyle? highlightParent)
+    {
+        lock (_pseudoGate)
+        {
+            _pseudo[key] = new PseudoSlot(style, origin, highlightParent, _stateVersion);
+        }
+    }
+
+    // ::selection: each element's highlight style is built on its parent's (CSS Pseudo-Elements 4 section 3.2), so the chain is walked from
+    // the root down and a level is rebuilt only when its own style, the highlight style above it or (with state rules) the state differs from
+    // what it was built under. An explicit loop over a per-thread list, so depth does not recurse and a read allocates nothing.
+    private ComputedStyle? HighlightOf(Node element)
+    {
+        List<int> chain = t_chain ??= [];
+        chain.Clear();
+        for (int i = element.Index; i >= 0 && _a.Kind[i] == (byte)NodeKind.Element; i = _a.Parent[i])
+        {
+            chain.Add(i);
+        }
+
+        ComputedStyle? parent = null;
+        for (int k = chain.Count - 1; k >= 0; k--)
+        {
+            int idx = chain[k];
+            ComputedStyle origin = _styles[idx]!;
+            long key = PseudoNames.Key(idx, PseudoElementKind.Selection);
+            if (!TryCached(key, origin, parent, out ComputedStyle? own))
+            {
+                own = _engine.ComputePseudo(new Node(_doc, idx), "selection", origin, _cur, true, parent);
+                Store(key, own, origin, parent);
+            }
+
+            parent = own;
+        }
+
+        return parent;
     }
 
     /// <summary>
@@ -431,11 +501,7 @@ public sealed class LiveDocumentStyles
         _focusSource = source;
         SetState(_state, focus, source, hover, active, target);
         _bulk?.InvalidateInteraction();
-        if (_engine.Db.PseudoElementDynamic)
-        {
-            _pseudo.Clear();
-        }
-
+        _stateVersion++;
         RuleDatabase db = _engine.Db;
         if (db.DynamicIndex.Count == 0)
         {
@@ -458,7 +524,6 @@ public sealed class LiveDocumentStyles
         }
 
         Restyle();
-        DropStaleGeneratedBoxes();
     }
 
     /// <summary>
@@ -504,11 +569,7 @@ public sealed class LiveDocumentStyles
         {
             _bulk?.InvalidateInteraction();
             RuleDatabase db = _engine.Db;
-            if (db.PseudoElementDynamic)
-            {
-                _pseudo.Clear();
-            }
-
+            _stateVersion++;
             if (db.DynamicIndex.Count == 0)
             {
                 return;
@@ -541,7 +602,6 @@ public sealed class LiveDocumentStyles
             }
 
             Restyle();
-            DropStaleGeneratedBoxes();
         }
         finally
         {
@@ -550,16 +610,6 @@ public sealed class LiveDocumentStyles
             {
                 _formPrev.Set(_formTouchedIndex[i], _formTouchedKind[i], _formCur.ValueOf(_formTouchedIndex[i], _formTouchedKind[i]));
             }
-        }
-    }
-
-    // A generated box inherits from its element (the slider thumb and fill from the track), so a box cached before an element's style
-    // changed is out of date even when no rule for the box reads state.
-    private void DropStaleGeneratedBoxes()
-    {
-        if (_changedCount > 0)
-        {
-            _pseudo.Clear();
         }
     }
 

@@ -13,11 +13,19 @@ internal static class UserAgentSheets
 
     // What Chrome's computed style of ::placeholder shows (black-box): grey text, no pointer events, a block box, the line height an input sets
     // (a textarea takes the author's), and no box while a value hides the placeholder; the author cannot change the !important ones. The HTML Standard has no rule for it.
+    //
+    // The parts of a range slider are real elements inside Chrome's shadow tree. Its DevTools protocol reports their computed style: block boxes
+    // with border-box sizing, an isolated bidi context and the initial values of every property that does not inherit (the input's border, margin,
+    // padding, background and opacity do not reach them). The track also grows to fill the flex container around it, centres itself and has no
+    // theme appearance. Sizes are used values from layout and are not declared here. The fill has no part in Chrome, so it has no defaults.
     private const string PseudoElementDefaults = """
 
         input[placeholder]::placeholder, textarea[placeholder]::placeholder { color: #757575; display: block !important; pointer-events: none !important; }
         input[placeholder]::placeholder { line-height: normal !important; }
         input[placeholder]:not(:placeholder-shown)::placeholder, textarea[placeholder]:not(:placeholder-shown)::placeholder { display: none !important; }
+
+        input[type=range i]::slider-track { display: block; box-sizing: border-box; flex-grow: 1; flex-basis: 0%; align-self: center; appearance: none; unicode-bidi: isolate; }
+        input[type=range i]::slider-thumb { display: block; box-sizing: border-box; appearance: auto; unicode-bidi: isolate; }
         """;
 
     public static Stylesheet Standard => StandardSheet.Value;

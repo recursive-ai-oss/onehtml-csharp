@@ -1561,7 +1561,9 @@ internal static class SelectorParser
         var s = new Simple { Kind = SimpleKind.PseudoElement, Name = lower, Specificity = new Specificity(0, 0, 1), Deps = SelectorDependencies.NeverMatches };
         bool functionalOnly = lower is "slotted" or "part" or "highlight";
         bool plainOnly = lower is "before" or "after" or "first-line" or "first-letter" or "marker" or "placeholder" or "selection" or "backdrop"
-            or "file-selector-button" or "spelling-error" or "grammar-error" or "target-text" or "details-content";
+            or "file-selector-button" or "spelling-error" or "grammar-error" or "target-text" or "details-content"
+            or "slider-thumb" or "slider-track" or "slider-fill" or "-webkit-slider-thumb" or "-webkit-slider-runnable-track"
+            or "-moz-range-thumb" or "-moz-range-track" or "-moz-range-progress";
         if (!isFn)
         {
             return functionalOnly ? null : s;

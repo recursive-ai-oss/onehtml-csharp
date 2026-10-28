@@ -351,8 +351,8 @@ No loop follows input depth: gathering uses an explicit stack, ancestor chains a
 
 ## Not supported
 
-- **Pseudo-elements.** Rules with `::before`, `::after`, `::marker` and the like are parsed and never match; no
-  pseudo-element styles exist. (The accessibility tree will need `content` of `::before`/`::after`.)
+- **Other pseudo-elements.** Styles are served for `::before`, `::after`, `::marker`, `::selection`, `::placeholder` and the
+  range slider parts (see `PseudoElementKind`); rules with any other pseudo-element are parsed and never match.
 - `@scope` and `@container` rules are reported (`UnsupportedRule`) and skipped. `@property` registrations, `@starting-style`,
   animations and transitions are ignored (no clock; `@keyframes` rules are collected, see below). `ident()`, `if()` and container-query units are not implemented.
 - `var(--x, revert-layer)`: a substituted rollback keyword behaves as `unset` instead of rolling back.
@@ -373,8 +373,8 @@ No loop follows input depth: gathering uses an explicit stack, ancestor chains a
 
 ## Pseudo-element styles
 
-`GetPseudoStyle(element, PseudoElementKind)` returns the computed style of the `::before`, `::after`, `::marker`, `::selection` or
-`::placeholder` of an element, or `null` when no rule styles it (then no box is generated for `::before` and `::after`). A selector is indexed
+`GetPseudoStyle(element, PseudoElementKind)` returns the computed style of the `::before`, `::after`, `::marker`, `::selection`,
+`::placeholder` or range slider part (`::slider-thumb`, `::slider-track`, `::slider-fill`) of an element, or `null` when no rule styles it (then no box is generated for `::before` and `::after`). A selector is indexed
 only when the pseudo-element is the last simple selector of its last compound; it matches when everything before the
 pseudo-element matches the originating element (Selectors 4 section 3.6), with the originating element's specificity plus
 one type selector for the pseudo-element. The cascade is the element cascade restricted to those rules: no `style`
@@ -411,6 +411,50 @@ style fixes with `!important`. Chrome 156 shows the same: grey `color` (`#757575
 placeholder is shown and `display: none` while a value hides it (`:placeholder-shown` is false). The HTML Standard gives no such rules, and
 the spec's list of properties for `::placeholder` (those of `::first-line`) is narrower than what Chrome applies; the library follows Chrome
 here. Chrome's `direction`, `overflow` and `text-overflow` are not modelled.
+
+### Range slider parts: `::slider-thumb`, `::slider-track`, `::slider-fill`
+
+CSS Forms 1 names three parts of an `input` whose type state is Range (HTML Standard 4.10.5.1.13; `type` is matched ASCII
+case-insensitively, so `type=RANGE` counts and `type=range` on any other element does not). `GetPseudoStyle` answers `null` for every
+other element, and reads the type from the document it is asked about, so an edit that changes `type` adds or removes the parts and
+`RestyleResult.PseudoElementsMayDiffer` lists the element (an edited element always is listed).
+
+**Names.** Each part has the standard name and the browsers' own, all indexed under the same part:
+
+| Part | Names |
+|---|---|
+| thumb | `::slider-thumb`, `::-webkit-slider-thumb`, `::-moz-range-thumb` |
+| track | `::slider-track`, `::-webkit-slider-runnable-track`, `::-moz-range-track` |
+| fill | `::slider-fill`, `::-moz-range-progress` |
+
+Observed in Chrome 156 (`CSSStyleSheet.insertRule`): it accepts the `-webkit-` names (and any other `-webkit-` pseudo-element, as
+written), and rejects `::slider-thumb`, `::slider-track`, `::slider-fill` and every `-moz-` name. The library accepts all of them as
+aliases, so one stylesheet written for any browser styles the parts. That is a deliberate difference from Chrome for the CSS Forms and
+`-moz-` names. As in Chrome, functional notation (`::-webkit-slider-thumb()`), another pseudo-element after a part and `:disabled`
+after a part are invalid and drop the rule. Selector lists mix names freely, and `::-webkit-slider-thumb` alone matches every range
+input. A rule is found when the part is the last simple selector, as for the other generated boxes, and anything before it
+(`input:hover`, `.a > input[disabled]`) is matched against the input: its `:hover`, `:active`, `:focus`, `:focus-visible` and
+`:disabled` follow the `StyleContext` and form state on the snapshot path and `ApplyState`/`ApplyFormState` on the live path, which
+clear the cached parts that a state change reached.
+
+**Inheritance.** In Chrome the parts are elements inside the input's shadow tree: container, then track, then thumb. The library models the
+two that CSS can name: the track inherits from the input, and the thumb and the fill inherit from the track (so
+`input::slider-track { color: blue }` also colours the thumb, as it does in Chrome). Properties that do not inherit start from their
+initial values, so the input's border, margin, padding, background and opacity do not reach the parts.
+
+**User-agent style.** Chrome's DevTools protocol (`CSS.getComputedStyleForNode` on the shadow nodes; `getComputedStyle(input,
+'::-webkit-slider-thumb')` returns the input's own style there, so it cannot be used) reports, besides the initial values:
+the thumb `display: block; box-sizing: border-box; appearance: auto; unicode-bidi: isolate`; the track `display: block; box-sizing:
+border-box; flex: 1 1 0%; align-self: center; appearance: none; unicode-bidi: isolate`. The library's user-agent sheet has exactly these.
+A disabled input changes no part rule: the parts only inherit the colours the input's own disabled style gives them. Chrome has no node
+for the fill, so the fill has no defaults and exists only when a rule styles it (`null` otherwise), like `::before`.
+
+**Not done.**
+- A state pseudo-class on the part itself (`::-webkit-slider-thumb:hover`, `:active`, `:focus`): Chrome accepts it and answers from
+  hit testing of the part. The library has no hit testing, so the rule is parsed and dropped, not applied to the input's state.
+- Sizes: Chrome's computed `width` and `height` of the parts are used values from layout (16px for the thumb) and are not declared.
+- Blockification: Chrome reports `display: block` for a track an author set to `inline` (it is a flex item); the library keeps the author's value.
+- The container (`::-webkit-slider-container`) and the vertical orientation's `touch-action` and `min-*` swaps.
 
 ## Conformance (web-platform-tests, pinned commit in the notices file)
 

@@ -538,6 +538,12 @@ internal static class ElementState
         return false;
     }
 
+    /// <summary>
+    /// Whether the element can have the parts of a range slider (<c>::slider-thumb</c> and the others): an <c>input</c> whose type state is Range
+    /// (HTML Standard 4.10.5.1.13; the <c>type</c> value is matched ASCII case-insensitively).
+    /// </summary>
+    public static bool HasRangeBox(Node n) => GetInputType(n) == InputType.Range;
+
     // ---- :placeholder-shown ----
 
     /// <summary>Whether the element can have a <c>::placeholder</c>: a text-like <c>input</c> or a <c>textarea</c> with a non-empty <c>placeholder</c> attribute.</summary>

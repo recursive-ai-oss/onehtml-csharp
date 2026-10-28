@@ -4,6 +4,14 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Added
+
+- `PseudoElementKind.SliderThumb`, `SliderTrack` and `SliderFill`: `GetPseudoStyle` on `DocumentStyles` and `LiveDocumentStyles` serves the parts of an `input type=range`. Names: `::slider-thumb`, `::slider-track`, `::slider-fill`, `::-webkit-slider-thumb`, `::-webkit-slider-runnable-track`, `::-moz-range-thumb`, `::-moz-range-track`, `::-moz-range-progress`. Other elements get `null`. The thumb and the fill inherit from the track, the track from the input; the user-agent sheet carries the defaults Chrome 156 reports for the thumb and track; the input's `:hover`, `:active`, `:focus`, `:focus-visible` and `:disabled` before the pseudo-element follow the context, form state and live changes. A state pseudo-class on the part itself is not supported. See `docs/cascade.md`.
+
+### Fixed
+
+- A generated box read from `LiveDocumentStyles.GetPseudoStyle` is recomputed after a state change that restyled elements, so it no longer keeps values inherited from the element's style before the change when no rule for the box reads state.
+
 ## [1.4.0] - 2026-10-27
 
 ### Added

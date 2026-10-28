@@ -23,6 +23,15 @@ public enum PseudoElementKind : byte
 
     /// <summary><c>::placeholder</c>, the placeholder text of an <c>input</c> or <c>textarea</c> that has a <c>placeholder</c> attribute.</summary>
     Placeholder = 4,
+
+    /// <summary><c>::slider-thumb</c> (Chrome: <c>::-webkit-slider-thumb</c>, Firefox: <c>::-moz-range-thumb</c>), the handle of an <c>input type=range</c>.</summary>
+    SliderThumb = 5,
+
+    /// <summary><c>::slider-track</c> (Chrome: <c>::-webkit-slider-runnable-track</c>, Firefox: <c>::-moz-range-track</c>), the track of an <c>input type=range</c>.</summary>
+    SliderTrack = 6,
+
+    /// <summary><c>::slider-fill</c> (Firefox: <c>::-moz-range-progress</c>), the part of the track before the thumb of an <c>input type=range</c>.</summary>
+    SliderFill = 7,
 }
 
 /// <summary>The outcome of <see cref="DocumentStyles.Restyle"/>.</summary>
@@ -250,7 +259,7 @@ public sealed class DocumentStyles
         }
 
         string name = PseudoNames.Of(kind);
-        if (!_engine.Db.PseudoIndex.ContainsKey(name) || (kind == PseudoElementKind.Placeholder && !ElementState.HasPlaceholderBox(element)))
+        if (!_engine.Db.PseudoIndex.ContainsKey(name) || PseudoNames.IsMissingBox(element, kind))
         {
             return null;
         }
@@ -261,9 +270,20 @@ public sealed class DocumentStyles
             return cached;
         }
 
-        ComputedStyle? built = kind == PseudoElementKind.Selection
-            ? _engine.ComputeHighlight(element, StyleOf, _pseudo, _match)
-            : _engine.ComputePseudo(element, name, StyleOf(element.Index), _match);
+        ComputedStyle? built;
+        if (kind == PseudoElementKind.Selection)
+        {
+            built = _engine.ComputeHighlight(element, StyleOf, _pseudo, _match);
+        }
+        else
+        {
+            // The thumb and the fill sit inside the track, so they inherit from the track's style rather than the input's.
+            ComputedStyle parent = kind is PseudoElementKind.SliderThumb or PseudoElementKind.SliderFill
+                ? GetPseudoStyle(element, PseudoElementKind.SliderTrack) ?? StyleOf(element.Index)
+                : StyleOf(element.Index);
+            built = _engine.ComputePseudo(element, name, parent, _match);
+        }
+
         return _pseudo.GetOrAdd(key, built);
     }
 

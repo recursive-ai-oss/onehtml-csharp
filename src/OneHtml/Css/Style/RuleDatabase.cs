@@ -1228,11 +1228,11 @@ internal sealed class RuleGatherer
             {
                 if (list.HasPseudoElement(i))
                 {
-                    // Only a plain ::before, ::after, ::marker, ::selection or ::placeholder (or Chrome's name for it) as the last simple selector gets a style here.
+                    // Only a plain ::before, ::after, ::marker, ::selection, ::placeholder or range slider part (or a browser's name for it)
+                    // as the last simple selector gets a style here.
                     Simple[] parts = list.Items[i].Compounds[^1].Parts;
-                    if (parts.Length > 0 && parts[^1].Kind == SimpleKind.PseudoElement && parts[^1].Name is "before" or "after" or "marker" or "selection" or "placeholder" or "-webkit-input-placeholder")
+                    if (parts.Length > 0 && parts[^1].Kind == SimpleKind.PseudoElement && PseudoNames.Canonical(parts[^1].Name) is { } pn)
                     {
-                        string pn = parts[^1].Name == "-webkit-input-placeholder" ? "placeholder" : parts[^1].Name!;
                         if (!_db.PseudoIndex.TryGetValue(pn, out RuleIndex? pi))
                         {
                             _db.PseudoIndex[pn] = pi = new RuleIndex(_db.Quirks);

@@ -370,7 +370,7 @@ public sealed class LiveDocumentStyles
     {
         ComputedStyle style = GetStyle(element);
         string name = PseudoNames.Of(kind);
-        if (!_engine.Db.PseudoIndex.ContainsKey(name) || (kind == PseudoElementKind.Placeholder && !ElementState.HasPlaceholderBox(element)))
+        if (!_engine.Db.PseudoIndex.ContainsKey(name) || PseudoNames.IsMissingBox(element, kind))
         {
             return null;
         }
@@ -381,9 +381,16 @@ public sealed class LiveDocumentStyles
             return cached;
         }
 
-        return _pseudo.GetOrAdd(key, kind == PseudoElementKind.Selection
-            ? _engine.ComputeHighlight(element, i => _styles[i]!, _pseudo, _cur)
-            : _engine.ComputePseudo(element, name, style, _cur));
+        if (kind == PseudoElementKind.Selection)
+        {
+            return _pseudo.GetOrAdd(key, _engine.ComputeHighlight(element, i => _styles[i]!, _pseudo, _cur));
+        }
+
+        // The thumb and the fill sit inside the track, so they inherit from the track's style rather than the input's.
+        ComputedStyle parent = kind is PseudoElementKind.SliderThumb or PseudoElementKind.SliderFill
+            ? GetPseudoStyle(element, PseudoElementKind.SliderTrack) ?? style
+            : style;
+        return _pseudo.GetOrAdd(key, _engine.ComputePseudo(element, name, parent, _cur));
     }
 
     /// <summary>
@@ -451,6 +458,7 @@ public sealed class LiveDocumentStyles
         }
 
         Restyle();
+        DropStaleGeneratedBoxes();
     }
 
     /// <summary>
@@ -533,6 +541,7 @@ public sealed class LiveDocumentStyles
             }
 
             Restyle();
+            DropStaleGeneratedBoxes();
         }
         finally
         {
@@ -541,6 +550,16 @@ public sealed class LiveDocumentStyles
             {
                 _formPrev.Set(_formTouchedIndex[i], _formTouchedKind[i], _formCur.ValueOf(_formTouchedIndex[i], _formTouchedKind[i]));
             }
+        }
+    }
+
+    // A generated box inherits from its element (the slider thumb and fill from the track), so a box cached before an element's style
+    // changed is out of date even when no rule for the box reads state.
+    private void DropStaleGeneratedBoxes()
+    {
+        if (_changedCount > 0)
+        {
+            _pseudo.Clear();
         }
     }
 

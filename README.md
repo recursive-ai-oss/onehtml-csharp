@@ -101,15 +101,15 @@ The corpus is 300 school and university sites crawled under robots.txt with a cr
 
 ## Performance
 
-Parsing a 100-page sample of that corpus from bytes, end to end, on an AMD Ryzen 9 7950X3D (32 threads), .NET 10, BenchmarkDotNet in process:
+Parsing a 100-page sample (36 MB) of that corpus from bytes, end to end, on an AMD Ryzen 9 7950X3D (32 threads), .NET SDK 10.0.402, BenchmarkDotNet in process. Measured on 2026-10-26 on the code released as 1.0.0 (the latest published run; not repeated for later versions):
 
 | Parser | Time per sweep | Throughput | Allocated per sweep |
 |---|---:|---:|---:|
-| OneHtml | 125.0 ms | 288 MB/s | 258 MB |
-| AngleSharp 1.8.6 | 341.7 ms | 105 MB/s | 385 MB |
-| HtmlAgilityPack 1.13.1 | 292.8 ms | not recorded | not recorded |
+| OneHtml | 116.1 ms | 310 MB/s | 258 MB |
+| AngleSharp 1.8.6 | 345.4 ms | 104 MB/s | 385 MB |
+| HtmlAgilityPack 1.13.1 | 286.7 ms | 126 MB/s | 375 MB |
 
-That is 2.74× AngleSharp's speed. Reading a parsed page costs the same on a fresh snapshot, an old one and an edited one (about 100 µs for a 35,000-node page). One edit on that page, which re-parses and verifies the result, takes about 6 ms. The method and harness are in [bench/README.md](bench/README.md).
+That is 2.97× AngleSharp's speed and 2.47× HtmlAgilityPack's. Reading a parsed page costs the same on a fresh snapshot, an old one and an edited one (about 100 µs for a 35,000-node page). One edit on that page, which re-parses and verifies the result, takes about 6 ms (4.1 ms to parse it). The method and harness are in [bench/README.md](bench/README.md).
 
 ## What it does not do
 

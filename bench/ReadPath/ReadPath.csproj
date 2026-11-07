@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RecursiveAI.OneHtml.ReadPath</RootNamespace>
+    <!-- Set to true to also time the landmarks-and-headings API; leave off to time a build that lacks it. -->
+    <DefineConstants Condition="'$(WithLandmarksApi)' == 'true'">$(DefineConstants);WITH_LANDMARKS_API</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/OneHtml/OneHtml.csproj" />
+    <ProjectReference Include="../../src/OneHtml.Accessibility/OneHtml.Accessibility.csproj" />
+  </ItemGroup>
+</Project>

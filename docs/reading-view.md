@@ -110,6 +110,25 @@ source range). Ignored nodes are not listed.
 Buttons are not form fields in these lists. A table whose role is `none` (a presentational table) is not listed; whether a
 layout table gets that role is decided by the role layer.
 
+## Page outline: landmarks and headings without the tree
+
+`PageOutline.Create(document, styles, includeHeadingNames = true, options = null)` returns the `Landmarks` and `Headings` lists
+without building the accessibility tree. The lists equal those of `NavigationLists.Create(AccessibilityTree.Build(document, styles))`
+(a tree built without rendered facts): the same elements in the same order, with the same role, level, depth, `Lang` and name.
+The entries are `OutlineLandmark(Node, Role, Name, Depth)` and `OutlineHeading(Node, Level, Name, Lang)`; `Node` is the document
+element, since there is no tree node.
+
+What it computes is only what these two lists depend on: the hidden status of every element, the `aria-owns` re-parenting (it
+decides the order and the depth), the roles (a `section`, `form` or `aside` is a landmark only when it has a name, so the role
+pass asks for names), the heading levels and the names of the landmarks. It leaves out the names of every other element, states,
+relations, focus, positions, descriptions and diagnostics. A heading or landmark is listed when it is rendered (no `display: none`,
+`hidden`, `template` content, closed `details` content, or `content-visibility: hidden` above it) and not `visibility: hidden`,
+`aria-hidden` or `inert`; its depth counts the listed landmarks that contain it in the tree, as `LandmarkEntry.Depth` does.
+
+With `includeHeadingNames: false` the headings' `Name` is empty (`HasHeadingNames` is false) and the name computation is skipped for
+them; landmark names are always computed. Names share the tree's `MaxNameWork` limit, so on a page that reaches it a name
+can differ from the tree's. `options.Facts` must be null.
+
 ## Differences
 
 `ReadingView.Diff(other, changeSet?)` returns a `ReadingViewDiff`. Tree nodes are matched as for `TreeDiff`. A step is

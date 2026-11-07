@@ -10,6 +10,9 @@ namespace RecursiveAI.OneHtml.Accessibility.Tree;
 /// </summary>
 internal sealed class HiddenMap
 {
+    // Looked up once; the value is read for every child of every element.
+    private static readonly int ContentVisibilityId = Css.PropertyTable.IdOf("content-visibility");
+
     internal const HiddenReasons NotRenderedMask = HiddenReasons.DisplayNone | HiddenReasons.HiddenAttribute | HiddenReasons.Template | HiddenReasons.ClosedDetails | HiddenReasons.ContentVisibilityHidden;
 
     private readonly Document _doc;
@@ -146,7 +149,7 @@ internal sealed class HiddenMap
             // CSS Containment 2 section 4.2: content-visibility: hidden skips the contents of the element.
             if (inherited == HiddenReasons.None || (inherited & NotRenderedMask) == 0)
             {
-                if (styles.GetStyle(parent).GetPropertyValue("content-visibility").Trim() == "hidden")
+                if (styles.GetStyle(parent).GetValue(ContentVisibilityId) is { Text: "hidden" })
                 {
                     own |= HiddenReasons.ContentVisibilityHidden;
                 }

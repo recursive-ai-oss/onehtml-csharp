@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/bench/">
     <Project Path="bench/OneHtml.Benchmarks/OneHtml.Benchmarks.csproj" />
+    <Project Path="bench/ReadPath/ReadPath.csproj" />
   </Folder>
   <Folder Name="/fuzz/">
     <Project Path="fuzz/OneHtml.Fuzz/OneHtml.Fuzz.csproj" />

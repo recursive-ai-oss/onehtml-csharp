@@ -1,4 +1,5 @@
 using System;
+using RecursiveAI.OneHtml.Dom;
 using RecursiveAI.OneHtml.Selectors;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,6 +25,7 @@ internal sealed class RuleIndex
     private readonly Dictionary<string, List<RuleSel>> _byId = new(StringComparer.Ordinal);
     private readonly Dictionary<string, List<RuleSel>> _byClass = new(StringComparer.Ordinal);
     private readonly Dictionary<string, List<RuleSel>> _byTag = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, List<RuleSel>> _byAttribute = new(StringComparer.Ordinal);
     private readonly List<RuleSel> _generic = [];
     private readonly bool _quirks;
 
@@ -60,7 +62,120 @@ internal sealed class RuleIndex
         }
     }
 
+    /// <summary>
+    /// Adds a style rule's selector. It is filed under its id, class or type; or, when an attribute selector in the same compound is
+    /// likely to rule more elements out than the type does, under that attribute; or under a key from <see cref="AddByOtherKey"/> when
+    /// it has none of those. A selector that can never match (a pseudo-class that needs script, history or a top layer) is not filed.
+    /// </summary>
+    public void AddSelector(RuleSel rs, SelectorKey key)
+    {
+        ComplexSelector cs = rs.Rule.Selectors!.Items[rs.Sel];
+        foreach (Simple p in cs.Compounds[^1].Parts)
+        {
+            if (p.Kind == SimpleKind.PseudoClass && p.Pseudo == PseudoKind.Never)
+            {
+                OwnCount++;
+                return;
+            }
+        }
+
+        if (key.Kind == SelectorKeyKind.Tag)
+        {
+            // Most elements of a type have none of a given attribute: p[align=left] is a candidate only for the p elements that have an align.
+            foreach (Simple p in cs.Compounds[^1].Parts)
+            {
+                if (p.Kind == SimpleKind.Attribute)
+                {
+                    OwnCount++;
+                    Bucket(_byAttribute, p.LowerName).Add(rs);
+                    return;
+                }
+            }
+        }
+        else if (key.Kind == SelectorKeyKind.None)
+        {
+            OwnCount++;
+            if (AddByOtherKey(rs))
+            {
+                return;
+            }
+
+            OwnCount--;
+        }
+
+        Add(rs, key);
+    }
+
     private static string Lower(string s) => s.AsciiLower();
+
+    /// <summary>
+    /// Files a selector that has no id, class or type key under something else its rightmost compound requires, so that elements
+    /// without it never see the selector as a candidate. Every key is a necessary condition for a match, so the candidates are
+    /// a superset of the matches and the cascade's result does not change. Returns false when the selector has no such key.
+    /// </summary>
+    private bool AddByOtherKey(RuleSel rs)
+    {
+        ComplexSelector cs = rs.Rule.Selectors!.Items[rs.Sel];
+        foreach (Simple p in cs.Compounds[^1].Parts)
+        {
+            switch (p.Kind)
+            {
+                case SimpleKind.Attribute:
+                    // Selectors 4 section 6: an attribute selector matches only an element that has the attribute. HTML elements compare
+                    // the name in lower case, others as written; the bucket is the lower-cased name and lookups fold the element's names.
+                    Bucket(_byAttribute, p.LowerName).Add(rs);
+                    return true;
+                case SimpleKind.PseudoClass when p.Pseudo is PseudoKind.Link or PseudoKind.AnyLink:
+                    // HTML section 4.16.3: :link and :any-link match a and area elements that have an href attribute.
+                    Bucket(_byAttribute, "href").Add(rs);
+                    return true;
+                case SimpleKind.Heading:
+                case SimpleKind.PseudoClass when p.Pseudo == PseudoKind.HeadingAny:
+                    // Selectors 5 :heading matches h1 to h6.
+                    for (int level = 1; level <= 6; level++)
+                    {
+                        Bucket(_byTag, "h" + level.ToString(CultureInfo.InvariantCulture)).Add(rs);
+                    }
+
+                    return true;
+                case SimpleKind.Logical when p.Logical is LogicalKind.Is or LogicalKind.Where && TagsOf(p.Sub) is { } tags:
+                    foreach (string tag in tags)
+                    {
+                        Bucket(_byTag, tag).Add(rs);
+                    }
+
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    // The type names of a selector list when every item ends in a type selector; null when any item does not (it could match another element).
+    private static List<string>? TagsOf(SelectorList? list)
+    {
+        if (list is null || list.Count == 0)
+        {
+            return null;
+        }
+
+        var tags = new List<string>();
+        for (int i = 0; i < list.Count; i++)
+        {
+            SelectorKey key = list.Items[i].Key;
+            if (key.Kind != SelectorKeyKind.Tag)
+            {
+                return null;
+            }
+
+            if (!tags.Contains(key.Name))
+            {
+                tags.Add(key.Name);
+            }
+        }
+
+        return tags;
+    }
 
     private static List<RuleSel> Bucket(Dictionary<string, List<RuleSel>> d, string k)
     {
@@ -109,7 +224,27 @@ internal sealed class RuleIndex
             into.AddRange(l3);
         }
 
+        if (_byAttribute.Count > 0)
+        {
+            CollectByAttribute(element, into);
+        }
+
         into.AddRange(_generic);
+    }
+
+    private void CollectByAttribute(Node element, List<RuleSel> into)
+    {
+        Document doc = element.Document!;
+        Arena a = doc.Arena;
+        int start = a.AttrStart[element.Index];
+        int end = start + a.AttrCount[element.Index];
+        for (int i = start; i < end; i++)
+        {
+            if (TryBucket(_byAttribute, doc.Names.NameOf(a.AName[i]), out List<RuleSel>? l, true))
+            {
+                into.AddRange(l);
+            }
+        }
     }
 
     // The bucket for a name; quirks mode (and tag names always) compare ASCII case-insensitively, by folding into a stack buffer.
@@ -1321,10 +1456,10 @@ internal sealed class RuleGatherer
 
                 var rs = new RuleSel(r, i, list.GetSpecificity(i));
                 SelectorKey key = list.GetKey(i);
-                all.Add(rs, key);
+                all.AddSelector(rs, key);
                 if (r.Dynamic)
                 {
-                    dynamic.Add(rs, key);
+                    dynamic.AddSelector(rs, key);
                     foreach (ComplexSelector cs in new[] { list.Items[i] })
                     {
                         if ((cs.Deps & StateDeps) == 0)
@@ -1335,7 +1470,7 @@ internal sealed class RuleGatherer
                         if (NestedStateReach(cs))
                         {
                             _db.StateNestedReach = true;
-                            nested.Add(rs, key);
+                            nested.AddSelector(rs, key);
                         }
 
                         for (int j = 0; j < cs.Compounds.Length; j++)

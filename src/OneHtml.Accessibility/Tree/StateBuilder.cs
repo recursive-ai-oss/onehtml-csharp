@@ -98,18 +98,7 @@ internal static class StateBuilder
         s.ConstraintInvalid = html && ConstraintValidity.Fails(el, nativeDisabled, helpers);
 
         // ---- level ----
-        if (Aria(hasAria, el, role, "aria-level") is { } lv && TryInt(lv, out int level) && level >= 1)
-        {
-            s.Level = level;
-        }
-        else if (Native(native, "aria-level") is { } nlv && TryInt(nlv, out int nl))
-        {
-            s.Level = nl;
-        }
-        else if (roleName == "heading")
-        {
-            s.Level = ChromiumProfile.DefaultHeadingLevel;
-        }
+        s.Level = LevelOf(hasAria, el, role, native);
 
         // ---- position in set (given; the tree computes the rest) ----
         if (Aria(hasAria, el, role, "aria-posinset") is { } pi && TryInt(pi, out int posinset) && posinset >= 1)
@@ -318,6 +307,36 @@ internal static class StateBuilder
         }
 
         return s;
+    }
+
+    /// <summary>The level of a heading, or of anything else that states one: aria-level, else the native level, else the default for a heading.</summary>
+    private static int? LevelOf(bool hasAria, Node el, AriaRole? role, List<ImplicitProperty> native)
+    {
+        if (Aria(hasAria, el, role, "aria-level") is { } lv && TryInt(lv, out int level) && level >= 1)
+        {
+            return level;
+        }
+
+        if (Native(native, "aria-level") is { } nlv && TryInt(nlv, out int nl))
+        {
+            return nl;
+        }
+
+        return role?.Name == "heading" ? ChromiumProfile.DefaultHeadingLevel : null;
+    }
+
+    /// <summary>The level <see cref="Build"/> gives an element whose role is heading (the default level when it states none).</summary>
+    public static int HeadingLevel(Node el, AriaRole role)
+    {
+        bool hasAria = HasAriaAttribute(el);
+        List<ImplicitProperty> native = s_native ??= [];
+        native.Clear();
+        if (el.Namespace == ElementNamespace.Html)
+        {
+            HtmlImplicitProperties.Fill(el, native);
+        }
+
+        return LevelOf(hasAria, el, role, native) ?? ChromiumProfile.DefaultHeadingLevel;
     }
 
     // The native mappings of the element being built; read only inside Build, so one list per thread serves every call.

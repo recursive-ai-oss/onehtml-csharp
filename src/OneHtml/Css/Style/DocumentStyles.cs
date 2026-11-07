@@ -320,6 +320,19 @@ public sealed class DocumentStyles
         }
 
         Arena a = _doc.Arena;
+
+        // The usual case in a walk in document order: the parent's style is already there, so there is nothing to collect first.
+        int up = a.Parent[index];
+        if (up < 0 || a.Kind[up] != (byte)NodeKind.Element)
+        {
+            return ComputeAndShare(index, null);
+        }
+
+        if (Volatile.Read(ref _styles[up]) is { } known)
+        {
+            return ComputeAndShare(index, known);
+        }
+
         var pending = new List<int>();
         int k = index;
         ComputedStyle? parent = null;
@@ -351,6 +364,13 @@ public sealed class DocumentStyles
         }
 
         return parent!;
+    }
+
+    // Computes an element's style from its parent's and stores it, keeping the one that won if another thread stored first.
+    private ComputedStyle ComputeAndShare(int index, ComputedStyle? parent)
+    {
+        ComputedStyle built = _engine.Compute(new Node(_doc, index), parent, _match);
+        return Interlocked.CompareExchange(ref _styles![index], built, null) ?? built;
     }
 
     // ---- interaction overlay ----

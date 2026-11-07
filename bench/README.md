@@ -27,6 +27,10 @@ bash bench/run-worker.sh ~/onehtml/corpus/<version> ~/onehtml/worker/bench-out/<
 
 Optional: `ONEHTML_BENCH_SAMPLE_SIZE`, `ONEHTML_BENCH_BAND_CAP`, `ONEHTML_BENCH_MAX_SECONDS` (default 7200), and BenchmarkDotNet arguments after the out dir (for example `--job short`). The script claims `~/WORKER-BENCH.lock` atomically and exits with status 3 at once if it is held, builds in Release, records CPU model, cores, SDK, package versions and the load average before, during (every 30 s) and after, and runs the benchmark under `timeout`. Outputs in the out dir: `environment.txt`, `load.log`, `bench.log`, `bdn/results/*`. A run that overlapped another heavy job is not publishable; check `load.log`.
 
+## Read path of a text extractor
+
+`bench/ReadPath` is a small console harness for the calls a visible-text extractor makes on one page: parse, create the styles, build the tree and its navigation lists (or `PageOutline.Create`), and read the computed style of every element for `display`, `opacity`, `position`, `visibility`, `text-indent`, `white-space`, `unicode-bidi`, `direction` and `FontSizePx`. It builds an 8 KB, 236-element contact page, once with a style sheet and hidden blocks and once with no author styles, and prints growing prefixes of the call sequence (best of seven rounds, time and allocation) so each step is measured in context. `dotnet run -c Release --project bench/ReadPath -- 400`; add `-p:WithLandmarksApi=true` for the `PageOutline` rows (leave it off to time a checkout that lacks the type). Timing runs go through the worker queue.
+
 ## Checker against axe-core in Chrome
 
 The same pages, three measurements, ours in process and axe-core 4.14.0 in the pinned Chrome (a black box: its bundle is injected as an opaque string and run, never read; pages are served offline from the corpus with page script off, as in `tools/capture`).

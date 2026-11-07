@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using RecursiveAI.OneHtml.Accessibility.Aria;
+using RecursiveAI.OneHtml.Accessibility.Views;
 using RecursiveAI.OneHtml.Css;
 
 namespace RecursiveAI.OneHtml.Accessibility.Tree;
@@ -54,11 +55,7 @@ internal sealed class TreeBuilder
         // Roles that depend on a name (a section is a region only when named, a role=region token only when named) need
         // names, and names need roles for a few decisions (embedded controls, contents). A first pass with the
         // name-dependent roles unresolved gives names good enough to decide them; the second pass fixes the roles.
-        var counters = _counters = new CounterResolver(_doc, _styles, _hidden);
-        RoleMap roles0 = RoleComputer.Compute(_doc, null, _ct);
-        var probeNames = new NameComputer(_doc, _styles, _hidden, roles0, _owns, _opt, counters, _ct);
-        _roles = RoleComputer.Compute(_doc, new RoleOptions { HasAccessibleName = n => !probeNames.ComputeName(n).IsEmpty }, _ct);
-        _names = new NameComputer(_doc, _styles, _hidden, _roles, _owns, _opt, counters, _ct);
+        ComputeRolesAndNames();
 
         _tree = new AccessibilityTree(_doc, _styles, _opt, _hidden, _roles, _owns);
         _byDom = new AxNode?[_doc.NodeCount];
@@ -80,6 +77,129 @@ internal sealed class TreeBuilder
         CheckContextAndOwned();
         Collect();
         return _tree;
+    }
+
+    /// <summary>
+    /// Computes the roles and makes the name computer. The probe that decides the roles that need a name is made only when an element
+    /// asks for it, because the first pass of roles it needs is wasted on a page with no section, form or aside to decide.
+    /// </summary>
+    private void ComputeRolesAndNames()
+    {
+        CounterResolver counters = _counters = new CounterResolver(_doc, _styles, _hidden);
+        NameComputer? probeNames = null;
+        _roles = RoleComputer.Compute(_doc, new RoleOptions
+        {
+            HasAccessibleName = n =>
+            {
+                probeNames ??= new NameComputer(_doc, _styles, _hidden, RoleComputer.Compute(_doc, null, _ct), _owns, _opt, counters, _ct);
+                return !probeNames.ComputeName(n).IsEmpty;
+            },
+        }, _ct);
+        _names = new NameComputer(_doc, _styles, _hidden, _roles, _owns, _opt, counters, _ct);
+    }
+
+    // The roles whose elements are landmarks in the navigation lists (WAI-ARIA 1.2 section 5.3.4).
+    private static bool IsLandmarkRole(string role) => role is "banner" or "complementary" or "contentinfo" or "form" or "main" or "navigation" or "region" or "search";
+
+    /// <summary>
+    /// The landmarks and headings of the tree <see cref="Run"/> would build, without building it: the same elements in the same order with
+    /// the same roles, levels, depths and names. Only the parts of the tree these depend on are computed: the hidden map, the owned elements
+    /// (they decide each element's parent), the roles, and the names of the landmarks (and of the headings when asked).
+    /// </summary>
+    public PageOutline RunOutline(bool headingNames)
+    {
+        _hidden = HiddenMap.Compute(_doc, _styles, _ct, null);
+        _owns = OwnsMap.Compute(_doc, _hidden, _opt, _ct);
+        ComputeRolesAndNames();
+        var headings = new List<OutlineHeading>();
+        var landmarks = new List<OutlineLandmark>();
+
+        // Tree order: the DOM children that have a node, then the elements the node owns; an owned element is a child of its owner only.
+        var stack = new Stack<(int Index, int Depth)>();
+        PushChildren(stack, _doc.Root, 0);
+        int steps = 0;
+        while (stack.Count > 0)
+        {
+            if ((++steps & 255) == 0)
+            {
+                _ct.ThrowIfCancellationRequested();
+            }
+
+            (int index, int depth) = stack.Pop();
+            Node el = _doc.GetNode(index);
+            NodeRole nr = _roles[el];
+            AriaRole? role = ResolveRole(el, nr, out _, out _);
+            int childDepth = depth;
+            if (role is not null && (role.Name == "heading" || IsLandmarkRole(role.Name))
+                && (_hidden.Reasons(index) & (HiddenReasons.VisibilityHidden | HiddenReasons.AriaHidden | HiddenReasons.Inert)) == 0)
+            {
+                // Not ignored: a heading or landmark has none of the other reasons (a role of none, an unnamed generic, a table row group).
+                if (role.Name == "heading")
+                {
+                    headings.Add(new OutlineHeading(el, StateBuilder.HeadingLevel(el, role), headingNames ? _names.ComputeName(el).Value : string.Empty, Lang.Of(el)));
+                }
+                else
+                {
+                    landmarks.Add(new OutlineLandmark(el, role.Name, _names.ComputeName(el).Value, depth));
+                    childDepth = depth + 1;
+                }
+            }
+
+            if (!IsLeafControl(el))
+            {
+                PushOwned(stack, index, childDepth);
+                PushChildren(stack, el, childDepth);
+            }
+        }
+
+        return new PageOutline(headings, landmarks, headingNames);
+    }
+
+    private void PushChildren(Stack<(int Index, int Depth)> stack, Node parent, int depth)
+    {
+        for (Node c = parent.LastChild; !c.IsNull; c = c.PreviousSibling)
+        {
+            if (c.IsElement && !_hidden.NotRendered(c.Index) && _owns.OwnerOf(c.Index) < 0)
+            {
+                stack.Push((c.Index, depth));
+            }
+        }
+    }
+
+    private void PushOwned(Stack<(int Index, int Depth)> stack, int owner, int depth)
+    {
+        if (_owns.OwnedBy(owner) is not { } owned)
+        {
+            return;
+        }
+
+        for (int i = owned.Count - 1; i >= 0; i--)
+        {
+            // An owned element has a node only if the walk of the document would have reached it.
+            if (HasNode(_doc.GetNode(owned[i])))
+            {
+                stack.Push((owned[i], depth));
+            }
+        }
+    }
+
+    /// <summary>True when <see cref="CreateNodes"/> makes a node for the element: it is rendered and no ancestor is a control whose contents get no nodes.</summary>
+    private bool HasNode(Node el)
+    {
+        if (_hidden.NotRendered(el.Index))
+        {
+            return false;
+        }
+
+        for (Node a = el.Parent; a.IsElement; a = a.Parent)
+        {
+            if (IsLeafControl(a))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // ---- nodes ----
@@ -860,13 +980,15 @@ internal sealed class TreeBuilder
         return false;
     }
 
-    private void ComputeElement(AxNode n)
+    /// <summary>
+    /// The role the tree gives an element: the role of the role layer with the profile's adjustments for presentational tables and children,
+    /// options outside a listbox, and list items in widgets.
+    /// </summary>
+    private AriaRole? ResolveRole(Node el, NodeRole nr, out RoleOrigin origin, out bool presentationalTableRow)
     {
-        Node el = n.DomNode;
-        NodeRole nr = _roles[el];
         AriaRole? role = nr.Role;
-        RoleOrigin origin = nr.Origin;
-        bool presentationalTableRow = false;
+        origin = nr.Origin;
+        presentationalTableRow = false;
         if (origin == RoleOrigin.InheritedPresentational && el.Namespace == ElementNamespace.Html)
         {
             // Inside a table whose role is none, Chromium exposes each cell as a generic and leaves the rows and row groups out as
@@ -907,6 +1029,14 @@ internal sealed class TreeBuilder
             role = AriaTaxonomy.FindRole("none");
         }
 
+        return role;
+    }
+
+    private void ComputeElement(AxNode n)
+    {
+        Node el = n.DomNode;
+        NodeRole nr = _roles[el];
+        AriaRole? role = ResolveRole(el, nr, out RoleOrigin origin, out bool presentationalTableRow);
         n.AriaRole = role;
         n.RoleOrigin = origin;
         n.Role = role is null ? string.Empty : RoleComputer.ComputedRoleName(role);

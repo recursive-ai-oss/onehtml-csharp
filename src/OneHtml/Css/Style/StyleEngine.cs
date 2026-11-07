@@ -671,22 +671,37 @@ internal sealed class StyleEngine
         return rule;
     }
 
+    // The table of the document asked about last: an engine nearly always serves one document, and looking it up in the weak table
+    // for every element (twice) was a visible part of a cold cascade.
+    private sealed class LastInline(Document doc, InlineRules rules)
+    {
+        public readonly Document Doc = doc;
+        public readonly InlineRules Rules = rules;
+    }
+
+    private LastInline? _lastInline;
+
     private InlineRules InlineFor(Document doc)
     {
-        if (_inline.TryGetValue(doc, out InlineRules? t))
+        LastInline? last = Volatile.Read(ref _lastInline);
+        if (last is not null && ReferenceEquals(last.Doc, doc))
         {
-            return t;
+            return last.Rules;
         }
 
-        lock (_inline)
+        if (!_inline.TryGetValue(doc, out InlineRules? t))
         {
-            if (!_inline.TryGetValue(doc, out t))
+            lock (_inline)
             {
-                t = new InlineRules(doc.NodeCount);
-                _inline.Add(doc, t);
+                if (!_inline.TryGetValue(doc, out t))
+                {
+                    t = new InlineRules(doc.NodeCount);
+                    _inline.Add(doc, t);
+                }
             }
         }
 
+        Volatile.Write(ref _lastInline, new LastInline(doc, t));
         return t;
     }
 
@@ -940,6 +955,13 @@ internal sealed class StyleEngine
 
     private int ComputeMode(CascadeScratch s, ComputedStyle? parent)
     {
+        if (!s.Has(PropertyIds.WritingMode) && !s.Has(PropertyIds.Direction))
+        {
+            // Both properties are inherited and nothing declares them: the element has its parent's writing mode and direction (the initial
+            // ones, horizontal-tb and ltr, under the root).
+            return parent?.Mode ?? 0;
+        }
+
         string wm = ModeKeyword(s, PropertyIds.WritingMode, parent);
         string dir = ModeKeyword(s, PropertyIds.Direction, parent);
         return LogicalMap.ModeIndex(wm, dir == "rtl");

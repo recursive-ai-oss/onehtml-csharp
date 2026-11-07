@@ -56,7 +56,11 @@ Conditional group rules: `@media` (evaluated against the context's `MediaFeature
 nested, statement form; a statement inside a style rule is ignored), `@namespace`, and style rules with CSS Nesting
 (`&` is replaced by `:is(parent)`, or `:scope` at the top level; an item without `&` is relative to the parent; a nested
 declaration run after nested rules becomes a separate ordered rule; an invalid nested selector drops that rule and its
-content; the resolved selector text is capped at 64 KB). Rules with a pseudo-element selector are kept out of the element match index; those that end in `::before`, `::after` or
+content; the resolved selector text is capped at 64 KB). The element match index files each selector under one key that every element it can match has: its id, else a class, else its type
+(for `p[align=left]` the attribute instead, so only the `p` elements that have an `align` see it), else an attribute it requires
+(`[hidden]`, and `:link` and `:any-link`, which need `href`), the heading types for `:heading`, or the types listed in a
+`:is()` or `:where()`. Candidates from the index are always matched in full, so the key only decides which elements try a selector. A
+selector with a pseudo-class that never matches here (`:visited`, `:autofill`, `:modal` and the like) is not filed. Rules with a pseudo-element selector are kept out of the element match index; those that end in `::before`, `::after` or
 `::marker` (or the single-colon forms of the first two) go into a separate index per pseudo-element (see
 "Pseudo-element styles").
 

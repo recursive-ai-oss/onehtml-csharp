@@ -261,6 +261,8 @@ bool updateOk = tree1.UpdateInfo is { Incremental: true } && tree1.ToChromeJson(
     && treeDiff.Changed.Count == 1 && treeDiff.Changed[0].Properties.Any(p => p.Property == "name" && p.NewValue == "Start")
     && reading.Items.Any(i => i.Text == "button: Start") && nav.Headings.Count == 1 && nav.Links.Count == 1
     && tree0.CreateReadingView().Diff(reading, treeEdit.Changes).Changed.Count == 1;
+RecursiveAI.OneHtml.Accessibility.PageOutline outline = RecursiveAI.OneHtml.Accessibility.PageOutline.Create(treeEdit.Document!, DocumentStyles.Create(treeEdit.Document!));
+updateOk &= outline.Headings.Count == nav.Headings.Count && outline.Headings[0].Name == nav.Headings[0].Name && outline.Landmarks.Count == nav.Landmarks.Count;
 Console.WriteLine($"update={updateOk} recomputed={tree1.UpdateInfo?.NamesRecomputed}/{tree1.UpdateInfo?.ElementNodes} reading={reading.Items.Count}");
 // Incremental re-check: the same edit, tree update and a re-check that must equal a fresh check.
 RecursiveAI.OneHtml.Accessibility.Validation.Checker recheckChecker = new();

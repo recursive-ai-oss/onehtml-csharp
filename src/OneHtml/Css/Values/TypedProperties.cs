@@ -597,7 +597,7 @@ public static class TypedProperties
             return true;
         }
 
-        if (!CssQuantity.TryParse(r, r.From, QuantityKinds.LengthPercentage | QuantityKinds.NonNegative, null, out CssQuantity q, out _))
+        if (!CssQuantity.TryParse(r, r.From, QuantityKinds.LengthPercentage | QuantityKinds.NonNegative | QuantityKinds.UnitlessZeroLength, null, out CssQuantity q, out _))
         {
             return false;
         }

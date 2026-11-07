@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using RecursiveAI.OneHtml.Accessibility.Aria;
 
 namespace RecursiveAI.OneHtml.Accessibility;
@@ -36,6 +37,7 @@ public sealed class AxNode
     private IReadOnlyList<AxRelation> _relations = [];
     private IReadOnlyList<AxDiagnostic> _diagnostics = [];
     private IReadOnlyList<string> _ignoredReasons = [];
+    private AxStates? _states;
 
     internal AxNode(AccessibilityTree tree, int id, AxNodeKind kind, Node dom)
     {
@@ -98,7 +100,12 @@ public sealed class AxNode
     public HiddenInfo Hidden { get; internal set; }
 
     /// <summary>States and properties (null members are absent).</summary>
-    public AxStates States { get; internal set; } = new();
+    public AxStates States
+    {
+        // Most nodes are given their states while the tree is built; creating one here for the rest, once, avoids a throw-away object per node.
+        get => Volatile.Read(ref _states) ?? Interlocked.CompareExchange(ref _states, new AxStates(), null) ?? _states!;
+        internal set => _states = value;
+    }
 
     /// <summary>The ID-reference relations of the node that it has, resolved.</summary>
     public IReadOnlyList<AxRelation> Relations { get => _relations; internal set => _relations = value; }

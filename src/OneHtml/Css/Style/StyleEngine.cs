@@ -202,30 +202,69 @@ internal sealed class StyleEngine
         _validator = options.DeclarationValidator;
         BaseLength = context.CreateLengthContext();
         ColorOptions = new ColorParseOptions { DarkScheme = context.Media.ColorScheme == PrefersColorScheme.Dark };
-        UsesBulkCaches = false;
-        foreach (StyleRule r in db.Rules)
+        RuleSummary sum = db.Shared is { } shared ? shared.Summary! : new RuleSummary();
+        sum = sum.Clone();
+        Summarize(db.Rules, db.Shared?.Rules.Count ?? 0, sum);
+        UsesBulkCaches = sum.UsesBulkCaches;
+        UsesHas = sum.UsesHas;
+        UsesStructure = sum.UsesStructure;
+        UsesStructureBelow = sum.UsesStructureBelow;
+        HasSideways = sum.HasSideways;
+        HasBoundedRules = sum.Bounded;
+        HasUnboundedRules = sum.Unbounded;
+    }
+
+    /// <summary>What the rules say about the selectors they use, so the rules shared by every document are inspected once.</summary>
+    internal sealed class RuleSummary
+    {
+        public bool UsesBulkCaches;
+        public bool UsesHas;
+        public bool UsesStructure;
+        public bool UsesStructureBelow;
+        public bool HasSideways;
+        public List<StyleRule> Bounded = [];
+        public List<StyleRule> Unbounded = [];
+
+        public RuleSummary Clone() => new()
         {
+            UsesBulkCaches = UsesBulkCaches,
+            UsesHas = UsesHas,
+            UsesStructure = UsesStructure,
+            UsesStructureBelow = UsesStructureBelow,
+            HasSideways = HasSideways,
+            Bounded = [.. Bounded],
+            Unbounded = [.. Unbounded],
+        };
+    }
+
+    internal static RuleSummary Summarize(List<StyleRule> rules, int start, RuleSummary sum)
+    {
+        for (int i = start; i < rules.Count; i++)
+        {
+            StyleRule r = rules[i];
             SelectorDependencies deps = r.Selectors!.Dependencies;
-            UsesHas |= (deps & SelectorDependencies.Has) != 0;
-            UsesStructure |= (deps & (SelectorDependencies.Structural | SelectorDependencies.SiblingCombinator | SelectorDependencies.Empty | SelectorDependencies.Has)) != 0;
-            UsesBulkCaches |= (deps & (SelectorDependencies.Has | SelectorDependencies.Structural)) != 0;
+            sum.UsesHas |= (deps & SelectorDependencies.Has) != 0;
+            sum.UsesStructure |= (deps & (SelectorDependencies.Structural | SelectorDependencies.SiblingCombinator | SelectorDependencies.Empty | SelectorDependencies.Has)) != 0;
+            sum.UsesBulkCaches |= (deps & (SelectorDependencies.Has | SelectorDependencies.Structural)) != 0;
             if ((deps & SelectorDependencies.Has) != 0)
             {
-                ClassifyHasRule(r);
+                ClassifyHasRule(r, sum);
             }
 
-            if (!UsesStructureBelow)
+            if (!sum.UsesStructureBelow)
             {
                 foreach (ComplexSelector cs in r.Selectors.Items)
                 {
                     if (StructureReachesBelow(cs))
                     {
-                        UsesStructureBelow = true;
+                        sum.UsesStructureBelow = true;
                         break;
                     }
                 }
             }
         }
+
+        return sum;
     }
 
     // ---- reach of :has() (Selectors 4 section 4.5) ----
@@ -238,15 +277,15 @@ internal sealed class StyleEngine
     // a :has(), so the subject's own result cannot depend on another :has() result outside the walk above.
 
     /// <summary>Rules with a :has() in a subject compound only (see the notes above).</summary>
-    public List<StyleRule> HasBoundedRules { get; } = [];
+    public List<StyleRule> HasBoundedRules { get; }
 
     /// <summary>Rules with a :has() anywhere else.</summary>
-    public List<StyleRule> HasUnboundedRules { get; } = [];
+    public List<StyleRule> HasUnboundedRules { get; }
 
     /// <summary>True when a bounded rule has a relative selector that starts with a sibling combinator, so earlier siblings of a change's ancestors can be affected.</summary>
-    public bool HasSideways { get; private set; }
+    public bool HasSideways { get; }
 
-    private void ClassifyHasRule(StyleRule r)
+    private static void ClassifyHasRule(StyleRule r, RuleSummary sum)
     {
         bool bounded = true;
         bool sideways = false;
@@ -260,12 +299,12 @@ internal sealed class StyleEngine
 
         if (bounded)
         {
-            HasBoundedRules.Add(r);
-            HasSideways |= sideways;
+            sum.Bounded.Add(r);
+            sum.HasSideways |= sideways;
         }
         else
         {
-            HasUnboundedRules.Add(r);
+            sum.Unbounded.Add(r);
         }
     }
 

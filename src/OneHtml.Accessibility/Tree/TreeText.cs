@@ -65,26 +65,34 @@ internal static class TreeText
     /// <summary>Collapses runs of ASCII whitespace to one space and trims both ends: the flattening the accessible name gets.</summary>
     public static string Collapse(ReadOnlySpan<char> s)
     {
-        var sb = new StringBuilder(s.Length);
+        char[]? rented = null;
+        Span<char> buf = s.Length <= 512 ? stackalloc char[s.Length] : (rented = System.Buffers.ArrayPool<char>.Shared.Rent(s.Length));
+        int n = 0;
         bool pendingSpace = false;
         foreach (char c in s)
         {
             if (IsWs(c))
             {
-                pendingSpace = sb.Length > 0;
+                pendingSpace = n > 0;
                 continue;
             }
 
             if (pendingSpace)
             {
-                sb.Append(' ');
+                buf[n++] = ' ';
                 pendingSpace = false;
             }
 
-            sb.Append(c);
+            buf[n++] = c;
         }
 
-        return sb.ToString();
+        string result = new(buf[..n]);
+        if (rented is not null)
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(rented);
+        }
+
+        return result;
     }
 
     /// <summary>Applies a computed <c>text-transform</c> keyword to text (CSS Text 3 section 2.1): <c>uppercase</c>, <c>lowercase</c> and <c>capitalize</c> (the first letter of each word); anything else leaves it unchanged.</summary>

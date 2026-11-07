@@ -28,9 +28,16 @@ public static class HtmlImplicitProperties
     public static IReadOnlyList<ImplicitProperty> Get(Node element)
     {
         var result = new List<ImplicitProperty>();
+        Fill(element, result);
+        return result;
+    }
+
+    /// <summary>Appends what <see cref="Get"/> lists to a list the caller owns, so a caller that reads it at once can reuse one list.</summary>
+    internal static void Fill(Node element, List<ImplicitProperty> result)
+    {
         if (!HtmlSemantics.IsHtml(element))
         {
-            return result;
+            return;
         }
 
         string local = element.LocalName;
@@ -161,7 +168,5 @@ public static class HtmlImplicitProperties
                 result.Add(new ImplicitProperty("aria-expanded", HtmlSemantics.Has(parent, "open") ? "true" : "false", "open-details"));
             }
         }
-
-        return result;
     }
 }

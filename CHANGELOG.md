@@ -4,6 +4,15 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Changed
+
+- `DocumentStyles.Create` no longer rebuilds the user-agent rules for every document. They are flattened, indexed and summarised once per compatibility mode, are immutable, and every document and thread shares them; a document adds only its own rules on top. On an 8 KB page with 236 elements, `Create` went from about 480–520 µs and 1.4 MB to about 5–50 µs and 14–26 KB (the rest is the page's own style sheet), and creating the styles and reading the `display` of every element from about 830–900 µs and 1.5 MB to about 295–330 µs and 107–127 KB (best of seven rounds on a loaded machine, indicative). Computed styles are unchanged. A rule limit smaller than the user-agent sheet (`StyleSourceOptions.MaxRules`, `MaxSheets`) still applies as before.
+- `AccessibilityTree.Build` allocates about 45% less and runs about 20% faster. Every node used to create an empty `AxStates` that was thrown away when the real one was computed, state building allocated closures and delegates per element, the owned-element check rebuilt its role table and allocated an array per node, and text nodes collapsed their white space twice through a `StringBuilder`. On the 8 KB page with 236 elements it went from about 770 KB and 305 µs to about 430 KB and 245 µs per build once warmed up. The tree, names, roles, states, diagnostics and exports are unchanged.
+
+### Fixed
+
+- `font-size: 0` (a unitless zero) is accepted, as CSS Values 4 §6.1 says a zero `<length>` needs no unit. Before, the declaration was dropped and the element kept its inherited size, so `ComputedStyle.FontSizePx` and `GetComputedValue("font-size")` were not `0` / `0px`. The `font` shorthand already accepted it. Other length properties already accepted a unitless zero.
+
 ## [1.5.1] - 2026-10-28
 
 ### Fixed

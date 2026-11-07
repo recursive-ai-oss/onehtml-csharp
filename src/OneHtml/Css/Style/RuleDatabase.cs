@@ -27,13 +27,22 @@ internal sealed class RuleIndex
     private readonly List<RuleSel> _generic = [];
     private readonly bool _quirks;
 
-    public RuleIndex(bool quirks) => _quirks = quirks;
+    // Rules shared by every document (the user-agent sheet's), consulted first so candidates stay in rule order.
+    private readonly RuleIndex? _base;
 
-    public int Count { get; private set; }
+    public RuleIndex(bool quirks, RuleIndex? shared = null)
+    {
+        _quirks = quirks;
+        _base = shared;
+    }
+
+    public int Count => OwnCount + (_base?.Count ?? 0);
+
+    private int OwnCount { get; set; }
 
     public void Add(RuleSel rs, SelectorKey key)
     {
-        Count++;
+        OwnCount++;
         switch (key.Kind)
         {
             case SelectorKeyKind.Id:
@@ -66,6 +75,7 @@ internal sealed class RuleIndex
     /// <summary>Adds the candidate selectors for an element: those whose key it could satisfy. The caller still matches each. Allocation-free.</summary>
     public void Collect(Node element, List<RuleSel> into)
     {
+        _base?.Collect(element, into);
         if (_byId.Count > 0 && element.TryGetAttributeValue("id", out ReadOnlySpan<char> id) && id.Length > 0 && TryBucket(_byId, id, out List<RuleSel>? l))
         {
             into.AddRange(l);
@@ -148,6 +158,18 @@ internal sealed class RuleIndex
 /// </summary>
 internal sealed class RuleDatabase
 {
+    /// <summary>
+    /// The user-agent rules, flattened and indexed once and shared by every document in the same compatibility mode; they come first in
+    /// <see cref="Rules"/> and the indexes below fall back to the shared ones. Null when the document does not use the shared set.
+    /// </summary>
+    public RuleDatabase? Shared;
+
+    /// <summary>On a shared database: what <see cref="StyleEngine.Summarize"/> found in its rules.</summary>
+    public StyleEngine.RuleSummary? Summary;
+
+    /// <summary>On a shared database: how many rules, sheets and keyframe rules came before any author source.</summary>
+    public int OrderCount;
+
     public readonly List<StyleRule> Rules = [];
     public readonly List<StyleSheetInfo> Sheets = [];
     public readonly List<StyleDiagnostic> Diagnostics = [];
@@ -413,10 +435,13 @@ internal sealed class RuleGatherer
 
         if (_opts.IncludeUserAgentSheet)
         {
-            Run(frames, UserAgentSheets.Standard, StyleOrigin.UserAgent, default, null, null);
-            if (_db.Quirks)
+            if (SharedUserAgentRules.For(_db.Quirks) is { } shared && shared.Rules.Count <= _opts.MaxRules && shared.Sheets.Count <= _opts.MaxSheets && shared.KeyframeEntries.Count <= _opts.MaxRules)
             {
-                Run(frames, UserAgentSheets.Quirks, StyleOrigin.UserAgent, default, null, null);
+                UseShared(shared);
+            }
+            else
+            {
+                RunUserAgent(frames);
             }
         }
 
@@ -436,6 +461,41 @@ internal sealed class RuleGatherer
         _db.Layers.Rank();
         _db.BuildKeyframeWinners();
         BuildIndexes();
+        return _db;
+    }
+
+    private void RunUserAgent(Stack<Frame> frames)
+    {
+        Run(frames, UserAgentSheets.Standard, StyleOrigin.UserAgent, default, null, null);
+        if (_db.Quirks)
+        {
+            Run(frames, UserAgentSheets.Quirks, StyleOrigin.UserAgent, default, null, null);
+        }
+    }
+
+    // The user-agent rules are the same for every document of a compatibility mode (the sheet's one @media query, (scripting), never
+    // matches because the library does not run script), so they are flattened and indexed once and each document starts from that.
+    private void UseShared(RuleDatabase shared)
+    {
+        _db.Shared = shared;
+        _db.Rules.AddRange(shared.Rules);
+        _db.Sheets.AddRange(shared.Sheets);
+        _db.Diagnostics.AddRange(shared.Diagnostics);
+        _db.KeyframeEntries.AddRange(shared.KeyframeEntries);
+        _sheetCount = shared.Sheets.Count;
+        _order = shared.OrderCount;
+    }
+
+    /// <summary>Flattens and indexes just the user-agent sheets (see <see cref="SharedUserAgentRules"/>).</summary>
+    internal RuleDatabase BuildUserAgentOnly()
+    {
+        _db.Quirks = _doc.Mode == QuirksMode.Quirks;
+        RunUserAgent(new Stack<Frame>());
+        _db.Layers.Rank();
+        _db.BuildKeyframeWinners();
+        BuildIndexes();
+        _db.OrderCount = _order;
+        _db.Summary = StyleEngine.Summarize(_db.Rules, 0, new StyleEngine.RuleSummary());
         return _db;
     }
 
@@ -1216,13 +1276,27 @@ internal sealed class RuleGatherer
 
     private void BuildIndexes()
     {
-        var all = new RuleIndex(_db.Quirks);
-        var dynamic = new RuleIndex(_db.Quirks);
-        var nested = new RuleIndex(_db.Quirks);
-        List<FocusAnchor>? focusAnchors = [];
+        RuleDatabase? sh = _db.Shared;
+        int first = sh?.Rules.Count ?? 0;
+        var all = new RuleIndex(_db.Quirks, sh?.Index);
+        var dynamic = new RuleIndex(_db.Quirks, sh?.DynamicIndex);
+        var nested = new RuleIndex(_db.Quirks, sh?.NestedReachIndex);
+        List<FocusAnchor>? focusAnchors = sh is null ? [] : [.. sh.FocusAnchors!];
         var sigs = new string[_db.Rules.Count];
-        foreach (StyleRule r in _db.Rules)
+        if (sh is not null)
         {
+            sh.Signatures.CopyTo(sigs, 0);
+            _db.StateNestedReach = sh.StateNestedReach;
+            _db.PseudoElementDynamic = sh.PseudoElementDynamic;
+            foreach (KeyValuePair<string, RuleIndex> kv in sh.PseudoIndex)
+            {
+                _db.PseudoIndex[kv.Key] = new RuleIndex(_db.Quirks, kv.Value);
+            }
+        }
+
+        for (int ri = first; ri < _db.Rules.Count; ri++)
+        {
+            StyleRule r = _db.Rules[ri];
             SelectorList list = r.Selectors!;
             for (int i = 0; i < list.Count; i++)
             {
@@ -1312,14 +1386,14 @@ internal sealed class RuleGatherer
         _db.DynamicIndex = dynamic;
         _db.NestedReachIndex = nested;
         _db.FocusAnchors = focusAnchors;
-        var anchorIndex = new RuleIndex(_db.Quirks);
-        for (int i = 0; i < focusAnchors.Count; i++)
+        var anchorIndex = new RuleIndex(_db.Quirks, sh?.FocusAnchorIndex);
+        for (int i = sh?.FocusAnchors!.Count ?? 0; i < focusAnchors.Count; i++)
         {
             anchorIndex.Add(new RuleSel(null!, i, default), CompoundKey(focusAnchors[i].Compound));
         }
 
         _db.FocusAnchorIndex = anchorIndex;
-        _db.HasSidewaysFocus = focusAnchors.Exists(a => a.HasSideways);
+        _db.HasSidewaysFocus = (sh?.HasSidewaysFocus ?? false) || focusAnchors.Exists(a => a.HasSideways);
         _db.Signatures = sigs;
         _db.LayerSignature = _db.Layers.Signature();
     }
@@ -1396,4 +1470,16 @@ internal sealed class RuleGatherer
 
         return sb.ToString();
     }
+}
+
+/// <summary>The flattened, indexed user-agent rules of each compatibility mode, built on first use and immutable afterwards, so any number of documents and threads share them.</summary>
+internal static class SharedUserAgentRules
+{
+    private static readonly Lazy<RuleDatabase> Standard = new(() => Build(false), LazyThreadSafetyMode.ExecutionAndPublication);
+    private static readonly Lazy<RuleDatabase> Quirks = new(() => Build(true), LazyThreadSafetyMode.ExecutionAndPublication);
+
+    public static RuleDatabase For(bool quirks) => quirks ? Quirks.Value : Standard.Value;
+
+    private static RuleDatabase Build(bool quirks) =>
+        new RuleGatherer(Document.Parse(quirks ? string.Empty : "<!doctype html>"), StyleContext.Default, new StyleSourceOptions(), default).BuildUserAgentOnly();
 }

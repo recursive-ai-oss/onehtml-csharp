@@ -76,10 +76,13 @@ internal sealed class StateHelpers
     }
 
     /// <summary>The editing state an element has from <c>contenteditable</c> on itself or an ancestor (HTML section 6.8), or null.</summary>
+    private readonly List<Node> _editableChain = [];
+
     public string? InheritedEditable(Node el)
     {
         // 0 none, 1 richtext, 2 plaintext; unknown elements are filled in from the first known ancestor down.
-        var chain = new List<Node>();
+        List<Node> chain = _editableChain;
+        chain.Clear();
         byte mode = 0;
         int steps = 0;
         for (Node a = el; !a.IsNull && a.IsElement; a = a.ParentElement)

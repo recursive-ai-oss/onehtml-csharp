@@ -38,7 +38,13 @@ internal sealed class TreeBuilder
         _opt = options;
         _ct = ct;
         _layout = options.Facts is { } facts ? new LayoutRules(facts, styles) : null;
+        // Made once per build, not per element: a lambda or method group converted for each call allocates each time.
+        _selectValue = e => TreeText.ApplyTextTransform(NameComputer.SelectedOptionsText(e), _styles.GetStyle(e).GetPropertyValue("text-transform"));
+        _optionSelected = OptionSelected;
     }
+
+    private readonly Func<Node, string> _selectValue;
+    private readonly Func<Node, bool?> _optionSelected;
 
     public AccessibilityTree Run()
     {
@@ -757,6 +763,8 @@ internal sealed class TreeBuilder
         return default;
     }
 
+    private readonly List<string> _textReasons = [];
+
     private void ComputeText(AxNode n)
     {
         n.Role = "StaticText";
@@ -764,6 +772,7 @@ internal sealed class TreeBuilder
         // The static text is the rendered text, so text-transform applies (profile entry text-transform-static-text).
         string transform = n.DomNode.Parent.IsElement ? _styles.GetStyle(n.DomNode.Parent).GetPropertyValue("text-transform") : string.Empty;
         string text = TreeText.ApplyTextTransform(TreeText.Collapse(n.DomNode.Data), transform);
+        bool onlyWhiteSpace = text.Length == 0;
         // Collapsed white space keeps one space at an end only where an inline neighbour follows or precedes.
         ReadOnlySpan<char> d = n.DomNode.Data;
         bool startSpace = d.Length > 0 && TreeText.IsWs(d[0]);
@@ -788,15 +797,16 @@ internal sealed class TreeBuilder
         }
 
         n.Name = new AxText(text, AxTextSource.TextNode, null, []);
-        var reasons = new List<string>();
+        List<string> reasons = _textReasons;
+        reasons.Clear();
         AddHiddenReasons(n, reasons);
-        if (TreeText.Collapse(d).Length == 0 && reasons.Count == 0 && _layout is null)
+        if (onlyWhiteSpace && reasons.Count == 0 && _layout is null)
         {
             reasons.Add("uninteresting");
         }
 
         n.IsIgnored = reasons.Count > 0;
-        n.IgnoredReasons = reasons;
+        n.IgnoredReasons = reasons.Count == 0 ? [] : reasons.ToArray();
         n.AriaDisabledChain = n.Parent is { } p && (p.AriaDisabledChain || p.States.Disabled);
         n.States = new AxStates { Editable = n.Parent is { Kind: AxNodeKind.Element } pe ? pe.States.Editable : null };
     }
@@ -933,7 +943,7 @@ internal sealed class TreeBuilder
             n.Description = AxText.Empty;
         }
 
-        n.States = StateBuilder.Build(el, role, nr.IsDisabled, n.AriaDisabledChain, nr.IsFocusable, () => TreeText.ApplyTextTransform(NameComputer.SelectedOptionsText(el), _styles.GetStyle(el).GetPropertyValue("text-transform")), OptionSelected, _stateHelpers);
+        n.States = StateBuilder.Build(el, role, nr.IsDisabled, n.AriaDisabledChain, nr.IsFocusable, _selectValue, _optionSelected, _stateHelpers);
         n.Relations = BuildRelations(n);
         if (n.States.Url is { } rawUrl)
         {
@@ -1570,22 +1580,31 @@ internal sealed class TreeBuilder
 
     // ---- required context and owned elements (WAI-ARIA 1.2 sections 5.2.3 and 5.2.4) ----
 
+    // The bit position of each role in the owned-element sets; the same for every build, so made once.
+    private static readonly Dictionary<string, int> RoleIds = MakeRoleIds();
+
+    private static Dictionary<string, int> MakeRoleIds()
+    {
+        var ids = new Dictionary<string, int>(StringComparer.Ordinal);
+        foreach (AriaRole r in AriaTaxonomy.Roles)
+        {
+            ids[r.Name] = ids.Count;
+        }
+
+        return ids;
+    }
+
     private void CheckContextAndOwned()
     {
         // One depth-first walk keeps the count of each role along the path (for required context) and, per open node,
         // the set of roles below it (for required owned elements).
-        var roleIds = new Dictionary<string, int>(StringComparer.Ordinal);
-        foreach (AriaRole r in AriaTaxonomy.Roles)
-        {
-            roleIds[r.Name] = roleIds.Count;
-        }
-
+        Dictionary<string, int> roleIds = RoleIds;
         const int Words = 3;
         var path = new Dictionary<string, int>(StringComparer.Ordinal);
         var stack = new List<(AxNode Node, int Next)>();
         var bits = new List<ulong>();
         stack.Add((_tree.Root, 0));
-        bits.AddRange(new ulong[Words]);
+        AddWords(bits, Words);
         while (stack.Count > 0)
         {
             (AxNode node, int next) = stack[^1];
@@ -1607,7 +1626,7 @@ internal sealed class TreeBuilder
             {
                 stack[^1] = (node, next + 1);
                 stack.Add((node.Children[next], 0));
-                bits.AddRange(new ulong[Words]);
+                AddWords(bits, Words);
                 continue;
             }
 
@@ -1639,6 +1658,14 @@ internal sealed class TreeBuilder
 
             stack.RemoveAt(stack.Count - 1);
             bits.RemoveRange(bits.Count - Words, Words);
+        }
+    }
+
+    private static void AddWords(List<ulong> bits, int words)
+    {
+        for (int i = 0; i < words; i++)
+        {
+            bits.Add(0);
         }
     }
 

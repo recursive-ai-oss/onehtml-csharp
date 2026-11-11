@@ -1,6 +1,6 @@
 # RecursiveAI.OneHtml.Accessibility.Validation
 
-Accessibility checks over a `RecursiveAI.OneHtml` document and its accessibility tree, with no browser. One catalogue of rules covers WCAG 2.0, 2.1 and 2.2 at every level plus best practices, built from the W3C ACT Rules, the published axe-core rule list (ids, tags and impact), WCAG failure techniques and our own checks. Every rule records its sources, its success criteria with version and level (or `best-practice`), whether it needs rendered facts, and its fix or why it has none.
+Accessibility checks over a `RecursiveAI.OneHtml` document and its accessibility tree, with no browser. One catalogue of rules covers WCAG 2.0, 2.1 and 2.2 at every level plus best practices, built from the W3C ACT Rules, the published axe-core rule list (ids, tags and impact), WCAG failure techniques and checks of my own. Every rule records its sources, its success criteria with version and level (or `best-practice`), whether it needs rendered facts, and its fix or why it has none.
 
 - **Results** carry an outcome (`Failed`, `Passed`, `NeedsReview`, `NeedsRender`, `Inapplicable`), labels, task impact, the facts used and missing, the style context, and the target as a node, a locator and a source range.
 - **Profiles** select labels: WCAG 2.0 AA, 2.1 AA, 2.2 AA, or all. A profile names the standard it follows; it is not a legal claim.
